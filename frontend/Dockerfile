@@ -21,7 +21,5 @@ RUN npm install --lockfile-version 3 --package-lock-only
 # Copy the application code to the container
 COPY $PROJECT_PATH/frontend/ .
 
-# The .env file holds the location of the crts etc.
-
 # Define the command to run your application
 CMD ["npm", "start"]
