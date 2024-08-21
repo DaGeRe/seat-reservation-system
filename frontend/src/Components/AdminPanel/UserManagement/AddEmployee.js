@@ -54,7 +54,6 @@ export default function AddEmployee({ addEmployeeModal }) {
        
     }).catch(error => {
       toast.error(t("userCreationFailed"));
-      console.log("login user err " + error);
     });
   }
 
