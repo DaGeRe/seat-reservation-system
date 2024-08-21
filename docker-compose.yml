@@ -7,12 +7,13 @@ services:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
     environment:
-      - REACT_APP_BACKEND_URL=${CN}:${BACKEND_PORT}
+      - REACT_APP_BACKEND_URL=https://${IP}:${BACKEND_PORT}
       - HTTPS=true
       - SSL_CRT_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.crt
       - SSL_KEY_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
+      - PORT=${FRONTEND_PORT}
     ports:
-      - ${FRONTEND_PORT}:3000
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     networks:
       - mynetwork_dev
     depends_on:
@@ -24,6 +25,7 @@ services:
   #   container_name: nginx
   #   ports:
   #     - "80:80"
+  #     - "3000:3000"
   #   volumes:
   #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
   #     - ./ca/desksharingtool/desksharingtool.crt:/etc/nginx/ssl/cert.pem:ro
