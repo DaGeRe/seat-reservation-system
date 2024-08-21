@@ -1,1 +1,1 @@
-mariadb -pmypass < select_all_users.sql
+mariadb -p${PW_DB} < select_all_users.sql

@@ -1,1 +1,1 @@
-mariadb -pmypass
+mariadb -p${PW_DB}

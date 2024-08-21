@@ -50,6 +50,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
       - PW_TLS=${PW_TLS}
+      - PW_DB=${PW_DB}
 
   database:
     build: 
@@ -58,8 +59,9 @@ services:
       args:
         PROJECT_PATH: ${PROJECT_PATH}
     environment:
-      MYSQL_ROOT_PASSWORD: mypass
+      #MYSQL_ROOT_PASSWORD: mypass
       MYSQL_DATABASE: mydatabase
+      PW_DB: ${PW_DB}
     networks:
       - mynetwork_dev
     ports:
