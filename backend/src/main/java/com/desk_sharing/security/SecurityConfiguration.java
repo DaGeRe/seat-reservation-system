@@ -55,8 +55,8 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         // Hier gewuenschte Origins eintragen
         configuration.setAllowedOrigins(Arrays.asList(
-            "https://jus-srv-test30.justiz.sachsen.de:3001/",
-            "https://jus-srv-test30.justiz.sachsen.de:3001"
+            "https://jus-srv-test30.justiz.sachsen.de:3001",
+            "https://jus-srv-test30.justiz.sachsen.de:3000"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "DELETE", "PUT"));
         // Wichtig!
