@@ -32,7 +32,7 @@ const MyBookings = () => {
 
   const fetchBookings = async (userId) => {
     try {
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/user/${userId}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,

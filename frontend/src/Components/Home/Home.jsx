@@ -42,7 +42,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch('https://jus-srv-test30:8082/bookings/days/', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/days/`, {
         method: "POST",
         headers: {
           "Authorization": "Bearer " + accessToken,

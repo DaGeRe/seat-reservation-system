@@ -31,7 +31,7 @@ export default function AddEmployee({ addEmployeeModal }) {
         return false;
     }
       
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/users/register`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + accessToken,

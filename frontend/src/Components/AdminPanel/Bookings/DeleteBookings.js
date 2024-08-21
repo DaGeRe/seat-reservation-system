@@ -22,7 +22,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
       }, []);
 
       async function getAllRooms(){
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -40,7 +40,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
 
       async function getAllBookings(){
         
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -61,7 +61,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
     }
 
     async function deleteBookingsById(id){
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/"+id`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/"+id`, {
           method: "DELETE",
           headers: {
             "Authorization": "Bearer " + accessToken,
@@ -79,7 +79,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
             let idVal = idSplit[1].split(")");
             let roomId = idVal[0];
 
-            const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,

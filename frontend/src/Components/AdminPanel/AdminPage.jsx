@@ -48,7 +48,7 @@ const AdminPage = () => {
         "Content-Type": "application/json",
       }
   };
-    fetch("https://jus-srv-test30:8082/rooms", options)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, options)
       .then((response) => response.json())
       .then((data) => {
         // Filter rooms based on the current floor

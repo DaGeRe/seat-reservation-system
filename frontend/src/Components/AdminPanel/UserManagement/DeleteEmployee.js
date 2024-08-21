@@ -18,7 +18,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
     }, []);
 
   async function getAllEmployee(){
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/users/get`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/get`, {
     method: "GET",
     headers: {
       "Authorization": "Bearer " + accessToken,
@@ -39,7 +39,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
   }
 
   async function deleteEmployeeById(id){
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/users/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": "Bearer " + accessToken,

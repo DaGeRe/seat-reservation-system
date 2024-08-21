@@ -27,7 +27,7 @@ export default function EditBookings({ editBookingsModal }) {
   }, []);
 
   async function getAllRooms(){
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: "GET",
       headers: {
         "Authorization": "Bearer " + accessToken,
@@ -67,7 +67,7 @@ export default function EditBookings({ editBookingsModal }) {
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
 
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,

@@ -29,7 +29,7 @@ const Floor = () => {
       }
     };
     // Fetch room data from the backend
-    fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, options)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, options)
     .then(response => response.json())
     .then(data => {
       // Apply filter if selected
@@ -48,7 +48,7 @@ const Floor = () => {
   // const fetchRooms = async () => {
   //   const accessToken = localStorage.getItem('accessToken');
   //   try {
-  //     const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, {
+  //     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
   //       method: "GET",
   //       headers: {
   //         "Authorization": "Bearer " + accessToken,
@@ -69,7 +69,7 @@ const Floor = () => {
   //     }
   //   };
   //   // Fetch room data from the backend
-  //   fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, options)
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, options)
   //     .then(response => response.json())
   //     .then(data => {
   //       // Apply filter if selected

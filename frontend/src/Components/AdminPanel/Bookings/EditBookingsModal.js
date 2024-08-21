@@ -26,7 +26,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       return false;
     }
       
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/edit/timings`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
       method: "PUT",
       headers: {
         "Authorization": "Bearer " + accessToken,

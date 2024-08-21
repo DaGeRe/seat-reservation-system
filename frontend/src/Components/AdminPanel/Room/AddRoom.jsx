@@ -35,7 +35,7 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('fields_not_empty'));
       return false;
     }
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/create`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
       method: 'POST',
       headers: {
         "Authorization": "Bearer " + accessToken,
@@ -62,7 +62,7 @@ export default function AddRoom({ addRoomModal }) {
 
     async function handleRoomTypeChange(e, id){
 
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/${id+"/type/"+e.target.value}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
         method: "PUT",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -76,7 +76,7 @@ export default function AddRoom({ addRoomModal }) {
 
     async function handleStatusChange(e, id){
 
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/${id+"/"+e.target.value}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/"+e.target.value}`, {
           method: "PUT",
           headers: {
             "Authorization": "Bearer " + accessToken,

@@ -16,7 +16,7 @@ export default function EditRoom({ editRoomModal }) {
       }, []);
 
       async function getAllRooms(){
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -37,7 +37,7 @@ export default function EditRoom({ editRoomModal }) {
 
     async function handleRoomFloorChange(e, id){
 
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/${id+"/floor/"+e.target.value}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
         method: "PUT",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -51,7 +51,7 @@ export default function EditRoom({ editRoomModal }) {
 
     async function handleRoomTypeChange(e, id){
 
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/${id+"/type/"+e.target.value}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
         method: "PUT",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -65,7 +65,7 @@ export default function EditRoom({ editRoomModal }) {
 
     async function handleStatusChange(e, id){
 
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/${id}/${e.target.value}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
           method: "PUT",
           headers: {
             "Authorization": "Bearer " + accessToken,

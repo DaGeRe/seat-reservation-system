@@ -38,7 +38,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
       return false;
     }
 
-  const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/desks`, {
+  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + accessToken,
@@ -57,7 +57,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
   }
 
   async function getAllRooms() {
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: "GET",
       headers: {
         "Authorization": "Bearer " + accessToken,

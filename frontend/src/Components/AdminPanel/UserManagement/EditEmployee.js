@@ -33,7 +33,7 @@ export default function EditEmployee({ editEmployeeModal }) {
   }, []);
 
   async function getAllEmployee(){
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/users/get`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/get`, {
       method: "GET",
       headers: {
         "Authorization": "Bearer " + accessToken,

@@ -29,7 +29,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
       return false;
     }
       
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/users/${id}`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
       method: "PUT",
       headers: {
         "Authorization": "Bearer " + accessToken,

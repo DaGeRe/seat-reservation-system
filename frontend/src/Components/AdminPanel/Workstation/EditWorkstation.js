@@ -26,7 +26,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function getAllRooms(){
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/rooms/status`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: "GET",
       headers: {
         "Authorization": "Bearer " + accessToken,
@@ -47,7 +47,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
 
-      const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/desks/room/${roomId}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -64,7 +64,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function updateWorkstation(){
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/desks/${selectedDesk}/$[equipment}`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/$[equipment}`, {
       method: "PUT",
       headers: {
         "Authorization": "Bearer " + accessToken,

@@ -29,7 +29,7 @@ const Booking = () => {
     const accessToken = localStorage.getItem('accessToken');
     const fetchDesks = async () => {
       try {
-        const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/desks/room/${roomId}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
           method: "GET",
           headers: {
             "Authorization": "Bearer " + accessToken,
@@ -62,7 +62,7 @@ const Booking = () => {
     const handleDeskClick = async (desk) => {
       try {
         const response = await fetch(
-          `https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/desk/${desk.id}`, {
+          `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${desk.id}`, {
             method: "GET",
             headers: {
               "Authorization": "Bearer " + accessToken,
@@ -104,7 +104,7 @@ const Booking = () => {
 
   async function loadBookings(){
     const response = await fetch(
-      `https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/desk/${clickedDeskId}`, {
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -197,7 +197,7 @@ const Booking = () => {
       begin: start,
       end: ending
     };
-    const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + accessToken,
@@ -225,7 +225,7 @@ const Booking = () => {
           onClick: async () => {
            
             try {
-              const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/confirm/${data.id}`, {
+              const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`, {
                 method: "PUT",
                 headers: {
                   "Authorization": "Bearer " + accessToken,
@@ -259,7 +259,7 @@ const Booking = () => {
           onClick: async () => {
            
             try {
-              const response = await fetch(`https://jus-srv-test30:${process.env.REACT_APP_BACKEND_PORT}/bookings/${data.id}`, {
+              const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`, {
                 method: "DELETE",
                 headers: {
                   "Authorization": "Bearer " + accessToken,
