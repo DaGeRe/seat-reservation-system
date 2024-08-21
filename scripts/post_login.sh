@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# If needed: unset http_proxy and unset https_proxy
+
 port="8081"
 if [ $# -eq 1 ]; then
     port="$1"

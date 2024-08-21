@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# If needed: unset http_proxy and unset https_proxy
 
 # Assign command line parameters to variables
 email="admin@mail.com"
