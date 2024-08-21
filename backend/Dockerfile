@@ -4,6 +4,8 @@ FROM maven:3.8.4-openjdk-17 AS build
 
 ARG PROJECT_PATH
 ENV PROJECT_PATH=$PROJECT_PATH
+ARG PATH_TO_TLS
+ENV PATH_TO_TLS=$PATH_TO_TLS
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -16,7 +18,7 @@ COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
 COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
 
 # Copy cert stuff
-COPY /opt/jus-srv-test30.justiz.sachsen.de src/main/resources/tls
+COPY $PATH_TO_TLS src/main/resources/tls
 
 # Build the Maven project
 RUN mvn clean package

@@ -5,6 +5,7 @@ services:
       dockerfile: ${PROJECT_PATH}/frontend/Dockerfile
       args:
         PROJECT_PATH: ${PROJECT_PATH}
+        PATH_TO_TLS: ${PATH_TO_TLS}
     environment:
       - REACT_APP_BACKEND_PORT=${BACKEND_PORT}
       - HTTPS=true
@@ -37,6 +38,7 @@ services:
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}
+        PATH_TO_TLS: ${PATH_TO_TLS}
     ports:
       - ${BACKEND_PORT}:8080
     networks:

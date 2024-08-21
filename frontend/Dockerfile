@@ -3,6 +3,8 @@ FROM node:14
 
 ARG PROJECT_PATH
 ENV PROJECT_PATH=$PROJECT_PATH
+ARG PATH_TO_TLS
+ENV PATH_TO_TLS=$PATH_TO_TLS
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -11,7 +13,7 @@ WORKDIR /usr/src/app
 COPY $PROJECT_PATH/frontend/package*.json ./
 
 # Copy cert stuff
-COPY /opt/jus-srv-test30.justiz.sachsen.de tls
+COPY $PATH_TO_TLS tls
 
 # Install dependencies
 RUN npm install --lockfile-version 3 --package-lock-only

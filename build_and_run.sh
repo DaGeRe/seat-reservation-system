@@ -1,1 +1,0 @@
-docker compose --env-file .env build --build-arg http_proxy=http://proxy.justiz.sachsen.de:3128 --build-arg https_proxy=http://proxy.justiz.sachsen.de:3128 && docker compose up
