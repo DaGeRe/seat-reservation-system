@@ -28,7 +28,7 @@ const LoginPage = () => {
       return;
     }
     try {
-      const response = await fetch(`https://jus-srv-test30.justiz.sachsen.de:${process.env.REACT_APP_BACKEND_PORT}/users/login`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

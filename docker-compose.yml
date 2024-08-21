@@ -7,7 +7,7 @@ services:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
     environment:
-      - REACT_APP_BACKEND_PORT=${BACKEND_PORT}
+      - REACT_APP_BACKEND_URL=${CN}:${BACKEND_PORT}
       - HTTPS=true
       - SSL_CRT_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.crt
       - SSL_KEY_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
