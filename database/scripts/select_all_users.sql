@@ -1,0 +1,1 @@
+select * from mydatabase.users;

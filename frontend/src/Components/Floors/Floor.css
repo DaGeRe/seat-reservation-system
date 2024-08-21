@@ -1,0 +1,39 @@
+.floor-content {
+  flex-grow: 1;
+  overflow-y: auto; /* Ensures content is scrollable if it overflows */
+  border-radius: 10px;
+  padding: -10px;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+.image-wrapper {
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-wrapper img {
+  max-width: 100%;
+  max-height: 600px;
+  height: auto;
+}
+
+.image-wrapper {
+  position: relative;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clickable-area {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  cursor: pointer;
+  opacity: 0.7;
+}

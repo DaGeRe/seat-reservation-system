@@ -1,0 +1,1 @@
+mariadb -pmypass < select_all_users.sql

@@ -1,0 +1,14 @@
+INSERT INTO rooms (room_id, type, x, y, floor, status) VALUES (007, 'Silence', 175, 90, 'Ground', 'enable'),
+(023, 'Silence', 415, 400, 'Ground', 'enable'),
+(027, 'Normal', 415, 535, 'Ground', 'enable'),
+(048, 'Normal', 510, 405, 'Ground', 'enable'),
+(028, 'Normal', 415, 680, 'Ground', 'enable'),
+(043, 'Silence', 515, 905, 'Ground', 'enable'),
+
+(119, 'Normal', 400, 490, 'First', 'enable'),
+(120, 'Normal', 400, 560, 'First', 'enable'),
+(124, 'Silence', 400, 750, 'First', 'enable'),
+(139, 'Normal', 500, 375, 'First', 'enable'),
+(134, 'Normal', 500, 670, 'First', 'enable'),
+(133, 'Normal', 500, 740, 'First', 'enable'),
+(131, 'Normal', 500, 860, 'First', 'enable');

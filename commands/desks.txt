@@ -1,0 +1,36 @@
+INSERT INTO desks (desk_id, equipment, room_id) VALUES (04, 'A Computer', 23),
+(05, 'No equipment', 23),
+(06, 'No equipment', 23),
+(07, 'No equipment', 23),
+
+(01, 'No equipment', 7),
+(02, 'No equipment', 7),
+(03, 'No equipment', 7),
+
+(08, 'No equipment', 48),
+
+(09, 'No equipment', 27),
+
+(010, 'No equipment', 28),
+(011, 'No equipment', 28),
+
+(12, 'A Computer', 43),
+(13, 'No equipment', 43),
+(14, 'No equipment', 43),
+(15, 'No equipment', 43),
+
+(103, 'No equipment', 119),
+(104, 'No equipment', 119),
+
+(101, 'No equipment', 139),
+
+(102, 'No equipment', 120),
+
+(108, 'No equipment', 124),
+
+(107, 'No equipment', 133),
+
+(109, 'No equipment', 131),
+
+(110, 'No equipment', 134),
+(111, 'No equipment', 134);

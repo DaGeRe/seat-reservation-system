@@ -1,0 +1,25 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository>/usr/share/maven/ref/repository</localRepository>
+
+<proxies>
+    <proxy>
+           <id>justiz</id>
+             <active>true</active>
+            <protocol>http</protocol>
+             <host>proxy.justiz.sachsen.de</host>
+             <port>3128</port>
+             <nonProxyHosts>*.justiz.sachsen.de,localhost,*.justiz.test</nonProxyHosts>
+         </proxy>
+         <proxy>
+             <id>justiz-https</id>
+             <active>true</active>
+             <protocol>https</protocol>
+             <host>proxy.justiz.sachsen.de</host>
+             <port>3128</port>
+             <nonProxyHosts>*.justiz.sachsen.de,localhost,*.justiz.test</nonProxyHosts>
+         </proxy>
+     </proxies>
+</settings>

@@ -1,0 +1,1 @@
+mariadb -pmypass < delete_all_users.sql

@@ -1,0 +1,12 @@
+/backend/target
+/.vscode
+/frontend/node_modules
+/.metadata/
+*.log
+*.tar.xz
+sql
+#*.sh
+.env
+jus-srv-test30.justiz.sachsen.de/*
+jus-srv-test30.justiz.sachsen.de
+backend/src/main/resources

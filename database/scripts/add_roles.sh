@@ -1,0 +1,1 @@
+mariadb -pmypass < add_roles.sql

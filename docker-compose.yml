@@ -1,0 +1,76 @@
+services:
+  frontend:
+    build: 
+      context: /
+      dockerfile: ${PROJECT_PATH}/frontend/Dockerfile
+      args:
+        PROJECT_PATH: ${PROJECT_PATH}
+    environment:
+      - REACT_APP_BACKEND_PORT=${BACKEND_PORT}
+      - HTTPS=true
+      - SSL_CRT_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.crt
+      - SSL_KEY_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
+    ports:
+      - ${FRONTEND_PORT}:3000
+    networks:
+      - mynetwork_dev
+    # depends_on:
+    #   - backend
+    #   - database
+
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  #     - ./ca/desksharingtool/desksharingtool.crt:/etc/nginx/ssl/cert.pem:ro
+  #     - ./ca/desksharingtool/desksharingtool_unencrypted.key:/etc/nginx/ssl/cert.key:ro
+  #   networks:
+  #     - mynetwork_dev
+
+  backend:
+    build: 
+      context: /
+      dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
+      args:
+        PROJECT_PATH: ${PROJECT_PATH}
+        BACKEND_PORT: ${BACKEND_PORT}
+    ports:
+      - ${BACKEND_PORT}:8080
+    networks:
+      - mynetwork_dev
+    depends_on:
+      - database
+    environment:
+      - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
+      - PW_TLS=${PW_TLS}
+
+  database:
+    build: 
+      context: /
+      dockerfile: ${PROJECT_PATH}/database/Dockerfile
+      args:
+        PROJECT_PATH: ${PROJECT_PATH}
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass
+      MYSQL_DATABASE: mydatabase
+    networks:
+      - mynetwork_dev
+    ports:
+      - ${DATABASE_PORT}:3306
+    volumes:
+      - mariadb_data_dev:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "localhost"]
+      interval: 10s
+      retries: 5
+      timeout: 10s
+
+networks:
+  mynetwork_dev:
+    driver: bridge
+
+volumes:
+  mariadb_data_dev:
