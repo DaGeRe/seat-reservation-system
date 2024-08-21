@@ -1,4 +1,4 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import {Grid, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,7 +18,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [selectedDesk, setSelectedDesk]= React.useState('');
   React.useEffect(() => {
       getAllRooms();
-  }, []);
+  });
 
   const handleClose = () => {
     deleteWorkstationModal();
