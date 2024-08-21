@@ -15,7 +15,7 @@ services:
     ports:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
     networks:
-      - mynetwork_dev
+      - ${NETWORK}
     depends_on:
       - backend
       - database
@@ -31,7 +31,7 @@ services:
   #     - ./ca/desksharingtool/desksharingtool.crt:/etc/nginx/ssl/cert.pem:ro
   #     - ./ca/desksharingtool/desksharingtool_unencrypted.key:/etc/nginx/ssl/cert.key:ro
   #   networks:
-  #     - mynetwork_dev
+  #     - ${NETWORK}
 
   backend:
     build: 
@@ -44,7 +44,7 @@ services:
     ports:
       - ${BACKEND_PORT}:8080
     networks:
-      - mynetwork_dev
+      - ${NETWORK}
     depends_on:
       - database
     environment:
@@ -59,13 +59,12 @@ services:
       args:
         PROJECT_PATH: ${PROJECT_PATH}
     environment:
-      #MYSQL_ROOT_PASSWORD: mypass
       MYSQL_DATABASE: mydatabase
       PW_DB: ${PW_DB}
     networks:
-      - mynetwork_dev
+      - ${NETWORK}
     ports:
-      - ${DATABASE_PORT}:3306
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     volumes:
       - mariadb_data_dev:/var/lib/mysql
     healthcheck:
@@ -76,6 +75,8 @@ services:
 
 networks:
   mynetwork_dev:
+    driver: bridge
+  mynetwork:
     driver: bridge
 
 volumes:
