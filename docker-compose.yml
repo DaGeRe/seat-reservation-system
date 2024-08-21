@@ -15,9 +15,9 @@ services:
       - ${FRONTEND_PORT}:3000
     networks:
       - mynetwork_dev
-    # depends_on:
-    #   - backend
-    #   - database
+    depends_on:
+      - backend
+      - database
 
   # nginx:
   #   image: nginx:alpine
