@@ -102,15 +102,18 @@ export default function AddRoom({ addRoomModal }) {
             <DialogContent>
                 <Grid container >
                   <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                    <FormControl required={true} size="small" fullWidth variant="standard">
-                      <TextField
-                        id="standard-adornment-reason"
-                        label={t("floor")}
-                        size="small"
-                        type={"text"}
+                    <FormControl required={true} size="small" fullWidth>
+                      <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label-floor"
+                        id="demo-simple-select-floor"
                         value={floor}
+                        label={t("floor")}
                         onChange={(e)=>setFloor(e.target.value)}
-                      />
+                      >
+                        <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
+                        <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
+                      </Select>
                     </FormControl>
                     <br></br> <br></br>
                     <FormControl required={true} fullWidth>
