@@ -26,7 +26,6 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
     },
   }).then(resp => {
     resp.json().then(data => {
-      console.log(data);
       setAllEmployee(data);
     });
   }).catch(error => {
