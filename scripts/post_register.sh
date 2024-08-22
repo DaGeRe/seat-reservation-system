@@ -16,7 +16,7 @@ if [ $# -eq 4 ]; then
     port="$4"
 fi
 
-url="https://jus-srv-test30.justiz.sachsen.de:8081/users/register"
+url="https://jus-srv-test30.justiz.sachsen.de:${port}/users/register"
 
 echo "This script executes an register process at: $url"
 
