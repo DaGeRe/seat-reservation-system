@@ -35,7 +35,7 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('fields_not_empty'));
       return false;
     }
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
       method: 'POST',
       headers: {
         "Authorization": "Bearer " + accessToken,
@@ -60,33 +60,33 @@ export default function AddRoom({ addRoomModal }) {
         addRoomModal();
     }
 
-    async function handleRoomTypeChange(e, id){
+  //   async function handleRoomTypeChange(e, id){
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
-      toast.success(t("roomType"));
-      addRoom()//getAllRooms();
-  }
+  //     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Authorization": "Bearer " + accessToken,
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({}),
+  //     });
+  //     toast.success(t("roomType"));
+  //     addRoom()//getAllRooms();
+  // }
 
-    async function handleStatusChange(e, id){
+    // async function handleStatusChange(e, id){
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/"+e.target.value}`, {
-          method: "PUT",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        });
-        toast.success(t("roomStatus"));
-        addRoom();//getAllRooms();
-    }
+    //     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/"+e.target.value}`, {
+    //       method: "PUT",
+    //       headers: {
+    //         "Authorization": "Bearer " + accessToken,
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({}),
+    //     });
+    //     toast.success(t("roomStatus"));
+    //     addRoom();//getAllRooms();
+    // }
     // +---------+--------------+------+-----+---------+-------+
     // | Field   | Type         | Null | Key | Default | Extra |
     // +---------+--------------+------+-----+---------+-------+
