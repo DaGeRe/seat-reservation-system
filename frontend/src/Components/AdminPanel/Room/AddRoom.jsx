@@ -15,12 +15,16 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 export default function AddRoom({ addRoomModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
+  const [iconPosition, setIconPosition] = React.useState({ x: 0, y: 0 });
+  const [isOverImage, setIsOverImage] = React.useState(false);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);
   const [y, setY] = React.useState(0.0);
+  const [xPercent, setXPercent] = React.useState(.0);
+  const [yPercent, setYPercent] = React.useState(.0);
   // +---------+--------------+------+-----+---------+-------+
     // | Field   | Type         | Null | Key | Default | Extra |
     // +---------+--------------+------+-----+---------+-------+
@@ -105,14 +109,29 @@ export default function AddRoom({ addRoomModal }) {
 
     const floorImage = floor === 'Ground' ? firstFloorImage : secondFloorImage;
 
+    const handleMouseMove = (e) => {
+      const rect = e.target.getBoundingClientRect();
+      const x = e.clientX - rect.left; // X coordinate within the image
+      const y = e.clientY - rect.top; // Y coordinate within the image
+  
+      setIconPosition({ x, y });
+      console.log(`Icon coordinates: X: ${x}, Y: ${y}`);
+    };
+  
+    const handleMouseEnter = () => {
+      setIsOverImage(true);
+    };
+  
+    const handleMouseLeave = () => {
+      setIsOverImage(false);
+    };
+
     return (
         <React.Fragment>
             <DialogContent>
                 <Grid container >
-               
-                 
                   <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                    {/* <FormControl required={true} size="small" fullWidth>
+                    <FormControl required={true} size="small" fullWidth>
                       <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
                       <Select
                         labelId="demo-simple-select-label-floor"
@@ -125,91 +144,29 @@ export default function AddRoom({ addRoomModal }) {
                         <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
                         <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
                       </Select>
-                    </FormControl> */}
-                    {/* <div className="image-wrapper"> */}
+                    </FormControl>
                     <div
-                      onClick={(e) => {
-                        // setX(e.pageX - e.target.offsetLeft);
-                        // setY(e.pageY - e.target.offsetTop);
-                        // console.log('e.page', e.pageX, e.pageY);
-                        // console.log('e.target', e.target.offsetLeft, e.target.offsetTop);
-                        // console.log('client: ', e.clientX, e.clientY);
-                        // console.log('layer', e.layerX, e.layerY);
-                        // console.log('click: ', x, y);
-                        // //<Test>
-                        // setX(e.layerX);
-                        // setY(e.layerY);
-                        // //</Test>
-                        // console.log('---------------');
-                      }  
-                    }
+                      className="image-container"
+                      onMouseMove={handleMouseMove}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
                     >
-                      <img id='myImage' className="myimage" src={floorImage} alt={`${floor === 'Ground' ? 'Ground' : 'First'} Floor`}
-                        onClick={(e)=>{
-                          // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-
-                          // const coordinatesDiv = document.getElementById('coordinates');
-                          // const img = document.getElementById('myImage');
-                          // const rect = img.getBoundingClientRect();
-                          // const rect_length = rect.right - rect.left;
-                          // const rect_height = rect.bottom - rect.top;
-                          // const x = e.clientX - rect.left;
-                          // const y = e.clientY - rect.top;
-                          // const xPercent = (x / rect.width) * 100;
-                          // const yPercent = (y / rect.height) * 100;
-                          // //setX(e.layerX);
-                          // //setY(e.layerY);
-                          // console.log(rect);
-                          // console.log('percent: ', xPercent, yPercent);
-                          // console.log('natural: ', img.naturalWidth, img.naturalHeight);
-                          
-                          // const xPx=(xPercent/100)* rect.right;
-                          // const yPx=(yPercent/100)*rect.bottom ;
-                          // setX(xPx);
-                          // setY(yPx);
-
-                          const img = document.getElementById('myImage');
-                          const rect = img.getBoundingClientRect();
-
-                          setX(rect.right);
-                          setY(rect.bottom);
-                          
-                          
-                          //coordinatesDiv.innerHTML = `Coordinates: (${xPercent.toFixed(2)}%, ${yPercent.toFixed(2)}%)`;
-                          
-                        }}
-                        onMouseMove={(e)=>{
-                          const img = document.getElementById('myImage');
-                          const rect = img.getBoundingClientRect();
-                          const currx = e.clientX - rect.left;
-                          const curry = e.clientY - rect.top;
-                          const xPercent = (currx / rect.width) * 100;
-                          const yPercent = (curry / rect.height) * 100;
-                          
-                          //console.log(xPercent, yPercent);
-                
-                          
-                          setX((xPercent/100)*rect.width);
-                          setX((e.pageX - e.target.offsetLeft));
-                          setY((yPercent/100)*rect.height);
-                          console.log(xPercent/100);
-                          console.log(rect.width);
-                          console.log(x);
-                          console.log('-------');
-                        }}
-                      />
-                      {/* { x != 0 && y != 0 && */}
-                      <a className="myicon" style={{
-                        top: `${y}px`, left: `${x}px` }}>
-                    <IconButton>
-                        <LaptopIcon />
-                      </IconButton>
-                      </a>
-                    {/* }  */}
+                      <img src={floorImage} alt="Example" className="App-image" />
+                      {isOverImage && (
+                        <div
+                          className="icon"
+                          style={{
+                            top: `${iconPosition.y}px`,
+                            left: `${iconPosition.x}px`
+                          }}
+                        >
+                          <IconButton>
+                            <LaptopIcon />
+                          </IconButton>
+                        </div>
+                      )}
                     </div>
-          
-                    
-                    {/* <br></br> <br></br>
+                    <br></br> <br></br>
                     <FormControl required={true} fullWidth>
                       <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
                       <Select
@@ -258,7 +215,7 @@ export default function AddRoom({ addRoomModal }) {
                         value={y}
                         onChange={(e)=>setY(e.target.value)}
                       />
-                    </FormControl> */}
+                    </FormControl>
 
                     
       <DialogActions>

@@ -1,12 +1,25 @@
+.App-image {
+  max-width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.icon {
+  position: absolute;
+  font-size: 30px; /* Adjust size as needed */
+  pointer-events: none; /* Prevents the icon from interfering with mouse events */
+  transform: translate(-50%, -50%); /* Centers the*/
+}
+
 /*
 https://www.w3schools.com/howto/howto_css_image_overlay_icon.asp
 */
 
-.mycontainer {
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-}
 
 /* Make the image to responsive */
 .myimage {
@@ -14,6 +27,7 @@ https://www.w3schools.com/howto/howto_css_image_overlay_icon.asp
   width: 100%;
   max-width: 100%;
   height: auto;
+  border: 5px solid #555;
   
 }
 
