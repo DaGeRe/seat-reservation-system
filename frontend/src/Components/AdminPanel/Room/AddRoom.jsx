@@ -110,13 +110,6 @@ export default function AddRoom({ addRoomModal }) {
       setY(y);
     }
 
-    const handleMouseEnter = () => {
-      setIsOverImage(true);
-    };
-  
-    const handleMouseLeave = () => {
-      setIsOverImage(false);
-    };
     const HtmlTooltip = styled(({ className, ...props }) => (
       <Tooltip {...props} classes={{ popper: className }} />
       ))(({ theme }) => ({
