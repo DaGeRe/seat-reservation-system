@@ -1,10 +1,13 @@
-import { FormControl, Grid, FormHelperText, TextField, InputLabel, Input, MenuItem, Select} from '@mui/material';
+import { FormControl, Tooltip, TooltipProps, tooltipClasses, Grid, FormHelperText, TextField, InputLabel, Input, MenuItem, Select} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import firstFloorImage from '../../../images/firstfloor.png';
 import secondFloorImage from '../../../images/secondfloor.png'; 
+
 import './AddRoom.css'; 
 import * as React from 'react';
 import { toast } from 'react-toastify';
@@ -23,6 +26,7 @@ export default function AddRoom({ addRoomModal }) {
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);
   const [y, setY] = React.useState(0.0);
+  const [remark, setRemark] = React.useState('');
   // +---------+--------------+------+-----+---------+-------+
     // | Field   | Type         | Null | Key | Default | Extra |
     // +---------+--------------+------+-----+---------+-------+
@@ -69,7 +73,8 @@ export default function AddRoom({ addRoomModal }) {
           "status": status,
           "type": type,
           "x": x,
-          "y": y
+          "y": y,
+          "remark": remark
       })
     }).then(resp => {
       toast.success(t("roomCreated"));
@@ -112,6 +117,17 @@ export default function AddRoom({ addRoomModal }) {
     const handleMouseLeave = () => {
       setIsOverImage(false);
     };
+    const HtmlTooltip = styled(({ className, ...props }) => (
+      <Tooltip {...props} classes={{ popper: className }} />
+      ))(({ theme }) => ({
+        [`& .${tooltipClasses.tooltip}`]: {
+          backgroundColor: '#f5f5f9',
+          color: 'rgba(0, 0, 0, 0.87)',
+          maxWidth: 220,
+          fontSize: theme.typography.pxToRem(12),
+          border: '1px solid #dadde9',
+        },
+    }));
 
     return (
       <React.Fragment>
@@ -134,9 +150,9 @@ export default function AddRoom({ addRoomModal }) {
                       <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
                     </Select>
                   </FormControl>
+                  <br></br> <br></br>
                   <div
                     className="image-container"
-                    //onMouseMove={handleMouseMove}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                     onMouseDown={handleMouseClick}
@@ -144,7 +160,7 @@ export default function AddRoom({ addRoomModal }) {
                     <img src={floorImage} alt="Example" className="floor-image" />
                     {x != 0 && y!= 0 && (
                       <div
-                        className="icon"
+                        className="image-icon"
                         style={{
                           top: `${y}px`,
                           left: `${x}px`
@@ -162,18 +178,29 @@ export default function AddRoom({ addRoomModal }) {
                       })
                       .map((room, i) => {
                         return (
-                          <div 
-                            key={i}
-                            className="icon"
-                            style={{
-                              top: `${room.y}px`,
-                              left: `${room.x}px`
-                            }}
-                          >
-                            <IconButton>
-                              <LaptopIcon style={{ color: 'grey'}}/>
-                            </IconButton>
-                          </div>
+                          
+                            <div 
+                              key={i}
+                              className="image-icon"
+                              style={{
+                                top: `${room.y}px`,
+                                left: `${room.x}px`
+                              }}
+                            >
+                              <HtmlTooltip
+                                title={
+                                  <React.Fragment>
+                                    <em>x: {room.x} y: {room.y}</em>
+                                    <br></br>
+                                    <em>{room.remark}</em>
+                                  </React.Fragment>
+                                }
+                              >
+                                <IconButton>
+                                  <LaptopIcon style={{ color: 'grey'}}/>
+                                </IconButton>
+                              </HtmlTooltip>
+                            </div>
                         );
                       })
                     }
@@ -205,6 +232,17 @@ export default function AddRoom({ addRoomModal }) {
                       <MenuItem value={"enable"}>{t("enable").toUpperCase()}</MenuItem>
                       <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
                     </Select>
+                  </FormControl>
+                  <br></br> <br></br>
+                  <FormControl required={true} size="small" fullWidth variant="standard">
+                    <TextField
+                        id="room-"
+                        label={t("roomRemark")}
+                        size="small"
+                        type={"text"}
+                        value={remark}
+                        onChange={(e)=>setRemark(e.target.value)}
+                    />
                   </FormControl>
                   <br></br> <br></br>
                   <FormControl  required={true} size="small" fullWidth variant="standard">

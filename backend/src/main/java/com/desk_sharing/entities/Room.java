@@ -25,6 +25,9 @@ public class Room {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "remark")
+    private String remark;
+
     public Room() {
     }
 
@@ -80,5 +83,13 @@ public class Room {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
