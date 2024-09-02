@@ -19,7 +19,7 @@ export default function AddRoom({ addRoomModal }) {
   const [isOverImage, setIsOverImage] = React.useState(false);
   const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
-  const [floor, setFloor] = React.useState('');
+  const [floor, setFloor] = React.useState('Ground');
   const [status, setStatus] = React.useState('');
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);
@@ -145,115 +145,111 @@ export default function AddRoom({ addRoomModal }) {
     };
 
     return (
-        <React.Fragment>
-            <DialogContent>
-                <Grid container >
-                  <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                    <FormControl required={true} size="small" fullWidth>
-                      <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label-floor"
-                        id="demo-simple-select-floor"
-                        value={floor}
-                        label={t("floor")}
-                        onChange={(e)=>{
-                          setFloor(e.target.value);}}
-                      >
-                        <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
-                        <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <div
-                      className="image-container"
-                      //onMouseMove={handleMouseMove}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                      onMouseDown={handleMouseClick}
+      <React.Fragment>
+          <DialogContent>
+              <Grid container >
+                <Box sx={{ flexGrow: 1, padding: '10px' }}>
+                  <FormControl required={true} size="small" fullWidth>
+                    <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label-floor"
+                      id="demo-simple-select-floor"
+                      value={floor}
+                      label={t("floor")}
+                      onChange={(e)=>{
+                        setFloor(e.target.value);
+                        console.log(floor);
+                      }}   
                     >
-                      <img src={floorImage} alt="Example" className="App-image" />
-                      {x != 0 && y!= 0 && (
-                        <div
-                          className="icon"
-                          style={{
-                            top: `${y}px`,
-                            left: `${x}px`
-                          }}
-                        >
-                          <IconButton>
-                            <LaptopIcon />
-                          </IconButton>
-                        </div>
-                      )}
-                    </div>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                      <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={type}
-                        label={t("type")}
-                        onChange={(e)=>setType(e.target.value)}
+                      <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
+                      <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <div
+                    className="image-container"
+                    //onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseDown={handleMouseClick}
+                  >
+                    <img src={floorImage} alt="Example" className="App-image" />
+                    {x != 0 && y!= 0 && (
+                      <div
+                        className="icon"
+                        style={{
+                          top: `${y}px`,
+                          left: `${x}px`
+                        }}
                       >
-                        <MenuItem value={"Silence"}>{t("silence").toUpperCase()}</MenuItem>
-                        <MenuItem value={"Normal"}>{t("normal").toUpperCase()}</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                      <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={status}
-                        label={t("status")}
-                        onChange={(e)=>setStatus(e.target.value)}
-                      >
-                        <MenuItem value={"enable"}>{t("enable").toUpperCase()}</MenuItem>
-                        <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl  required={true} size="small" fullWidth variant="standard">
-                      <Box display="flex" justifyContent="space-between">
-                        <TextField
-                          id="standard-adornment-reason"
-                          label={t("x")}
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          size="small"
-                          type={"text"}
-                          value={x}
-                          //onChange={(e)=>setX(e.target.value)}
-                        />
-                        <TextField
-                          id="standard-adornment-reason"
-                          label={t("y")}
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          size="small"
-                          type={"text"}
-                          value={y}
-                          //onChange={(e)=>setY(e.target.value)}
-                        />
-                      </Box>
-                    </FormControl>
-      <DialogActions>
-        <Button onClick={()=>addRoom()}>&nbsp;{t("submit").toUpperCase()}</Button>
-        <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-      </DialogActions>
-
-
-          </Box>
-                
-                    </Grid>
-
+                        <IconButton>
+                          <LaptopIcon />
+                        </IconButton>
+                      </div>
+                    )}
+                  </div>
+                  <br></br> <br></br>
+                  <FormControl required={true} fullWidth>
+                    <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={type}
+                      label={t("type")}
+                      onChange={(e)=>setType(e.target.value)}
+                    >
+                      <MenuItem value={"Silence"}>{t("silence").toUpperCase()}</MenuItem>
+                      <MenuItem value={"Normal"}>{t("normal").toUpperCase()}</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <br></br> <br></br>
+                  <FormControl required={true} fullWidth>
+                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={status}
+                      label={t("status")}
+                      onChange={(e)=>setStatus(e.target.value)}
+                    >
+                      <MenuItem value={"enable"}>{t("enable").toUpperCase()}</MenuItem>
+                      <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <br></br> <br></br>
+                  <FormControl  required={true} size="small" fullWidth variant="standard">
+                    <Box display="flex" justifyContent="space-between">
+                      <TextField
+                        id="standard-adornment-reason"
+                        label={t("x")}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        size="small"
+                        type={"text"}
+                        value={x}
+                      />
+                      <TextField
+                        id="standard-adornment-reason"
+                        label={t("y")}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        size="small"
+                        type={"text"}
+                        value={y}
+                      />
+                    </Box>
+                  </FormControl>
+                  <DialogActions>
+                    <Button onClick={()=>addRoom()}>&nbsp;{t("submit").toUpperCase()}</Button>
+                    <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                  </DialogActions>
+                </Box>
+              </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-            </DialogActions>
-        </React.Fragment>
+              <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+          </DialogActions>
+      </React.Fragment>
     );
 }
