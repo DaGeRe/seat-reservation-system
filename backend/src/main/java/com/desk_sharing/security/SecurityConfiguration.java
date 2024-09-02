@@ -48,8 +48,6 @@ public class SecurityConfiguration {
         this.authEntryPoint = authEntryPoint;
     }
 
-
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

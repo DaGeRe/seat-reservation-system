@@ -35,7 +35,6 @@ export default function AddRoom({ addRoomModal }) {
     //const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
         getAllRooms();
-        console.log('allRooms.length', allRooms.length);
       }, []);
   
     async function getAllRooms(){
@@ -47,9 +46,7 @@ export default function AddRoom({ addRoomModal }) {
         },
       }).then(resp => {
         resp.json().then(data => {
-          console.log('data.lengt: ',data.length);
           setAllRooms(data);
-          console.log('allRooms.length #0 ', allRooms.length);
         });
       }).catch(error => {
         console.log("login user err " + error);
@@ -86,33 +83,6 @@ export default function AddRoom({ addRoomModal }) {
         addRoomModal();
     }
 
-  //   async function handleRoomTypeChange(e, id){
-
-  //     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Authorization": "Bearer " + accessToken,
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({}),
-  //     });
-  //     toast.success(t("roomType"));
-  //     addRoom()//getAllRooms();
-  // }
-
-    // async function handleStatusChange(e, id){
-
-    //     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/"+e.target.value}`, {
-    //       method: "PUT",
-    //       headers: {
-    //         "Authorization": "Bearer " + accessToken,
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({}),
-    //     });
-    //     toast.success(t("roomStatus"));
-    //     addRoom();//getAllRooms();
-    // }
     // +---------+--------------+------+-----+---------+-------+
     // | Field   | Type         | Null | Key | Default | Extra |
     // +---------+--------------+------+-----+---------+-------+
@@ -171,7 +141,7 @@ export default function AddRoom({ addRoomModal }) {
                     onMouseLeave={handleMouseLeave}
                     onMouseDown={handleMouseClick}
                   >
-                    <img src={floorImage} alt="Example" className="App-image" />
+                    <img src={floorImage} alt="Example" className="floor-image" />
                     {x != 0 && y!= 0 && (
                       <div
                         className="icon"
@@ -186,7 +156,11 @@ export default function AddRoom({ addRoomModal }) {
                       </div>
                     )}
                     {
-                      allRooms.map((room, i) => {
+                      allRooms
+                      .filter((room) => {
+                        return room.floor === floor
+                      })
+                      .map((room, i) => {
                         return (
                           <div 
                             key={i}

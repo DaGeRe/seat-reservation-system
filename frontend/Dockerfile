@@ -17,6 +17,7 @@ COPY $PATH_TO_TLS tls
 
 # Install dependencies
 RUN npm install --lockfile-version 3 --package-lock-only
+RUN npm install @mui/icons-material
 
 # Copy the application code to the container
 COPY $PROJECT_PATH/frontend/ .

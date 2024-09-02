@@ -3,7 +3,6 @@ import SidebarComponent from "../Home/SidebarComponent";
 import { FaAddressBook, FaPlusMinus } from "react-icons/fa6";
 import { FaBook } from "react-icons/fa";
 import "./AdminPage.css"; // Import the CSS file for AdminPage
-import { MdDownload } from "react-icons/md";
 import styled from '@emotion/styled';
 import AddRoom from './Room/AddRoom';
 import DeleteRoom from './Room/DeleteRoom';
