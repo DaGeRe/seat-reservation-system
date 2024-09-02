@@ -1,4 +1,4 @@
-import { FormControl, Grid, TextField, InputLabel, MenuItem, Select} from '@mui/material';
+import { FormControl, Grid, FormHelperText, TextField, InputLabel, Input, MenuItem, Select} from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
@@ -15,8 +15,9 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 export default function AddRoom({ addRoomModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
-  const [iconPosition, setIconPosition] = React.useState({ x: 0, y: 0 });
+  //const [iconPosition, setIconPosition] = React.useState({ x: 0, y: 0 });
   const [isOverImage, setIsOverImage] = React.useState(false);
+  const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('');
   const [status, setStatus] = React.useState('');
@@ -36,8 +37,25 @@ export default function AddRoom({ addRoomModal }) {
     // +---------+--------------+------+-----+---------+-------+
     //const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
-        //getAllRooms();
+        getAllRooms();
+        console.log(floor);
       }, []);
+  
+    async function getAllRooms(){
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+          "Content-Type": "application/json",
+        },
+      }).then(resp => {
+        resp.json().then(data => {
+          setAllRooms(data);
+        });
+      }).catch(error => {
+        console.log("login user err " + error);
+      });
+      }
 
   async function addRoom() {
     if (!floor || !type || !x || !y) {
@@ -108,16 +126,16 @@ export default function AddRoom({ addRoomModal }) {
     // +---------+--------------+------+-----+---------+-------+
 
     const floorImage = floor === 'Ground' ? firstFloorImage : secondFloorImage;
-
-    const handleMouseMove = (e) => {
+    
+    const handleMouseClick = (e) => {
       const rect = e.target.getBoundingClientRect();
       const x = e.clientX - rect.left; // X coordinate within the image
       const y = e.clientY - rect.top; // Y coordinate within the image
   
-      setIconPosition({ x, y });
-      console.log(`Icon coordinates: X: ${x}, Y: ${y}`);
-    };
-  
+      setX(x);
+      setY(y);
+    }
+
     const handleMouseEnter = () => {
       setIsOverImage(true);
     };
@@ -147,17 +165,18 @@ export default function AddRoom({ addRoomModal }) {
                     </FormControl>
                     <div
                       className="image-container"
-                      onMouseMove={handleMouseMove}
+                      //onMouseMove={handleMouseMove}
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
+                      onMouseDown={handleMouseClick}
                     >
                       <img src={floorImage} alt="Example" className="App-image" />
-                      {isOverImage && (
+                      {x != 0 && y!= 0 && (
                         <div
                           className="icon"
                           style={{
-                            top: `${iconPosition.y}px`,
-                            left: `${iconPosition.x}px`
+                            top: `${y}px`,
+                            left: `${x}px`
                           }}
                         >
                           <IconButton>
@@ -195,29 +214,32 @@ export default function AddRoom({ addRoomModal }) {
                       </Select>
                     </FormControl>
                     <br></br> <br></br>
-                    <FormControl required={true} size="small" fullWidth variant="standard">
-                      <TextField
-                        id="standard-adornment-reason"
-                        label={t("x")}
-                        size="small"
-                        type={"text"}
-                        value={x}
-                        onChange={(e)=>setX(e.target.value)}
-                      />
+                    <FormControl  required={true} size="small" fullWidth variant="standard">
+                      <Box display="flex" justifyContent="space-between">
+                        <TextField
+                          id="standard-adornment-reason"
+                          label={t("x")}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          size="small"
+                          type={"text"}
+                          value={x}
+                          //onChange={(e)=>setX(e.target.value)}
+                        />
+                        <TextField
+                          id="standard-adornment-reason"
+                          label={t("y")}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                          size="small"
+                          type={"text"}
+                          value={y}
+                          //onChange={(e)=>setY(e.target.value)}
+                        />
+                      </Box>
                     </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} size="small" fullWidth variant="standard">
-                      <TextField
-                        id="standard-adornment-reason"
-                        label={t("y")}
-                        size="small"
-                        type={"text"}
-                        value={y}
-                        onChange={(e)=>setY(e.target.value)}
-                      />
-                    </FormControl>
-
-                    
       <DialogActions>
         <Button onClick={()=>addRoom()}>&nbsp;{t("submit").toUpperCase()}</Button>
         <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
