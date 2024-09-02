@@ -146,8 +146,6 @@ export default function AddRoom({ addRoomModal }) {
                   <br></br> <br></br>
                   <div
                     className="image-container"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
                     onMouseDown={handleMouseClick}
                   >
                     <img src={floorImage} alt="Example" className="floor-image" />
