@@ -15,7 +15,6 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 export default function AddRoom({ addRoomModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
-  //const [iconPosition, setIconPosition] = React.useState({ x: 0, y: 0 });
   const [isOverImage, setIsOverImage] = React.useState(false);
   const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
@@ -24,8 +23,6 @@ export default function AddRoom({ addRoomModal }) {
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);
   const [y, setY] = React.useState(0.0);
-  const [xPercent, setXPercent] = React.useState(.0);
-  const [yPercent, setYPercent] = React.useState(.0);
   // +---------+--------------+------+-----+---------+-------+
     // | Field   | Type         | Null | Key | Default | Extra |
     // +---------+--------------+------+-----+---------+-------+
@@ -38,11 +35,11 @@ export default function AddRoom({ addRoomModal }) {
     //const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
         getAllRooms();
-        console.log(floor);
+        console.log('allRooms.length', allRooms.length);
       }, []);
   
     async function getAllRooms(){
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + accessToken,
@@ -50,7 +47,9 @@ export default function AddRoom({ addRoomModal }) {
         },
       }).then(resp => {
         resp.json().then(data => {
+          console.log('data.lengt: ',data.length);
           setAllRooms(data);
+          console.log('allRooms.length #0 ', allRooms.length);
         });
       }).catch(error => {
         console.log("login user err " + error);
@@ -158,7 +157,7 @@ export default function AddRoom({ addRoomModal }) {
                       label={t("floor")}
                       onChange={(e)=>{
                         setFloor(e.target.value);
-                        console.log(floor);
+                        getAllRooms();
                       }}   
                     >
                       <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
@@ -182,10 +181,28 @@ export default function AddRoom({ addRoomModal }) {
                         }}
                       >
                         <IconButton>
-                          <LaptopIcon />
+                          <LaptopIcon style={{ color: 'blue'}}/>
                         </IconButton>
                       </div>
                     )}
+                    {
+                      allRooms.map((room, i) => {
+                        return (
+                          <div 
+                            key={i}
+                            className="icon"
+                            style={{
+                              top: `${room.y}px`,
+                              left: `${room.x}px`
+                            }}
+                          >
+                            <IconButton>
+                              <LaptopIcon style={{ color: 'grey'}}/>
+                            </IconButton>
+                          </div>
+                        );
+                      })
+                    }
                   </div>
                   <br></br> <br></br>
                   <FormControl required={true} fullWidth>
