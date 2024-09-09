@@ -80,7 +80,9 @@ export default function AddWorkstation({ addWorkstationModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+")"))}
+              options={allRooms.map((option) => (
+                option.floor +"-"+ option.type +"("+option.id+") " + option.remark)
+              )}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}

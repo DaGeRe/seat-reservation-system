@@ -1,1 +1,1 @@
-mariadb -p${PW_DB}
+mariadb -p${PW_DB} mydatabase

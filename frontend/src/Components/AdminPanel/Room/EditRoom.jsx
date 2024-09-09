@@ -49,6 +49,21 @@ export default function EditRoom({ editRoomModal }) {
       getAllRooms();
   }
 
+  async function handleRoomRemarkChange(e, id){
+    console.log(e.target.value);
+    console.log(id);
+    // const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Authorization": "Bearer " + accessToken,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({}),
+    // });
+    // toast.success(t("floor"));
+    // getAllRooms();
+}
+
     async function handleRoomTypeChange(e, id){
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
@@ -64,8 +79,7 @@ export default function EditRoom({ editRoomModal }) {
   }
 
     async function handleStatusChange(e, id){
-
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
           method: "PUT",
           headers: {
             "Authorization": "Bearer " + accessToken,
@@ -89,6 +103,7 @@ export default function EditRoom({ editRoomModal }) {
             <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t("floor")}</TableCell>
             <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("type")}</TableCell>
             <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t("action")}</TableCell>
+            <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t("roomRemark")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -137,7 +152,35 @@ export default function EditRoom({ editRoomModal }) {
                     <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
                 </Select>
                 </FormControl>
+              </TableCell>
+
+              <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
+                <FormControl fullWidth size='small'>
+                  {row.remark && ( 
+                    <TextField
+                        size='small'
+                        id="demo-simple-select-floor"
+                        value={row.remark}
+                        label={t("roomRemark")}
+                        onChange={(e) => handleRoomRemarkChange(e, row.id)}
+                      >
+                  </TextField>
+                  )}
+                  {
+                    !row.remark && (
+                      <TextField
+                      size='small'
+                      id="demo-simple-select-floor"
+                      value=''
+                      label={t("roomRemark")}
+                      onChange={(e) => handleRoomRemarkChange(e, row.id)}
+                    >
+                </TextField>
+                    )
+                  }
+                </FormControl>
              </TableCell>
+
             </TableRow>
           ))}
         </TableBody>

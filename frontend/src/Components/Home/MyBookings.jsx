@@ -32,11 +32,12 @@ const MyBookings = () => {
 
   const fetchBookings = async (userId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, {
-        method: "GET",
+      const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`;
+      const response = await fetch(url, {
+        method: 'GET',
         headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json',
         },
       });
       if (!response.ok) {
@@ -61,7 +62,13 @@ const MyBookings = () => {
       setSelectedEvent(event);
   
       try {
-        const response = await fetch(`/bookings/${event.id}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`, {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + accessToken,
+            "Content-Type": "application/json",
+          }
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch booking details");
         }
@@ -86,11 +93,17 @@ const MyBookings = () => {
 
   const deleteBooking = async () => {
     try {
-      const response = await fetch(`/bookings/${theEvent.id}`, {
-        method: 'DELETE'
+      const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json',
+        },
       });
   
       if (!response.ok) {
+        console.log(response);
         throw new Error('Failed to delete booking');
       }
   

@@ -18,7 +18,7 @@ export default function EditBookings({ editBookingsModal }) {
   const [allRooms, setAllRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedId, setSelectedId]= React.useState('');
-  const [selectedStartTime, setSelectedStartTime] = React.useState('');
+  const [selectedStartTime, setSelectedStartTime] = React.useState();
   const [selectedEndTime, setSelectedEndTime] = React.useState('');
   const [allBookings, setAllBookings] = React.useState([]);
 
@@ -99,7 +99,7 @@ export default function EditBookings({ editBookingsModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+")"))}
+              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
               value={selectedRoom}
               onChange={(event, newValue) => {
                 console.log(newValue);

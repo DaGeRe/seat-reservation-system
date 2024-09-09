@@ -61,7 +61,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
     }
 
     async function deleteBookingsById(id){
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/"+id`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
           method: "DELETE",
           headers: {
             "Authorization": "Bearer " + accessToken,
@@ -105,7 +105,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+")"))}
+              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}

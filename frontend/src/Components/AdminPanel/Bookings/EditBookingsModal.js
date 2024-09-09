@@ -12,9 +12,12 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
   const { t } = useTranslation();
+  const [startTime, setStartTime] = React.useState("ttt");
+  const [endTime, setEndTime] = React.useState("fff");
+  /*  
   const [startTime, setStartTime] = React.useState(startTimeFromDb);
   const [endTime, setEndTime] = React.useState(endTimeFromDb);
-
+  */
   const handleCloseBtn = () => {
     editBookingModal();
   }
@@ -68,7 +71,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
               />
             </FormControl>
             <br></br><br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            {/* <FormControl required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("end")}
@@ -77,7 +80,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
                 value={endTime}
                 onChange={(e)=>setEndTime(e.target.value)}
               />
-            </FormControl>
+            </FormControl> */}
           </Box>
         </Grid>
       </DialogContent>

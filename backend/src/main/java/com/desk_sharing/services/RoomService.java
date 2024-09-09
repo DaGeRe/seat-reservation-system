@@ -1,7 +1,9 @@
 package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.Booking;
 import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ public class RoomService {
 
     @Autowired
     RoomRepository roomRepository;
+
+    @Autowired
+    BookingRepository bookingRepository;
 
     public Room saveRoom(Room room) {
         return roomRepository.save(room);
@@ -69,5 +74,21 @@ public class RoomService {
 
     public void deleteRoom(Long id) {
         roomRepository.deleteById(id);
+    }
+
+    public void deleteRoomFf(Long id) {
+        System.out.println("Room id " + id);
+        System.out.println("deleteRoomFf");
+        List<Booking> ls = bookingRepository.getBookingsByRoomId(id);
+        System.out.println("ls.size() 1 " + ls.size());
+        try {
+        //bookingRepository.deleteBookingsByRoomId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ls = bookingRepository.getBookingsByRoomId(id);
+        System.out.println("ls.size() 2 " + ls.size());
+        //deskService.deleteDeskFf();
+        //List<Booking> lst = roomRepository.getBookingsByRoomId(id);
     }
 }

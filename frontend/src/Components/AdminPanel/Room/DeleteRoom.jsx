@@ -1,7 +1,10 @@
 import { FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
@@ -9,6 +12,7 @@ import { useTranslation } from "react-i18next";
 export default function DeleteRoom({ deleteRoomModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
+  const [open, setOpen] = React.useState(false);
   const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
@@ -72,12 +76,53 @@ export default function DeleteRoom({ deleteRoomModal }) {
         },
         body: JSON.stringify({}),
       });
-      toast.success(t("roomDeleted"));
-      getAllRooms();
-  }
+      if (!response.ok) {
+        setOpen(true);
+      }
+      else {
+        toast.success(t("roomDeleted"));
+        getAllRooms();
+      }
+    }
+
+    async function deleteRoomByIdFf(id){
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+      if (response.ok) {
+        toast.success(t("roomDeleted"));
+        getAllRooms();
+      }
+    } 
 
     return (
         <React.Fragment>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Löschen weiterer Elemente"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  lorem ipsum
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Disagree</Button>
+                <Button onClick={handleClose} autoFocus>
+                  Agree
+                </Button>
+              </DialogActions>
+            </Dialog>
             <DialogContent>
                 <Grid container >
                       <TableContainer  component={Paper}>
@@ -89,6 +134,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
                               <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("type")}</TableCell>
                               <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("x")}</TableCell>
                               <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("y")}</TableCell>
+                              <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("roomRemark")}</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -108,6 +154,9 @@ export default function DeleteRoom({ deleteRoomModal }) {
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
                                   {row.y}
+                                </TableCell>
+                                <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
+                                  {row.remark}
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center', fontSize:14, width:'30%'   }} component="th" scope="row">
                                 <Button onClick={() => deleteRoomById(row.id)}>{t("delete").toUpperCase()}</Button>
