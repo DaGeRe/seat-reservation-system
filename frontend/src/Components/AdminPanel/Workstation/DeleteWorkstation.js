@@ -1,9 +1,12 @@
 import {Grid, TextField } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
@@ -11,6 +14,11 @@ import { useTranslation } from "react-i18next";
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
+  const [open, setOpen] = React.useState(false);
+  const headers = {
+    'Authorization': 'Bearer ' + accessToken,
+    'Content-Type': 'application/json',
+  };
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
@@ -18,19 +26,18 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [selectedDesk, setSelectedDesk]= React.useState('');
   React.useEffect(() => {
       getAllRooms();
-  });
+  }, []);
 
   const handleClose = () => {
     deleteWorkstationModal();
   }
 
   async function getAllRooms(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+    const url = `${process.env.REACT_APP_BACKEND_URL}/rooms/status`;
+    console.log(url + " #0");
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headers
     }).then(resp => {
       resp.json().then(data => {
         setAllRooms(data);
@@ -48,10 +55,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        headers: headers
       }).then(resp => {
         resp.json().then(data => {
           setAllDesks(data);
@@ -64,25 +68,90 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   async function deleteWorkstation(){
     if(selectedDesk){
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+   
+      const url = `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`;
+      console.log(url);
+      try {
+      /*await */fetch(url, {
+        method: 'DELETE',
+        headers: headers,
         body: JSON.stringify({})
       })
       .then(resp => {
-        toast.success(t("deskDelete"));
-        deleteWorkstationModal();
-      }).catch(error => {
-        console.log("login user err " + error);
+        if (resp.ok) {
+          toast.success(t("deskDelete"));
+          deleteWorkstationModal();
+        }
+        else if (resp.status === 400) {
+          setOpen(true);
+        }
+        else {
+          console.error('unknown error');
+        }
+      }).catch((error) => {
+        //console.log("login user err " + error);
+        console.log('fehler');
       });
+    }catch (e) {
+      console.log('nope');
+    }
     }
   }
 
+  async function deleteWorkstationFf(){
+    if(selectedDesk){
+      const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
+      console.log(url, ' #2');
+      try {
+      /*await */fetch(url, {
+        method: 'DELETE',
+        headers: headers,
+        body: JSON.stringify({})
+      })
+      .then(resp => {
+        if (resp.ok) {
+          toast.success(t("deskDelete"));
+          deleteWorkstationModal();
+        }
+        else if (resp.status === 400) {
+          setOpen(true);
+        }
+        else {
+          console.error('unknown error');
+        }
+      }).catch((error) => {
+        //console.log("login user err " + error);
+        console.log('fehler');
+      });
+    }catch (e) {
+      console.log('nope');
+    }
+    }
+  }
+  
+
   return (
     <React.Fragment>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           {t("fFDeleteWorkStation")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>{t("no")}</Button>
+          <Button onClick={deleteWorkstationFf} autoFocus>
+            {t("yes")}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <DialogContent>
         <Grid container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>

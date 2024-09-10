@@ -160,7 +160,9 @@
     "false": "False",
     "begin": "Begin",
     "update": "Update",
-    "close": "Close"
+    "close": "Close",
 
-    ,"selectRoomError":"Please select an existing room"
+    "selectRoomError":"Please select an existing room",
+    "fFDeleteWorkStation":"All bookings that belongs to this desk wil also be deleted.",
+    "fFDeleteRoom":"All deks that belong to this room will also be deleted."
 }

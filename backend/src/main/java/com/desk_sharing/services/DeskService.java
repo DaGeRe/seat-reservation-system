@@ -8,14 +8,19 @@ import org.springframework.stereotype.Service;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.repositories.DeskRepository;
+import com.desk_sharing.repositories.BookingRepository;
 
 @Service
 public class DeskService {
 
     @Autowired
     DeskRepository deskRepository;
+
+    @Autowired
+    BookingRepository bookingRepository;
     
     @Autowired
     RoomService roomService;
@@ -57,6 +62,14 @@ public class DeskService {
     }
 
     public void deleteDesk(Long id) {
+        deskRepository.deleteById(id);
+    }
+
+    public void deleteDeskFf(Long id) {
+        List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
+        for (Booking booking: bookingsPerDesk) {
+            bookingRepository.deleteById(booking.getId());
+        }
         deskRepository.deleteById(id);
     }
 }

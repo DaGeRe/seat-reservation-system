@@ -158,7 +158,9 @@
     "false": "Falsch",
     "begin": "Anfang",
     "update": "Aktualisieren",
-    "close": "Schließen"
+    "close": "Schließen",
 
-    ,"selectRoomError":"Bittw wählen Sie einen existierenden Raum aus"
+    "selectRoomError":"Bittw wählen Sie einen existierenden Raum aus",
+    "fFDeleteWorkStation":"Es werden neben dem Arbeitsplatz auch alle damit verbundenen Buchungen gelöscht.",
+    "fFDeleteRoom":"Es werden neben dem Raum auch alle damit verbundenen Tische gelöscht."
 }

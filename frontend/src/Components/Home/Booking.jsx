@@ -209,13 +209,11 @@ const Booking = () => {
     if (!response.ok) {
       //throw new Error("Error fetching desk booking data");
       const data = await response.json();
-    console.log(data);
       toast.error(data.message);
       return false;
     }
 
     const data = await response.json();
-    console.log(data);
     confirmAlert({
       title: t("bookDesk") + " " + clickedDeskId,
       message: t("date") + " " + day + " " + t("from") + " " + start + " " + t("to") + " " + ending,
@@ -238,7 +236,6 @@ const Booking = () => {
                 throw new Error("Error fetching desk booking data");
               }
               const dat = await response.json();
-              console.log("Booking saved successfully:", dat);
               toast.success(t("booked"));
 
               const booking = {
