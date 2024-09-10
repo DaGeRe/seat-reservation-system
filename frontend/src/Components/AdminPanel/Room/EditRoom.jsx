@@ -7,8 +7,10 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 export default function EditRoom({ editRoomModal }) {
-    // The jwt.
-    const accessToken = localStorage.getItem('accessToken');
+    const headers = {
+      'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+      'Content-Type': 'application/json',
+    };
     const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
@@ -17,17 +19,14 @@ export default function EditRoom({ editRoomModal }) {
 
       async function getAllRooms(){
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'GET',
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           setAllRooms(data);
         });
       }).catch(error => {
-        console.log("login user err " + error);
+        console.log('login user err ' + error);
       });
       }
 
@@ -37,15 +36,13 @@ export default function EditRoom({ editRoomModal }) {
 
     async function handleRoomFloorChange(e, id){
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+      //const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`, {  
+        method: 'PUT',
+        headers: headers,
         body: JSON.stringify({}),
       });
-      toast.success(t("floor"));
+      toast.success(t('floor'));
       getAllRooms();
   }
 
@@ -66,28 +63,23 @@ export default function EditRoom({ editRoomModal }) {
 
     async function handleRoomTypeChange(e, id){
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+      //await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`, {  
+        method: 'PUT',
+        headers: headers,
         body: JSON.stringify({}),
       });
-      toast.success(t("roomType"));
+      toast.success(t('roomType'));
       getAllRooms();
   }
 
     async function handleStatusChange(e, id){
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
-          method: "PUT",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
+          method: 'PUT',
+          headers: headers,
           body: JSON.stringify({}),
         });
-        toast.success(t("roomStatus"));
+        toast.success(t('roomStatus'));
         getAllRooms();
     }
 
