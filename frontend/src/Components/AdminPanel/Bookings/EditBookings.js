@@ -35,7 +35,6 @@ export default function EditBookings({ editBookingsModal }) {
       },
     }).then(resp => {
       resp.json().then(data => {
-        console.log(data);
         setAllRooms(data);
       });
     }).catch(error => {
