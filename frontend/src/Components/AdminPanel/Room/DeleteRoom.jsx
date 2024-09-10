@@ -10,8 +10,10 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 export default function DeleteRoom({ deleteRoomModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const [open, setOpen] = React.useState(false);
   const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
@@ -21,11 +23,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
       async function getAllRooms(){
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'GET',
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           setAllRooms(data);
@@ -42,11 +41,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
     async function handleRoomTypeChange(e, id){
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'PUT',
+        headers: headers,
         body: JSON.stringify({}),
       });
       toast.success(t("roomType"));
@@ -56,11 +52,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
     async function handleStatusChange(e, id){
 
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/"+e.target.value}`, {
-          method: "PUT",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
+          method: 'PUT',
+          headers: headers,
           body: JSON.stringify({}),
         });
         toast.success(t("roomStatus"));
@@ -69,11 +62,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
     async function deleteRoomById(id){
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'DELETE',
+        headers: headers,
         body: JSON.stringify({}),
       });
       if (!response.ok) {
@@ -87,11 +77,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
     async function deleteRoomByIdFf(id){
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'DELETE',
+        headers: headers,
         body: JSON.stringify({}),
       });
       if (response.ok) {
