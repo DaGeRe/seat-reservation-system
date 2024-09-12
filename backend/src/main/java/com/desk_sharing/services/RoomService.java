@@ -70,6 +70,16 @@ public class RoomService {
     	}
     	return null;
     }
+
+    public Room updateRoomRemark(Long id, String remark) {
+    	Optional<Room> findById = roomRepository.findById(id);
+    	if(findById.isPresent()) {
+    		Room room = findById.get();
+    		room.setRemark(remark);
+    		return roomRepository.save(room);
+    	}
+    	return null;
+    }
     
 
     public void deleteRoom(Long id) {

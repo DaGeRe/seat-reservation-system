@@ -53,6 +53,12 @@ public class RoomController {
         Room updatedRoom = roomService.updateRoomFloor(id, floor);
         return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/remark/{remark}")
+    public ResponseEntity<Room> updateRoomRemark(@PathVariable("id") Long id, @PathVariable("remark") String remark) {
+        Room updatedRoom = roomService.updateRoomRemark(id, remark);
+        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
+    }
     
     @PutMapping("/{id}/type/{type}")
     public ResponseEntity<Room> updateRoomType(@PathVariable("id") Long id, @PathVariable("type") String type) {

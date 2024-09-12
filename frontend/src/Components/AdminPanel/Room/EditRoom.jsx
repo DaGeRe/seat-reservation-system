@@ -47,18 +47,13 @@ export default function EditRoom({ editRoomModal }) {
   }
 
   async function handleRoomRemarkChange(e, id){
-    console.log(e.target.value);
-    console.log(id);
-    // const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Authorization": "Bearer " + accessToken,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({}),
-    // });
-    // toast.success(t("floor"));
-    // getAllRooms();
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
+      method: 'PUT',
+      headers: headers,
+      body: JSON.stringify({}),
+    });
+    toast.success(t("roomRemark"));
+    getAllRooms();
 }
 
     async function handleRoomTypeChange(e, id){
