@@ -75,7 +75,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
       }
     }
 
-    async function deleteRoomByIdFf(id){
+    async function deleteRoomFf(id){
+      /*
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${id}`, {
         method: 'DELETE',
         headers: headers,
@@ -85,6 +86,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
         toast.success(t("roomDeleted"));
         getAllRooms();
       }
+      */
+     console.log('tbi');
     } 
 
     return (
@@ -100,13 +103,13 @@ export default function DeleteRoom({ deleteRoomModal }) {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  lorem ipsum
+                  {t("fFDeleteWorkStation")}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleClose} autoFocus>
-                  Agree
+                <Button onClick={handleClose}>{t('no'}}</Button>
+                <Button onClick={deleteRoomFf} autoFocus>
+                  {t('yes')}
                 </Button>
               </DialogActions>
             </Dialog>
