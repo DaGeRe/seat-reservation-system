@@ -66,18 +66,18 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
             onMouseDown={handleMouseClick}
         > 
             <img src={floorImage} alt='Example' className='floor-image' />
-            {x != 0.0 && y!= 0.0 && (
-                <div
-                    className='image-icon'
-                    style={{
-                        top: `${y}%`,
-                        left: `${x}%`
-                    }}
-                >
-                    <IconButton>
-                        <LaptopIcon style={{ color: 'blue'}}/>
-                    </IconButton>
-                </div>
+                {x != 0.0 && y!= 0.0 && (
+                    <div
+                        className='image-icon'
+                        style={{
+                            top: `${y}%`,
+                            left: `${x}%`
+                        }}
+                    >
+                        <IconButton>
+                            <LaptopIcon style={{ color: 'blue'}}/>
+                        </IconButton>
+                    </div>
             )}
             {
                 allRooms
