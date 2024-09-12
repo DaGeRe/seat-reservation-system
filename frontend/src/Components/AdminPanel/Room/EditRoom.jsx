@@ -35,8 +35,6 @@ export default function EditRoom({ editRoomModal }) {
     }
 
     async function handleRoomFloorChange(e, id){
-
-      //const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/floor/"+e.target.value}`, {
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`, {  
         method: 'PUT',
         headers: headers,
@@ -47,7 +45,7 @@ export default function EditRoom({ editRoomModal }) {
   }
 
   async function handleRoomRemarkChange(e, id){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify({}),
@@ -57,8 +55,6 @@ export default function EditRoom({ editRoomModal }) {
 }
 
     async function handleRoomTypeChange(e, id){
-
-      //await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`, {  
         method: 'PUT',
         headers: headers,
@@ -82,34 +78,35 @@ export default function EditRoom({ editRoomModal }) {
         <React.Fragment>
             <DialogContent>
                 <Grid container >
-                <TableContainer  component={Paper}>
-      <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
-        <TableHead sx={{backgroundColor: 'green', color:'white'}}>
-          <TableRow >
-             
-            <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t("floor")}</TableCell>
-            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("type")}</TableCell>
-            <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t("action")}</TableCell>
-            <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t("roomRemark")}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {allRooms.map((row) => (
-            <TableRow  key={row.id}>
-              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                <FormControl fullWidth size='small'>
-                    <TextField
-                      size='small'
-                      id="demo-simple-select-floor"
-                      value={row.floor}
-                      label={t("floor")}
-                      onChange={(e) => handleRoomFloorChange(e, row.id)}
-                    >
-                    </TextField>
-                </FormControl>
-              </TableCell>
-              
-              <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
+                  <TableContainer  component={Paper}>
+                    <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
+                      <TableHead sx={{backgroundColor: 'green', color:'white'}}>
+                        <TableRow >
+                          <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}} colSpan={2}>{t('floor')}</TableCell>
+                          <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }} colSpan={2}>{t('type')}</TableCell>
+                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t('action')}</TableCell>
+                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t('roomRemark')}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {allRooms.map((row) => (
+                          <TableRow  key={row.id}>
+                            <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
+                              <FormControl fullWidth size='small'>
+                                <InputLabel id='demo-simple-select-label-floor'>{t('floor')}</InputLabel>
+                                <Select
+                                  labelId='demo-simple-select-label-floor'
+                                  id='demo-simple-select-floor'
+                                  value={row.floor}
+                                  label={t('floor')}
+                                  onChange={(e) => handleRoomFloorChange(e, row.id)} 
+                                >
+                                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+                                </Select>
+                              </FormControl>
+                            </TableCell>
+                            <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
                 <FormControl fullWidth size='small'>
                   <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
                   <Select
