@@ -82,10 +82,10 @@ export default function EditRoom({ editRoomModal }) {
                     <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
                       <TableHead sx={{backgroundColor: 'green', color:'white'}}>
                         <TableRow >
-                          <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}} colSpan={2}>{t('floor')}</TableCell>
-                          <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }} colSpan={2}>{t('type')}</TableCell>
-                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t('action')}</TableCell>
-                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }} colSpan={2}>{t('roomRemark')}</TableCell>
+                          <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t('floor')}</TableCell>
+                          <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('type')}</TableCell>
+                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }}>{t('action')}</TableCell>
+                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }}>{t('roomRemark')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

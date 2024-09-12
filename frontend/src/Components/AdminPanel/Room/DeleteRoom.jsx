@@ -107,7 +107,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose}>{t('no'}}</Button>
+                <Button onClick={handleClose}>{t('no')}</Button>
                 <Button onClick={deleteRoomFf} autoFocus>
                   {t('yes')}
                 </Button>
