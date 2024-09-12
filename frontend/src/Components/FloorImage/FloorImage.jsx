@@ -60,7 +60,6 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
 
     const floorImage = floor === 'Ground' ? firstFloorImage : secondFloorImage;
 
-
     return (
         <div
             className='image-container'
@@ -79,7 +78,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                         <LaptopIcon style={{ color: 'blue'}}/>
                     </IconButton>
                 </div>
-                    )}
+            )}
             {
                 allRooms
                 .filter((room) => {
@@ -104,7 +103,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                                   </React.Fragment>
                                 }
                               >
-                                                             <IconButton>
+                                <IconButton>
                                   <LaptopIcon style={{ color: 'grey'}}/>
                                 </IconButton>      
                             </HtmlTooltip>   
