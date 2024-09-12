@@ -12,9 +12,14 @@ import SidebarComponent from "../Home/SidebarComponent"
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogTitle, IconButton } from '@mui/material';
 import LaptopIcon from '@mui/icons-material/Laptop';
+
+import FloorImage from '../FloorImage/FloorImage.jsx'
+
 const Floor = () => {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -23,21 +28,13 @@ const Floor = () => {
   const location = useLocation();
   const { date } = location.state || {};
   const formattedDate = date ? new Date(date).toLocaleDateString() : '';
-  const [filterType, setFilterType] = useState("");
+  const [filterType, setFilterType] = useState('');
   const [allRooms, setAllRooms] = React.useState([]);
   const [floor, setFloor] = React.useState('Ground');
 
-  useEffect(() => {
-    //getAllRooms();
-    const options = {
-      method: "GET", // or "POST", "PUT", etc.
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      }
-    };
+/*   useEffect(() => {
     // Fetch room data from the backend
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, options)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, headers)
     .then(response => response.json())
     .then(data => {
       // Apply filter if selected
@@ -53,7 +50,7 @@ const Floor = () => {
     .catch(error => {
       console.error('Error fetching room data:', error);
     });
-  }, [currentFloor, filterType]);
+  }, [currentFloor, filterType]); */
 /* 
   async function getAllRooms(){
     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
@@ -126,78 +123,36 @@ const Floor = () => {
     navigate(-1);
   }
 
-  const handleMouseClick = (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left; // X coordinate within the image
-    const y = e.clientY - rect.top; // Y coordinate within the image
-
-    /* setX(x);
-    setY(y); */
-    console.log('handleMouseClick : ' + x + " | " + y);
-  }
-
-  const floorImage = currentFloor === 'Ground' ? firstFloorImage : secondFloorImage;
-
-  const HtmlTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-    ))(({ theme }) => ({
-      [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: '#f5f5f9',
-        color: 'rgba(0, 0, 0, 0.87)',
-        maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: '1px solid #dadde9',
-      },
+  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+      minWidth: '800px !important',
+      height: 'auto'
+    },
   }));
 
   return (
-    <React.Fragment>
-      <DialogContent>
-        <Grid container >
-          <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <div
-              className="image-container"
-              onMouseDown={handleMouseClick}
-            >
-              <img src={floorImage} alt="Example" className="floor-image" />
-              {
-                rooms
-                .filter((room) => {
-                  return room.floor === floor
-                })
-                .map((room, i) => {
-                  return (
-                    
-                      <div 
-                        key={i}
-                        className="image-icon"
-                        style={{
-                          top: `${room.y}px`,
-                          left: `${room.x}px`
-                        }}
-                      >
-                        <HtmlTooltip
-                          title={
-                            <React.Fragment>
-                              <em>x: {room.x} y: {room.y}</em>
-                              <br></br>
-                              <em>{room.remark}</em>
-                            </React.Fragment>
-                          }
-                        >
-                          <IconButton>
-                            <LaptopIcon style={{ color: 'grey'}}/>
-                          </IconButton>
-                        </HtmlTooltip>
-                      </div>
-                  );
-                })
-              }
-            </div>
-          </Box>
-        </Grid>
-      </DialogContent> 
-    </React.Fragment>
+  
+    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+    <div className="sidebar">
+      <SidebarComponent />
+    </div>
+  {/* <BootstrapDialog  open={true}> */}
+
+    
+      <React.Fragment>
+        <DialogContent>
+          <Grid container >
+            <Box sx={{ flexGrow: 1, padding: '10px' }}>
+              <FloorImage 
+                floor={currentFloor}
+                headers={headers}
+              />
+            </Box>
+          </Grid>
+        </DialogContent> 
+      </React.Fragment> 
+    {/* </BootstrapDialog> */}
+   </div>
   );
 };
 

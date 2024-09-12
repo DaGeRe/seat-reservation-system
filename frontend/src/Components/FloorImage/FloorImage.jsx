@@ -34,13 +34,15 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
         const rect = e.target.getBoundingClientRect();
         const x = e.clientX - rect.left; // X coordinate within the image
         const y = e.clientY - rect.top; // Y coordinate within the image
+        const xPercent =  (x/rect.width)*100; 
+        const yPercent =  (y/rect.height)*100;
         if (clickedXPosition) {
-            setX(x);
-            clickedXPosition(x);
+            setX(xPercent);
+            clickedXPosition(xPercent);
         }
         if (clickedYPosition) {
-            setY(y);
-            clickedYPosition(y);
+            setY(yPercent);
+            clickedYPosition(yPercent);
         }
     }
     
@@ -65,16 +67,16 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
             onMouseDown={handleMouseClick}
         > 
             <img src={floorImage} alt='Example' className='floor-image' />
-            {x != 0 && y!= 0 && (
+            {x != 0.0 && y!= 0.0 && (
                 <div
                     className='image-icon'
                     style={{
-                    top: `${y}px`,
-                    left: `${x}px`
+                        top: `${y}%`,
+                        left: `${x}%`
                     }}
                 >
                     <IconButton>
-                    <LaptopIcon style={{ color: 'blue'}}/>
+                        <LaptopIcon style={{ color: 'blue'}}/>
                     </IconButton>
                 </div>
                     )}
@@ -87,10 +89,10 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                     return (
                         <div
                             key={i}
-                            className="image-icon"
+                            className='image-icon'
                             style={{
-                                top: `${room.y}px`,
-                                left: `${room.x}px`
+                                top:  `${room.y}%`,
+                                left: `${room.x}%`
                                 }}
                             >
                              <HtmlTooltip
