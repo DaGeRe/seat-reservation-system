@@ -42,7 +42,7 @@ const LoginPage = () => {
       const data = await response.json();
       if (data !== null) {
         localStorage.setItem('accessToken', String(data['accessToken']));
-        localStorage.setItem("username", String(data.username));
+        //localStorage.setItem("username", String(data.username));
         localStorage.setItem("email", String(data.email));
         localStorage.setItem("userId", String(data.id));
         localStorage.setItem("name", String(data.name));

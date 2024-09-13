@@ -66,7 +66,7 @@ export default function AddEmployee({ addEmployeeModal }) {
             <br></br>
             <FormControl required={true} size="small" fullWidth variant="standard">
                             <TextField
-                                id="standard-adornment-reason"
+                                id="standard-adornment-reason-mail"
                                 label={t("email")}
                                 size="small"
                                 type={"text"}
@@ -77,7 +77,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                         <br></br> <br></br>
                         <FormControl required={true} size="small" fullWidth variant="standard">
                             <TextField
-                                id="standard-adornment-reason"
+                                id="standard-adornment-reason-pw"
                                 label={t("password")}
                                 size="small"
                                 type={"password"}
@@ -88,7 +88,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                         <br></br> <br></br>
                         <FormControl required={true} size="small" fullWidth variant="standard">
                             <TextField
-                                id="standard-adornment-reason"
+                                id="standard-adornment-reason-firstname"
                                 label={t("name")}
                                 size="small"
                                 type={"text"}
@@ -99,7 +99,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                         <br></br> <br></br>
                         <FormControl required={true} size="small" fullWidth variant="standard">
                             <TextField
-                                id="standard-adornment-reason"
+                                id="standard-adornment-reason-surname"
                                 label={t("surname")}
                                 size="small"
                                 type={"text"}

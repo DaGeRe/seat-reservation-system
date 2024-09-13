@@ -60,14 +60,12 @@ public class DeskController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDesk(@PathVariable("id") Long id) {
-        System.out.println("\tDeskController.deleteDesk " + id);
         deskService.deleteDesk(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/ff/{id}")
     public ResponseEntity<Void> deleteDeskFf(@PathVariable("id") Long id) {
-        System.out.println("\tDeskController.deleteDeskFf " + id);
         deskService.deleteDeskFf(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

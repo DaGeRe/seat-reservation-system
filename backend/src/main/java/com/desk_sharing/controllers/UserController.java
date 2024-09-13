@@ -63,41 +63,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
-        /*
-        UserEntity reguser = new UserEntity();
-        reguser.setUsername("admin@mail.com");
-        reguser.setPassword(passwordEncoder.encode("admin"));
-        reguser.setEmail("admin@mail.com");
-        reguser.setName("Mustermann");
-        reguser.setSurname("Max");
-        reguser.setVisibility(true);
-        reguser.setAdmin(true);
-        
-        // If the user is an admin grant the matching privileges.
-        final Role role =  roleRepository.findByName("ROLE_ADMIN").get();
-        
-        reguser.setRoles(Collections.singletonList(role));
-        userRepository.save(reguser);
-        */      
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){ 
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
             )
         );
-      
+
+
+
         // If login was successful search for the dataset in the database.
         UserEntity user = userRepository.findByEmail(loginDto.getEmail());   
         if (user == null) {
             throw new UsernameNotFoundException("Username not found after login.");
         }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtGenerator.generateToken(authentication);
         return new ResponseEntity<>(
             new AuthResponseDTO(
                 token, 
-                loginDto.getEmail(),
                 user.getEmail(),
                 user.getId(),
                 user.getName(),
@@ -115,7 +101,7 @@ public class UserController {
             return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
         }
         UserEntity user = new UserEntity();
-        user.setUsername(registerDto.getEmail());
+        //user.setUsername(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());
@@ -141,7 +127,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
         UserEntity updateUser = userService.updateUserById(id, user);
-        System.out.println("updateUserById id: " + id);
         HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
         return ResponseEntity.status(status).body(updateUser);
     }
@@ -158,7 +143,6 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public boolean deleteUser(@PathVariable("id") int id) {
-        System.out.println("deleteUser id: " + id);
         return userService.deleteUser(id);
     }
 

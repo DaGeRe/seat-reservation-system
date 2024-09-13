@@ -108,10 +108,10 @@ const Floor = () => {
   //     });
   // }, [currentFloor, filterType]);
 
-  const handleRoomClick = (roomId) => {
+/*   const handleRoomClick = (roomId) => {
     setSelectedRoom(roomId === selectedRoom ? null : roomId);
     navigate("/desks", { state: { roomId, date } });
-  };
+  }; */
 
   const toggleFloor = () => {
     setCurrentFloor(currentFloor === 'Ground' ? 'First' : 'Ground');
@@ -123,6 +123,12 @@ const Floor = () => {
     navigate(-1);
   }
 
+  const handleRoomClick = (room) => {
+    const roomId = room.id;
+    setSelectedRoom(roomId);
+    navigate("/desks", { state: { roomId, date } });
+  }
+
   const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialog-paper': {
       minWidth: '800px !important',
@@ -131,27 +137,31 @@ const Floor = () => {
   }));
 
   return (
-  
+    
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
     <div className="sidebar">
       <SidebarComponent />
     </div>
-  {/* <BootstrapDialog  open={true}> */}
 
-    
       <React.Fragment>
         <DialogContent>
           <Grid container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
+              <h1>{currentFloor === 'Ground' ? t('groundFloor') : t('firstFloor')}</h1>
+              {date && <p>{t("chosenDate")}: {formattedDate}</p>}
+              <button className='workstation-button' onClick={toggleFloor}>{t('switchFloor')}</button>
               <FloorImage 
                 floor={currentFloor}
                 headers={headers}
+                setCurrentRoom={handleRoomClick}
               />
             </Box>
           </Grid>
         </DialogContent> 
       </React.Fragment> 
-    {/* </BootstrapDialog> */}
+      <div className='backButtonDiv'>
+        <button className='backButton' onClick={back}>Back</button>
+      </div>
    </div>
   );
 };

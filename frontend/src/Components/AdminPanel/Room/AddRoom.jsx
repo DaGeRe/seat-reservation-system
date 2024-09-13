@@ -148,9 +148,6 @@ export default function AddRoom({ addRoomModal }) {
                 </Box>
               </Grid>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-          </DialogActions>
       </React.Fragment>
     );
 }

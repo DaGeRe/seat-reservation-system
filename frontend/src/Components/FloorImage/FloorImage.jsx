@@ -8,7 +8,7 @@ import secondFloorImage from '../../images/secondfloor.png';
 import React, {useEffect } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 
-export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition}) {
+export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom}) {
     const [allRooms, setAllRooms] = React.useState([]);
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
@@ -75,7 +75,9 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                         }}
                     >
                         <IconButton>
-                            <LaptopIcon style={{ color: 'blue'}}/>
+                            <LaptopIcon
+                                className='image-icon-new'
+                            />
                         </IconButton>
                     </div>
             )}
@@ -103,8 +105,15 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                                   </React.Fragment>
                                 }
                               >
-                                <IconButton>
-                                  <LaptopIcon style={{ color: 'grey'}}/>
+                                <IconButton 
+                                    onClick={_ => {
+                                        if (setCurrentRoom) {
+                                            setCurrentRoom(room);
+                                        }
+                                }}>
+                                  <LaptopIcon
+                                    className='image-icon-old'
+                                  />
                                 </IconButton>      
                             </HtmlTooltip>   
                         </div>
