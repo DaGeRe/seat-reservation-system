@@ -7,6 +7,7 @@ import javax.persistence.*;
 public class Desk {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "desk_id", unique = true)
     private Long id;
 

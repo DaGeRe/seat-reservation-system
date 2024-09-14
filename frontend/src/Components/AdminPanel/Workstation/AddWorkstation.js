@@ -9,8 +9,10 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' +  localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
@@ -33,17 +35,15 @@ export default function AddWorkstation({ addWorkstationModal }) {
     let idVal = idSplit[1].split(")");
     let roomId = idVal[0];
 
-    if(!roomId || !deskId || !equipment ){
+    if(!roomId /*|| !deskId*/ || !equipment ){
       toast.error("Field cannot be blank!");
       return false;
     }
 
   const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },body: JSON.stringify({
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
       "deskId": deskId,
       "roomId": roomId,
       "equipment": equipment
@@ -58,11 +58,8 @@ export default function AddWorkstation({ addWorkstationModal }) {
 
   async function getAllRooms() {
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      method: 'GET',
+      headers: headers,
     }).then(resp => {
       resp.json().then(data => {
         setAllRooms(data);
@@ -81,7 +78,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
               id="tags-filled"
               fullWidth
               options={allRooms.map((option) => (
-                option.floor +"-"+ option.type +"("+option.id+") " + option.remark)
+                option.floor +"-"+ option.type + ' - ' + option.remark)
               )}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
@@ -99,8 +96,8 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 />
               )}
             />
-            <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            {/*<br></br>
+             <FormControl required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("deskID")}
@@ -109,7 +106,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 value={deskId}
                 onChange={(e)=>setDeskId(e.target.value)}
               />
-            </FormControl>
+            </FormControl> */}
             <br></br><br></br>
             <FormControl fullWidth size='small'>
               <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>

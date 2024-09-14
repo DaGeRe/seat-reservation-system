@@ -12,4 +12,4 @@ if [ $# -ne 1 ]; then
 fi
 
 
-docker exec $container mariadb-dump --add-drop-table --complete-insert -u root -pmypasss --databases mydatabase >> dumps/$outputfile
+docker exec $container mariadb-dump --complete-insert -u root -pmypasss --databases mydatabase >> dumps/$outputfile

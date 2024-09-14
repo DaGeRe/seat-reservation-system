@@ -1,0 +1,1 @@
+mariadb -p${PW_DB} <  drop_and_create.sql

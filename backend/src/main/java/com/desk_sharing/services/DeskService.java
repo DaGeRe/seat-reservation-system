@@ -29,7 +29,7 @@ public class DeskService {
     	Optional<Room> optional = roomService.getRoomById(deskDto.getRoomId());
     	if(optional.isPresent()) {
     		Desk desk = new Desk();
-    		desk.setId(deskDto.getDeskId());
+    		//desk.setId(deskDto.getDeskId());
     		desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
     		 return deskRepository.save(desk);
