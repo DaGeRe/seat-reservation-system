@@ -9,6 +9,6 @@ public class RegisterDto {
     private String email;
     private String name;
     private String surname;
-    private boolean visibility;
+    private int visibility;
     private int admin;
 }

@@ -106,7 +106,7 @@ public class UserController {
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());
         user.setSurname(registerDto.getSurname());
-        user.setVisibility(registerDto.isVisibility());
+        user.setVisibility(registerDto.getVisibility());
         user.setAdmin(registerDto.getAdmin());
         
         // If the user is an admin grant the matching privileges.

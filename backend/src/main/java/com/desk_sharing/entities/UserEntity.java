@@ -20,7 +20,7 @@ public class UserEntity {
     private String password;
     private String name;
     private String surname;
-    private boolean visibility;
+    private int visibility;
     private int admin;
 
     public int getId() {
@@ -63,11 +63,11 @@ public class UserEntity {
         this.surname = surname;
     }
 
-    public boolean getVisibility() {
+    public int getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(boolean visibility) {
+    public void setVisibility(int visibility) {
         this.visibility = visibility;
     }
 

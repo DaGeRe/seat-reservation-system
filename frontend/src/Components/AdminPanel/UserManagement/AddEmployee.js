@@ -42,7 +42,7 @@ export default function AddEmployee({ addEmployeeModal }) {
           "name": name,
           "surname": surname,
           "admin": isAdmin ? 1 : 0,
-          "visibility": visibility,
+          "visibility": visibility ? 1 : 0,
       })
     }).then(resp => {
         if(resp.status===409){

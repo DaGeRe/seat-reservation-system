@@ -41,7 +41,6 @@ const LoginPage = () => {
 
       const data = await response.json();
       if (data !== null) {
-        console.log(data.admin);
         localStorage.setItem('accessToken', String(data['accessToken']));
         //localStorage.setItem("username", String(data.username));
         localStorage.setItem("email", String(data.email));
@@ -50,7 +49,6 @@ const LoginPage = () => {
         localStorage.setItem("surname", String(data.surname));
         localStorage.setItem("admin", String(data.admin));
         localStorage.setItem("visibility", String(data.visibility));
-        console.log(localStorage.getItem("admin"));
         navigate("/home", { replace: true });
       } else {
         setLoginError(t("invalidCredentials"));

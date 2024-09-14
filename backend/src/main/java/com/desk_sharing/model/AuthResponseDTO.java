@@ -13,7 +13,7 @@ public class AuthResponseDTO {
     private String name = "";
     private String surname = "";
     private int admin = 0;
-    private boolean visibility = false;
+    private int visibility = 0;
 
     public AuthResponseDTO(
             String accessToken, 
@@ -23,7 +23,7 @@ public class AuthResponseDTO {
             String name,
             String surname,
             int admin,
-            boolean visibility
+            int visibility
         ) {
         this.accessToken = accessToken;
         //this.username = username;

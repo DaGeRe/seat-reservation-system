@@ -26,7 +26,7 @@ read response
 
 if [[ "$response" == [yY] ]]; then
     # Construct the wget statement
-    data="{\"username\":\"admin\",\"password\":\"$password\",\"email\":\"$email\",\"name\":\"mustermann\",\"surname\":\"max\",\"visibility\":\"true\",\"admin\":$is_admin}"
+    data="{\"username\":\"admin\",\"password\":\"$password\",\"email\":\"$email\",\"name\":\"mustermann\",\"surname\":\"max\",\"visibility\":\"1\",\"admin\":$is_admin}"
     headers="Content-Type:application/json"
 
     wget -O- --ca-directory=$PATH_TO_TLS --post-data="$data" --header="$headers" "$url"

@@ -28,7 +28,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
       toast.error("Fields cannot be blank!");
       return false;
     }
-      
+
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
       method: "PUT",
       headers: {
@@ -38,8 +38,8 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
         "email": email,
           "name": name,
           "surname": surname,
-          "admin": isAdmin ? 1 : 0,
-          "visibility": visibility,
+          "admin": isAdmin === 'true' ? 1 : 0,
+          "visibility": visibility === 'true' ? 1 : 0,
       })
     }).then(resp => {
       if(resp.status===409){
@@ -99,7 +99,9 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   value={isAdmin}
-                  onChange={(e)=> setIsAdmin(e.target.value)}
+                  onChange={(e)=> {
+                    setIsAdmin(e.target.value)}
+                  }
                 >
                 <FormControlLabel value={true} control={<Radio />} label={t("true")} />
                 <FormControlLabel value={false} control={<Radio />} label={t("false")} />
@@ -115,8 +117,8 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
                   value={visibility}
                   onChange={(e)=> setVisibility(e.target.value)}
                 >
-                <FormControlLabel value={true} control={<Radio />} label={t("yes")} />
-                <FormControlLabel value={false} control={<Radio />} label={t("no")} />
+                <FormControlLabel value={true} control={<Radio />} label={t("true")} />
+                <FormControlLabel value={false} control={<Radio />} label={t("false")} />
               </RadioGroup>
             </FormControl>
           </Box>
