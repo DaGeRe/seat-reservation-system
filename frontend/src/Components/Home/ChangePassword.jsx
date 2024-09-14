@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
-
-  const ChangePassword = ({ isOpen, onClose }) => {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+const ChangePassword = ({ isOpen, onClose }) => {
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json'
+  };
   const { t } = useTranslation();
   const userId = localStorage.getItem("userId");
   const [formData, setFormData] = useState({
@@ -30,12 +31,9 @@ import { toast } from 'react-toastify';
       return;
     }
     try {
-      const response = await fetch(`https://jus-srv-test30/users/password/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json"
-        },
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`, {
+        method: 'PUT',
+        headers: headers,
         body: JSON.stringify({
             oldPassword: formData.prevPassword,
             newPassword: formData.newPassword
@@ -43,14 +41,14 @@ import { toast } from 'react-toastify';
       });
       const data = await response.json();
       if (response.ok && data) {
-        toast.success("Password changed successfully");
+        toast.success(t('passwordChangedSuccessfully'));
         onClose();
       } else {
-        setError("Failed to change password");
+        setError(t('passwordChangFailed'));
       }
     } catch (error) {
-        console.error("Error changing password:", error);
-        setError("Error changing password");
+        console.error(t('passwordChangFailed'), error);
+        setError(t('passwordChangFailed'));
     }
   };
 

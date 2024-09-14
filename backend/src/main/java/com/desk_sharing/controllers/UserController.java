@@ -127,6 +127,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
         UserEntity updateUser = userService.updateUserById(id, user);
+        System.out.println("updateUserById: " + user.getPassword());
         HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
         return ResponseEntity.status(status).body(updateUser);
     }

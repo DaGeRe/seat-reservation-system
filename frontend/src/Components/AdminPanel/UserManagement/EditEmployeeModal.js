@@ -39,7 +39,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
           "name": name,
           "surname": surname,
           "admin": isAdmin,
-          "visibility": visibility,
+          "visibility": visibility
       })
     }).then(resp => {
       if(resp.status===409){
