@@ -133,7 +133,7 @@ public class UserService  {
         }
     }
 
-    public boolean isAdmin(int id) {
+    public int isAdmin(int id) {
         UserEntity user = userRepository.getById(id);
         return user.getAdmin();
     }

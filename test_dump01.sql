@@ -1,4 +1,3 @@
-SET FOREIGN_KEY_CHECKS=0;
 -- MariaDB dump 10.19-11.3.2-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: mydatabase
@@ -19,7 +18,7 @@ SET FOREIGN_KEY_CHECKS=0;
 --
 -- Current Database: `mydatabase`
 --
-
+SET FOREIGN_KEY_CHECKS=0
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mydatabase` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 
 USE `mydatabase`;
@@ -48,7 +47,7 @@ CREATE TABLE `bookings` (
   CONSTRAINT `FKaoxaafgq2jdhblkwiutyggant` FOREIGN KEY (`desk_id`) REFERENCES `desks` (`desk_id`),
   CONSTRAINT `FKeyog2oic85xg7hsu2je2lx3s6` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `FKrgoycol97o21kpjodw1qox4nc` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,6 +82,8 @@ CREATE TABLE `desks` (
 
 LOCK TABLES `desks` WRITE;
 /*!40000 ALTER TABLE `desks` DISABLE KEYS */;
+INSERT INTO `desks` VALUES
+(1,'with equipment',18);
 /*!40000 ALTER TABLE `desks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,7 +107,8 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` (`id`, `name`) VALUES (1,'ROLE_ADMIN'),
+INSERT INTO `roles` VALUES
+(1,'ROLE_ADMIN'),
 (2,'ROLE_USER');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -121,13 +123,13 @@ DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
   `room_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `floor` varchar(255) NOT NULL,
-  `remark` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `type` varchar(255) NOT NULL,
   `x` int(11) NOT NULL,
   `y` int(11) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`room_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,6 +138,11 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+INSERT INTO `rooms` VALUES
+(18,'First','enable','Normal',326,267,'foo2'),
+(25,'Ground','enable','Normal',43,30,'Ergeschoss Großraumbüro 1'),
+(26,'Ground','enable','Normal',61,71,'Ergeschoss Großraumbüro 2'),
+(27,'Ground','enable','Normal',38,72,'t');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +169,8 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` (`user_id`, `role_id`) VALUES (1,1);
+INSERT INTO `user_roles` VALUES
+(7,1);
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,14 +183,15 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin` int(11) NOT NULL,
+  `admin` bit(1) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `surname` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
   `visibility` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +200,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`id`, `admin`, `email`, `name`, `password`, `surname`, `visibility`) VALUES (1,1,'admin@mail.com','mustermann','$2a$10$bYaqZ0ueGdvqa2dLQfmrEeu3wuxXClVRXFKwIG.AX.QGqtJAN0tB.','max','');
+INSERT INTO `users` VALUES
+(7,'','admin@mail.com','mustermann','$2a$10$WmCE7QY6V2beap.5UCxlMOUk0I9WRNoVfPx9LZyGPsY/ULhuTWcLm','max','admin@mail.com','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -204,5 +214,5 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-13 15:51:52
-FOREIGN_KEY_CHECKS=1;
+-- Dump completed on 2024-09-13 14:47:00
+SET FOREIGN_KEY_CHECKS=1;

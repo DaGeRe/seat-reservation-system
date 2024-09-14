@@ -38,7 +38,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
         "email": email,
           "name": name,
           "surname": surname,
-          "admin": isAdmin,
+          "admin": isAdmin ? 1 : 0,
           "visibility": visibility,
       })
     }).then(resp => {

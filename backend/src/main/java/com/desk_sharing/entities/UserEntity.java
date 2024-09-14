@@ -21,7 +21,7 @@ public class UserEntity {
     private String name;
     private String surname;
     private boolean visibility;
-    private boolean admin;
+    private int admin;
 
     public int getId() {
         return id;
@@ -71,11 +71,11 @@ public class UserEntity {
         this.visibility = visibility;
     }
 
-    public boolean getAdmin() {
+    public int getAdmin() {
         return admin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setAdmin(int admin) {
         this.admin = admin;
     }
    /*  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

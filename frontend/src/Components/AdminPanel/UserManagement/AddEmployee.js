@@ -41,7 +41,7 @@ export default function AddEmployee({ addEmployeeModal }) {
           "password": password,
           "name": name,
           "surname": surname,
-          "admin": isAdmin,
+          "admin": isAdmin ? 1 : 0,
           "visibility": visibility,
       })
     }).then(resp => {

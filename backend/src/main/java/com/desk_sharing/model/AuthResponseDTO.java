@@ -12,7 +12,7 @@ public class AuthResponseDTO {
     private int id = -1;
     private String name = "";
     private String surname = "";
-    private boolean admin = false;
+    private int admin = 0;
     private boolean visibility = false;
 
     public AuthResponseDTO(
@@ -22,7 +22,7 @@ public class AuthResponseDTO {
             int id,
             String name,
             String surname,
-            boolean admin,
+            int admin,
             boolean visibility
         ) {
         this.accessToken = accessToken;

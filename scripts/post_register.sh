@@ -5,7 +5,7 @@
 # Assign command line parameters to variables
 email="admin@mail.com"
 password="admin"
-is_admin="true"
+is_admin="1"
 port="8081"
 
 # Check if the required command line parameters are provided
