@@ -11,8 +11,10 @@ import EditBookingModal from "../AdminPanel/Bookings/EditBookingsModal";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 
 const MyBookings = () => {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -35,10 +37,7 @@ const MyBookings = () => {
       const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`;
       const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
       });
       if (!response.ok) {
         throw new Error("Failed to fetch bookings");
@@ -64,10 +63,7 @@ const MyBookings = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`, {
           method: "GET",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          }
+          headers: headers
         });
         if (!response.ok) {
           throw new Error("Failed to fetch booking details");
@@ -96,10 +92,7 @@ const MyBookings = () => {
       const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`;
       const response = await fetch(url, {
         method: 'DELETE',
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json',
-        },
+        headers: headers
       });
   
       if (!response.ok) {
@@ -143,6 +136,7 @@ const MyBookings = () => {
           <p>{t("room")}: {event.room.id}</p>
           <p>{t("floor")}: {event.room.floor}</p>
           <p>{t("type")}: {event.room.type}</p>
+          <p>{t("type")}: {event.room.remark}</p>
         </div>
       );
     }
@@ -210,9 +204,9 @@ const MyBookings = () => {
                   {renderDeskInfo(theEvent)}
 
                   <div className="mb-buttons">
-                    <button className="mb-submit-btn" onClick={handleEditEvent}>
+{/*                     <button className="mb-submit-btn" onClick={handleEditEvent}>
                       {t("edit")}
-                    </button>
+                    </button> */}
                     <button className="mb-submit-btn" onClick={handleDeleteEvent}>
                       {t("delete")}
                     </button>
@@ -228,7 +222,7 @@ const MyBookings = () => {
           </div>
         </div>
       </div>
-      {showEditModal && (
+       {showEditModal && (
         <Dialog open={showEditModal} onClose={() => setShowEditModal(false)}>
           <DialogTitle>{t("editBookingTime")}</DialogTitle>
           <DialogContent>

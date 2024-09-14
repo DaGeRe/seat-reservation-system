@@ -162,12 +162,12 @@ const AdminPage = () => {
           >
             {t("general")}
           </div>
-          <div
+{/*           <div
             onClick={() => floorFilter("Ground")}
             className={activeTab === "statistics" ? "heat-map" : "map"}
           >
             {t("statistics")}
-          </div>
+          </div> */}
         </div>
         {activeTab === "general" ? (
           <div className="admin-content">
@@ -227,9 +227,9 @@ const AdminPage = () => {
               <button className="booking-button" onClick={toggleDeleteBookingsModal}>
                 {t("deleteBooking")}
               </button>
-              <button className="booking-button" onClick={toggleEditBookingsModal}>
+            {/*   <button className="booking-button" onClick={toggleEditBookingsModal}>
                 {t("editBooking")}
-              </button>
+              </button> */}
             </div>
           </div>
         ) : (
