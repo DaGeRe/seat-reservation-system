@@ -20,8 +20,8 @@ public class UserEntity {
     private String password;
     private String name;
     private String surname;
-    private int visibility;
-    private int admin;
+    private boolean visibility;
+    private boolean admin;
 
     public int getId() {
         return id;
@@ -63,19 +63,19 @@ public class UserEntity {
         this.surname = surname;
     }
 
-    public int getVisibility() {
+    public boolean getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(int visibility) {
+    public void setVisibility(boolean visibility) {
         this.visibility = visibility;
     }
 
-    public int getAdmin() {
+    public boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(int admin) {
+    public void setAdmin(boolean admin) {
         this.admin = admin;
     }
    /*  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

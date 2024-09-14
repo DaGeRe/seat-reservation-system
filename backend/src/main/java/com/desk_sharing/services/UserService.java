@@ -61,12 +61,12 @@ public class UserService  {
     public int changeVisibility(int id) {
         try {
             UserEntity user = userRepository.getById(id);
-            if (user.getVisibility() == 1) {
-                user.setVisibility(0);
+            if (user.getVisibility()) {
+                user.setVisibility(false);
                 userRepository.save(user);
                 return 0;
             } else {
-                user.setVisibility(1);
+                user.setVisibility(true);
                 userRepository.save(user);
                 return 1;
             }
@@ -133,7 +133,7 @@ public class UserService  {
         }
     }
 
-    public int isAdmin(int id) {
+    public boolean isAdmin(int id) {
         UserEntity user = userRepository.getById(id);
         return user.getAdmin();
     }

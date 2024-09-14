@@ -38,8 +38,8 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
         "email": email,
           "name": name,
           "surname": surname,
-          "admin": isAdmin === 'true' ? 1 : 0,
-          "visibility": visibility === 'true' ? 1 : 0,
+          "admin": isAdmin,
+          "visibility": visibility,
       })
     }).then(resp => {
       if(resp.status===409){

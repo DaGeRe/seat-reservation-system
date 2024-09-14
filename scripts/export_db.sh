@@ -1,10 +1,15 @@
 #!/bin/bash
 
-container="desksharingtool_dev-database-1"
-if [ $# -eq 1 ]; then
-    container="$1"
+outputfile="mydatabase_dump.sql"
+if [ $# -lt 1 ]; then
+    echo "Usage: export_db.sh <container>"
+    exit
 fi
 
-outputfile="dumps/mydatabase_dump.sql"
+container="$1"
+if [ $# -ne 1 ]; then
+    outputfile="$2"
+fi
 
-docker exec $container mariadb-dump --add-drop-table --complete-insert -u root -pmypasss --databases mydatabase >> $outputfile
+
+docker exec $container mariadb-dump --add-drop-table --complete-insert -u root -pmypasss --databases mydatabase >> dumps/$outputfile

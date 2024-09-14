@@ -106,11 +106,11 @@ public class UserController {
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());
         user.setSurname(registerDto.getSurname());
-        user.setVisibility(registerDto.getVisibility());
-        user.setAdmin(registerDto.getAdmin());
+        user.setVisibility(registerDto.isVisibility());
+        user.setAdmin(registerDto.isAdmin());
         
         // If the user is an admin grant the matching privileges.
-        final Role role = registerDto.getAdmin() == 1 ? 
+        final Role role = registerDto.isAdmin() ? 
             roleRepository.findByName("ROLE_ADMIN").get() : 
             roleRepository.findByName("ROLE_USER").get();
         
@@ -153,7 +153,7 @@ public class UserController {
 
     @GetMapping("/admin/{id}")
     public boolean isAdmin(@PathVariable("id") int id) {
-        return userService.isAdmin(id) == 1;
+        return userService.isAdmin(id);
     }
     
 }

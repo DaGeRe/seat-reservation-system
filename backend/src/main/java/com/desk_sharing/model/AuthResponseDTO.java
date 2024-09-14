@@ -6,27 +6,24 @@ import lombok.Data;
 public class AuthResponseDTO {
     private String accessToken;
     private String tokenType = "Bearer ";
-    //private String username = "";
     private String foo = "";
     private String email = "";
     private int id = -1;
     private String name = "";
     private String surname = "";
-    private int admin = 0;
-    private int visibility = 0;
+    private boolean admin = false;
+    private boolean visibility = true;
 
     public AuthResponseDTO(
-            String accessToken, 
-            //String username,
+            String accessToken,
             String email,
             int id,
             String name,
             String surname,
-            int admin,
-            int visibility
+            boolean admin,
+            boolean visibility
         ) {
         this.accessToken = accessToken;
-        //this.username = username;
         this.email = email;
         this.id = id;
         this.name = name;

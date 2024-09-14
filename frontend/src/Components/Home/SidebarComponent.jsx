@@ -156,7 +156,7 @@ const SidebarComponent = () => {
           >
             {localStorage.getItem("name") ? `${t("hello")}, ${localStorage.getItem("name")}` : `${t("hello")}!`}
           </MenuItem>
-          {localStorage.getItem("admin") === "1" && (
+          {localStorage.getItem("admin") && (
             <MenuItem
               active={activeTab === "admin"}
               icon={<RiAdminFill />}
