@@ -1,1 +1,1 @@
-docker stop  desksharingtool_dev-frontend-1 desksharingtool_dev-backend-1 desksharingtool_dev-database-1
+docker stop  desksharingtool-frontend-1 desksharingtool-backend-1 desksharingtool-database-1

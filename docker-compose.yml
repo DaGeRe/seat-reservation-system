@@ -1,5 +1,6 @@
 services:
   frontend:
+    restart: unless-stopped
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/frontend/Dockerfile
@@ -34,6 +35,7 @@ services:
   #     - ${NETWORK}
 
   backend:
+    restart: unless-stopped
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
@@ -53,6 +55,7 @@ services:
       - PW_DB=${PW_DB}
 
   database:
+    restart: unless-stopped
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/database/Dockerfile

@@ -8,5 +8,6 @@ fi
 container="$1"
 dumpfile="$2"
 database="mydatabase"
-
-cat $dumpfile | docker exec -i $container mariadb -pmypasss  $database
+. .env
+echo ${PW_DB}
+cat $dumpfile | docker exec -i $container mariadb -p${PW_DB}  $database

@@ -1,1 +1,1 @@
-docker exec -it desksharingtool_dev-database-1 bash
+docker exec -it desksharingtool-database-1 bash
