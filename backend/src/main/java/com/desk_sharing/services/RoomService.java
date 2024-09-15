@@ -1,17 +1,21 @@
 package com.desk_sharing.services;
 
+import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.Booking;
+import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RoomService {
+
+    @Autowired
+    DeskRepository deskRepository;
 
     @Autowired
     RoomRepository roomRepository;
@@ -87,18 +91,18 @@ public class RoomService {
     }
 
     public void deleteRoomFf(Long id) {
-        System.out.println("Room id " + id);
-        System.out.println("deleteRoomFf");
-        List<Booking> ls = bookingRepository.getBookingsByRoomId(id);
-        System.out.println("ls.size() 1 " + ls.size());
-        try {
-        //bookingRepository.deleteBookingsByRoomId(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
+        //System.out.println("desksPerRoom 1 " + desksPerRoom.size());
+        for (Desk desk: desksPerRoom) {
+            List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
+            for (Booking booking: bookingsPerDesk) {
+                bookingRepository.deleteById(booking.getId());
+            }
+            deskRepository.deleteById(desk.getId());
         }
-        ls = bookingRepository.getBookingsByRoomId(id);
-        System.out.println("ls.size() 2 " + ls.size());
-        //deskService.deleteDeskFf();
-        //List<Booking> lst = roomRepository.getBookingsByRoomId(id);
+        
+        desksPerRoom = deskRepository.findByRoomId(id);
+        //System.out.println("desksPerRoom 2" + desksPerRoom.size());
+        roomRepository.deleteById(id);
     }
 }

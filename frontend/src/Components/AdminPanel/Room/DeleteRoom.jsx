@@ -15,6 +15,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
     'Content-Type': 'application/json',
   };
   const [open, setOpen] = React.useState(false);
+  const [currRoomId, setCurrRoomId] = React.useState(-1);
   const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
     React.useEffect(() => {
@@ -75,24 +76,26 @@ export default function DeleteRoom({ deleteRoomModal }) {
       }
     }
 
-    async function deleteRoomFf(id){
-      /*
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${id}`, {
-        method: 'DELETE',
-        headers: headers,
-        body: JSON.stringify({}),
-      });
-      if (response.ok) {
-        toast.success(t("roomDeleted"));
-        getAllRooms();
+    async function deleteRoomFf(){
+      if (currRoomId === -1) {
+        toast.error('select an room');
       }
-      */
-     console.log('tbi');
+      else {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`, {
+          method: 'DELETE',
+          headers: headers,
+          body: JSON.stringify({}),
+        });
+        if (response.ok) {
+          toast.success(t("roomDeleted"));
+          getAllRooms();
+        }
+      }
     } 
 
     return (
         <React.Fragment>
-            <Dialog
+                                         <Dialog
               open={open}
               onClose={handleClose}
               aria-labelledby="alert-dialog-title"
@@ -103,12 +106,12 @@ export default function DeleteRoom({ deleteRoomModal }) {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  {t("fFDeleteWorkStation")}
+                  {t("fFDeleteRoom")}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>{t('no')}</Button>
-                <Button onClick={deleteRoomFf} autoFocus>
+                <Button onClick={() => deleteRoomFf()} autoFocus>
                   {t('yes')}
                 </Button>
               </DialogActions>
@@ -149,8 +152,14 @@ export default function DeleteRoom({ deleteRoomModal }) {
                                   {row.remark}
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center', fontSize:14, width:'30%'   }} component="th" scope="row">
-                                <Button onClick={() => deleteRoomById(row.id)}>{t("delete").toUpperCase()}</Button>
+                                <Button onClick={() => {
+                                    setCurrRoomId(row.id);
+                                    deleteRoomById(row.id);
+                                  }
+                                }
+                                >{t("delete").toUpperCase()}</Button>
                               </TableCell>
+
                               </TableRow>
                             ))}
                           </TableBody>

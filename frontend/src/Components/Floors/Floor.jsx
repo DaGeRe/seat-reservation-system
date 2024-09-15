@@ -32,86 +32,26 @@ const Floor = () => {
   const [allRooms, setAllRooms] = React.useState([]);
   const [floor, setFloor] = React.useState('Ground');
 
-/*   useEffect(() => {
-    // Fetch room data from the backend
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, headers)
-    .then(response => response.json())
-    .then(data => {
-      // Apply filter if selected
-      let filteredRooms = data.filter(room => room.floor === currentFloor);
-      if (filterType === 'Silence') {
-        filteredRooms = filteredRooms.filter(room => room.type === 'Silence');
-      } else if (filterType === 'Normal') {
-        filteredRooms = filteredRooms.filter(room => room.type === 'Normal');
-      }
-      console.log(filteredRooms.length);
-      setRooms(filteredRooms);
-    })
-    .catch(error => {
-      console.error('Error fetching room data:', error);
-    });
-  }, [currentFloor, filterType]); */
-/* 
-  async function getAllRooms(){
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+  const [allBookingsNow, setAllBookingsNow] = React.useState(0);
+  const [availableWorkstations, setAvailableWorkstations] = React.useState(0);
+  
+  useEffect(() => {
+    getAvailableWorkstations();
+  }, []);
+
+  const getAvailableWorkstations = () => {
+    //console.log('abc');
+    /* await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/allbookingsfortoday`, {
       method: 'GET',
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     }).then(resp => {
       resp.json().then(data => {
-        setAllRooms(data);
+        //setAllRooms(data);
       });
     }).catch(error => {
       console.log(error);
-    });
-  } */
-  // const fetchRooms = async () => {
-  //   const accessToken = localStorage.getItem('accessToken');
-  //   try {
-  //     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Authorization": "Bearer " + accessToken,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error fetching room data:', error);
-  //   }
-  // }
-  // useEffect(() => {
-  //   fetchRooms();
-  //   const options = {
-  //     method: "GET", // or "POST", "PUT", etc.
-  //     headers: {
-  //       "Authorization": "Bearer " + accessToken,
-  //       "Content-Type": "application/json",
-  //     }
-  //   };
-  //   // Fetch room data from the backend
-  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, options)
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       // Apply filter if selected
-  //       let filteredRooms = data.filter(room => room.floor === currentFloor);
-  //       if (filterType === 'Silence') {
-  //         filteredRooms = filteredRooms.filter(room => room.type === 'Silence');
-  //       } else if (filterType === 'Normal') {
-  //         filteredRooms = filteredRooms.filter(room => room.type === 'Normal');
-  //       }
-  //       setRooms(filteredRooms);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching room data:', error);
-  //     });
-  // }, [currentFloor, filterType]);
-
-/*   const handleRoomClick = (roomId) => {
-    setSelectedRoom(roomId === selectedRoom ? null : roomId);
-    navigate("/desks", { state: { roomId, date } });
-  }; */
+    }); */
+  };
 
   const toggleFloor = () => {
     setCurrentFloor(currentFloor === 'Ground' ? 'First' : 'Ground');
@@ -149,6 +89,7 @@ const Floor = () => {
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
               <h1>{currentFloor === 'Ground' ? t('groundFloor') : t('firstFloor')}</h1>
               {date && <p>{t("chosenDate")}: {formattedDate}</p>}
+              {}
               <button className='workstation-button' onClick={toggleFloor}>{t('switchFloor')}</button>
               <FloorImage 
                 floor={currentFloor}

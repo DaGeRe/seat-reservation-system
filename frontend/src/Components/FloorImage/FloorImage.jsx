@@ -99,8 +99,8 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                              <HtmlTooltip
                                 title={
                                   <React.Fragment>
-                                    <em>x: {room.x} y: {room.y}</em>
-                                    <br></br>
+{/*                                     <em>x: {room.x} y: {room.y}</em>
+                                    <br></br> */}
                                     <em>{room.remark}</em>
                                   </React.Fragment>
                                 }

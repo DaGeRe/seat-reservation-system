@@ -60,7 +60,7 @@ const Home = () => {
         const newEvent = {
           start: moment(day).startOf('day').toDate(),
           end: moment(day).endOf('day').toDate(),
-          title: `${t("freeSlots")}: ${data[day]}`,
+          //title: `${t("freeSlots")}: ${data[day]}`,
           allDay: true,
         };
         eventsForMonth.push(newEvent);

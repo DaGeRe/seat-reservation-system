@@ -23,7 +23,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
-//import com.desk_sharing.entities.User;
+import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.UserEntity;
 
 @Service
@@ -118,6 +118,10 @@ public class BookingService {
     public List<Booking> findByRoomIdAndDay(Long roomId, Date day) {
         List<Booking> bookings = bookingRepository.findByRoomIdAndDay(roomId, day);
         return bookings;
+    }
+
+    public int getAllBookingsToday() {
+        return -1;//bookingRepository.getAllBookingsToday().size();
     }
 
 	public Booking editBookingTimings(BookingEditDTO booking) {

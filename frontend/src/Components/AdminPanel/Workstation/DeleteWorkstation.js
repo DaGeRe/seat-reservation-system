@@ -34,7 +34,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   async function getAllRooms(){
     const url = `${process.env.REACT_APP_BACKEND_URL}/rooms/status`;
-    console.log(url + " #0");
     const response = await fetch(url, {
       method: 'GET',
       headers: headers
@@ -101,9 +100,8 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   async function deleteWorkstationFf(){
     if(selectedDesk){
       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
-      console.log(url, ' #2');
       try {
-      /*await */fetch(url, {
+      await fetch(url, {
         method: 'DELETE',
         headers: headers,
         body: JSON.stringify({})

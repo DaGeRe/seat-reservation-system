@@ -11,6 +11,10 @@ import { useTranslation } from "react-i18next";
 export default function EditWorkstation({ editWorkstationModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    "Authorization": "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
@@ -28,10 +32,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   async function getAllRooms(){
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     }).then(resp => {
       resp.json().then(data => {
         setAllRooms(data);
@@ -49,10 +50,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           setAllDesks(data);
@@ -64,12 +62,9 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function updateWorkstation(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/$[equipment}`, {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}`, {
       method: "PUT",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      headers: headers,
       body: JSON.stringify({})
     }).then(resp => {
       resp.json().then(data => {

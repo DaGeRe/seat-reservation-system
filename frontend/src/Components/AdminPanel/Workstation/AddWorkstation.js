@@ -31,29 +31,32 @@ export default function AddWorkstation({ addWorkstationModal }) {
       toast.error(t("selectRoomError"));
       return false;
     }
-    let idSplit = selectedRoom.split("(");
+    //console.log(selectedRoom);
+/*     let idSplit = selectedRoom.split("(");
     let idVal = idSplit[1].split(")");
-    let roomId = idVal[0];
+    let roomId = idVal[0]; */
+    const splitted = selectedRoom.split('-');
+    const roomId = splitted[0];
 
     if(!roomId /*|| !deskId*/ || !equipment ){
       toast.error("Field cannot be blank!");
       return false;
     }
 
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify({
-      "deskId": deskId,
-      "roomId": roomId,
-      "equipment": equipment
-    })
-    }).then(resp => {
-      toast.success(t("deskCreated"));
-      addWorkstationModal();
-    }).catch(error => {
-      console.log("login user err " + error);
-    });
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        "deskId": deskId,
+        "roomId": roomId,
+        "equipment": equipment
+      })
+      }).then(resp => {
+        toast.success(t("deskCreated"));
+        addWorkstationModal();
+      }).catch(error => {
+        console.log("login user err " + error);
+      });
   }
 
   async function getAllRooms() {
@@ -78,7 +81,9 @@ export default function AddWorkstation({ addWorkstationModal }) {
               id="tags-filled"
               fullWidth
               options={allRooms.map((option) => (
-                option.floor +"-"+ option.type + ' - ' + option.remark)
+                  /* option.floor +"-"+option.id+"-"+option.type+'-' + option.remark */
+                  option.id+'-'+option.remark
+                )
               )}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}

@@ -43,12 +43,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	List<Booking> getBookingsByRoomId(@Param("roomId") Long roomId);
 
 	//select current_timestamp, bookings.* from bookings where (day = '2024-09-14') and (CURRENT_TIMESTAMP not between begin and end)  ;
-/* 	@Query(value="select * from bookings where day=:day and ;")
-	List<Booking> getAllCurrentBookingsForNow(
+/* 	@Query(value="select * from bookings where day=:day ")
+	List<Booking> getAllCurrentBookingsNow(
 		@Param("day") Date day, 
 		@Param("startTime") Time startTime,
 		@Param("endTime") Time endTime
 	); */
+/* 	@Query(value="select * from bookings where DATE(day)=DATE(CURRENT_TIMESTAMP)")
+	List<Booking> getAllBookingsToday();  */
 
 	@Modifying
 	@Query(value="delete from bookings where room_id=:roomId", nativeQuery = true)
