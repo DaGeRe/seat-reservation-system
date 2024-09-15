@@ -144,4 +144,8 @@ public class BookingController {
     public Dictionary<Date, Integer> getBookingsForDays(@RequestBody List<Date> days) {
         return bookingService.getAvailableDays(days);
     }
+    @PostMapping("/allbookingsforday/{date}")
+    public Dictionary<Date, Integer> getAllBookingsNumberForDay(@RequestBody List<Date> days) {
+        return bookingService.getAvailableDays(days);
+    }
 }

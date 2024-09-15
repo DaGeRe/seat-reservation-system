@@ -185,6 +185,7 @@ public class BookingService {
         List<Room> rooms = roomRepository.findAllByStatus("enable");
         // Every day of a month
         for (Date day : days) {
+            //System.out.println("getAvailableDays: " + day);
             slots.put(day, 0);
             // Ever enabled room
             for (Room room : rooms) {

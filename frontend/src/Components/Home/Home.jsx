@@ -9,13 +9,14 @@ import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [now, setNow] = useState(moment());
-  //const [mytest, setMyTest] = useState("");
 
   const handleSelectSlot = ({ start }) => {
     const selectedDateEvent = {
@@ -43,11 +44,8 @@ const Home = () => {
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/days/`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'POST',
+        headers: headers,
         body: JSON.stringify(daysInMonth),
       });
   
