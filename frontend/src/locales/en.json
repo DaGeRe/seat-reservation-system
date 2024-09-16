@@ -167,5 +167,8 @@
 
     "selectRoomError":"Please select an existing room",
     "fFDeleteWorkStation":"All bookings that belongs to this desk wil also be deleted.",
-    "fFDeleteRoom":"All desks and bookings that belongs to this room will also be deleted."
+    "fFDeleteRoom":"All desks and bookings that belongs to this room will also be deleted.",
+    "helpAddRoom":"Please choose a location for an new room on the map and click on it.<br/>Additionally provide all necessary informations and push <strong>Submit</strong>."
+    ,"helpChooseRoom":"Please choose an existing room and click on it."
+    ,"helpCreateBooking":"Please choose first an desk and then a timespan. Finish with a push on <strong>Book</strong>."
 }
