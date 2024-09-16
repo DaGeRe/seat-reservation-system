@@ -124,6 +124,10 @@ public class BookingService {
         return -1;//bookingRepository.getAllBookingsToday().size();
     }
 
+    public List<Booking> getAllBookingsForDate(Date date) {
+        return bookingRepository.getBookingForDate(date);
+    }
+
 	public Booking editBookingTimings(BookingEditDTO booking) {
         Optional<Booking> bookingById = getBookingById(booking.getId());
         if(bookingById.isPresent()) {
@@ -183,7 +187,18 @@ public class BookingService {
             bookingRepository.deleteAll(collect);
         }
 	}
-
+    public Dictionary<Date, Integer> getAllBookingsForDates(List<Date> days) {
+        Dictionary<Date, Integer> slots= new Hashtable<>();
+        List<Room> rooms = roomRepository.findAllByStatus("enable");
+        // Every day of a month
+        for (Date day : days) {
+            //System.out.println("getAvailableDays: " + day);
+            slots.put(day, getAllBookingsForDate(day).size());
+            // Ever enabled room
+            
+        }
+        return slots;
+    } 
     public Dictionary<Date, Integer> getAvailableDays(List<Date> days) {
         Dictionary<Date, Integer> slots= new Hashtable<>();
         List<Room> rooms = roomRepository.findAllByStatus("enable");
@@ -230,5 +245,5 @@ public class BookingService {
             }
         }
         return slots;
-    } 
+    }  
 }
