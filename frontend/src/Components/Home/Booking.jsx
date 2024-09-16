@@ -9,6 +9,7 @@ import SidebarComponent from "./SidebarComponent"
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import InfoModal from '../InfoModal/InfoModal.jsx'
 
 const Booking = () => {
   // The jwt.
@@ -23,6 +24,7 @@ const Booking = () => {
   const [events, setEvents] = useState([]);
   const [event, setEvent] = useState({});
   const [clickedDeskId, setClickedDeskId] = useState(null);
+  const helpText = t('helpCreateBooking');
 
   useEffect(() => {
     // The jwt.
@@ -287,9 +289,15 @@ const Booking = () => {
       <div>
         <SidebarComponent />
       </div>
+      {/* <div>
+        <button onClick={back}></button>
+      </div> */}
       <div>
-        <button onClick={back}>Back</button>
+        <button className="submit-btn" onClick={back}>
+        {t('back')} 
+        </button>
       </div>
+      <InfoModal text={helpText}/>
       <div className="container">
         <div className="choose-date">
           <h1>{t("availableDesks")}</h1>

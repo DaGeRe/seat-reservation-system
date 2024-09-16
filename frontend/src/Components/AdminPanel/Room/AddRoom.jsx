@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
+import InfoModal from '../../InfoModal/InfoModal.jsx'
 import './AddRoom.css'; 
 import * as React from 'react';
 import { toast } from 'react-toastify';
@@ -23,6 +24,8 @@ export default function AddRoom({ addRoomModal }) {
   const [x, setX] = React.useState(0.0);
   const [y, setY] = React.useState(0.0);
   const [remark, setRemark] = React.useState('');
+  const helpText = t('helpAddRoom');
+  
     React.useEffect(() => {
         getAllRooms();
       }, []);
@@ -74,7 +77,7 @@ export default function AddRoom({ addRoomModal }) {
 
     return (
       <React.Fragment>
-          
+          <InfoModal text={helpText}/>
           <DialogContent>
               <Grid container >
                 <Box sx={{ flexGrow: 1, padding: '10px' }}>

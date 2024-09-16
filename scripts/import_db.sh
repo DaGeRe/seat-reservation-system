@@ -9,5 +9,4 @@ container="$1"
 dumpfile="$2"
 database="mydatabase"
 . .env
-echo ${PW_DB}
 cat $dumpfile | docker exec -i $container mariadb -p${PW_DB}  $database

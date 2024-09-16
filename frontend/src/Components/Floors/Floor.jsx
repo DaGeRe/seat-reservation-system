@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import DialogContent from '@mui/material/DialogContent';
 import firstFloorImage from '../../images/firstfloor.png';
 import secondFloorImage from '../../images/secondfloor.png'; 
+import InfoModal from '../InfoModal/InfoModal.jsx'
 import './Floor.css'; 
 import { useNavigate } from "react-router-dom";
 import SidebarComponent from "../Home/SidebarComponent"
@@ -34,6 +35,7 @@ const Floor = () => {
 
   const [allBookingsNow, setAllBookingsNow] = React.useState(0);
   const [availableWorkstations, setAvailableWorkstations] = React.useState(0);
+  const helpText = t('helpChooseRoom');
   
   useEffect(() => {
     getAvailableWorkstations();
@@ -84,6 +86,7 @@ const Floor = () => {
     </div>
 
       <React.Fragment>
+        <InfoModal text={helpText}/>
         <DialogContent>
           <Grid container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>

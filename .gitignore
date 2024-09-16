@@ -6,6 +6,5 @@
 *.tar.xz
 sql
 .env
-dumps/*
 scripts/stop_containers.sh
 scripts/exec_db.sh

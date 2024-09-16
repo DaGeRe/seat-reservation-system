@@ -43,7 +43,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/days/`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(daysInMonth),
@@ -54,13 +54,13 @@ const Home = () => {
       }
   
       const data = await response.json();
-
+      
       // Create an event for each day of the month
       for (const day in data) {
         const newEvent = {
           start: moment(day).startOf('day').toDate(),
           end: moment(day).endOf('day').toDate(),
-          //title: `${t("freeSlots")}: ${data[day]}`,
+          title: `${t('bookingsSum')}: ${data[day]}`,
           allDay: true,
         };
         eventsForMonth.push(newEvent);
