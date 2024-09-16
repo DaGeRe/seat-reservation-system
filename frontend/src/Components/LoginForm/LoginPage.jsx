@@ -49,7 +49,6 @@ const LoginPage = () => {
         localStorage.setItem("surname", String(data.surname));
         localStorage.setItem("admin", String(data.admin));
         localStorage.setItem("visibility", String(data.visibility));
-        console.log(localStorage.getItem("admin"));
         navigate("/home", { replace: true });
       } else {
         setLoginError(t("invalidCredentials"));
