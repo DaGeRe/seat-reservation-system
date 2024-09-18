@@ -32,7 +32,8 @@ public class DeskService {
     		//desk.setId(deskDto.getDeskId());
     		desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
-    		 return deskRepository.save(desk);
+            desk.setRemark(deskDto.getRemark());
+    		return deskRepository.save(desk);
     	} else {
     		return null;
     	}
@@ -50,11 +51,12 @@ public class DeskService {
         return deskRepository.findByRoomId(roomId);
     }
 
-    public Desk updateDesk(Long id, String equipment) {
+    public Desk updateDesk(Long id, String equipment, String remark) {
         Optional<Desk> optional = getDeskById(id);
         if(optional.isPresent()) {
         	Desk desk = optional.get();
         	desk.setEquipment(equipment);
+            desk.setRemark(remark);
         	return deskRepository.save(desk);
         } 
         return null;

@@ -17,6 +17,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [allRooms, setAllRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
+  const [remark, setRemark]= React.useState('');
   const [deskId, setDeskId] = React.useState('');
   React.useEffect(() => {
       getAllRooms();
@@ -31,10 +32,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
       toast.error(t("selectRoomError"));
       return false;
     }
-    //console.log(selectedRoom);
-/*     let idSplit = selectedRoom.split("(");
-    let idVal = idSplit[1].split(")");
-    let roomId = idVal[0]; */
     const splitted = selectedRoom.split('-');
     const roomId = splitted[0];
 
@@ -47,9 +44,10 @@ export default function AddWorkstation({ addWorkstationModal }) {
       method: 'POST',
       headers: headers,
       body: JSON.stringify({
-        "deskId": deskId,
-        "roomId": roomId,
-        "equipment": equipment
+        'deskId': deskId,
+        'roomId': roomId,
+        'equipment': equipment,
+        'remark': remark
       })
       }).then(resp => {
         toast.success(t("deskCreated"));
@@ -88,7 +86,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}
-              onChange={(event, newValue) => {
+              onChange={(_, newValue) => {
                 setSelectedRoom(newValue);
               }}
               renderInput={(params) => (
@@ -101,18 +99,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 />
               )}
             />
-            {/*<br></br>
-             <FormControl required={true} size="small" fullWidth variant="standard">
-              <TextField
-                id="standard-adornment-reason"
-                label={t("deskID")}
-                size="small"
-                type={"number"}
-                value={deskId}
-                onChange={(e)=>setDeskId(e.target.value)}
-              />
-            </FormControl> */}
-            <br></br><br></br>
+            <br></br>
             <FormControl fullWidth size='small'>
               <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
               <Select
@@ -127,6 +114,17 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
                 <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
               </Select>
+            </FormControl>
+            <br></br><br></br>
+            <FormControl required={false} size="small" fullWidth variant="standard">
+              <TextField
+                id='standard-adornment-reason'
+                label={t('deskRemark')}
+                size='small'
+                type={'string'}
+                value={remark}
+                onChange={(e)=>setRemark(e.target.value)}
+              />
             </FormControl>
           </Box>
         </Grid>

@@ -52,9 +52,9 @@ public class DeskController {
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/{equipment}")
-    public ResponseEntity<Desk> updateDesk(@PathVariable("id") Long id, @PathVariable("equipment") String equipment) {
-    	Desk updatedDesk = deskService.updateDesk(id, equipment);
+    @PutMapping("/{id}/{equipment}/{remark}")
+    public ResponseEntity<Desk> updateDesk(@PathVariable("id") Long id, @PathVariable("equipment") String equipment, @PathVariable("remark") String remark) {
+    	Desk updatedDesk = deskService.updateDesk(id, equipment, remark);
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
 

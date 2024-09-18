@@ -5,6 +5,7 @@ public class DeskDTO {
 	private Long deskId;
 	private Long roomId;
 	private String equipment;
+	private String remark;
 
 	public Long getDeskId() {
 		return deskId;
@@ -28,5 +29,12 @@ public class DeskDTO {
 	
 	public void setEquipment(String equipment) {
 		this.equipment = equipment;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

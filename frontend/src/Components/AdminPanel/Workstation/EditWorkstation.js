@@ -12,8 +12,8 @@ export default function EditWorkstation({ editWorkstationModal }) {
   // The jwt.
   const accessToken = localStorage.getItem('accessToken');
   const headers = {
-    "Authorization": "Bearer " + accessToken,
-    "Content-Type": "application/json",
+    'Authorization': 'Bearer ' + accessToken,
+    'Content-Type': 'application/json',
   };
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
@@ -21,6 +21,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
+  const [remark, setRemark]= React.useState('');
   React.useEffect(() => {
       getAllRooms();
   }, []);
@@ -31,7 +32,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
 
   async function getAllRooms(){
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: "GET",
+      method: 'GET',
       headers: headers,
     }).then(resp => {
       resp.json().then(data => {
@@ -49,7 +50,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       let roomId = idVal[0];
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
-        method: "GET",
+        method: 'GET',
         headers: headers,
       }).then(resp => {
         resp.json().then(data => {
@@ -62,20 +63,28 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function updateWorkstation(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}`, {
-      method: "PUT",
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`, {
+      method: 'PUT',
       headers: headers,
       body: JSON.stringify({})
     }).then(resp => {
       resp.json().then(data => {
-        toast.success(t("deskUpdate"));
+        toast.success(t('deskUpdate'));
         editWorkstationModal();
       });
     }).catch(error => {
       console.log("login user err " + error);
     });
   }
-    
+  
+  const deskToOption = (desk) => {
+    return desk.id.toString() + (!desk.remark ? '' : '-' + desk.remark);
+  };
+
+  const optionToDeskId = (option) => {
+    return option.includes('-') ? option.split('-')[0] : option 
+  }
+
   return (
     <React.Fragment>
       <DialogContent>
@@ -111,16 +120,18 @@ export default function EditWorkstation({ editWorkstationModal }) {
                 <Autocomplete
                   id="tags-filled"
                   fullWidth
-                  options={allDesks.map((option) => (option.id.toString()))}
+                  options={allDesks.map(deskToOption)}
                   // To avoid an warning allow every possible option.
                   isOptionEqualToValue={(option, value) => true === true}
                   value={selectedDesk}
                   onChange={(event, newValue) => {
-                    var deskData = allDesks.find(e => e.id===newValue);
-                    if(deskData && deskData.equipment){
-                        setEquipment(deskData.equipment);
+                    const deskId = optionToDeskId(newValue);
+                    const deskData = allDesks.find(e => e.id.toString()===deskId);
+                    if(deskData){
+                          setEquipment(deskData.equipment ? deskData.equipment : '');
+                          setRemark(deskData.remark ? deskData.remark : '');
                     }
-                    setSelectedDesk(newValue);
+                    setSelectedDesk(deskId);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -136,22 +147,35 @@ export default function EditWorkstation({ editWorkstationModal }) {
             }
             <br></br> {
               selectedDesk ? (
-                <FormControl fullWidth size='small'>
-                  <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
-                    <Select
+                <div>
+                  <FormControl fullWidth size='small'>
+                    <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
+                      <Select
+                        size='small'
+                          labelId='demo-simple-select-label'
+                          id='demo-simple-select'
+                          value={equipment}
+                          label='Equipments'
+                          onChange={(e) => setEquipment(e.target.value)}
+                      >
+                        <MenuItem value={'with equipment'}>{t('withEquipment').toUpperCase()}</MenuItem>
+                        <MenuItem value={'without equipment'}>{t('withoutEquipment').toUpperCase()}</MenuItem>
+                      </Select>
+                  </FormControl>
+                  <br></br><br></br>
+                  <FormControl required={false} size='small' fullWidth variant='standard'>
+                    <TextField
+                      id='standard-adornment-reason'
+                      label={t('deskRemark')}
                       size='small'
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={equipment}
-                        label="Equipments"
-                        onChange={(e) => setEquipment(e.target.value)}
-                    >
-                      <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
-                      <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
-                    </Select>
-                </FormControl>
-              ):""
-            }           
+                      type={'string'}
+                      value={remark}
+                      onChange={(e)=>setRemark(e.target.value)}
+                    />
+                  </FormControl>
+                </div>
+              ):''
+            }     
           </Box>
         </Grid>
       </DialogContent>
