@@ -1,11 +1,10 @@
-import Dialog from '@mui/material/Dialog';
+import {Dialog, Button} from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { useTranslation } from "react-i18next";
-import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContentText from '@mui/material/DialogContentText';
-import React, {useEffect } from 'react';
+import { useTranslation } from "react-i18next";
+import React from 'react';
 
 export default function DeleteFf({open, onClose, onDelete, text}) {
     const { t } = useTranslation();

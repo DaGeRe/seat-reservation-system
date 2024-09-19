@@ -10,13 +10,14 @@ import Button from '@mui/material/Button';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import DeleteFf from '../../DeleteFf/DeleteFf';
+import deskToOption from './DeskToOption'
+import optionToDeskId from './OptionToDeskId'
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
-  const [open, setOpen] = React.useState(false);
+  
   const headers = {
-    'Authorization': 'Bearer ' + accessToken,
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
   };
   const { t } = useTranslation();
@@ -24,6 +25,8 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
+  const [openFfDialog, setOpenFfDialog] = React.useState(false);
+
   React.useEffect(() => {
       getAllRooms();
   }, []);
@@ -53,43 +56,40 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         let roomId = idVal[0];
 
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
-        method: "GET",
+        method: 'GET',
         headers: headers
       }).then(resp => {
         resp.json().then(data => {
           setAllDesks(data);
         });
       }).catch(error => {
-        console.log("login user err " + error);
+        console.log('login user err ' + error);
       });
     }
   }
 
   async function deleteWorkstation(){
-    if(selectedDesk){
-   
+    if(selectedDesk){   
       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`;
-      console.log(url);
       try {
-      /*await */fetch(url, {
-        method: 'DELETE',
-        headers: headers,
-        body: JSON.stringify({})
-      })
-      .then(resp => {
-        if (resp.ok) {
-          toast.success(t("deskDelete"));
-          deleteWorkstationModal();
-        }
-        else if (resp.status === 400) {
-          setOpen(true);
-        }
-        else {
-          console.error('unknown error');
-        }
-      }).catch((error) => {
-        //console.log("login user err " + error);
-        console.log('fehler');
+        fetch(url, {
+          method: 'DELETE',
+          headers: headers,
+          body: JSON.stringify({})
+        })
+        .then(resp => {
+          resp.json().then(data => {
+            if (data != 0) {
+              setOpenFfDialog(true);
+            }
+            else {
+              toast.success(t('deskDelete'));
+              deleteWorkstationModal();
+            }
+          })
+        })
+        .catch((error) => {
+          console.log('fehler');
       });
     }catch (e) {
       console.log('nope');
@@ -101,55 +101,39 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     if(selectedDesk){
       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
       try {
-      await fetch(url, {
-        method: 'DELETE',
-        headers: headers,
-        body: JSON.stringify({})
-      })
-      .then(resp => {
-        if (resp.ok) {
-          toast.success(t("deskDelete"));
-          deleteWorkstationModal();
-        }
-        else if (resp.status === 400) {
-          setOpen(true);
-        }
-        else {
-          console.error('unknown error');
-        }
-      }).catch((error) => {
-        //console.log("login user err " + error);
-        console.log('fehler');
-      });
+        await fetch(url, {
+          method: 'DELETE',
+          headers: headers,
+          body: JSON.stringify({})
+        })
+        .then(resp => {
+          if (resp.ok) {
+            toast.success(t("deskDelete"));
+            deleteWorkstationModal();
+          }
+          else if (resp.status === 400) {
+            //setOpen(true);
+          }
+          else {
+            console.error('unknown error');
+          }
+        }).catch((error) => {
+          console.log('fehler deleteWorkstationFf');
+        });
     }catch (e) {
       console.log('nope');
     }
     }
   }
   
-
   return (
     <React.Fragment>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-           {t("fFDeleteWorkStation")}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>{t("no")}</Button>
-          <Button onClick={deleteWorkstationFf} autoFocus>
-            {t("yes")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteFf 
+          open={openFfDialog}
+          onClose={handleClose}
+          onDelete={deleteWorkstationFf}
+          text={t('fFDeleteWorkStation')}
+        />
       <DialogContent>
         <Grid container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
@@ -180,12 +164,13 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
                 <Autocomplete
                   id="tags-filled"
                   fullWidth
-                  options={allDesks.map((option) => (option.id.toString()))}
+                  options={allDesks.map(deskToOption)}
                   value={selectedDesk}
                   // To avoid an warning allow every possible option.
                   isOptionEqualToValue={(option, value) => true === true}
-                  onChange={(event, newValue) => {
-                    setSelectedDesk(newValue);
+                  onChange={(_, newValue) => {
+                    const deskId = optionToDeskId(newValue);
+                    setSelectedDesk(deskId);
                   }}
                   renderInput={(params) => (
                     <TextField

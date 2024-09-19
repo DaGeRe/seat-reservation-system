@@ -63,15 +63,35 @@ public class DeskService {
         
     }
 
-    public void deleteDesk(Long id) {
-        deskRepository.deleteById(id);
+    public int deleteDesk(Long id) {
+        List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
+        if (bookingsPerDesk.size() > 0) {
+            return bookingsPerDesk.size();
+        }
+        else {
+            try {
+                deskRepository.deleteById(id);
+                return 0;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        
     }
 
-    public void deleteDeskFf(Long id) {
-        List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
-        for (Booking booking: bookingsPerDesk) {
-            bookingRepository.deleteById(booking.getId());
+    public boolean deleteDeskFf(Long id) {
+        try {
+            List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
+            for (Booking booking: bookingsPerDesk) {
+                bookingRepository.deleteById(booking.getId());
+            }
+            deskRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        deskRepository.deleteById(id);
     }
 }

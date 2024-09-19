@@ -7,6 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import deskToOption from './DeskToOption'
+import optionToDeskId from './OptionToDeskId'
 
 export default function EditWorkstation({ editWorkstationModal }) {
   // The jwt.
@@ -77,13 +79,13 @@ export default function EditWorkstation({ editWorkstationModal }) {
     });
   }
   
-  const deskToOption = (desk) => {
+/*   const deskToOption = (desk) => {
     return desk.id.toString() + (!desk.remark ? '' : '-' + desk.remark);
   };
 
   const optionToDeskId = (option) => {
     return option.includes('-') ? option.split('-')[0] : option 
-  }
+  } */
 
   return (
     <React.Fragment>
@@ -124,7 +126,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
                   // To avoid an warning allow every possible option.
                   isOptionEqualToValue={(option, value) => true === true}
                   value={selectedDesk}
-                  onChange={(event, newValue) => {
+                  onChange={(_, newValue) => {
                     const deskId = optionToDeskId(newValue);
                     const deskData = allDesks.find(e => e.id.toString()===deskId);
                     if(deskData){

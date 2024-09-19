@@ -59,14 +59,13 @@ public class DeskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDesk(@PathVariable("id") Long id) {
-        deskService.deleteDesk(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Integer> deleteDesk(@PathVariable("id") Long id) {
+        int ret = deskService.deleteDesk(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @DeleteMapping("/ff/{id}")
     public ResponseEntity<Void> deleteDeskFf(@PathVariable("id") Long id) {
-        //deskService.deleteDesk(id);
         deskService.deleteDeskFf(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

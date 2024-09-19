@@ -1,10 +1,11 @@
 import { FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
+/*  */import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+/* import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'; */
+import DeleteFf from '../../DeleteFf/DeleteFf';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
@@ -62,7 +63,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
     } */
 
     async function deleteRoomById(id){
-      //setCurrRoomId(id);
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
         method: 'DELETE',
         headers: headers,
@@ -96,7 +96,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
     return (
         <React.Fragment>
-            <Dialog
+{/*             <Dialog
               open={open}
               onClose={handleClose}
               aria-labelledby="alert-dialog-title"
@@ -116,7 +116,13 @@ export default function DeleteRoom({ deleteRoomModal }) {
                   {t('yes')}
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
+            <DeleteFf 
+              open={open}
+              onClose={handleClose}
+              onDelete={deleteRoomFf}
+              text={t("fFDeleteRoom")}
+            />
             <DialogContent>
                 <Grid container >
                       <TableContainer  component={Paper}>
