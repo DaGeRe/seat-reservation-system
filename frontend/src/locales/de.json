@@ -94,6 +94,7 @@
     "userCreationFailed": "Nutzer konnte nicht erstellt werden",
     "userUpdated": "Nutzer wurde erfolgreich geändert",
     "userDeleted": "Nutzer wurde erfolgreich gelöscht",
+    "userDeletionFailed": "Nutzer konnte nicht gelöscht werden",
     "bookingDeleted": "Buchungen wurden erfolgreich gelöscht",
     "bookingUpdated": "Buchungen wurden erfolgreich geändert",
     
@@ -164,10 +165,12 @@
     "begin": "Anfang",
     "update": "Aktualisieren",
     "close": "Schließen",
+    "deleteMoreElements": "Löschen weiterer Elemente",
 
     "selectRoomError":"Bittw wählen Sie einen existierenden Raum aus",
     "fFDeleteWorkStation":"Es werden neben dem Arbeitsplatz auch alle damit verbundenen Buchungen gelöscht.",
     "fFDeleteRoom":"Es werden neben dem Raum auch alle damit verbundenen Tische und Buchungen gelöscht.",
+    "fFDeleteEmployee":"Es werden neben dem Nutzer auch alle damit verbundenen Buchungen gelöscht.",
     "helpAddRoom":"Bitte wählen Sie einen Ort für ein neues Büro auf der Karte und klicken darauf.<br/>Anschließend geben Sie alle nötigen Informationen ein und wählen <strong>Einreichen</strong>."
     ,"helpChooseRoom":"Bitte wählen Sie ein existierendes Büro aus und klicken hierauf."
     ,"helpCreateBooking":"Bitte wählen Sie zuerst ein Arbeitsplatz und dann eine Zeitspanne aus. Klicken Sie anschließend <strong>Buchen</strong>."

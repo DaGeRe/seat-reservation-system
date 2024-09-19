@@ -66,6 +66,7 @@ public class DeskController {
 
     @DeleteMapping("/ff/{id}")
     public ResponseEntity<Void> deleteDeskFf(@PathVariable("id") Long id) {
+        //deskService.deleteDesk(id);
         deskService.deleteDeskFf(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

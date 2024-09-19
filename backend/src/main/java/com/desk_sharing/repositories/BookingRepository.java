@@ -39,9 +39,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 	List<Booking> findAllByBookingInProgress(boolean inProg);
 
-	@Query(value="select * from bookings where room_id=:roomId;", nativeQuery = true)
-	List<Booking> getBookingsByRoomId(@Param("roomId") Long roomId);
-
 	@Query(value="select * from bookings where day=:myDate", nativeQuery = true)
 	List<Booking> getBookingForDate(@Param("myDate") Date myDate);
 
@@ -66,6 +63,16 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	@Query(value="delete from bookings where desk_id=:deskId", nativeQuery = true)
 	void deleteBookingsByDeskId(@Param("deskId") Long roomId);
 
+	@Modifying
+	@Query(value="delete from bookings where user_id=:userId", nativeQuery = true)
+	void deleteBookingsByUserId(@Param("userId") int userId);
+
+	@Query(value="select * from bookings where room_id=:roomId;", nativeQuery = true)
+	List<Booking> getBookingsByRoomId(@Param("roomId") Long roomId);
+
 	@Query(value="select * from bookings where desk_id=:deskId", nativeQuery = true)
 	List<Booking> getBookingsByDeskId(@Param("deskId") Long roomId);
+
+	@Query(value="select * from bookings where user_id=:userId", nativeQuery = true)
+	List<Booking> getBookingsByUserId(@Param("userId") int roomId);
 }

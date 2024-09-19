@@ -2,6 +2,7 @@
 
 if [ $# -ne 2 ]; then
     echo "Usage: import_db.sh <container> <dumpfile>"
+    echo "Eg: scripts/export_db.sh desksharingtool_dev-database-1 dumps/bookings_03.sql"
     exit
 fi
 

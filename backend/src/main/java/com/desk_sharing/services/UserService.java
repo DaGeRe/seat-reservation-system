@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/* import com.desk_sharing.entities.User; */
 import com.desk_sharing.repositories.UserRepository;
+import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.entities.Booking;
+
 @Service
 public class UserService  {
     
@@ -19,6 +21,9 @@ public class UserService  {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
@@ -124,11 +129,32 @@ public class UserService  {
         }
     }
     
-    public boolean deleteUser(int id) {
+    public int deleteUser(int id) {
+        List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+        if (bookingsPerUser.size() > 0) {
+            return bookingsPerUser.size();
+        }
+        else {
+            try {
+                userRepository.deleteById(id);
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+    }
+
+    public boolean deleteUserFf(int id) {
         try {
+            List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+            for (Booking booking: bookingsPerUser) {
+                bookingRepository.deleteById(booking.getId());
+            }
             userRepository.deleteById(id);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

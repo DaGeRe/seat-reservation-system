@@ -39,7 +39,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
         deleteRoomModal();
     }
 
-    async function handleRoomTypeChange(e, id){
+/*     async function handleRoomTypeChange(e, id){
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id+"/type/"+e.target.value}`, {
         method: 'PUT',
@@ -59,9 +59,10 @@ export default function DeleteRoom({ deleteRoomModal }) {
         });
         toast.success(t("roomStatus"));
         getAllRooms();
-    }
+    } */
 
     async function deleteRoomById(id){
+      //setCurrRoomId(id);
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
         method: 'DELETE',
         headers: headers,
@@ -95,7 +96,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
     return (
         <React.Fragment>
-                                         <Dialog
+            <Dialog
               open={open}
               onClose={handleClose}
               aria-labelledby="alert-dialog-title"

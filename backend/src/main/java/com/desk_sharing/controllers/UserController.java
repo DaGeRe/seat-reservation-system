@@ -142,9 +142,15 @@ public class UserController {
         return ResponseEntity.status(status).body(answer);
     }
 
+    @DeleteMapping("/ff/{id}")
+    public boolean deleteUserFf(@PathVariable("id") int id) {
+        return userService.deleteUserFf(id);
+    }
+
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable("id") int id) {
-        return userService.deleteUser(id);
+    public ResponseEntity<Integer> deleteUser(@PathVariable("id") int id) {
+        int ret = userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @GetMapping("/get/{id}")
