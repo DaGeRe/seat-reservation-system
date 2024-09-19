@@ -73,14 +73,13 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable("id") Long id) {
-        roomService.deleteRoom(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Integer> deleteRoom(@PathVariable("id") Long id) {
+        int ret = roomService.deleteRoom(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     } 
     
     @DeleteMapping("/ff/{id}")
-    public ResponseEntity<Void> deleteRoomFf(@PathVariable("id") Long id) {
-        roomService.deleteRoomFf(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public boolean deleteRoomFf(@PathVariable("id") Long id) {
+        return roomService.deleteRoomFf(id);
     }
 }

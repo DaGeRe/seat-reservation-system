@@ -15,7 +15,6 @@ import deskToOption from './DeskToOption'
 import optionToDeskId from './OptionToDeskId'
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
-  
   const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
