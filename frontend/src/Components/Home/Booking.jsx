@@ -12,8 +12,10 @@ import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
 
 const Booking = () => {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json'
+  };
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,16 +29,15 @@ const Booking = () => {
   const helpText = t('helpCreateBooking');
 
   useEffect(() => {
-    // The jwt.
-    const accessToken = localStorage.getItem('accessToken');
+    // const headers = {
+    //   'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    //   'Content-Type': 'application/json'
+    // };
     const fetchDesks = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
           method: "GET",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
+          headers: headers,
         });
 
         if (!response.ok) {
@@ -66,10 +67,7 @@ const Booking = () => {
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${desk.id}`, {
             method: "GET",
-            headers: {
-              "Authorization": "Bearer " + accessToken,
-              "Content-Type": "application/json",
-            },
+            headers: headers,
           }
         );
     
@@ -108,10 +106,7 @@ const Booking = () => {
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`, {
         method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        headers: headers,
       }
     );
 
@@ -201,10 +196,7 @@ const Booking = () => {
     };
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
       method: "POST",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json"
-      },
+      headers: headers,
       body: JSON.stringify(bookingData)
     })
 
@@ -227,10 +219,7 @@ const Booking = () => {
             try {
               const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`, {
                 method: "PUT",
-                headers: {
-                  "Authorization": "Bearer " + accessToken,
-                  "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: JSON.stringify({})
               })
 
@@ -260,10 +249,7 @@ const Booking = () => {
             try {
               const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`, {
                 method: "DELETE",
-                headers: {
-                  "Authorization": "Bearer " + accessToken,
-                  "Content-Type": "application/json"
-                },
+                headers: headers,
                 body: JSON.stringify({})
               })
               loadBookings();
@@ -311,7 +297,8 @@ const Booking = () => {
                 <div className={`desk-description ${desk.id === clickedDeskId ? 'clicked' : ''}`} 
                   onClick={() => setClickedDeskId(desk.id)}
                 >
-                  <p className="item-name">{desk.equipment}</p>
+                  <p className="item-name">{desk.remark}</p>
+                  <p className="item-name">{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p>
                   <p className="item-taken">{t("available")}</p>
                 </div>
               </div>
