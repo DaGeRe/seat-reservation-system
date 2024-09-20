@@ -1,0 +1,10 @@
+@SpringBootTest
+@Testcontainers
+@AutoConfigureMockMvc
+public class MySpringBootAppTests {
+    @Container
+    public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
+            .withDatabaseName("test")
+            .withUsername("test")
+            .withPassword("test");
+}

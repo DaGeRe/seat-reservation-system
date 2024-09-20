@@ -10,6 +10,8 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 
 export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom}) {
     const [allRooms, setAllRooms] = React.useState([]);
+    /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
+    const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
     
@@ -17,6 +19,16 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
         getAllRooms();
       }, []);
     
+    /** Set isHoveredOverOldRoom to true to indicate that the mousepointer is above an button that locates known room on the map.*/
+    const handleMouseEnter = () => {
+        setIsHoveredOverOldRoom(true);
+    };
+    
+    /** Set isHoveredOverOldRoom to false to indicate that the mousepointer is not above an button that locates an known room on the map.*/
+    const handleMouseLeave = () => {
+        setIsHoveredOverOldRoom(false);
+    };
+
     async function getAllRooms(){
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
             method: 'GET',
@@ -31,6 +43,14 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
         }
 
     const handleMouseClick = (e) => {
+        /**
+         * We check if the mouse pointer is above an button that locates an known room on the map.
+         * If so we ignore the mouseclick. This happens because otherwise the new room will be positioned
+         * on an random place on the map. This behaviour is a bug and this is only a workaround.
+         */
+        if (isHoveredOverOldRoom) {
+            return;
+        }
         const rect = e.target.getBoundingClientRect();
         const x = e.clientX - rect.left; // X coordinate within the image
         const y = e.clientY - rect.top; // Y coordinate within the image
@@ -65,7 +85,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
             className='image-container'
             onMouseDown={handleMouseClick}
         > 
-            <img src={floorImage} alt='Example' className='floor-image' />
+            <img src={floorImage} alt='floorImage' className='floor-image' />
                 {x != 0.0 && y!= 0.0 && (
                     <div
                         className='image-icon'
@@ -99,16 +119,19 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                              <HtmlTooltip
                                 title={
                                   <React.Fragment>
-{/*                                     <em>x: {room.x} y: {room.y}</em>
-                                    <br></br> */}
                                     <em>{room.remark}</em>
                                   </React.Fragment>
                                 }
                               >
-                                <IconButton 
+                                <IconButton
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
                                     onClick={_ => {
                                         if (setCurrentRoom) {
                                             setCurrentRoom(room);
+                                        }
+                                        else {
+
                                         }
                                 }}>
                                   <LaptopIcon

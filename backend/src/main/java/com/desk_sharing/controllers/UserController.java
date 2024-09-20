@@ -70,9 +70,7 @@ public class UserController {
                 loginDto.getPassword()
             )
         );
-
-
-
+        
         // If login was successful search for the dataset in the database.
         UserEntity user = userRepository.findByEmail(loginDto.getEmail());   
         if (user == null) {
