@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://jus-srv-test30.justiz.sachsen.de:3307/mydatabase
+    username: root
+    password: mypasss

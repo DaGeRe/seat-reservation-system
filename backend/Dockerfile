@@ -20,9 +20,10 @@ COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
 # Copy cert stuff
 COPY $PATH_TO_TLS src/main/resources/tls
 
+RUN mvn test
+
 # Build the Maven project
 RUN mvn clean package
-
 # Use a lightweight Java runtime image
 #FROM openjdk:11-jre-slim
 FROM openjdk:24-slim-bullseye
