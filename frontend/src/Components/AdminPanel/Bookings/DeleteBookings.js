@@ -7,10 +7,13 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
+import {roomToOption, optionToRoomId} from './RoomAndOption';
 
 export default function DeleteBookings({ deleteBookingsModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = {
+    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+    'Content-Type': 'application/json',
+  };
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
   const [allRooms, setAllRooms] = React.useState([]);
@@ -23,11 +26,8 @@ export default function DeleteBookings({ deleteBookingsModal }) {
 
       async function getAllRooms(){
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'GET',
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           console.log(data);
@@ -41,11 +41,8 @@ export default function DeleteBookings({ deleteBookingsModal }) {
       async function getAllBookings(){
         
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'GET',
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           console.log(data);
@@ -62,11 +59,8 @@ export default function DeleteBookings({ deleteBookingsModal }) {
 
     async function deleteBookingsById(id){
         await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
-          method: "DELETE",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
+          method: 'DELETE',
+          headers: headers,
           body: JSON.stringify({}),
         });
         toast.success(t("bookingDeleted"));
@@ -75,24 +69,18 @@ export default function DeleteBookings({ deleteBookingsModal }) {
 
     async function searchBooking(){
         if(selectedRoom){
-            let idSplit = selectedRoom.split("(");
-            let idVal = idSplit[1].split(")");
-            let roomId = idVal[0];
+           const roomId = optionToRoomId(selectedRoom);
 
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllBookings(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-
+              method: 'GET',
+              headers: headers,
+            }).then(resp => {
+              resp.json().then(data => {
+                setAllBookings(data);
+              });
+            }).catch(error => {
+              console.log("login user err " + error);
+            });
         }
     }
 
@@ -105,7 +93,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type + ' - ' + option.remark))}
+              options={allRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}
