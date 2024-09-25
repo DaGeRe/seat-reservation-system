@@ -22,8 +22,10 @@ public class AddUserTest {
 
     @Test
     public void testFindByEmail_NotFound() {
-     
-        // Verify the result
-        assertNull(null); 
+        int i = 0;  
+        // Verify the result 
+        assertNull(null);  
     }
+
+    
 }

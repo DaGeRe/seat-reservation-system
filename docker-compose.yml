@@ -36,6 +36,14 @@ services:
 
   backend:
     restart: unless-stopped
+    tty: true
+    stdin_open: true
+    #command: mvn test
+    #stdin_open: true
+    #tty: true
+    volumes:
+      - ./test-results:/foo:rw
+      #- ./test-results:/app/target/surefire-reports
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 

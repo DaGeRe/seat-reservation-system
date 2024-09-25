@@ -19,30 +19,58 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<!--java.version>11</java.version-->
+        <!-- Use JUnit 5 -->
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <!-- Use latest Testcontainers version -->
+        <testcontainers.version>1.18.3</testcontainers.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>
-		<!--<Test>-->
-<dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <version>5.9.0</version>
-    <scope>test</scope>
-</dependency>
-    <!-- Testcontainers for MariaDB -->
-    <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>mariadb</artifactId>
-        <version>1.16.0</version>
-        <scope>test</scope>
-    </dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-	<!--</Test>-->
+        <!-- Testcontainers Core dependency -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers JUnit 5 integration -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Specific Testcontainers module for MariaDB -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mariadb</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- MariaDB JDBC driver (keep only one version) -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <!-- <version>3.0.0</version> -->
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -87,7 +115,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<!--version>1.18.24</version-->
 			<version>1.18.28</version>
 		</dependency>
 		<dependency>
@@ -99,56 +126,6 @@
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-
-		<!-- <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-</dependency> -->
-		<!-- <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>6.0.0</version> 
-			<scope>test</scope>
-		</dependency> 
-		<dependency>
-		<groupId>org.springframework</groupId>
-    	<artifactId>spring-core</artifactId>
-		<version>6.0.0</version> 
-	</dependency> 
-			<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.18.0</version>
-		</dependency>
-	
-	
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-context</artifactId>
-		<version>6.0.0</version>
-	</dependency>
-	-->
-
-
-
 	</dependencies>
 
 	<build>
@@ -162,19 +139,17 @@
 					</image>
 				</configuration>
 			</plugin>
-			 <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.0.0-M5</version> <!-- Make sure you're using a recent version -->
-            <configuration>
-                <includes>
-					<!--skipTests>false</skipTests-->
-					<redirectTestOutputToFile>false</redirectTestOutputToFile>
-					<reportsDirectory>/foo</reportsDirectory>
-                    <include>**/*Test.java</include>
-                </includes>
-            </configuration>
-        </plugin>
+			<!-- Maven Surefire plugin to run tests with JUnit 5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
