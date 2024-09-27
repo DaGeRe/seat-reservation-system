@@ -42,8 +42,9 @@ services:
     #stdin_open: true
     #tty: true
     volumes:
-      - ./test-results:/foo:rw
-      #- ./test-results:/app/target/surefire-reports
+      #- ./test-results:/foo:rw
+      #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
@@ -59,6 +60,7 @@ services:
       - database
     environment:
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
+      - DOCKER_HOST=unix:///var/run/docker.sock
       - PW_TLS=${PW_TLS}
       - PW_DB=${PW_DB}
 
