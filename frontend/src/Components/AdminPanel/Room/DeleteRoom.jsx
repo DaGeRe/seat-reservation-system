@@ -10,10 +10,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 export default function DeleteRoom({ deleteRoomModal }) {
-  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
   const { t } = useTranslation();

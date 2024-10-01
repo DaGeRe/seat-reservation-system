@@ -17,7 +17,7 @@ import com.desk_sharing.entities.Booking;
 @Service
 public class UserService  {
     
-     @Autowired
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -36,27 +36,6 @@ public class UserService  {
             user = (UserEntity) hibernateProxy.getHibernateLazyInitializer().getImplementation();
         }
         return user;
-    }
-
-    public UserEntity registerUser(UserEntity user) {
-        if (!userRepository.existsByEmail(user.getEmail())) {
-            // Encrypt the password before saving
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-    
-            return userRepository.save(user);
-        }
-        else return null;
-    }
-
-    public UserEntity loginUser(String email, String password) {
-        UserEntity user = userRepository.findByEmail(email);
-        if (user != null) {
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return user;
-            }
-            else return null;
-        }
-        return null;
     }
 
     public UserEntity findByEmail(String email) {

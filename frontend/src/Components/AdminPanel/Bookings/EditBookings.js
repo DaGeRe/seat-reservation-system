@@ -10,8 +10,7 @@ import EditBookingModal from './EditBookingsModal';
 import BookingTable from './BookingTable';
 
 export default function EditBookings({ editBookingsModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
   const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
@@ -28,11 +27,8 @@ export default function EditBookings({ editBookingsModal }) {
 
   async function getAllRooms(){
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      method: 'GET',
+      headers: headers,
     }).then(resp => {
       resp.json().then(data => {
         setAllRooms(data);
@@ -67,11 +63,8 @@ export default function EditBookings({ editBookingsModal }) {
       let roomId = idVal[0];
 
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
+        method: 'GET',
+        headers: headers,
       }).then(resp => {
         resp.json().then(data => {
           setAllBookings(data);

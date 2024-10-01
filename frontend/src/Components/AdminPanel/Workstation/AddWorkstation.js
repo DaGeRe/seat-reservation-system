@@ -9,10 +9,11 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  const headers = {
+  /* const headers = {
     'Authorization': 'Bearer ' +  localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');

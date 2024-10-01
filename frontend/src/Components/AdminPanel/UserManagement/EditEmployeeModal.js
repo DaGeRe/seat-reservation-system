@@ -10,7 +10,8 @@ import { useTranslation } from "react-i18next";
 export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
   nameFromDb, surnameFromDb, adminFromDb, visibilityFromDb }) {
   // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  //const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [email, setEmail] = React.useState(emailFromDb);
   const [name, setName ] = React.useState(nameFromDb);
@@ -31,10 +32,8 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
 
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },body: JSON.stringify({
+      headers: headers,
+      body: JSON.stringify({
         "email": email,
           "name": name,
           "surname": surname,

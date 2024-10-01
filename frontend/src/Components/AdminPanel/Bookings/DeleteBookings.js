@@ -10,10 +10,11 @@ import BookingTable from './BookingTable';
 import {roomToOption, optionToRoomId} from './RoomAndOption';
 
 export default function DeleteBookings({ deleteBookingsModal }) {
-  const headers = {
+/*   const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
   const [allRooms, setAllRooms] = React.useState([]);

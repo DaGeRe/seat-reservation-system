@@ -15,10 +15,11 @@ import deskToOption from './DeskToOption'
 import optionToDeskId from './OptionToDeskId'
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
-  const headers = {
+ /*  const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);

@@ -1,0 +1,553 @@
+[33mcommit e61c4bb05dd4df0f2e417d4757410a1b17a16869[m[33m ([m[1;36mHEAD -> [m[1;32mpassingHeaders[m[33m, [m[1;31morigin/DEV[m[33m, [m[1;32mbackend_dockerfile[m[33m, [m[1;32mDEV[m[33m)[m
+Author: Your Name <you@example.com>
+Date:   Fri Sep 27 18:40:31 2024 +0200
+
+    MyTest.java still dont work.
+
+[33mcommit f00f0226e65448c498b48d83ace792d1eeafcb17[m[33m ([m[1;32me2e[m[33m, [m[1;32mbacken_dockerfile[m[33m)[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Sep 25 18:18:02 2024 +0200
+
+    Bug is fixed. Now room is transfered to an option and option to room id by RoomAndOption.roomToOption and RoomAndOption.optionToRoomId.
+
+[33mcommit e6fc8408f8461c5d93153325245c448af7a551f0[m[33m ([m[1;32mpom_update[m[33m)[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Sep 25 17:40:08 2024 +0200
+
+    E.g. update pom.xml
+
+[33mcommit 998b1a4c36d1a2620c1c87938250cc3dfda3cac3[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Tue Sep 24 18:04:17 2024 +0200
+
+    Add   <groupId>org.testcontainers</groupId>
+            <artifactId>mariadb</artifactId> to pom.xml for mariadb test containers.
+
+[33mcommit 8fad034d800b09dd6a0d7370e6bca3c53f658d30[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 23 19:00:59 2024 +0200
+
+    Add basic unit test settings.
+
+[33mcommit d6f82518f2d0b16f3402f570170afe8ca8359a3b[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Fri Sep 20 09:08:32 2024 +0200
+
+    When booking, the user now is shown the remarks of the rooms that he can choose from.
+
+[33mcommit 67aaf8146fb505179e2edef9f19a6b1203d1963d[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Fri Sep 20 08:48:21 2024 +0200
+
+    To avoid an bug in FloorImage.jsx that places a new room on a random point on the map, we check if the mouse pointer is over an already know room before apply the logic when clicking.
+
+[33mcommit 8e0590b1e4993197484ff0bdd01543970657177f[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 19 10:32:04 2024 +0200
+
+    Cascade delete of room works with reusable dialog.
+
+[33mcommit e077bf7fc65e818e898db8fbd0e0b3a3ad1d5e93[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 19 09:50:40 2024 +0200
+
+    Deleteion of workstation with bookings works.
+
+[33mcommit 5dbe80d15a5c80439c8418a8d3c238293119c14b[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 19 08:32:47 2024 +0200
+
+    If a employee is deleted that has bookings the user will be asked if the bookings shall also be deleted.
+
+[33mcommit 339e197aa93ab5eb052f5e80f58fe3ab6bcef8d7[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Sep 18 14:47:31 2024 +0200
+
+    Fix export_db.sh
+
+[33mcommit ad96cc661b887da9b1f6e4dc5246901d5a978786[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Sep 18 14:33:22 2024 +0200
+
+    Remarks for workstations added.
+
+[33mcommit 37779e58dbce83f0e5ae09d9a7f44cf827a3f0f0[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Wed Sep 18 09:15:38 2024 +0200
+
+    Add the dump test_01.sql as the default dump before hand the master version to test.
+
+[33mcommit 20cfa495802f8c5484a8c110003fad9444ef4db9[m
+Merge: 1daeca5 96987c9
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 16 08:22:38 2024 +0200
+
+    Merge
+
+[33mcommit 96987c917bb6505600548f76ccea8bd1a1a18bd8[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 16 08:21:23 2024 +0200
+
+    Shows sum of bookings in calender.
+
+[33mcommit 0fdf4b13b6ba7da4654cf3ba1c2adeb6e45054d5[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 16 07:34:12 2024 +0200
+
+    infotext working.
+
+[33mcommit 017ff89524c635f12ef810a360a2bce031e86cbe[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 16 06:08:22 2024 +0200
+
+    Rm debug info.
+
+[33mcommit 1daeca5184b65343e47e2731ec2101ffa0192dca[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Mon Sep 16 06:07:10 2024 +0200
+
+    Rm debug info.
+
+[33mcommit 1c63fd24ad0a22e358b91878d10d531c890dc03e[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Sun Sep 15 15:00:46 2024 +0200
+
+    Fix .gitignore.
+
+[33mcommit 7d5f8f3414d6be8d91fcbb60bf51cad6f3c2ac20[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sun Sep 15 14:59:09 2024 +0200
+
+    Fix .gitignore
+
+[33mcommit 981377996c6c522f05534607dc554286875548d6[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Sun Sep 15 14:55:50 2024 +0200
+
+    some minor fixes.
+
+[33mcommit 6413920b0d2d06bd0d538a287bd33ac37ce94ea3[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sun Sep 15 14:24:12 2024 +0200
+
+    Cascade deleting works.
+
+[33mcommit e73c5e879eecdadad0f595f4a64d1b007fff8e9a[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sun Sep 15 10:54:07 2024 +0200
+
+    Change timezone for db in dockerfile.
+
+[33mcommit 707161f6ca5bd0829b3f4e8f82b9de2196c56f45[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 22:25:23 2024 +0200
+
+    Rm statistics tab and edit bookings.
+
+[33mcommit 5d5f0b442172cbb13c817e47cd79013463ff8a00[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 21:11:56 2024 +0200
+
+    Working.
+
+[33mcommit 95a70c4eb622272673431587eabc99140a89dca0[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 15:19:08 2024 +0200
+
+    Able to change password.
+
+[33mcommit ece1d8ec6f2de25b80518e06fb8e31882f5dee61[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 14:46:18 2024 +0200
+
+    isadmin and visibility boolean again.
+
+[33mcommit fef1dd38913235a1537ac866c29cbefdb3444640[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 13:11:38 2024 +0200
+
+    Import export works.
+
+[33mcommit c9f484f82bcebba71b8edb8c1f25a13461667959[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 09:43:35 2024 +0200
+
+    Setting admin works.
+
+[33mcommit 11b3a2277a58b2e7890c2d176a754a5f04ff2362[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Sep 14 08:52:48 2024 +0200
+
+    .
+
+[33mcommit 661a771050d992339a1f629505e82df78b666b5d[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Fri Sep 13 16:27:05 2024 +0200
+
+    .
+
+[33mcommit 0317172ca5077cd6d606934cd52d2129db693a56[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 13:47:19 2024 +0200
+
+    Some minor beauty changes.
+
+[33mcommit 2236385f576276cf62162c68777171f147cec2fd[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 13:45:34 2024 +0200
+
+    Rm empty line in FloorImage.jsx
+
+[33mcommit c208e50d822897dd4fc39f4275742ffdb1dbfdc5[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 13:38:35 2024 +0200
+
+    FloorImage works with % instead of px.
+
+[33mcommit 0c9b279d94019340e88df95950e3b5b4a8d70ba3[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 11:56:41 2024 +0200
+
+    Seperate the floor map functionality to an seperate function.
+
+[33mcommit 9986a72654a4162defe9774a08b84d9c3dc5d090[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 09:19:25 2024 +0200
+
+    Some minor changes if one like to delete a room with bookings or desks. Must be implemented fully.
+
+[33mcommit b398ce91ee3e6e13c2226ced911f45d9eaff8598[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 08:50:42 2024 +0200
+
+    Let the user choose between first and ground floor while editing room.
+
+[33mcommit eff3031fd64d9e038d42a761238fee56c0a76a79[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Sep 12 08:37:31 2024 +0200
+
+    Able to edit remarks for an room.
+
+[33mcommit cee242297746859bad5759f9ce725b3c0730ab99[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Tue Sep 10 19:44:03 2024 +0200
+
+    Refactoring frontend/src/Components/AdminPanel/Room/EditRoom.jsx
+
+[33mcommit 7699461a52dae728d8a3e7df4db469530f9ff756[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Tue Sep 10 19:15:19 2024 +0200
+
+    Some refactoring in frontend/src/Components/AdminPanel/Room/DeleteRoom.jsx
+
+[33mcommit 287d3bf0415d85941729dabfd395a123c9e54a9d[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Tue Sep 10 19:05:10 2024 +0200
+
+    Rm debug output from frontend/src/Components/AdminPanel/Bookings/EditBookings.js
+
+[33mcommit a87a482248f875b2ee6f18b01b59d1db49a9dfb2[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Tue Sep 10 11:05:33 2024 +0200
+
+     Auf Branch del_room
+     Zum Commit vorgemerkte Änderungen:
+            geändert:       backend/src/main/java/com/desk_sharing/controllers/DeskController.java
+            geändert:       backend/src/main/java/com/desk_sharing/repositories/BookingRepository.java
+            geändert:       backend/src/main/java/com/desk_sharing/security/SecurityConstants.java
+            geändert:       backend/src/main/java/com/desk_sharing/services/DeskService.java
+            geändert:       frontend/src/Components/AdminPanel/Workstation/DeleteWorkstation.js
+            geändert:       frontend/src/Components/Home/Booking.jsx
+            geändert:       frontend/src/locales/de.json
+            geändert:       frontend/src/locales/en.json
+    
+    Del bookings for rooms, if room needs to be deleted.
+
+[33mcommit 899a94c0aef46a1d8c21107d8b8d1d34846f0d3a[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 9 07:31:06 2024 +0200
+
+    Update url to delete booking in MyBookings.jsx. #2
+
+[33mcommit 642ee5f42cd2320c6a91cff7e685a42a2be722c2[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 9 07:30:40 2024 +0200
+
+    Update url to delete booking in MyBookings.jsx.
+
+[33mcommit d6bc10628f3f76501017cc17a8f50c960ebe2622[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 11:28:32 2024 +0200
+
+    Rm unused code from frontend/src/Components/AdminPanel/Room/AddRoom.jsx again.
+
+[33mcommit 0dfc32b85b25b0d7292aa7b7b6f499248ef64f28[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 11:20:10 2024 +0200
+
+    Rm unused code from frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+
+[33mcommit b3f66a477e93477341a9bec811f2b569343cc9c6[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 11:09:59 2024 +0200
+
+    Auf Branch click_image2
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       backend/src/main/java/com/desk_sharing/entities/Room.java
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.css
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+            geändert:       frontend/src/locales/de.json
+            geändert:       frontend/src/locales/en.json
+    
+    - Add the column remark to Room.
+    - Display tooltip with remark if hovering over room icon
+    in AddRoom.
+
+[33mcommit 3d609a399b3be98880766d588436506325538119[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 09:34:44 2024 +0200
+
+    Auf Branch click_image2
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       backend/src/main/java/com/desk_sharing/security/JWTGenerator.java
+            geändert:       backend/src/main/java/com/desk_sharing/security/SecurityConfiguration.java
+            geändert:       backend/src/main/java/com/desk_sharing/security/SecurityConstants.java
+            geändert:       frontend/Dockerfile
+            geändert:       frontend/src/Components/AdminPanel/AdminPage.jsx
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.css
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    
+    Able to create a new room by clicking on the floor image.
+
+[33mcommit dd1602fff923a3918390a097f59bdaf369f88b2f[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 09:02:59 2024 +0200
+
+    Auf Branch click_image2
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    Print all rooms on image.
+
+[33mcommit e96fdd3ba512c308a33b4e71e7f79bc8bb689088[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 06:57:58 2024 +0200
+
+    Add 'Ground' as default floor in frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+
+[33mcommit 106af71dd2cb870a51f80afa4e4710f994703608[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Mon Sep 2 06:51:11 2024 +0200
+
+    Read only x and y coordinates input.
+
+[33mcommit b4b4b95cc797cde6d8946145ee59d562c630f54c[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Sat Aug 31 15:37:10 2024 +0200
+
+    Auf Branch click_image2
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.css
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    
+    Coordinates working when hovering over image.
+
+[33mcommit 12a60b49533812f741776114cfd6ade498249e34[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 28 12:01:10 2024 +0200
+
+    Auf Branch click_image
+    Zum Commit vorgemerkte Änderungen:
+            neue Datei:     frontend/src/Components/AdminPanel/Room/AddRoom.css
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    
+    Works more or less...
+
+[33mcommit 0112145ba10d34dcbc16826f2b02a70175eadd99[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Aug 22 07:10:55 2024 +0200
+
+    Auf Branch rooms
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    
+    Change the free text area for input of the floor if adding a room to a select field with First/Ground elements.
+
+[33mcommit 59f04be7a8f9da08de000c571aa603789ad253b4[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Aug 22 06:36:14 2024 +0200
+
+    Auf Branch DEV
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+    
+    Rm some unused variables.
+
+[33mcommit b42fd055e9186124da7d7e6c35c99340396bcc7b[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Aug 22 06:29:45 2024 +0200
+
+    Auf Branch DEV
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/UserManagement/DeleteEmployee.js
+    
+    Rm debug output.
+
+[33mcommit 133de18dfa41347b43fd11b3d72d654b19ff45a0[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Aug 22 06:07:24 2024 +0200
+
+    Make port changeable in post_register.sh.
+
+[33mcommit 0ec307d38ec00ff98086d75822ad6790dd998e25[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Thu Aug 22 06:05:41 2024 +0200
+
+    Auf Branch foo
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       docker-compose.yml
+    
+    - Make Volume dynamic for service database.
+    - Change container port to 3306 for mariadb.
+
+[33mcommit c1e46792411c54b78fdb1be6f118d7db880d3880[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Wed Aug 21 12:07:42 2024 +0200
+
+    Auf Branch DEV
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       scripts/post_login.sh
+            geändert:       scripts/post_register.sh
+    
+    Adding remark regarding (un-)setting http_proxy/https_proxy.
+
+[33mcommit fd01d9e3e2e14357696d1d49b0aba3dd7944f107[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Wed Aug 21 12:05:33 2024 +0200
+
+    Auf Branch DEV
+     Zum Commit vorgemerkte Änderungen:
+            geändert:       backend/src/main/java/com/desk_sharing/security/SecurityConfiguration.java
+    
+    Adding https://jus-srv-test30.justiz.sachsen.de:3000 to cors.
+
+[33mcommit b43cb8f87dcef0fcfc9f6ba360a610cb89eb543d[m
+Author: Richard Lehmann <Richard.Lehmann@lit.justiz.sachsen.de>
+Date:   Wed Aug 21 12:01:15 2024 +0200
+
+    Auf Branch DEV
+    Ihr Branch ist auf demselben Stand wie 'origin/DEV'.
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       docker-compose.yml
+    
+    - Add extra network for normal use and development.
+    - Change inner port for database service to ${DATABASE_PORT}.
+
+[33mcommit 473ba29b2b7e2b282d92f9b600b5c3943fe1350b[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 10:54:56 2024 +0200
+
+    Rm backend/src/main/resources/  from .gitignore to introduce backend/src/main/resources/ to git.
+
+[33mcommit 25a559d1a522e292075332723a15f0f5e06efe3d[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 10:53:44 2024 +0200
+
+    Rm *.sh from .gitignore to introduce scripts/ to git.
+
+[33mcommit a39ebdd72234a943622115594bdda3099816e490[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 10:39:12 2024 +0200
+
+    Auf Branch DEV
+    Ihr Branch ist auf demselben Stand wie 'origin/DEV'.
+     Zum Commit vorgemerkte Änderungen:
+            geändert:       database/scripts/add_roles.sh
+            geändert:       database/scripts/db.sh
+            geändert:       database/scripts/delete_all_users.sh
+            geändert:       database/scripts/select_all_users.sh
+            geändert:       docker-compose.yml
+            geändert:       nginx/Dockerfile
+            geändert:       nginx/nginx.conf
+    
+    - Switch from plaintext password for the db to store it into an environment variable.
+    - Some changes on nginx.
+
+[33mcommit ed8f3aa2fe21462abe34358f0ab5d7c08e578b5a[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 10:26:52 2024 +0200
+
+    Rm some unused things from frontend/src/Components/AdminPanel/UserManagement/AddEmployee.jsjs
+
+[33mcommit dd50b2fc0618175f515b16a0cb90e5b427727921[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 09:59:47 2024 +0200
+
+    Rm some unused things from DeleteWorkstation.js
+
+[33mcommit e879415287bbfaa68df3cc60e731457b9349fdbe[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 09:39:38 2024 +0200
+
+    Add the environment variable PORT to  in docker-compose.yml for the frontend service. Also forward the outside port to the same inside port (= ) to avoid an browser warning.
+
+[33mcommit ab20373a81253f6093ffd302012066e121c01ef8[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 08:18:26 2024 +0200
+
+    Auf Branch url_change
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/src/Components/AdminPanel/AdminPage.jsx
+            geändert:       frontend/src/Components/AdminPanel/Bookings/DeleteBookings.js
+            geändert:       frontend/src/Components/AdminPanel/Bookings/EditBookings.js
+            geändert:       frontend/src/Components/AdminPanel/Bookings/EditBookingsModal.js
+            geändert:       frontend/src/Components/AdminPanel/Room/AddRoom.jsx
+            geändert:       frontend/src/Components/AdminPanel/Room/DeleteRoom.jsx
+            geändert:       frontend/src/Components/AdminPanel/Room/EditRoom.jsx
+            geändert:       frontend/src/Components/AdminPanel/UserManagement/AddEmployee.js
+            geändert:       frontend/src/Components/AdminPanel/UserManagement/DeleteEmployee.js
+            geändert:       frontend/src/Components/AdminPanel/UserManagement/EditEmployee.js
+            geändert:       frontend/src/Components/AdminPanel/UserManagement/EditEmployeeModal.js
+            geändert:       frontend/src/Components/AdminPanel/Workstation/AddWorkstation.js
+            geändert:       frontend/src/Components/AdminPanel/Workstation/DeleteWorkstation.js
+            geändert:       frontend/src/Components/AdminPanel/Workstation/EditWorkstation.js
+            geändert:       frontend/src/Components/Floors/Floor.jsx
+            geändert:       frontend/src/Components/Home/Booking.jsx
+            geändert:       frontend/src/Components/Home/Home.jsx
+            geändert:       frontend/src/Components/Home/MyBookings.jsx
+    
+    Add the full url to the backend to each fetch statement.
+
+[33mcommit 67949330976d10d02ce243957d957104298f2c65[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 08:12:45 2024 +0200
+
+    Commit-Ersteller: root <root@jus-srv-test30.justiz.sachsen.de>
+    HEAD losgelöst bei bb05858
+    Zum Commit vorgemerkte Änderungen:
+            geändert:       frontend/Dockerfile
+    
+    Rm useless comment.
+
+[33mcommit bb05858ae1dff1bc991850ea2be3489820eda279[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 07:41:12 2024 +0200
+
+    Add environment variable REACT_APP_BACKEND_URL to docker-compose.yml for the frontend service and use it in LoginPage.jsx.
+
+[33mcommit 32d46676f6c8f9baf0d3699abaaa960ecd66bf89[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 07:17:33 2024 +0200
+
+    Add depends_on to docker_compose.yml for frontend service.
+
+[33mcommit 09e24ff94c14d80992fa1b1ad12fc06b8ee7969c[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 07:14:09 2024 +0200
+
+    mv *.sh to script folder and PATH_TO_TLS variable to building process.
+
+[33mcommit 42da551ec73eed2cf0d84c238d7b82341c9ce0cd[m
+Author: root <root@jus-srv-test30.justiz.sachsen.de>
+Date:   Wed Aug 21 06:47:15 2024 +0200
+
+    New init commit.

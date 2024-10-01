@@ -17,10 +17,11 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 import FloorImage from '../FloorImage/FloorImage.jsx'
 
 const Floor = () => {
-  const headers = {
+  /* const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedRoom, setSelectedRoom] = useState(null);

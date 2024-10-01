@@ -10,8 +10,7 @@ import EditEmployeeModal from './EditEmployeeModal';
 import EmployeeTable from './EmployeeTable';
 
 export default function EditEmployee({ editEmployeeModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [allEmployee, setAllEmployee] = React.useState([]);
   const [isEditEmployeeOpen, setIsEditEmployeeOpen] = React.useState(false);
@@ -35,10 +34,7 @@ export default function EditEmployee({ editEmployeeModal }) {
   async function getAllEmployee(){
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/get`, {
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     }).then(resp => {
         resp.json().then(data => {
         setAllEmployee(data);

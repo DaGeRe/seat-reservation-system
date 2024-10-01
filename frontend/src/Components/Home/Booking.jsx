@@ -12,10 +12,11 @@ import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
 
 const Booking = () => {
-  const headers = {
+ /*  const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json'
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();

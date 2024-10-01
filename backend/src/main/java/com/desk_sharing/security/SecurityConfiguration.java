@@ -74,7 +74,6 @@ public class SecurityConfiguration {
 
     @Bean
     public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
-        
         DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
@@ -100,12 +99,10 @@ public class SecurityConfiguration {
             
             .and()
             .authorizeRequests()
-            .expressionHandler(customWebSecurityExpressionHandler()) // <- Einschub
+            .expressionHandler(customWebSecurityExpressionHandler())
             .antMatchers("/users/login").permitAll() // Allow login even if you not authorized.
             .antMatchers("/users/register").permitAll() // Allow registration even if you not authorized.
-            //.antMatchers("/users/gettest").hasRole("USER")
             .antMatchers("/users/admin/**").hasRole("ADMIN")
-            //.antMatchers("/users/{\\d+}").hasRole("USER")
             .anyRequest().authenticated()
         ;
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

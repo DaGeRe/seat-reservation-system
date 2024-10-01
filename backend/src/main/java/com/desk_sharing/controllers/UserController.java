@@ -63,14 +63,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){ 
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
+        // Check if mail exists and password is correct.
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
             )
         );
-        
+
         // If login was successful search for the dataset in the database.
         UserEntity user = userRepository.findByEmail(loginDto.getEmail());   
         if (user == null) {
@@ -125,7 +126,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
         UserEntity updateUser = userService.updateUserById(id, user);
-        System.out.println("updateUserById: " + user.getPassword());
         HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
         return ResponseEntity.status(status).body(updateUser);
     }

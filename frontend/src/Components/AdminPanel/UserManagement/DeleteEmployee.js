@@ -8,10 +8,7 @@ import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 
 export default function DeleteEmployee({ deleteEmployeeModal }) {
-  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [currUserId, setCurrUserId] = React.useState(-1);
   const { t } = useTranslation();
   const [allEmployee, setAllEmployee] = React.useState([]);

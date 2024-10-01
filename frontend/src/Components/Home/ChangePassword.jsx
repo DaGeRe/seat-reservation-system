@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
 const ChangePassword = ({ isOpen, onClose }) => {
-  const headers = {
+ /*  const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json'
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const userId = localStorage.getItem("userId");
   const [formData, setFormData] = useState({

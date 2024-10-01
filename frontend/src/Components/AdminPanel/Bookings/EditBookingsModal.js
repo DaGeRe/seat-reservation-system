@@ -9,8 +9,7 @@ import { useTranslation } from "react-i18next";
 import moment from 'moment';
 
 export default function EditBookingModal({ editBookingModal, id, startTimeFromDb, endTimeFromDb, onSuccess }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [startTime, setStartTime] = React.useState("ttt");
   const [endTime, setEndTime] = React.useState("fff");
@@ -30,11 +29,9 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
     }
       
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
-      method: "PUT",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },body: JSON.stringify({
+      method: 'PUT',
+      headers: headers,
+      body: JSON.stringify({
         "begin": moment(startTime, "HH:mm:ss a").format("HH:mm:ss"),
         "end": moment(endTime, "HH:mm:ss a").format("HH:mm:ss"),
         "id": id

@@ -9,15 +9,11 @@ import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
-  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [now, setNow] = useState(moment());
-
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const handleSelectSlot = ({ start }) => {
     const selectedDateEvent = {
       start,
@@ -33,6 +29,7 @@ const Home = () => {
   };
 
   const generateMonthDays = async (date) => {
+    console.log();
     const currentMonth = moment(date).startOf('month');
     const daysInMonth = [];
     const eventsForMonth = [];
@@ -41,7 +38,6 @@ const Home = () => {
       const day = currentMonth.clone().add(i, 'days');
       daysInMonth.push(day.format('YYYY-MM-DD'));
     }
-
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`, {
         method: 'POST',

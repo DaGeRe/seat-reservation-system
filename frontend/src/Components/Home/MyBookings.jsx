@@ -11,10 +11,11 @@ import EditBookingModal from "../AdminPanel/Bookings/EditBookingsModal";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 
 const MyBookings = () => {
-  const headers = {
+/*   const headers = {
     'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
     'Content-Type': 'application/json',
-  };
+  }; */
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
