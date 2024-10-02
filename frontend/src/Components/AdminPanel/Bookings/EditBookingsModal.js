@@ -7,6 +7,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
+import {putRequest} from "../RequestFunctions/PutRequest";
 
 export default function EditBookingModal({ editBookingModal, id, startTimeFromDb, endTimeFromDb, onSuccess }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -28,7 +29,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       return false;
     }
       
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
+/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify({
@@ -48,7 +49,24 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       }  
     }).catch(error => {
       console.log("login user err " + error);
-    });
+    }); */
+    putRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`,
+      JSON.stringify({
+        "begin": moment(startTime, "HH:mm:ss a").format("HH:mm:ss"),
+        "end": moment(endTime, "HH:mm:ss a").format("HH:mm:ss"),
+        "id": id
+      }),
+      () => {
+        toast.success(t('bookingUpdated'));
+        editBookingModal();
+        onSuccess();
+      },
+      () => {
+        console.log('Failing to update timing of booking.');
+      },
+      headers
+    );
   }
     
   return (
