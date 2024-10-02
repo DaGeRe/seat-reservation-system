@@ -10,14 +10,12 @@ import './AddRoom.css';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {postRequest} from "../../RequestFunctions/PostRequest";
+import {getRequest} from "../../RequestFunctions/GetRequest";
 
 export default function AddRoom({ addRoomModal }) {
-/*   const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  }; */
   const headers = JSON.parse(sessionStorage.getItem('headers'));
-  const [allRooms, setAllRooms] = React.useState([]);
+  //const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('Ground');
   const [status, setStatus] = React.useState('');
@@ -27,22 +25,19 @@ export default function AddRoom({ addRoomModal }) {
   const [remark, setRemark] = React.useState('');
   const helpText = t('helpAddRoom');
   
-    React.useEffect(() => {
-        getAllRooms();
-      }, []);
+/*     React.useEffect(() => {
+        //getAllRooms();
+      }, []); */
   
-    async function getAllRooms(){
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log(error);
-      });
-    }
+/*     async function getAllRooms() {
+      console.log('getAllRooms')
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        () => {},//setAllRooms,
+        () => {console.log('Failed to fetch rooms in AddRoom.jsx')},
+        headers
+      );
+    } */
 
   async function addRoom() {
     if (!x || !y) {
@@ -53,7 +48,7 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('fields_not_empty'));
       return false;
     }
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
+/*     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify({
@@ -70,7 +65,24 @@ export default function AddRoom({ addRoomModal }) {
     }).catch(error => {
       toast.error(t("roomCreationFailed"));
       console.log("room creation err " + error);
-    });
+    }); */
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
+      JSON.stringify({
+        'floor': floor,
+        'status': status,
+        'type': type,
+        'x': x,
+        'y': y,
+        'remark': remark
+      }),
+      (_) => {
+        toast.success(t('roomCreated'));
+        addRoomModal();
+      },
+      () => {console.log('Failed to create room in AddRoom.jsx.')},
+      headers
+    );
   }
     const handleClose = () => {
         addRoomModal();
@@ -91,7 +103,7 @@ export default function AddRoom({ addRoomModal }) {
                       label={t("floor")}
                       onChange={(e)=>{
                         setFloor(e.target.value);
-                        getAllRooms();
+                        //getAllRooms();
                       }}   
                     >
                       <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
