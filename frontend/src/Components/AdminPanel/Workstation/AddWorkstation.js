@@ -7,6 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {postRequest} from '../../RequestFunctions/PostRequest';
+import {getRequest} from '../../RequestFunctions/GetRequest';
 
 export default function AddWorkstation({ addWorkstationModal }) {
   /* const headers = {
@@ -28,6 +30,25 @@ export default function AddWorkstation({ addWorkstationModal }) {
     addWorkstationModal();
   }
 
+  async function getAllRooms() {
+/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+      method: 'GET',
+      headers: headers,
+    }).then(resp => {
+      resp.json().then(data => {
+        setAllRooms(data);
+      });
+    }).catch(error => {
+      console.log("login user err " + error);
+    }); */
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      setAllRooms,
+      () => {console.log('Failed to fetch all rooms in AddWorkstation.js');},
+      headers
+    );
+  };
+
   async function addWorkstation(){
     if(!selectedRoom){
       toast.error(t("selectRoomError"));
@@ -41,7 +62,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
       return false;
     }
 
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
+    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify({
@@ -55,20 +76,22 @@ export default function AddWorkstation({ addWorkstationModal }) {
         addWorkstationModal();
       }).catch(error => {
         console.log("login user err " + error);
-      });
-  }
-
-  async function getAllRooms() {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: 'GET',
-      headers: headers,
-    }).then(resp => {
-      resp.json().then(data => {
-        setAllRooms(data);
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    });
+      }); */
+      postRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks`,
+        JSON.stringify({
+          'deskId': deskId,
+          'roomId': roomId,
+          'equipment': equipment,
+          'remark': remark
+        }),
+        (_) => {
+          toast.success(t('deskCreated'));
+          addWorkstationModal();
+        },
+        () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
+        headers
+      );
   }
 
   return (

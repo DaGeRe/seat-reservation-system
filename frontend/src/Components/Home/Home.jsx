@@ -7,6 +7,7 @@ import "./Home.css";
 import "./HomeCalendar.scss";
 import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
+import { postRequest } from '../RequestFunctions/PostRequest';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -38,7 +39,7 @@ const Home = () => {
       const day = currentMonth.clone().add(i, 'days');
       daysInMonth.push(day.format('YYYY-MM-DD'));
     }
-    try {
+/*     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`, {
         method: 'POST',
         headers: headers,
@@ -63,7 +64,24 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
-    }
+    } */
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
+      JSON.stringify(daysInMonth),
+      (data) => {
+        for (const day in data) {
+          const newEvent = {
+            start: moment(day).startOf('day').toDate(),
+            end: moment(day).endOf('day').toDate(),
+            title: `${t('bookingsSum')}: ${data[day]}`,
+            allDay: true,
+          };
+          eventsForMonth.push(newEvent);
+        }
+      },
+      () => {console.log('Failed to post booking for date in Home.jsx.');},
+      headers
+    );
 
     setEvents(eventsForMonth);
     setNow(date);

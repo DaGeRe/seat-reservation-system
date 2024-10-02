@@ -113,7 +113,6 @@ const MyBookings = () => {
     } catch (error) {
       console.error('Error deleting booking:', error);
     } */
-    console.log('delete mybookings #1');
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`,
       JSON.stringify({}),

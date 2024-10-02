@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import { putRequest } from '../RequestFunctions/PutRequest';
+
 const ChangePassword = ({ isOpen, onClose }) => {
- /*  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json'
-  }; */
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const userId = localStorage.getItem("userId");
@@ -31,7 +29,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
       setError("New passwords do not match");
       return;
     }
-    try {
+/*     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`, {
         method: 'PUT',
         headers: headers,
@@ -50,7 +48,28 @@ const ChangePassword = ({ isOpen, onClose }) => {
     } catch (error) {
         console.error(t('passwordChangFailed'), error);
         setError(t('passwordChangFailed'));
-    }
+    } */
+    putRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`,
+      JSON.stringify({
+        oldPassword: formData.prevPassword,
+        newPassword: formData.newPassword
+      }),
+      (data) => {
+        if (data) {
+          toast.success(t('passwordChangedSuccessfully'));
+          onClose();
+        }
+        else {
+          setError(t('passwordChangFailed'));
+        }
+      },
+      () => {
+        console.error(t('passwordChangFailed'), error);
+        setError(t('passwordChangFailed'));
+      },
+      headers
+    );
   };
 
   if (!isOpen) return null;

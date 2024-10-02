@@ -1,7 +1,7 @@
 
 import './FloorImage.css'; 
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
-
+import {getRequest} from '../RequestFunctions/GetRequest';
 import { styled } from '@mui/material/styles';
 import firstFloorImage from '../../images/firstfloor.png';
 import secondFloorImage from '../../images/secondfloor.png'; 
@@ -30,7 +30,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     };
 
     async function getAllRooms(){
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+/*         await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
             method: 'GET',
             headers: headers,
         }).then(resp => {
@@ -39,8 +39,14 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
             });
         }).catch(error => {
             console.log(error);
-        });
-        }
+        }); */
+        getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+            setAllRooms,
+            () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');},
+            headers
+        );
+    }
 
     const handleMouseClick = (e) => {
         /**

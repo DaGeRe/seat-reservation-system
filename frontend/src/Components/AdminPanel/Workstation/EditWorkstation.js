@@ -7,8 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import deskToOption from './DeskToOption'
-import optionToDeskId from './OptionToDeskId'
+import {optionToDeskId, deskToOption} from './DeskAndOption'
+import {getRequest} from '../../RequestFunctions/GetRequest';
+import {putRequest} from '../../RequestFunctions/PutRequest';
 
 export default function EditWorkstation({ editWorkstationModal }) {
  /*  // The jwt.
@@ -34,7 +35,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function getAllRooms(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: 'GET',
       headers: headers,
     }).then(resp => {
@@ -43,7 +44,13 @@ export default function EditWorkstation({ editWorkstationModal }) {
       });
     }).catch(error => {
       console.log("login user err " + error);
-    });
+    }); */
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      setAllRooms,
+      () => {console.log('Failed to fetch all rooms in EditWorkstation.js.');},
+      headers
+    )
   }
 
   async function getDeskByRoomId(e){
@@ -52,7 +59,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
+      /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: 'GET',
         headers: headers,
       }).then(resp => {
@@ -61,12 +68,18 @@ export default function EditWorkstation({ editWorkstationModal }) {
         });
       }).catch(error => {
         console.log("login user err " + error);
-      });
+      }); */
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        setAllDesks,
+        () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
+        headers
+      );
     }
   }
 
   async function updateWorkstation(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`, {
+    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`, {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify({})
@@ -77,7 +90,17 @@ export default function EditWorkstation({ editWorkstationModal }) {
       });
     }).catch(error => {
       console.log("login user err " + error);
-    });
+    }); */
+    putRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`,
+      JSON.stringify({}),
+      (_) => {
+        toast.success(t('deskUpdate'));
+        editWorkstationModal();
+      },
+      () => {console.log('Failed to update workstation in EditWorkstation.js');},
+      headers
+    );
   }
   
 /*   const deskToOption = (desk) => {

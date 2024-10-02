@@ -11,8 +11,9 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
-import deskToOption from './DeskToOption'
-import optionToDeskId from './OptionToDeskId'
+import {optionToDeskId, deskToOption} from './DeskAndOption'
+import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
+import {getRequest} from '../../RequestFunctions/GetRequest';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
  /*  const headers = {
@@ -35,27 +36,32 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     deleteWorkstationModal();
   }
 
-  async function getAllRooms(){
-    const url = `${process.env.REACT_APP_BACKEND_URL}/rooms/status`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: headers
-    }).then(resp => {
-      resp.json().then(data => {
-        setAllRooms(data);
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    });
-  }
+  async function getAllRooms() {
+    /*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+          method: 'GET',
+          headers: headers,
+        }).then(resp => {
+          resp.json().then(data => {
+            setAllRooms(data);
+          });
+        }).catch(error => {
+          console.log("login user err " + error);
+        }); */
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      setAllRooms,
+      () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
+      headers
+    );
+  };
 
-  async function getDeskByRoomId(e){
-    if(e){
+  function getDeskByRoomId(e) {
+    if(e) {
         let idSplit = e.split("(");
         let idVal = idSplit[1].split(")");
         let roomId = idVal[0];
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
+/*         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: 'GET',
         headers: headers
       }).then(resp => {
@@ -64,13 +70,19 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         });
       }).catch(error => {
         console.log('login user err ' + error);
-      });
+      }); */
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        setAllDesks,
+        () => {console.log(`Failed to fetch all desks for roomid ${roomId} in DeleteWorkstation.js`);},
+        headers
+      );
     }
-  }
+  };
 
   async function deleteWorkstation(){
     if(selectedDesk){   
-      const url = `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`;
+/*       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`;
       try {
         fetch(url, {
           method: 'DELETE',
@@ -93,13 +105,28 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       });
     }catch (e) {
       console.log('nope');
-    }
+    } */
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`,
+        JSON.stringify({}),
+        (data) => {
+          if (data != 0) {
+            setOpenFfDialog(true);
+          }
+          else {
+            toast.success(t('deskDelete'));
+            deleteWorkstationModal();
+          }
+        },
+        () => {console.log('Failed to delete workstation in DeleteWorkstation.js');},
+        headers
+      );
     }
   }
 
   async function deleteWorkstationFf(){
-    if(selectedDesk){
-      const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
+    if(selectedDesk) {
+/*       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
       try {
         await fetch(url, {
           method: 'DELETE',
@@ -122,7 +149,17 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         });
     }catch (e) {
       console.log('nope');
-    }
+    } */
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`,
+        JSON.stringify({}),
+        (_) => {
+          toast.success(t('deskDelete'));
+          deleteWorkstationModal();
+        },
+        () => {console.log('Failed to delete workstation fast forward in DeleteWorkstation.js.');},
+        headers
+      )
     }
   }
   

@@ -38,13 +38,13 @@ const Floor = () => {
   const [availableWorkstations, setAvailableWorkstations] = React.useState(0);
   const helpText = t('helpChooseRoom');
   
-  useEffect(() => {
+/*   useEffect(() => {
     getAvailableWorkstations();
   }, []);
 
   const getAvailableWorkstations = () => {
     //console.log('abc');
-    /* await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/allbookingsfortoday`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/allbookingsfortoday`, {
       method: 'GET',
       headers: headers,
     }).then(resp => {
@@ -53,8 +53,8 @@ const Floor = () => {
       });
     }).catch(error => {
       console.log(error);
-    }); */
-  };
+    }); 
+  }; */
 
   const toggleFloor = () => {
     setCurrentFloor(currentFloor === 'Ground' ? 'First' : 'Ground');
