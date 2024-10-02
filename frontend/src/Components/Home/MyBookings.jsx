@@ -9,12 +9,10 @@ import "./MyBookings.css";
 import SidebarComponent from "./SidebarComponent";
 import EditBookingModal from "../AdminPanel/Bookings/EditBookingsModal";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import {getRequest} from "../RequestFunctions/GetRequest";
+import {deleteRequest} from "../RequestFunctions/DeleteRequest";
 
 const MyBookings = () => {
-/*   const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  }; */
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
@@ -32,36 +30,41 @@ const MyBookings = () => {
         setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
       }
   }, [i18n.language]);
-
+/*   function success(bookings) {
+    console.log('in success function in mybookings');
+    const calendarEvents = bookings.map((booking) => ({
+      id: booking.id,
+      title: `${t('desk')} ${booking.desk.id}`,
+      start: new Date(booking.day + "T" + booking.begin),
+      end: new Date(booking.day + "T" + booking.end),
+      desk: booking.desk
+    }));
+    setEvents(calendarEvents);
+  } */
   const fetchBookings = async (userId) => {
-    try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: headers,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
-      }
-      const bookings = await response.json();
-      const calendarEvents = bookings.map((booking) => ({
-        id: booking.id,
-        title: `${t('desk')} ${booking.desk.id}`,
-        start: new Date(booking.day + "T" + booking.begin),
-        end: new Date(booking.day + "T" + booking.end),
-        desk: booking.desk
-      }));
-      setEvents(calendarEvents);
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    }
+    console.log('fetchBookings #1');
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
+      (bookings) => {
+        console.log('fetchBookings #2'); 
+        const calendarEvents = bookings.map((booking) => ({
+          id: booking.id,
+          title: `${t('desk')} ${booking.desk.id}`,
+          start: new Date(booking.day + "T" + booking.begin),
+          end: new Date(booking.day + "T" + booking.end),
+          desk: booking.desk
+        }));
+        console.log('fetchBookings #3 ', calendarEvents); 
+        setEvents(calendarEvents);
+    }, 
+    () => {console.log('Error fetching bookings')}, headers)
   };
 
   const handleEventSelect = async (event) => {
     if (event.id !== selectedEvent?.id) {
       setSelectedEvent(event);
   
-      try {
+/*       try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`, {
           method: "GET",
           headers: headers
@@ -75,7 +78,13 @@ const MyBookings = () => {
   
       } catch (error) {
         console.error("Error fetching booking details:", error);
-      }
+      } */
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`,
+        setTheEvent,
+        () => {throw new Error("Failed to fetch booking details");},
+        headers
+      );
     }
   };
   
@@ -89,7 +98,7 @@ const MyBookings = () => {
   };  
 
   const deleteBooking = async () => {
-    try {
+/*     try {
       const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`;
       const response = await fetch(url, {
         method: 'DELETE',
@@ -98,14 +107,22 @@ const MyBookings = () => {
   
       if (!response.ok) {
         console.log(response);
-        throw new Error('Failed to delete booking');
+        throw new Error('Error deleting booking:');
       }
   
       fetchBookings(userId);
       setSelectedEvent(null);
     } catch (error) {
       console.error('Error deleting booking:', error);
-    }
+    } */
+    console.log('delete mybookings #1');
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`,
+      JSON.stringify({}),
+      reloadCalendar,
+      () => {console.log('Error deleting booking:');},
+      headers
+    );
   };
   
   const handleDeleteEvent = () => {

@@ -45,16 +45,6 @@ const LoginPage = () => {
           'Authorization': 'Bearer ' +  String(data['accessToken']),
           'Content-Type': 'application/json',
         }));
-        //localStorage.setItem('accessToken', String(data['accessToken']));
-        /* const headers = {
-          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-          'Content-Type': 'application/json',
-        }; */
-       /*  localStorage.setItem('headers', {
-          'Authorization': 'Bearer ' + String(data['accessToken']),
-          'Content-Type': 'application/json'
-        }); */
-        //localStorage.setItem("username", String(data.username));
         localStorage.setItem("email", String(data.email));
         localStorage.setItem("userId", String(data.id));
         localStorage.setItem("name", String(data.name));

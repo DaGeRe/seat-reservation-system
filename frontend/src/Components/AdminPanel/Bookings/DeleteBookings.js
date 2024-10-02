@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
 import {roomToOption, optionToRoomId} from './RoomAndOption';
+import {getRequest} from '../../RequestFunctions/GetRequest';
+import {deleteRequest} from '../../RequestFunctions/DeleteRequest.js';
 
 export default function DeleteBookings({ deleteBookingsModal }) {
 /*   const headers = {
@@ -25,7 +27,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
        // getAllBookings();
       }, []);
 
-      async function getAllRooms(){
+/*       async function getAllRooms(){
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
         method: 'GET',
         headers: headers,
@@ -37,21 +39,35 @@ export default function DeleteBookings({ deleteBookingsModal }) {
       }).catch(error => {
         console.log("login user err " + error);
       });
-      }
+    }*/
+    async function getAllRooms(){   
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`, 
+        setAllRooms, 
+        () => {console.log('Error fetching room status')}, 
+        headers
+      );
+    }
 
       async function getAllBookings(){
         
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          console.log(data);
-          setAllBookings(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
+      /*   const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
+            method: 'GET',
+            headers: headers,
+          }).then(resp => {
+            resp.json().then(data => {
+              console.log(data);
+              setAllBookings(data);
+            });
+          }).catch(error => {
+            console.log("login user err " + error);
+          }); */
+          getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/bookings`, 
+            setAllBookings, 
+            () => {console.log('Error fetching bookings')}, 
+            headers
+          );
       }
 
     const handleClose = () => {
@@ -59,20 +75,31 @@ export default function DeleteBookings({ deleteBookingsModal }) {
     }
 
     async function deleteBookingsById(id){
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
+/*         await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
           method: 'DELETE',
           headers: headers,
           body: JSON.stringify({}),
         });
         toast.success(t("bookingDeleted"));
-        searchBooking();
+        searchBooking(); */
+        deleteRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
+          JSON.stringify({}),
+          () => {
+            toast.success(t('bookingDeleted'));
+            searchBooking();
+          },
+          () => {console.log('Error deleting bookings.')},
+          headers
+        );
+      
     }
 
     async function searchBooking(){
         if(selectedRoom){
            const roomId = optionToRoomId(selectedRoom);
 
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
+            /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
               method: 'GET',
               headers: headers,
             }).then(resp => {
@@ -81,7 +108,13 @@ export default function DeleteBookings({ deleteBookingsModal }) {
               });
             }).catch(error => {
               console.log("login user err " + error);
-            });
+            }); */
+            getRequest(
+              `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
+              setAllBookings, 
+              () => {console.log('Error fetching bookings')}, 
+              headers
+            );
         }
     }
 
