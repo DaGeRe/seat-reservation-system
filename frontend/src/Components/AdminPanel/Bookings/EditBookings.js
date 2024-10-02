@@ -8,6 +8,7 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 import EditBookingModal from './EditBookingsModal';
 import BookingTable from './BookingTable';
+import {getRequest} from "../RequestFunctions/GetRequest";
 
 export default function EditBookings({ editBookingsModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -25,8 +26,8 @@ export default function EditBookings({ editBookingsModal }) {
     getAllRooms();
   }, []);
 
-  async function getAllRooms(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
+  async function getAllRooms() {
+/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
       method: 'GET',
       headers: headers,
     }).then(resp => {
@@ -35,7 +36,13 @@ export default function EditBookings({ editBookingsModal }) {
       });
     }).catch(error => {
       console.log("login user err " + error);
-    });
+    }); */
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      setAllRooms,
+      () => {console.log('Error fetching rooms')},
+      headers
+    );
   }
 
   const handleClose = () => {
@@ -62,7 +69,7 @@ export default function EditBookings({ editBookingsModal }) {
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
+/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
         method: 'GET',
         headers: headers,
       }).then(resp => {
@@ -71,7 +78,13 @@ export default function EditBookings({ editBookingsModal }) {
         });
       }).catch(error => {
         console.log("login user err " + error);
-      });
+      }); */
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`,
+        setAllBookings,
+        () => {console.log('Error fetching bookings')},
+        headers
+      );
     }
   }
 

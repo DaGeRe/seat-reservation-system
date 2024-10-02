@@ -42,11 +42,9 @@ const MyBookings = () => {
     setEvents(calendarEvents);
   } */
   const fetchBookings = async (userId) => {
-    console.log('fetchBookings #1');
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
       (bookings) => {
-        console.log('fetchBookings #2'); 
         const calendarEvents = bookings.map((booking) => ({
           id: booking.id,
           title: `${t('desk')} ${booking.desk.id}`,
@@ -54,10 +52,10 @@ const MyBookings = () => {
           end: new Date(booking.day + "T" + booking.end),
           desk: booking.desk
         }));
-        console.log('fetchBookings #3 ', calendarEvents); 
         setEvents(calendarEvents);
     }, 
-    () => {console.log('Error fetching bookings')}, headers)
+    () => {console.log('Error fetching bookings')}, 
+    headers)
   };
 
   const handleEventSelect = async (event) => {
