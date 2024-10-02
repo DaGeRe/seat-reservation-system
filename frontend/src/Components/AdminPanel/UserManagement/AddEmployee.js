@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {ostRequest, postRequest} from '../../RequestFunctions/PostRequest';
+import {postRequest} from '../../RequestFunctions/PostRequest';
 
 export default function AddEmployee({ addEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));

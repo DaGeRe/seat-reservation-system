@@ -6,7 +6,21 @@ export async function deleteRequest(url, body, successFunction, failFunction, he
             body: body,
         });
         if (response.ok) {
-            successFunction();
+            // See if there is an response that is a json.
+            try {
+                const data = await response.json();
+                successFunction(data);
+            } 
+            // If the response is not a json (e.g. a simple message) just execute the success function.
+            // The provided data are not important in this case.
+            catch (e) {
+                if (e instanceof SyntaxError) {
+                    successFunction(null);
+                }
+                else {
+                    console.log('Unknown error in DeleteReuest.js.');
+                };
+            }
         }
         else {
             failFunction()

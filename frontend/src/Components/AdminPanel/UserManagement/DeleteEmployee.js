@@ -6,6 +6,8 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
+import {getRequest} from '../../RequestFunctions/GetRequest';
+import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
 
 export default function DeleteEmployee({ deleteEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -14,77 +16,64 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
   const [allEmployee, setAllEmployee] = React.useState([]);
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
+  // Refresh every time if something changes in allEmployee.
   React.useEffect(() => {
       getAllEmployee();
-    }, []);
+    }, [allEmployee]);
 
   async function getAllEmployee(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/get`, {
-    method: 'GET',
-    headers: headers,
-  }).then(resp => {
-    resp.json().then(data => {
-      setAllEmployee(data);
-    });
-  }).catch(error => {
-    console.log('login user err ' + error);
-  });
-  }
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+      setAllEmployee,
+      () => {console.log('Failed to fetch all employees in DeleteEmployee.js')},
+      headers
+    );
+  };
 
   const handleClose = () => {
       deleteEmployeeModal();
-  }
+  };
 
   async function deleteEmployeeById(id) {
     setCurrUserId(id);
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
-      method: 'DELETE',
-      headers: headers,
-      body: JSON.stringify({}),
-    })
-    .then(resp => {
-      resp.json().then(data => {
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
+      JSON.stringify({}),
+      (data) => {
         if (data != 0) {
           setOpenFfDialog(true);
         }
         else {
           toast.success(t('userDeleted'));
         }
-      });
-    })
-    .catch(error => {
-      console.log('error deleting user + ', error);
-    });
-    
+      },
+      () => {console.log('Failed to delete employee in DeleteEmployee.js.')},
+      headers
+    );    
     getAllEmployee();
   };
 
   async function deleteEmployeeByIdFf(id) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/ff/${id}`, {
-      method: 'DELETE',
-      headers: headers,
-      body: JSON.stringify({}),
-    })
-    .then(resp => {
-      resp.json().then(data => {
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/users/ff/${id}`,
+      JSON.stringify({}),
+      (data) => {
         if (data) {
           toast.success(t('userDeleted'));
         }
         else {
-          toast.error(t('userDeletionFailed'))
+          toast.error(t('userDeletionFailed'));
         }
-      });
-    })
-    .catch(error => {
-      console.log('error deleting user + ', error);
-    });
+      },
+      () => {console.log('Failed to delete employee fast forward in DeleteEmployee.js.')}, 
+      headers
+    );
 
-    
     getAllEmployee();
   };
 
   const closeDialog = () => {
-    setOpenFfDialog(false)
+    setOpenFfDialog(false);
   };
 
     return (
