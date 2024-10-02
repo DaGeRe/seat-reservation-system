@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {ostRequest, postRequest} from '../../RequestFunctions/PostRequest';
 
 export default function AddEmployee({ addEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -26,11 +27,11 @@ export default function AddEmployee({ addEmployeeModal }) {
 
   async function addEmployee(){
     if(!email || !password || !name || !surname){
-        toast.error("Fields cannot be blank!");
+        toast.error('Fields cannot be blank!');
         return false;
     }
       
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
+/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
@@ -51,7 +52,27 @@ export default function AddEmployee({ addEmployeeModal }) {
        
     }).catch(error => {
       toast.error(t("userCreationFailed"));
-    });
+    }); */
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/users/register`,
+      JSON.stringify({
+        'email': email,
+        'password': password,
+        'name': name,
+        'surname': surname,
+        'admin': isAdmin,
+        'visibility': visibility,
+      }),
+      (_) => {
+        toast.success(t('userCreated'));
+        addEmployeeModal();
+      },
+      () => {
+        console.log('Failed to create new employee in AddEmployee.js');
+        toast.error(t('emailAlreadyTaken'));
+      },
+      headers
+    );
   }
 
   return (

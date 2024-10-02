@@ -5,12 +5,26 @@ export async function postRequest(url, body, successFunction, failFunction, head
             headers: headers,
             body: body,
         });
+        console.log('response: ',response);
         if (response.ok) {
-            const data = await response.json();
-            successFunction(data);
+            // See if there is an response that is a json.
+            try {
+                const data = await response.json();
+                successFunction(data);
+            }
+            // If the response is not a json (e.g. a simple message) just execute the success function.
+            // The provided data are not important in this case.
+            catch (e) {
+                if (e instanceof SyntaxError) {
+                    successFunction(null);
+                }
+                else {
+                    console.log('Unknown error in PostRequest.js.');
+                };
+            }
         }
         else {
-            failFunction();
+           failFunction();
         }
     } catch (error) {
         console.error(`Error: ${error} for fetching url: ${url}`);
