@@ -49,7 +49,7 @@ const Booking = () => {
     setEvents([...events]);
   }, [i18n.language]);
 
-  const handleDeskClick = async (desk) => {
+ // const handleDeskClick = async (desk) => {
 /*     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${desk.id}`, {
@@ -80,7 +80,7 @@ const Booking = () => {
     } catch (error) {
       console.error("Error fetching desk booking data:", error);
     } */
-    getRequest(
+    /* getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${desk.id}`,
       (bookingData) => {
         // Parse the booking data and add events to tempArray
@@ -99,17 +99,19 @@ const Booking = () => {
       () => {console.log('Failed to fetch desks in Booking.jsx');},
       headers
     );
-  };
+  }; */
 
   useEffect(() => {
     desks.forEach(desk => {
       if (desk.id === clickedDeskId) {
-        handleDeskClick(desk);
+        //handleDeskClick(desk);
+        //setClickedDeskId(desk.id);
+        loadBookings();
       }
     });
   }, [desks, clickedDeskId]);
 
-  async function loadBookings(){
+  async function loadBookings() {
  /*    const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`, {
         method: "GET",
@@ -144,13 +146,13 @@ const Booking = () => {
           end: new Date(booking.day + 'T' + booking.end),
           title: booking.user.id.toString() === localStorage.getItem('userId')
             ? ''
-            : (booking.user.visibility ? booking.user.name : t('anonymous')),
+            : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
           id: 0,
         }));
         setDeskEvents(bookingEvents);
         setEvents(bookingEvents);       
       },
-      () => {console.log('Failed #2 to fetch desks in Booking.jsx');},
+      () => {console.log('Failed to fetch desks in Booking.jsx');},
       headers
     );
   }
@@ -391,9 +393,6 @@ const Booking = () => {
       <div>
         <SidebarComponent />
       </div>
-      {/* <div>
-        <button onClick={back}></button>
-      </div> */}
       <div>
         <button className="submit-btn" onClick={back}>
         {t('back')} 
@@ -421,20 +420,20 @@ const Booking = () => {
             ))}
           </div>
           <div>
-            <div className="calendar-container">
+            <div className='calendar-container'>
               <Calendar
                 localizer={localizer}
                 events={events}
-                startAccessor="start"
-                endAccessor="end"
+                startAccessor='start'
+                endAccessor='end'
                 views={['day', 'week']}
-                defaultView="day"
+                defaultView='day'
                 defaultDate={date}
                 onSelectSlot={(data) => {
                   if (clickedDeskId !== null) {
                     selectSlot(data);
                   } else {
-                    toast.warning(t("selectDeskMessage"))
+                    toast.warning(t('selectDeskMessage'))
                   }
                 }}
                 selectable={true}
@@ -459,8 +458,8 @@ const Booking = () => {
                }}
               />
             </div>
-            <button className="submit-btn" onClick={() => booking()}>
-              {t("book")}
+            <button className='submit-btn' onClick={() => booking()}>
+              {t('book')}
             </button>
           </div>
         </div>

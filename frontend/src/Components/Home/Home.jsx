@@ -30,7 +30,6 @@ const Home = () => {
   };
 
   const generateMonthDays = async (date) => {
-    console.log('generateMonthDays');
     const currentMonth = moment(date).startOf('month');
     const daysInMonth = [];
     const eventsForMonth = [];
@@ -45,7 +44,6 @@ const Home = () => {
       JSON.stringify(daysInMonth),
       (data) => {
         for (const day in data) {
-          console.log(day);
           const newEvent = {
             start: moment(day).startOf('day').toDate(),
             end: moment(day).endOf('day').toDate(),
@@ -64,7 +62,6 @@ const Home = () => {
 
   useEffect(() => {
     generateMonthDays(now);
-    console.log('useEffect 1');
   }, [t]);
 
   const handleNavigate = (newDate, view) => {
