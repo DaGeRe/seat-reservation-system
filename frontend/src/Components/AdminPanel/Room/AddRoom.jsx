@@ -11,7 +11,6 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from "../../RequestFunctions/PostRequest";
-import {getRequest} from "../../RequestFunctions/GetRequest";
 
 export default function AddRoom({ addRoomModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));

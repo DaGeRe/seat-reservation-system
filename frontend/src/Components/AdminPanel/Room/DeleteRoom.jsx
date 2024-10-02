@@ -8,6 +8,8 @@ import DeleteFf from '../../DeleteFf/DeleteFf';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {getRequest} from '../../RequestFunctions/GetRequest';
+import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -21,7 +23,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }, []);
 
   async function getAllRooms(){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
+    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
       method: 'GET',
       headers: headers,
     }).then(resp => {
@@ -30,7 +32,13 @@ export default function DeleteRoom({ deleteRoomModal }) {
       });
     }).catch(error => {
       console.log("login user err " + error);
-    });
+    }); */
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+      setAllRooms,
+      () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
+      headers
+    )
   }
 
   const handleClose = () => {
@@ -38,7 +46,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }
 
   async function deleteRoomById(id){
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
+/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
       method: 'DELETE',
       headers: headers,
       body: JSON.stringify({}),
@@ -53,7 +61,22 @@ export default function DeleteRoom({ deleteRoomModal }) {
           getAllRooms();
         }
       });
-    });
+    }); */
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`,
+      JSON.stringify({}),
+      (data) => {
+        if (data != 0) {
+          setOpenFfDialog(true);
+        }
+        else {
+          toast.success(t('roomDeleted'));
+          getAllRooms();
+        }
+      },
+      () => {'Failed to delete room in DeleteRoom.jsx.'},
+      headers
+    );
   }
 
   async function deleteRoomFf(){
@@ -61,7 +84,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
       toast.error('select an room');
     }
     else {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`, {
+/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`, {
         method: 'DELETE',
         headers: headers,
         body: JSON.stringify({}),
@@ -69,7 +92,16 @@ export default function DeleteRoom({ deleteRoomModal }) {
       if (response.ok) {
         toast.success(t("roomDeleted"));
         getAllRooms();
-      }
+      } */
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`,
+        JSON.stringify({}),
+        (_) => {
+          toast.success(t('roomDeleted'));
+          getAllRooms();
+        },
+        headers
+      );
     }
   } 
 
@@ -122,7 +154,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
                                   deleteRoomById(row.id);
                                 }
                               }
-                              >{t("delete").toUpperCase()}</Button>
+                              >{t('delete').toUpperCase()}</Button>
                             </TableCell>
 
                             </TableRow>
@@ -133,7 +165,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
                   </Grid>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                  <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
         </DialogActions>
       </React.Fragment>
     );
