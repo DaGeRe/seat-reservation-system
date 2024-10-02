@@ -5,7 +5,6 @@ export async function postRequest(url, body, successFunction, failFunction, head
             headers: headers,
             body: body,
         });
-        console.log('response: ',response);
         if (response.ok) {
             // See if there is an response that is a json.
             try {

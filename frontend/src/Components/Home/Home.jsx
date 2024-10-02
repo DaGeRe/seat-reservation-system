@@ -30,7 +30,7 @@ const Home = () => {
   };
 
   const generateMonthDays = async (date) => {
-    console.log();
+    console.log('generateMonthDays');
     const currentMonth = moment(date).startOf('month');
     const daysInMonth = [];
     const eventsForMonth = [];
@@ -39,37 +39,13 @@ const Home = () => {
       const day = currentMonth.clone().add(i, 'days');
       daysInMonth.push(day.format('YYYY-MM-DD'));
     }
-/*     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(daysInMonth),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
-      }
-  
-      const data = await response.json();
-      
-      // Create an event for each day of the month
-      for (const day in data) {
-        const newEvent = {
-          start: moment(day).startOf('day').toDate(),
-          end: moment(day).endOf('day').toDate(),
-          title: `${t('bookingsSum')}: ${data[day]}`,
-          allDay: true,
-        };
-        eventsForMonth.push(newEvent);
-      }
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    } */
+
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
       JSON.stringify(daysInMonth),
       (data) => {
         for (const day in data) {
+          console.log(day);
           const newEvent = {
             start: moment(day).startOf('day').toDate(),
             end: moment(day).endOf('day').toDate(),
@@ -78,17 +54,17 @@ const Home = () => {
           };
           eventsForMonth.push(newEvent);
         }
+        setEvents(eventsForMonth);
+        setNow(date);
       },
       () => {console.log('Failed to post booking for date in Home.jsx.');},
       headers
     );
-
-    setEvents(eventsForMonth);
-    setNow(date);
   };
 
   useEffect(() => {
     generateMonthDays(now);
+    console.log('useEffect 1');
   }, [t]);
 
   const handleNavigate = (newDate, view) => {
@@ -109,11 +85,6 @@ const Home = () => {
       <div>
         <SidebarComponent />
       </div>
-      {/*
-      <div>
-        <p>{mytest}</p>
-      </div>
-      */}
       <div className="home-content">
         <div className="choose-date">
           <h1>{t("chooseDate")}</h1>

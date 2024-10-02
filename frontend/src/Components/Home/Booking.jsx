@@ -102,8 +102,6 @@ const Booking = () => {
   };
 
   useEffect(() => {
-
-
     desks.forEach(desk => {
       if (desk.id === clickedDeskId) {
         handleDeskClick(desk);
