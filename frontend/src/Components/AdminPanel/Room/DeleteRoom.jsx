@@ -22,16 +22,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }, []);
 
   async function getAllRooms(){
-    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
-      method: 'GET',
-      headers: headers,
-    }).then(resp => {
-      resp.json().then(data => {
-        setAllRooms(data);
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms`,
       headers,
@@ -46,22 +36,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }
 
   async function deleteRoomById(id){
-/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`, {
-      method: 'DELETE',
-      headers: headers,
-      body: JSON.stringify({}),
-    })
-    .then(resp => {
-      resp.json().then(data => {
-        if (data != 0) {
-          setOpenFfDialog(true);
-        }
-        else {
-          toast.success(t("roomDeleted"));
-          getAllRooms();
-        }
-      });
-    }); */
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`,
       headers,
@@ -84,15 +58,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
       toast.error('select an room');
     }
     else {
-/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`, {
-        method: 'DELETE',
-        headers: headers,
-        body: JSON.stringify({}),
-      });
-      if (response.ok) {
-        toast.success(t("roomDeleted"));
-        getAllRooms();
-      } */
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`,
         headers,
@@ -110,7 +75,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
             open={openFfDialog}
             onClose={handleClose}
             onDelete={deleteRoomFf}
-            text={t("fFDeleteRoom")}
+            text={t('fFDeleteRoom')}
           />
           <DialogContent>
               <Grid container >
@@ -118,12 +83,10 @@ export default function DeleteRoom({ deleteRoomModal }) {
                       <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
                         <TableHead sx={{backgroundColor: 'green', color:'white'}}>
                           <TableRow>
-                            <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t("floor")}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("status")}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("type")}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("x")}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("y")}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t("roomRemark")}</TableCell>
+                            <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t('floor')}</TableCell>
+                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('status')}</TableCell>
+                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('type')}</TableCell>
+                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('roomRemark')}</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -137,12 +100,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
                               </TableCell>
                               <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
                                 {row.type}
-                              </TableCell>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.x}
-                              </TableCell>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.y}
                               </TableCell>
                               <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
                                 {row.remark}
