@@ -7,7 +7,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
-import {putRequest} from '../../RequestFunctions/PutRequestjs';
+import {putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditBookingModal({ editBookingModal, id, startTimeFromDb, endTimeFromDb, onSuccess }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -52,6 +52,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
     }); */
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`,
+      headers,
       JSON.stringify({
         "begin": moment(startTime, "HH:mm:ss a").format("HH:mm:ss"),
         "end": moment(endTime, "HH:mm:ss a").format("HH:mm:ss"),
@@ -64,8 +65,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       },
       () => {
         console.log('Failing to update timing of booking.');
-      },
-      headers
+      }
     );
   }
     

@@ -7,7 +7,7 @@ import "./Home.css";
 import "./HomeCalendar.scss";
 import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
-import { postRequest } from '../RequestFunctions/PostRequestjs';
+import { postRequest } from '../RequestFunctions/RequestFunctions';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -41,7 +41,7 @@ const Home = () => {
 
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
-      JSON.stringify(daysInMonth),
+      headers,
       (data) => {
         for (const day in data) {
           const newEvent = {
@@ -56,7 +56,7 @@ const Home = () => {
         setNow(date);
       },
       () => {console.log('Failed to post booking for date in Home.jsx.');},
-      headers
+      JSON.stringify(daysInMonth)
     );
   };
 

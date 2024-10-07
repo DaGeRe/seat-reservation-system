@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {putRequest} from '../../RequestFunctions/PutRequestjs';
+import {putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
   nameFromDb, surnameFromDb, adminFromDb, visibilityFromDb }) {
@@ -53,19 +53,19 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
     }); */
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
+      headers,
+      (_) => {
+        toast.success(t('userUpdated'));
+        editEmployeeModal();
+      },
+      () => {console.log('Failed to update employee in EditEmployeeModal.js');},
       JSON.stringify({
         'email': email,
         'name': name,
         'surname': surname,
         'admin': isAdmin,
         'visibility': visibility
-      }),
-      (_) => {
-        toast.success(t('userUpdated'));
-        editEmployeeModal();
-      },
-      () => {console.log('Failed to update employee in EditEmployeeModal.js');},
-      headers
+      })
     );
   }
     

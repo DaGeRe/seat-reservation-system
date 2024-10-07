@@ -115,10 +115,9 @@ const MyBookings = () => {
     } */
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`,
-      JSON.stringify({}),
+       headers,
       reloadCalendar,
-      () => {console.log('Error deleting booking:');},
-      headers
+      () => {console.log('Error deleting booking:');}
     );
   };
   

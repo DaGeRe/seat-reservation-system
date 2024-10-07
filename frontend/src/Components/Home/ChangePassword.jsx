@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
-import { putRequest } from '../RequestFunctions/PutRequestjs';
+import { putRequest } from '../RequestFunctions/RequestFunctions';
 
 const ChangePassword = ({ isOpen, onClose }) => {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -51,10 +51,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
     } */
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`,
-      JSON.stringify({
-        oldPassword: formData.prevPassword,
-        newPassword: formData.newPassword
-      }),
+      headers,
       (data) => {
         if (data) {
           toast.success(t('passwordChangedSuccessfully'));
@@ -68,7 +65,10 @@ const ChangePassword = ({ isOpen, onClose }) => {
         console.error(t('passwordChangFailed'), error);
         setError(t('passwordChangFailed'));
       },
-      headers
+      JSON.stringify({
+        oldPassword: formData.prevPassword,
+        newPassword: formData.newPassword
+      })
     );
   };
 

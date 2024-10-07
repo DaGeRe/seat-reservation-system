@@ -1,6 +1,10 @@
 async function request(type, url, headers, successFunction, failFunction, body=JSON.stringify({})) {
     try {
-        const response = await fetch(url, {
+        // GET cant have an body.
+        const response = type === 'GET' ? await fetch(url, {
+            method: type,
+            headers: headers,
+        }) : await fetch(url, {
             method: type,
             headers: headers,
             body: body,

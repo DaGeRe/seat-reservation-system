@@ -83,13 +83,12 @@ export default function DeleteBookings({ deleteBookingsModal }) {
         searchBooking(); */
         deleteRequest(
           `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
-          JSON.stringify({}),
+          headers,
           () => {
             toast.success(t('bookingDeleted'));
             searchBooking();
           },
-          () => {console.log('Error deleting bookings.')},
-          headers
+          () => {console.log('Error deleting bookings.')}
         );
       
     }

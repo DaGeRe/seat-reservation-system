@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {postRequest} from '../../RequestFunctions/PostRequestjs';
+import {postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddEmployee({ addEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -55,14 +55,7 @@ export default function AddEmployee({ addEmployeeModal }) {
     }); */
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/register`,
-      JSON.stringify({
-        'email': email,
-        'password': password,
-        'name': name,
-        'surname': surname,
-        'admin': isAdmin,
-        'visibility': visibility,
-      }),
+      headers,
       (_) => {
         toast.success(t('userCreated'));
         addEmployeeModal();
@@ -71,7 +64,14 @@ export default function AddEmployee({ addEmployeeModal }) {
         console.log('Failed to create new employee in AddEmployee.js');
         toast.error(t('emailAlreadyTaken'));
       },
-      headers
+      JSON.stringify({
+        'email': email,
+        'password': password,
+        'name': name,
+        'surname': surname,
+        'admin': isAdmin,
+        'visibility': visibility,
+      })
     );
   }
 

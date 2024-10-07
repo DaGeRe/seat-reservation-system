@@ -221,7 +221,7 @@ const Booking = () => {
 
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings`,
-      JSON.stringify(bookingData),
+      headers,
       (data) => {
         confirmAlert({
           title: t("bookDesk") + " " + clickedDeskId,
@@ -257,7 +257,7 @@ const Booking = () => {
                 } */
                 putRequest(
                   `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
-                  JSON.stringify({}),
+                  headers,
                   (dat) => {
                     toast.success(t("booked"));
     
@@ -270,8 +270,7 @@ const Booking = () => {
       
                     navigate("/home", { state: { booking }, replace: true });
                   },
-                  () => {console.log('Failed to confirm booking in Booking.jsx');},
-                  headers
+                  () => {console.log('Failed to confirm booking in Booking.jsx');}
                 );
               },
             },
@@ -295,10 +294,9 @@ const Booking = () => {
                 } */
                 deleteRequest(
                   `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`,
-                  JSON.stringify({}),
+                  headers,
                   (_) => {loadBookings();},
-                  () => {console.log('Failed to delete bookings in Booking.jsx.');},
-                  headers
+                  () => {console.log('Failed to delete bookings in Booking.jsx.');}
                 )
               },
             },
@@ -306,7 +304,7 @@ const Booking = () => {
         })
       },
       () => {console.log('Failed to post booking in Booking.jsx.');},
-      headers
+      JSON.stringify(bookingData)
     )
 
     /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {

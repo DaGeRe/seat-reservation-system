@@ -8,7 +8,7 @@ import DeleteFf from '../../DeleteFf/DeleteFf';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {getRequest,deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -64,7 +64,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
     }); */
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`,
-      JSON.stringify({}),
+      headers,
       (data) => {
         if (data != 0) {
           setOpenFfDialog(true);
@@ -75,7 +75,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
         }
       },
       () => {'Failed to delete room in DeleteRoom.jsx.'},
-      headers
+      
     );
   }
 
@@ -95,12 +95,11 @@ export default function DeleteRoom({ deleteRoomModal }) {
       } */
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`,
-        JSON.stringify({}),
+        headers,
         (_) => {
           toast.success(t('roomDeleted'));
           getAllRooms();
-        },
-        headers
+        }
       );
     }
   } 

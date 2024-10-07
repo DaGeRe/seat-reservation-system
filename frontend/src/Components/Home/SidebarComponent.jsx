@@ -11,7 +11,7 @@ import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from "react-icons/ci";
 import { MdGTranslate } from "react-icons/md";
 import { toast } from 'react-toastify';
-import { putRequest } from '../RequestFunctions/PutRequestjs';
+import { putRequest } from '../RequestFunctions/RequestFunctions';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -126,7 +126,7 @@ const SidebarComponent = () => {
     }   */
     putRequest(
       `/users/visibility/${localStorage.getItem("userId")}`,
-      JSON.stringify({}),
+      headers,
       (data) => {
         if (data === -1) {
           toast.warning(t("failVisibility"));
@@ -142,8 +142,7 @@ const SidebarComponent = () => {
           toast.success(t("anonymousMessage"));
         }
       },
-      () => {console.log(`Failed to put visibility for userId: ${localStorage.getItem("userId")}.`);},
-      headers
+      () => {console.log(`Failed to put visibility for userId: ${localStorage.getItem("userId")}.`);}
     );
   }
 

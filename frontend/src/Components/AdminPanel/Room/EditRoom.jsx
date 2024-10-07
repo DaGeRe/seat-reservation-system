@@ -48,13 +48,13 @@ export default function EditRoom({ editRoomModal }) {
       getAllRooms(); */
       putRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`,
-        JSON.stringify({}),
+        headers,
         (_) => {
           toast.success(t('floor'));
           getAllRooms();
         },
         () => {console.log('Failed to handle floor change in EditRoom.jsx');},
-        headers
+        JSON.stringify({})
       )
   }
 
@@ -68,13 +68,13 @@ export default function EditRoom({ editRoomModal }) {
     getAllRooms(); */
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`,
-      JSON.stringify({}),
+      headers,
       (_) => {
         toast.success(t('roomRemark'));
         getAllRooms();
       },
       () => {console.log('Failed to handle room remark change in EditRoom.jsx');},
-      headers
+      JSON.stringify({})
     )
   }
 
@@ -88,13 +88,13 @@ export default function EditRoom({ editRoomModal }) {
       getAllRooms(); */
       putRequest( 
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`,
-        JSON.stringify({}),
+        headers,
         (_) => {
           toast.success(t('roomType'));
           getAllRooms();
         },
         () => {console.log('Failed to handle room type change in EditRoom.jsx');},
-        headers
+        JSON.stringify({})
       );
     }
 
@@ -108,13 +108,12 @@ export default function EditRoom({ editRoomModal }) {
         getAllRooms(); */
         putRequest( 
           `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`,
-          JSON.stringify({}),
+          headers,
           (_) => {
             toast.success(t('roomStatus'));
             getAllRooms();
           },
-          () => {console.log('Failed to handle room status change in EditRoom.jsx');},
-          headers
+          () => {console.log('Failed to handle room status change in EditRoom.jsx');}
         );
     }
 

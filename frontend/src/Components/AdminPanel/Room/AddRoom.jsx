@@ -67,6 +67,12 @@ export default function AddRoom({ addRoomModal }) {
     }); */
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
+      headers,
+      (_) => {
+        toast.success(t('roomCreated'));
+        addRoomModal();
+      },
+      () => {console.log('Failed to create room in AddRoom.jsx.')},
       JSON.stringify({
         'floor': floor,
         'status': status,
@@ -74,13 +80,7 @@ export default function AddRoom({ addRoomModal }) {
         'x': x,
         'y': y,
         'remark': remark
-      }),
-      (_) => {
-        toast.success(t('roomCreated'));
-        addRoomModal();
-      },
-      () => {console.log('Failed to create room in AddRoom.jsx.')},
-      headers
+      })
     );
   }
     const handleClose = () => {

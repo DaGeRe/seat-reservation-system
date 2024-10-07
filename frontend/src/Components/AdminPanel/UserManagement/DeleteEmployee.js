@@ -37,7 +37,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
     setCurrUserId(id);
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
-      JSON.stringify({}),
+      headers,
       (data) => {
         if (data != 0) {
           setOpenFfDialog(true);
@@ -46,8 +46,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
           toast.success(t('userDeleted'));
         }
       },
-      () => {console.log('Failed to delete employee in DeleteEmployee.js.')},
-      headers
+      () => {console.log('Failed to delete employee in DeleteEmployee.js.')}
     );    
     getAllEmployee();
   };
@@ -55,7 +54,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
   async function deleteEmployeeByIdFf(id) {
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/ff/${id}`,
-      JSON.stringify({}),
+      headers,
       (data) => {
         if (data) {
           toast.success(t('userDeleted'));
@@ -64,8 +63,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
           toast.error(t('userDeletionFailed'));
         }
       },
-      () => {console.log('Failed to delete employee fast forward in DeleteEmployee.js.')}, 
-      headers
+      () => {console.log('Failed to delete employee fast forward in DeleteEmployee.js.')}
     );
 
     getAllEmployee();

@@ -93,13 +93,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
     }); */
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`,
-      JSON.stringify({}),
+      headers,
       (_) => {
         toast.success(t('deskUpdate'));
         editWorkstationModal();
       },
-      () => {console.log('Failed to update workstation in EditWorkstation.js');},
-      headers
+      () => {console.log('Failed to update workstation in EditWorkstation.js');}
     );
   }
   

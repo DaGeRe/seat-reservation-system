@@ -107,7 +107,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     } */
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`,
-        JSON.stringify({}),
+        headers,
         (data) => {
           if (data != 0) {
             setOpenFfDialog(true);
@@ -117,8 +117,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
             deleteWorkstationModal();
           }
         },
-        () => {console.log('Failed to delete workstation in DeleteWorkstation.js');},
-        headers
+        () => {console.log('Failed to delete workstation in DeleteWorkstation.js');}
       );
     }
   }
@@ -151,13 +150,12 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     } */
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`,
-        JSON.stringify({}),
+        headers,
         (_) => {
           toast.success(t('deskDelete'));
           deleteWorkstationModal();
         },
-        () => {console.log('Failed to delete workstation fast forward in DeleteWorkstation.js.');},
-        headers
+        () => {console.log('Failed to delete workstation fast forward in DeleteWorkstation.js.');}
       )
     }
   }

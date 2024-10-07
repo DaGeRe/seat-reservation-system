@@ -9,7 +9,7 @@ import styled from '@emotion/styled';
 import EditBookingModal from './EditBookingsModal';
 import BookingTable from './BookingTable';
 //import {getRequest} from "../../RequestFunctions/GetRequest";
-import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
+import {getRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function EditBookings({ editBookingsModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));

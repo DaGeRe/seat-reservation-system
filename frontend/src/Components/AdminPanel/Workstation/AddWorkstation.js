@@ -78,18 +78,18 @@ export default function AddWorkstation({ addWorkstationModal }) {
       }); */
       postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks`,
-        JSON.stringify({
-          'deskId': deskId,
-          'roomId': roomId,
-          'equipment': equipment,
-          'remark': remark
-        }),
+        headers,
         (_) => {
           toast.success(t('deskCreated'));
           addWorkstationModal();
         },
         () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
-        headers
+        JSON.stringify({
+          'deskId': deskId,
+          'roomId': roomId,
+          'equipment': equipment,
+          'remark': remark
+        })
       );
   }
 
