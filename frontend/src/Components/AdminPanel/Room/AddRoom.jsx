@@ -47,24 +47,6 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('fields_not_empty'));
       return false;
     }
-/*     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-          "floor": floor,
-          "status": status,
-          "type": type,
-          "x": x,
-          "y": y,
-          "remark": remark
-      })
-    }).then(resp => {
-      toast.success(t("roomCreated"));
-      addRoomModal();
-    }).catch(error => {
-      toast.error(t("roomCreationFailed"));
-      console.log("room creation err " + error);
-    }); */
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
       headers,

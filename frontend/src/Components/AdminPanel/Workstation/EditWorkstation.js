@@ -11,12 +11,6 @@ import {optionToDeskId, deskToOption} from './DeskAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditWorkstation({ editWorkstationModal }) {
- /*  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
-  const headers = {
-    'Authorization': 'Bearer ' + accessToken,
-    'Content-Type': 'application/json',
-  }; */
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);

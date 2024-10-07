@@ -7,13 +7,10 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  /* const headers = {
-    'Authorization': 'Bearer ' +  localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  }; */
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
@@ -53,44 +50,27 @@ export default function AddWorkstation({ addWorkstationModal }) {
       toast.error(t("selectRoomError"));
       return false;
     }
-    const splitted = selectedRoom.split('-');
-    const roomId = splitted[0];
-
-    if(!roomId /*|| !deskId*/ || !equipment ){
+    const roomId = optionToRoomId(selectedRoom);
+    
+    if(!roomId || !equipment ){
       toast.error("Field cannot be blank!");
       return false;
     }
-
-    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks`,
+      headers,
+      (_) => {
+        toast.success(t('deskCreated'));
+        addWorkstationModal();
+      },
+      () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
+      JSON.stringify({
         'deskId': deskId,
         'roomId': roomId,
         'equipment': equipment,
         'remark': remark
       })
-      }).then(resp => {
-        toast.success(t("deskCreated"));
-        addWorkstationModal();
-      }).catch(error => {
-        console.log("login user err " + error);
-      }); */
-      postRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks`,
-        headers,
-        (_) => {
-          toast.success(t('deskCreated'));
-          addWorkstationModal();
-        },
-        () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
-        JSON.stringify({
-          'deskId': deskId,
-          'roomId': roomId,
-          'equipment': equipment,
-          'remark': remark
-        })
-      );
+    );
   }
 
   return (
@@ -101,15 +81,12 @@ export default function AddWorkstation({ addWorkstationModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (
-                  /* option.floor +"-"+option.id+"-"+option.type+'-' + option.remark */
-                  option.id+'-'+option.remark
-                )
-              )}
+              options={allRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}
               onChange={(_, newValue) => {
+                console.log(newValue);
                 setSelectedRoom(newValue);
               }}
               renderInput={(params) => (
