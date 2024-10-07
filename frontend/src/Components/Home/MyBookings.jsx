@@ -9,8 +9,7 @@ import "./MyBookings.css";
 import SidebarComponent from "./SidebarComponent";
 import EditBookingModal from "../AdminPanel/Bookings/EditBookingsModal";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
-import {getRequest} from "../RequestFunctions/GetRequest";
-import {deleteRequest} from "../RequestFunctions/DeleteRequest";
+import {getRequest, deleteRequest} from "../RequestFunctions/RequestFunctions";
 
 const MyBookings = () => {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -44,6 +43,7 @@ const MyBookings = () => {
   const fetchBookings = async (userId) => {
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
+      headers,
       (bookings) => {
         const calendarEvents = bookings.map((booking) => ({
           id: booking.id,
@@ -54,8 +54,8 @@ const MyBookings = () => {
         }));
         setEvents(calendarEvents);
     }, 
-    () => {console.log('Error fetching bookings')}, 
-    headers)
+    () => {console.log('Error fetching bookings')},
+    )
   };
 
   const handleEventSelect = async (event) => {
@@ -79,9 +79,9 @@ const MyBookings = () => {
       } */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`,
+        headers,
         setTheEvent,
-        () => {throw new Error("Failed to fetch booking details");},
-        headers
+        () => {throw new Error("Failed to fetch booking details");}        
       );
     }
   };

@@ -6,8 +6,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
-import {getRequest} from '../../RequestFunctions/GetRequest';
-import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteEmployee({ deleteEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -24,9 +23,9 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
   async function getAllEmployee(){
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+      headers,
       setAllEmployee,
-      () => {console.log('Failed to fetch all employees in DeleteEmployee.js')},
-      headers
+      () => {console.log('Failed to fetch all employees in DeleteEmployee.js')}
     );
   };
 

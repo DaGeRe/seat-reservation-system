@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
-import { putRequest } from '../RequestFunctions/PutRequest';
+import { putRequest } from '../RequestFunctions/PutRequestjs';
 
 const ChangePassword = ({ isOpen, onClose }) => {
   const headers = JSON.parse(sessionStorage.getItem('headers'));

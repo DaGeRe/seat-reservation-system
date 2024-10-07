@@ -8,8 +8,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {optionToDeskId, deskToOption} from './DeskAndOption'
-import {getRequest} from '../../RequestFunctions/GetRequest';
-import {putRequest} from '../../RequestFunctions/PutRequest';
+import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditWorkstation({ editWorkstationModal }) {
  /*  // The jwt.
@@ -47,9 +46,9 @@ export default function EditWorkstation({ editWorkstationModal }) {
     }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      headers,
       setAllRooms,
-      () => {console.log('Failed to fetch all rooms in EditWorkstation.js.');},
-      headers
+      () => {console.log('Failed to fetch all rooms in EditWorkstation.js.');}      
     )
   }
 
@@ -71,6 +70,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        headers,
         setAllDesks,
         () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
         headers

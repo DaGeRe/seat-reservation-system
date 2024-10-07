@@ -12,8 +12,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
 import {optionToDeskId, deskToOption} from './DeskAndOption'
-import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
-import {getRequest} from '../../RequestFunctions/GetRequest';
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
  /*  const headers = {
@@ -49,9 +48,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      headers,
       setAllRooms,
       () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
-      headers
     );
   };
 
@@ -73,9 +72,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        headers,
         setAllDesks,
         () => {console.log(`Failed to fetch all desks for roomid ${roomId} in DeleteWorkstation.js`);},
-        headers
       );
     }
   };

@@ -7,7 +7,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
-import {putRequest} from '../../RequestFunctions/PutRequest';
+import {putRequest} from '../../RequestFunctions/PutRequestjs';
 
 export default function EditBookingModal({ editBookingModal, id, startTimeFromDb, endTimeFromDb, onSuccess }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));

@@ -21,7 +21,7 @@ import { HeatMap } from "./HeatMap";
 import { UsageGraph } from "./UsageGraph";
 import noDataImage from "../Assets/nodb.png";
 import { useTranslation } from "react-i18next";
-import {getRequest} from '../RequestFunctions/GetRequest';
+import {getRequest} from '../RequestFunctions/RequestFunctions';
 
 const AdminPage = () => {
   // The jwt.
@@ -82,6 +82,7 @@ const AdminPage = () => {
       }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+        headers,
         (data) => {
           const filteredRooms = data.filter(
             (room) => room.floor === currentFloor
@@ -90,7 +91,7 @@ const AdminPage = () => {
           setTab('statistics');
         },
         () => {console.log('Failed to fetch rooms in AdminPage.jsx');},
-        headers
+        
       );
   };
 

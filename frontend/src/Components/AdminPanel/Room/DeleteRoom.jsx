@@ -8,8 +8,7 @@ import DeleteFf from '../../DeleteFf/DeleteFf';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {getRequest} from '../../RequestFunctions/GetRequest';
-import {deleteRequest} from '../../RequestFunctions/DeleteRequest';
+import {getRequest,deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -35,9 +34,10 @@ export default function DeleteRoom({ deleteRoomModal }) {
     }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+      headers,
       setAllRooms,
       () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
-      headers
+
     )
   }
 

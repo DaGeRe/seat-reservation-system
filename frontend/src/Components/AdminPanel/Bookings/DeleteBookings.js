@@ -8,14 +8,12 @@ import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
 import {roomToOption, optionToRoomId} from './RoomAndOption';
-import {getRequest} from '../../RequestFunctions/GetRequest';
-import {deleteRequest} from '../../RequestFunctions/DeleteRequest.js';
+/* import {getRequest} from '../../RequestFunctions/GetRequest';
+import {deleteRequest} from '../../RequestFunctions/DeleteRequest.js'; */
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function DeleteBookings({ deleteBookingsModal }) {
-/*   const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  }; */
+
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
@@ -43,9 +41,10 @@ export default function DeleteBookings({ deleteBookingsModal }) {
     async function getAllRooms(){   
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`, 
+        headers,
         setAllRooms, 
         () => {console.log('Error fetching room status')}, 
-        headers
+        
       );
     }
 
@@ -64,9 +63,9 @@ export default function DeleteBookings({ deleteBookingsModal }) {
           }); */
           getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/bookings`, 
+            headers,
             setAllBookings, 
             () => {console.log('Error fetching bookings')}, 
-            headers
           );
       }
 
@@ -111,9 +110,9 @@ export default function DeleteBookings({ deleteBookingsModal }) {
             }); */
             getRequest(
               `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
+              headers,
               setAllBookings, 
               () => {console.log('Error fetching bookings')}, 
-              headers
             );
         }
     }

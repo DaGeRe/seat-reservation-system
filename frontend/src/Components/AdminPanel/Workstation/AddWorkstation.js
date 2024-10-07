@@ -7,8 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {postRequest} from '../../RequestFunctions/PostRequest';
-import {getRequest} from '../../RequestFunctions/GetRequest';
+import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddWorkstation({ addWorkstationModal }) {
   /* const headers = {
@@ -43,9 +42,9 @@ export default function AddWorkstation({ addWorkstationModal }) {
     }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      headers,
       setAllRooms,
       () => {console.log('Failed to fetch all rooms in AddWorkstation.js');},
-      headers
     );
   };
 

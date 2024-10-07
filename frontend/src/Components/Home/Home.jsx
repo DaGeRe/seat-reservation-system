@@ -7,7 +7,7 @@ import "./Home.css";
 import "./HomeCalendar.scss";
 import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
-import { postRequest } from '../RequestFunctions/PostRequest';
+import { postRequest } from '../RequestFunctions/PostRequestjs';
 
 const Home = () => {
   const { t, i18n } = useTranslation();

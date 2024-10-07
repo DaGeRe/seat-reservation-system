@@ -5,8 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {getRequest} from '../../RequestFunctions/GetRequest';
-import {putRequest} from '../../RequestFunctions/PutRequest';
+import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditRoom({ editRoomModal }) {
     const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -29,9 +28,9 @@ export default function EditRoom({ editRoomModal }) {
       }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+        headers,
         setAllRooms,
         () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
-        headers
       )
     }
 

@@ -10,10 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
-import {getRequest} from '../RequestFunctions/GetRequest';
-import { postRequest } from "../RequestFunctions/PostRequest";
-import { putRequest } from '../RequestFunctions/PutRequest';
-import { deleteRequest } from "../RequestFunctions/DeleteRequest";
+import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 
 const Booking = () => {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -32,9 +29,9 @@ const Booking = () => {
   const fetchDesks = async () => {
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+      headers,
       setDesks,
-      () => {console.log('Failed to fetch desks in Booking.jsx');},
-      headers
+      () => {console.log('Failed to fetch desks in Booking.jsx');}
     )
   };
 
@@ -139,6 +136,7 @@ const Booking = () => {
     setEvents(bookingEvents); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`,
+      headers,
       (bookingData) => {
         // Parse the booking data and add events to tempArray
         const bookingEvents = bookingData.map((booking) => ({
@@ -152,8 +150,7 @@ const Booking = () => {
         setDeskEvents(bookingEvents);
         setEvents(bookingEvents);       
       },
-      () => {console.log('Failed to fetch desks in Booking.jsx');},
-      headers
+      () => {console.log('Failed to fetch desks in Booking.jsx');}
     );
   }
 

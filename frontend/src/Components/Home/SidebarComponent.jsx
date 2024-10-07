@@ -11,7 +11,7 @@ import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from "react-icons/ci";
 import { MdGTranslate } from "react-icons/md";
 import { toast } from 'react-toastify';
-import { putRequest } from '../RequestFunctions/PutRequest';
+import { putRequest } from '../RequestFunctions/PutRequestjs';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();

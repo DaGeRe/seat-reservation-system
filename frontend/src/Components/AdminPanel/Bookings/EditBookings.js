@@ -8,7 +8,8 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 import EditBookingModal from './EditBookingsModal';
 import BookingTable from './BookingTable';
-import {getRequest} from "../../RequestFunctions/GetRequest";
+//import {getRequest} from "../../RequestFunctions/GetRequest";
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function EditBookings({ editBookingsModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -39,9 +40,9 @@ export default function EditBookings({ editBookingsModal }) {
     }); */
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+      headers,
       setAllRooms,
       () => {console.log('Error fetching rooms')},
-      headers
     );
   }
 
@@ -81,9 +82,9 @@ export default function EditBookings({ editBookingsModal }) {
       }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`,
+        headers,
         setAllBookings,
         () => {console.log('Error fetching bookings')},
-        headers
       );
     }
   }

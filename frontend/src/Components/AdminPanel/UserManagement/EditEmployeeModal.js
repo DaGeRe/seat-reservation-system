@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {putRequest} from '../../RequestFunctions/PutRequest';
+import {putRequest} from '../../RequestFunctions/PutRequestjs';
 
 export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
   nameFromDb, surnameFromDb, adminFromDb, visibilityFromDb }) {

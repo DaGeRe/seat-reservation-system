@@ -1,7 +1,7 @@
-export async function deleteRequest(url, body, successFunction, failFunction, headers = JSON.parse(sessionStorage.getItem('headers'))) {
+export async function putRequest(url, body, successFunction, failFunction, headers) {
     try {
-        const response =  await fetch(url, {
-            method: 'DELETE',
+        const response = await fetch(url, {
+            method: 'PUT',
             headers: headers,
             body: body,
         });
@@ -23,10 +23,9 @@ export async function deleteRequest(url, body, successFunction, failFunction, he
             }
         }
         else {
-            failFunction()
+            failFunction();
         }
-    }
-    catch (error) {
-        console.error(`Error: ${error} for deleting url: ${url}`);
+    } catch (error) {
+        console.error(`Error: ${error} for fetching url: ${url}`);
     }
 }

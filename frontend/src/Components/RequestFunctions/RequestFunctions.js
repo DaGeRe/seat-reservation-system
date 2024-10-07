@@ -1,7 +1,7 @@
-export async function getRequest(url, successFunction, failFunction, headers, body=JSON.stringify({})) {
+async function request(type, url, headers, successFunction, failFunction, body=JSON.stringify({})) {
     try {
         const response = await fetch(url, {
-            method: 'GET',
+            method: type,
             headers: headers,
             body: body,
         });
@@ -26,6 +26,13 @@ export async function getRequest(url, successFunction, failFunction, headers, bo
             failFunction();
         }
     } catch (error) {
-        console.error(`Error: ${error} for fetching url: ${url}`);
+        console.error(`Error: ${error} for ${type} on url: ${url}`);
     }
-}
+};
+
+const getRequest = request.bind(null, 'GET');
+const putRequest = request.bind(null, 'PUT');
+const deleteRequest = request.bind(null, 'DELETE');
+const postRequest = request.bind(null, 'POST');
+
+export {getRequest, putRequest, deleteRequest, postRequest};

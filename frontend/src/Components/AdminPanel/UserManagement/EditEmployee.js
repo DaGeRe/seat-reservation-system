@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import styled from '@emotion/styled';
 import EditEmployeeModal from './EditEmployeeModal';
 import EmployeeTable from './EmployeeTable';
-import {getRequest} from '../../RequestFunctions/GetRequest';
+import {getRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditEmployee({ editEmployeeModal }) {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
@@ -35,9 +35,9 @@ export default function EditEmployee({ editEmployeeModal }) {
   async function getAllEmployee(){
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+      headers,
       setAllEmployee,
-      () => {console.log('Failed to fetch all employees in EditEmployee.js')},
-      headers
+      () => {console.log('Failed to fetch all employees in EditEmployee.js')}
     );
   };
 

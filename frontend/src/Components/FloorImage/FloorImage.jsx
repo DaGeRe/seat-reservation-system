@@ -1,12 +1,12 @@
 
 import './FloorImage.css'; 
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
-import {getRequest} from '../RequestFunctions/GetRequest';
 import { styled } from '@mui/material/styles';
 import firstFloorImage from '../../images/firstfloor.png';
 import secondFloorImage from '../../images/secondfloor.png'; 
 import React, {useEffect } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
+import {getRequest} from '../RequestFunctions/RequestFunctions';
 
 export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom}) {
     const [allRooms, setAllRooms] = React.useState([]);
@@ -42,9 +42,9 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
         }); */
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+            headers,
             setAllRooms,
-            () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');},
-            headers
+            () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            
         );
     }
 
