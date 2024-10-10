@@ -35,9 +35,8 @@ services:
   #     - ${NETWORK}
 
   backend:
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
+    #restart: unless-stopped
+    privileged: true
     #command: mvn test
     #stdin_open: true
     #tty: true
@@ -45,6 +44,8 @@ services:
       #- ./test-results:/foo:rw
       #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/docker/daemon.json:/etc/docker/daemon.json 
+      - /usr/src/app:/home/r/DeskSharingTool_Dev/t
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
@@ -56,13 +57,21 @@ services:
       - ${BACKEND_PORT}:8080
     networks:
       - ${NETWORK}
-    depends_on:
-      - database
+    #depends_on:
+     # - database
     environment:
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
       - DOCKER_HOST=unix:///var/run/docker.sock
       - PW_TLS=${PW_TLS}
       - PW_DB=${PW_DB}
+      - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
+      - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
+    #command: mvn test
+#    healthcheck:
+#      test: ["CMD", "ping", "-c", "1", "localhost"]
+#      interval: 10s
+#      retries: 5
+#      timeout: 10s
 
   database:
     restart: unless-stopped
