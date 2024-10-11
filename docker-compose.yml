@@ -45,6 +45,7 @@ services:
       #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
+      #- /home/r/.m2:/root/.m2
     build: 
       context: /
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 

@@ -57,8 +57,11 @@ ENV PATH=$M2_HOME/bin:$PATH
 COPY --from=build /usr/src/app/run_test.sh /usr/src/app/run_test.sh
 RUN chmod +x /usr/src/app/run_test.sh
 
-# The dumps
+# The cache.
+#COPY  --from=build /root/.m2/repository /root/.m2/repository
 
-
+# Cancel proxy for every local connection.
+#ENV no_proxy="127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0.0/8,172.18.0.0/16,172.21.0.0/16,172.27.0.0/16"
+ENV no_proxy=127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0.0/8,172.18.0.0/16,172.21.0.0/16,172.27.0.0/16,172.17.*.*,*.justiz.sachsen.de,*.sta.justiz.sachsen.de,*.adv,*.sta,*.itgvb.fs.sachsen.de,*.evasax.fs.sachsen.de,10.244.1.*,10.243.138.*,10.243.139.*,10.243.171.*,10.243.14.*,10.243.117.*,10.244.21.*,10.244.72.*,*.voip.sachsen.de,vpngate.pzd-svn.de,localhost,172.17.47.94,jus-srv-test30,https://jus-srv-test30:3000/,http://jus-srv-test30:3000/,https://jus-srv-test30:3000,http://jus-srv-test30:3000,https://jus-srv-test30:8081,https://jus-srv-test30.justiz.sachsen.de
 # Specify the default command to run your application
 CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

@@ -22,7 +22,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.utility.MountableFile; // Make sure to import this class
-
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.PullPolicy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,26 +36,24 @@ import java.sql.Statement;
 //@SpringBootTest
 @Testcontainers
 public class MyTest {
-    private static final String DUMP_FILE_PATH = "/usr/src/app/dumps/test_02.sql"; // Update this path
-
+    private static final String DUMP_FILE_PATH = "/usr/src/app/dumps/test.sql"; // Update this path
+    static String user = "user";
+    static String pw = "password";
     @Container 
     private static MariaDBContainer<?> mariadb = new MariaDBContainer<>("mariadb:10.6")
-            .withDatabaseName("mydatabase")
-            .withUsername("user")
-            .withPassword("password")
+            .withDatabaseName("mydatabase_")
+            .withUsername(user)
+            .withPassword(pw)
+            //.withStartupTimeout(java.time.Duration.ofMinutes(5)) // Set a startup timeout for slow containers
+            //.waitingFor(Wait.forLogMessage(".*ready for connections.*\\n", 1))
+            //.withNetworkMode("host")
+            //.withImagePullPolicy(PullPolicy.never()) // Never pull, use only local image
+            .withImagePullPolicy(PullPolicy.defaultPolicy());
             //.withCopyFileToContainer(MountableFile.forPath(new File("")), "/docker-entrypoint-initdb.d/dump.sql");
             ;
             
     @Autowired
     private DataSource dataSource;
-/* 
-    @BeforeClass
-    public static void setUp() {
-        System.setProperty("testcontainers.dockerclient.strategy", "unix:///var/run/docker.sock");
-        System.setProperty("testcontainers.configuration.file", "");
-        System.setProperty("DOCKER_HOST", "unix:///var/run/docker.sock");
-    }
-    */
     @BeforeAll
     public static void setup() {
         // Explicitly set Docker configuration
@@ -65,13 +64,13 @@ public class MyTest {
         
         // Start the MariaDB container
         mariadb.start();
-        
+        System.out.println("mystart");
         try {
             // Load the dump file
             Path dumpFile = Paths.get(DUMP_FILE_PATH);
             String dumpContent = Files.readString(dumpFile);
             System.out.println("ok1");
-            try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), "user", "password")) {
+            try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), user, pw)) {
                 System.out.println("ok2");
                  for (String sql : dumpContent.split(";")) {
                     if (!sql.trim().isEmpty()) {
@@ -80,16 +79,17 @@ public class MyTest {
                         System.out.println("\tok2.4");
                     }
                 } 
-                connection.createStatement().execute("CREATE DATABASE IF NOT EXISTS `mydatabase`;");
-                connection.createStatement().execute("USE `mydatabase`;");
+/*                 connection.createStatement().execute("CREATE DATABASE IF NOT EXISTS `mydatabase`;");
+                connection.createStatement().execute("USE `mydatabase`;"); */
                 System.out.println("ok3");
-                Statement statement = connection.createStatement();;
+                Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("select * from rooms;");
                 while (resultSet.next()) {
                     //String id = resultSet.getString("room_id");
+                    Integer room_id = resultSet.getInt("room_id");
                     String remark = resultSet.getString("remark");
 
-                    System.out.println("remark: " + remark);
+                    System.out.println("room_id: " + room_id + " remark: " + remark);
                 }
                 System.out.println("ok4");
             }
