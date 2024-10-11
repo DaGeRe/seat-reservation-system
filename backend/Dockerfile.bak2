@@ -1,0 +1,36 @@
+FROM openjdk:24-slim-bullseye
+
+ENV HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
+ENV HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
+ARG PROJECT_PATH
+ENV PROJECT_PATH=$PROJECT_PATH
+ARG PATH_TO_TLS
+ENV PATH_TO_TLS=$PATH_TO_TLS
+
+WORKDIR /usr/src/app
+
+COPY $PROJECT_PATH/backend/apt.conf /etc/apt/apt.conf
+COPY $PROJECT_PATH/backend .
+
+# Proxy stuff
+COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
+COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
+
+# Copy cert stuff
+COPY $PATH_TO_TLS src/main/resources/tls
+
+RUN apt-get update && apt-get install -y vim curl apt-transport-https procps ca-certificates gnupg lsb-release maven
+
+#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/trusted.gpg.d/docker_debian.asc
+RUN echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+RUN apt-get update && apt-get install -y docker-ce-cli
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN mvn clean package -Dhttp.proxyHost=http://proxy.justiz.sachsen.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=http://proxy.justiz.sachsen.de -Dhttps.proxyPort=3128
+#RUN mvn package -Dmaven.test.skip
+
+#COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
+
+CMD bash

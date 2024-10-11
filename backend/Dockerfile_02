@@ -1,0 +1,118 @@
+# Use an official Maven image to build the application
+FROM maven:3.8.4-openjdk-17-slim AS build
+#FROM maven:3.8.4-openjdk-11-slim AS build
+# Install Docker CLI in the build phase
+RUN apt-get update
+
+
+ARG PROJECT_PATH
+ENV PROJECT_PATH=$PROJECT_PATH
+ARG PATH_TO_TLS
+ENV PATH_TO_TLS=$PATH_TO_TLS
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Copy the Maven project files into the container
+COPY $PROJECT_PATH/backend .
+COPY $PROJECT_PATH/backend /root
+
+# Proxy stuff
+COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
+COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
+
+# Testcontainer settings.
+COPY $PROJECT_PATH/backend/.testcontainers.properties /root
+
+# Copy cert stuff
+COPY $PATH_TO_TLS src/main/resources/tls
+
+
+# Build the Maven project
+#RUN mvn clean package
+RUN mvn package -Dmaven.test.skip
+
+# Use a lightweight Java runtime image
+#FROM openjdk:11-jre-slim
+FROM openjdk:24-slim-bullseye
+#ENV DOCKER_HOST=unix:///var/run/docker.sock
+#RUN export DOCKER_HOST=unix:///var/run/docker.sock
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends \
+#    curl \
+#    iputils-ping \
+#    ca-certificates \
+#    gnupg \
+#    lsb-release \
+#    && mkdir -p /etc/apt/keyrings \
+#    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+#    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+#    && apt-get update \
+#    && apt-get install -y --no-install-recommends docker-ce-cli \
+#    && apt-get purge -y --auto-remove \
+#    && rm -rf /var/lib/apt/lists/*
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    procps \ 
+    iputils-ping \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add Docker's official GPG key
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+
+# Set up the stable repository
+RUN echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+# Install Docker CLI
+RUN apt-get update && apt-get install -y docker-ce-cli
+
+
+# Install Docker
+#RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+#RUN apt-get update && apt-get install -y docker.io
+
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Verify Docker installation
+#RUN docker --version
+
+RUN groupadd docker && usermod -aG docker root
+
+# Install required packages and Maven
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends maven && \
+    rm -rf /var/lib/apt/lists/*
+# Copy the MariaDB TAR file into the container
+#COPY /home/r/DeskSharingTool_Dev/mariadb.tar /tmp/mariadb.tar
+
+# Load the MariaDB image from the TAR file during build or runtime
+#RUN docker load -i /tmp/mariadb.tar
+
+# Cleanup if needed
+#RUN rm /tmp/mariadb.tar
+
+# Set the working directory for the runtime stage
+WORKDIR /usr/src/app
+
+ARG PROJECT_PATH
+ENV PROJECT_PATH=$PROJECT_PATH
+# Testcontainer settings.
+COPY $PROJECT_PATH/backend/.testcontainers.properties /root
+#RUN docker ps
+# Copy the compiled JAR file from the build stage
+COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
+
+COPY --from=build /root abc
+# Copy the Maven project files into the container
+COPY $PROJECT_PATH/backend mybackuptest
+
+# Specify the default command to run your application
+#CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

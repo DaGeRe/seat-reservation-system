@@ -1,0 +1,44 @@
+FROM openjdk:17-slim-bullseye
+
+#ENV HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
+#ENV HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
+ARG PROJECT_PATH
+ENV PROJECT_PATH=/home/r/DeskSharingTool_Dev
+#ENV PROJECT_PATH=/home/r/DeskSharingTool_Dev
+ARG PATH_TO_TLS
+ENV PATH_TO_TLS=$PATH_TO_TLS
+#ENV PATH_TO_TLS=/home/r/jus-srv-test30.justiz.sachsen.de
+
+WORKDIR /usr/src/app
+
+COPY /home/r/DeskSharingTool_Dev/backend/apt.conf /etc/apt/apt.conf
+COPY /home/r/DeskSharingTool_Dev/backend .
+
+# Proxy stuff
+COPY /home/r/DeskSharingTool_Dev/backend/settings.xml /usr/share/maven
+COPY /home/r/DeskSharingTool_Dev/backend/settings.xml /root/.m2/
+
+# Copy cert stuff
+COPY $PATH_TO_TLS src/main/resources/tls
+
+RUN apt-get update && apt-get install -y vim curl apt-transport-https procps ca-certificates gnupg lsb-release maven
+
+#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/trusted.gpg.d/docker_debian.asc
+#RUN echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+#RUN apt-get update && apt-get install -y docker-ce-cli
+
+#RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+#RUN mvn clean install
+RUN mvn package -Dmaven.test.skip
+
+ARG CACHEBUST=1 
+RUN ls .
+
+#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/trusted.gpg.d/docker_debian.asc
+#RUN echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+#RUN apt-get update && apt-get install -y docker-ce-cli
+
+#CMD bash
+CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import './InfoModal.css'; // Optional: Styles
-import {IconButton} from '@mui/material';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { useTranslation } from "react-i18next";
 

@@ -1,6 +1,8 @@
+# Stage 1: Base stage using a lightweight Docker CLI image
+FROM docker:24.0-cli as docker-cli
+
 # Use an official Maven image to build the application
 FROM maven:3.8.4-openjdk-17 AS build
-#FROM maven:3.8.4-openjdk-11-slim AS build
 
 ARG PROJECT_PATH
 ENV PROJECT_PATH=$PROJECT_PATH
@@ -12,77 +14,51 @@ WORKDIR /usr/src/app
 
 # Copy the Maven project files into the container
 COPY $PROJECT_PATH/backend .
+# Copy cert stuff
+COPY $PATH_TO_TLS src/main/resources/tls
 
 # Proxy stuff
+COPY $PROJECT_PATH/backend/pom.xml .
 COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
 COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
 
-# Copy cert stuff
-COPY $PATH_TO_TLS src/main/resources/tls
-#ENV MAVEN_OPTS="-Dorg.slf4j.simpleLogger.defaultLogLevel=debug"
+# The dumps
+COPY  $PROJECT_PATH/dumps dumps
 
-#RUN mvn test -Dsurefire.reportFormat=plain
-#RUN mkdir -p /foo && mvn test > /foo/t.txt
-#ARG CACHEBUST=1 
-#RUN mvn test
+# Install Maven dependencies
+RUN mvn dependency:go-offline
 
+
+#RUN mvn clean install
 # Build the Maven project
-RUN mvn clean package
+RUN mvn clean package -Dmaven.test.skip
 
 # Use a lightweight Java runtime image
-#FROM openjdk:11-jre-slim
 FROM openjdk:24-slim-bullseye
-#ENV DOCKER_HOST=unix:///var/run/docker.sock
-#RUN export DOCKER_HOST=unix:///var/run/docker.sock
-#RUN apt-get update && \
-#    apt-get install -y --no-install-recommends \
-#    curl \
-#    iputils-ping \
-#    ca-certificates \
-#    gnupg \
-#    lsb-release \
-#    && mkdir -p /etc/apt/keyrings \
-#    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
-#    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
-#    && apt-get update \
-#    && apt-get install -y --no-install-recommends docker-ce-cli \
-#    && apt-get purge -y --auto-remove \
-#    && rm -rf /var/lib/apt/lists/*
-
-# Install necessary packages
-RUN apt-get update && apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release \
-    && rm -rf /var/lib/apt/lists/*
-
-# Add Docker's official GPG key
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-
-# Set up the stable repository
-RUN echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-
-# Install Docker
-#RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
-#RUN apt-get update && apt-get install -y docker.io
-
-# Cleanup
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Verify Docker installation
-#RUN docker --version
-
-#RUN groupadd docker && usermod -aG docker root
-
-# Set the working directory for the runtime stage
 WORKDIR /usr/src/app
 
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
+# Copy the docker utility in the final stage, to use it in the running container.
+COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
+# Copy Maven from the build stage into the final image, to use it in the running container.
+COPY --from=build /usr/share/maven /usr/share/maven
+COPY --from=build /root/.m2 /root/.m2
+
+# Copy the entire source directory if you need access to the original source and resources
+COPY --from=build /usr/src/app /usr/src/app
+
+# Set Maven-related environment variables
+ENV M2_HOME=/usr/share/maven
+ENV PATH=$M2_HOME/bin:$PATH
+
+# Copy entrypoint script to run Docker-related tests
+#COPY --from=build /usr/src/app/entrypoint.sh /usr/src/app/entrypoint.sh
+COPY --from=build /usr/src/app/run_test.sh /usr/src/app/run_test.sh
+RUN chmod +x /usr/src/app/run_test.sh
+
+# The dumps
 
 
 # Specify the default command to run your application
-#CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
 CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
