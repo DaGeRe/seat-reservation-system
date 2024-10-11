@@ -22,11 +22,14 @@ COPY $PROJECT_PATH/backend/pom.xml .
 COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
 COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
 
+# The dumps
+COPY  $PROJECT_PATH/dumps dumps
+
 # Install Maven dependencies
 RUN mvn dependency:go-offline
 
 
-
+#RUN mvn clean install
 # Build the Maven project
 RUN mvn clean package -Dmaven.test.skip
 
@@ -53,6 +56,9 @@ ENV PATH=$M2_HOME/bin:$PATH
 #COPY --from=build /usr/src/app/entrypoint.sh /usr/src/app/entrypoint.sh
 COPY --from=build /usr/src/app/run_test.sh /usr/src/app/run_test.sh
 RUN chmod +x /usr/src/app/run_test.sh
+
+# The dumps
+
 
 # Specify the default command to run your application
 CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
