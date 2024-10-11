@@ -23,6 +23,10 @@ import java.sql.Connection;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.utility.MountableFile; // Make sure to import this class
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
 
 //@SpringBootTest
 @Testcontainers
@@ -57,6 +61,15 @@ public class MyTest {
         
         // Start the MariaDB container
         mariadb.start();
+        
+        try {
+            // Load the dump file
+            Path dumpFile = Paths.get(DUMP_FILE_PATH);
+            String dumpContent = Files.readString(dumpFile);
+        
+        } catch (IOException e) {
+            System.err.println("IOException in setup");
+        }
     }
     /* */
     @Test
