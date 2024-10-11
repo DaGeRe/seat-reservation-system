@@ -26,7 +26,9 @@ import org.testcontainers.utility.MountableFile; // Make sure to import this cla
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.DriverManager;
 import java.io.IOException;
+import java.sql.SQLException;
 
 //@SpringBootTest
 @Testcontainers
@@ -66,7 +68,14 @@ public class MyTest {
             // Load the dump file
             Path dumpFile = Paths.get(DUMP_FILE_PATH);
             String dumpContent = Files.readString(dumpFile);
-        
+            System.out.println("ok1");
+            try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), "user", "password")) {
+                System.out.println("ok2");
+            }
+            catch (SQLException e_sql) {
+                System.err.println("SQLException in setup");
+            }
+
         } catch (IOException e) {
             System.err.println("IOException in setup");
         }
