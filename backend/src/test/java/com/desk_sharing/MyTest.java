@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 //@SpringBootTest
 @Testcontainers
@@ -37,7 +39,7 @@ public class MyTest {
 
     @Container 
     private static MariaDBContainer<?> mariadb = new MariaDBContainer<>("mariadb:10.6")
-            .withDatabaseName("test")
+            .withDatabaseName("mydatabase")
             .withUsername("user")
             .withPassword("password")
             //.withCopyFileToContainer(MountableFile.forPath(new File("")), "/docker-entrypoint-initdb.d/dump.sql");
@@ -71,6 +73,25 @@ public class MyTest {
             System.out.println("ok1");
             try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), "user", "password")) {
                 System.out.println("ok2");
+                 for (String sql : dumpContent.split(";")) {
+                    if (!sql.trim().isEmpty()) {
+                        System.out.println("\tok2.3 " + sql);
+                        connection.createStatement().execute(sql);
+                        System.out.println("\tok2.4");
+                    }
+                } 
+                connection.createStatement().execute("CREATE DATABASE IF NOT EXISTS `mydatabase`;");
+                connection.createStatement().execute("USE `mydatabase`;");
+                System.out.println("ok3");
+                Statement statement = connection.createStatement();;
+                ResultSet resultSet = statement.executeQuery("select * from rooms;");
+                while (resultSet.next()) {
+                    //String id = resultSet.getString("room_id");
+                    String remark = resultSet.getString("remark");
+
+                    System.out.println("remark: " + remark);
+                }
+                System.out.println("ok4");
             }
             catch (SQLException e_sql) {
                 System.err.println("SQLException in setup");
