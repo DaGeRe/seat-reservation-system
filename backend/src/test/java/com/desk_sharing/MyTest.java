@@ -27,11 +27,13 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import com.desk_sharing.entities.UserEntity;
+
 //@SpringBootTest
 @Testcontainers
 public class MyTest {
     private static final String DUMP_FILE_PATH = "/usr/src/app/dumps/test.sql"; // Update this path
-    static String user = "user";
+    static String user = "user"; // Wichtig, da nur root die datenbank ändern kann
     static String pw = "password";
     @Container 
     private static MariaDBContainer<?> mariadb = new MariaDBContainer<>("mariadb:10.6")
@@ -42,8 +44,14 @@ public class MyTest {
             //.waitingFor(Wait.forLogMessage(".*ready for connections.*\\n", 1))
             //.withNetworkMode("host")
             //.withImagePullPolicy(PullPolicy.never()) // Never pull, use only local image
-            .withImagePullPolicy(PullPolicy.defaultPolicy());
-            //.withCopyFileToContainer(MountableFile.forPath(new File("")), "/docker-entrypoint-initdb.d/dump.sql");
+            .withImagePullPolicy(PullPolicy.defaultPolicy())
+            /* .withCopyFileToContainer(
+                MountableFile.forClasspathResource(DUMP_FILE_PATH),
+                        "/docker-entrypoint-initdb.d/"
+            ) */
+            .withCopyFileToContainer(MountableFile.forClasspathResource(DUMP_FILE_PATH), "/docker-entrypoint-initdb.d/test.sql")
+            
+            //.withCopyFileToContainer(MountableFile.forPath(new File(DUMP_FILE_PATH)), "/docker-entrypoint-initdb.d/dump.sql");
             ;
             
     @Autowired
@@ -58,7 +66,7 @@ public class MyTest {
         
         // Start the MariaDB container
         mariadb.start();
-        System.out.println("mystart");
+       /*  System.out.println("mystart");
         try {
             // Load the dump file
             Path dumpFile = Paths.get(DUMP_FILE_PATH);
@@ -73,8 +81,7 @@ public class MyTest {
                         System.out.println("\tok2.4");
                     }
                 } 
-/*                 connection.createStatement().execute("CREATE DATABASE IF NOT EXISTS `mydatabase`;");
-                connection.createStatement().execute("USE `mydatabase`;"); */
+
                 System.out.println("ok3");
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("select * from rooms;");
@@ -93,7 +100,7 @@ public class MyTest {
 
         } catch (IOException e) {
             System.err.println("IOException in setup");
-        }
+        } */
     }
     /* */
     @Test

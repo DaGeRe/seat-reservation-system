@@ -23,7 +23,7 @@ COPY $PROJECT_PATH/backend/settings.xml /usr/share/maven
 COPY $PROJECT_PATH/backend/settings.xml /root/.m2/
 
 # The dumps
-COPY  $PROJECT_PATH/dumps dumps
+COPY  $PROJECT_PATH/backend/src/test/resources/dumps dumps
 
 # Install Maven dependencies
 RUN mvn dependency:go-offline
@@ -59,6 +59,8 @@ RUN chmod +x /usr/src/app/run_test.sh
 
 # The cache.
 #COPY  --from=build /root/.m2/repository /root/.m2/repository
+
+COPY --from=build /usr/src/app/dumps /usr/src/app/src/test/resources
 
 # Cancel proxy for every local connection.
 #ENV no_proxy="127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0.0/8,172.18.0.0/16,172.21.0.0/16,172.27.0.0/16"

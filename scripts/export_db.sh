@@ -16,7 +16,7 @@ outputfile="$1"
 #docker exec $DATABASE_CONTAINER mariadb-dump --complete-insert \
 #    --add-drop-database \
 #    -u root -p${PW_DB} --databases mydatabase >> dumps/$outputfile
-docker exec $DATABASE_CONTAINER mariadb-dump -u root -p${PW_DB} --databases mydatabase >> dumps/$outputfile
+docker exec $DATABASE_CONTAINER mariadb-dump -u root -p${PW_DB} --databases mydatabase >>  backend/src/test/resources/dumps/$outputfile
 # Rm eg:
 # CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mydatabase` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 # Since we want CREATE DATABASE IF NOT EXISTS.
