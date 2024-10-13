@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,11 @@ import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {getRequest, deleteRequest} from "../RequestFunctions/RequestFunctions";
 
 const MyBookings = () => {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -20,63 +24,55 @@ const MyBookings = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const userId = localStorage.getItem("userId");
   const localizer = momentLocalizer(moment);
+  const fetchBookings = useCallback(
+    async (userId) => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
+        headers,
+        (bookings) => {
+          const calendarEvents = bookings.map((booking) => ({
+            id: booking.id,
+            title: `${t('desk')} ${booking.desk.id}`,
+            start: new Date(booking.day + "T" + booking.begin),
+            end: new Date(booking.day + "T" + booking.end),
+            desk: booking.desk
+          }));
+          setEvents(calendarEvents);
+        },
+        () => {
+          console.log('Error fetching bookings');
+        }
+      );
+    },
+    [headers, setEvents, t]  // Abhängigkeiten: userId kommt als Argument rein, muss hier nicht aufgenommen werden.
+  );
 
-  useEffect(() => {
+/*   useEffect(() => {
     moment.locale(i18n.language);
     fetchBookings(userId);
       if (selectedEvent) {
         const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
         setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
       }
-  }, [i18n.language]);
-/*   function success(bookings) {
-    console.log('in success function in mybookings');
-    const calendarEvents = bookings.map((booking) => ({
-      id: booking.id,
-      title: `${t('desk')} ${booking.desk.id}`,
-      start: new Date(booking.day + "T" + booking.begin),
-      end: new Date(booking.day + "T" + booking.end),
-      desk: booking.desk
-    }));
-    setEvents(calendarEvents);
-  } */
-  const fetchBookings = async (userId) => {
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
-      headers,
-      (bookings) => {
-        const calendarEvents = bookings.map((booking) => ({
-          id: booking.id,
-          title: `${t('desk')} ${booking.desk.id}`,
-          start: new Date(booking.day + "T" + booking.begin),
-          end: new Date(booking.day + "T" + booking.end),
-          desk: booking.desk
-        }));
-        setEvents(calendarEvents);
-    }, 
-    () => {console.log('Error fetching bookings')},
-    )
-  };
+  }, [i18n.language, userId, t, selectedEvent, fetchBookings, setSelectedEvent]); */
+    // useEffect für Buchungen
+    useEffect(() => {
+      moment.locale(i18n.language);
+      fetchBookings(userId);
+    }, [i18n.language, userId, fetchBookings]); // Hier keine Abhängigkeit auf selectedEvent
+  
+    // useEffect für die Aktualisierung des Titels des ausgewählten Events
+    useEffect(() => {
+      if (selectedEvent) {
+        const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
+        setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
+      }
+    }, [selectedEvent, t]); // Hier keine fetchBookings
+
 
   const handleEventSelect = async (event) => {
     if (event.id !== selectedEvent?.id) {
       setSelectedEvent(event);
-  
-/*       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`, {
-          method: "GET",
-          headers: headers
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch booking details");
-        }
-  
-        const bookingDetails = await response.json();
-        setTheEvent(bookingDetails);
-  
-      } catch (error) {
-        console.error("Error fetching booking details:", error);
-      } */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`,
         headers,
@@ -86,9 +82,9 @@ const MyBookings = () => {
     }
   };
   
-  const handleEditEvent = () => {
+/*   const handleEditEvent = () => {
     setShowEditModal(true);
-  };
+  }; */
 
   const reloadCalendar = async () => {
     fetchBookings(userId);
@@ -96,23 +92,6 @@ const MyBookings = () => {
   };  
 
   const deleteBooking = async () => {
-/*     try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`;
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: headers
-      });
-  
-      if (!response.ok) {
-        console.log(response);
-        throw new Error('Error deleting booking:');
-      }
-  
-      fetchBookings(userId);
-      setSelectedEvent(null);
-    } catch (error) {
-      console.error('Error deleting booking:', error);
-    } */
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`,
        headers,
@@ -218,9 +197,6 @@ const MyBookings = () => {
                   {renderDeskInfo(theEvent)}
 
                   <div className="mb-buttons">
-{/*                     <button className="mb-submit-btn" onClick={handleEditEvent}>
-                      {t("edit")}
-                    </button> */}
                     <button className="mb-submit-btn" onClick={handleDeleteEvent}>
                       {t("delete")}
                     </button>

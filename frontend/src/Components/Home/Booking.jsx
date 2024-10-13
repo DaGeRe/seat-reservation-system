@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -13,7 +13,11 @@ import InfoModal from '../InfoModal/InfoModal.jsx'
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 
 const Booking = () => {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,25 +30,28 @@ const Booking = () => {
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const helpText = t('helpCreateBooking');
   
-  const fetchDesks = async () => {
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-      headers,
-      setDesks,
-      () => {console.log('Failed to fetch desks in Booking.jsx');}
-    )
-  };
+  const fetchDesks = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        headers,
+        setDesks,
+        () => {console.log('Failed to fetch desks in Booking.jsx');}
+      )
+    },
+    [roomId, headers]
+  );
 
   useEffect(() => {
     if (roomId) {
       fetchDesks();
     }
-  }, [roomId]);
+  }, [roomId, fetchDesks]);
 
   useEffect(() => {
     moment.locale(i18n.language);
     setEvents([...events]);
-  }, [i18n.language]);
+  }, [i18n.language, events]);
 
  // const handleDeskClick = async (desk) => {
 /*     try {
@@ -98,6 +105,30 @@ const Booking = () => {
     );
   }; */
 
+  const loadBookings = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`,
+        headers,
+        (bookingData) => {
+          // Parse the booking data and add events to tempArray
+          const bookingEvents = bookingData.map((booking) => ({
+            start: new Date(booking.day + 'T' + booking.begin),
+            end: new Date(booking.day + 'T' + booking.end),
+            title: booking.user.id.toString() === localStorage.getItem('userId')
+              ? ''
+              : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
+            id: 0,
+          }));
+          setDeskEvents(bookingEvents);
+          setEvents(bookingEvents);       
+        },
+        () => {console.log('Failed to fetch desks in Booking.jsx');}
+      );
+    },
+    [clickedDeskId, t,  headers]
+  );
+
   useEffect(() => {
     desks.forEach(desk => {
       if (desk.id === clickedDeskId) {
@@ -106,53 +137,7 @@ const Booking = () => {
         loadBookings();
       }
     });
-  }, [desks, clickedDeskId]);
-
-  async function loadBookings() {
- /*    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`, {
-        method: "GET",
-        headers: headers,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Error fetching desk booking data");
-    }
-
-    const bookingData = await response.json();
-
-    // Parse the booking data and add events to tempArray
-    const bookingEvents = bookingData.map((booking) => ({
-      start: new Date(booking.day + 'T' + booking.begin),
-      end: new Date(booking.day + 'T' + booking.end),
-      title: booking.user.id.toString() === localStorage.getItem("userId")
-        ? ""
-        : (booking.user.visibility ? booking.user.name : t("anonymous")),
-      id: 0,
-    }));
-    
-    setDeskEvents(bookingEvents);
-    setEvents(bookingEvents); */
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`,
-      headers,
-      (bookingData) => {
-        // Parse the booking data and add events to tempArray
-        const bookingEvents = bookingData.map((booking) => ({
-          start: new Date(booking.day + 'T' + booking.begin),
-          end: new Date(booking.day + 'T' + booking.end),
-          title: booking.user.id.toString() === localStorage.getItem('userId')
-            ? ''
-            : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
-          id: 0,
-        }));
-        setDeskEvents(bookingEvents);
-        setEvents(bookingEvents);       
-      },
-      () => {console.log('Failed to fetch desks in Booking.jsx');}
-    );
-  }
+  }, [desks, clickedDeskId, loadBookings]);  
 
   const selectSlot = (data) => {
     const startTime = new Date(data.start);
@@ -224,37 +209,12 @@ const Booking = () => {
       headers,
       (data) => {
         confirmAlert({
-          title: t("bookDesk") + " " + clickedDeskId,
+          title: t('bookDesk') + " " + clickedDeskId,
           message: t("date") + " " + day + " " + t("from") + " " + start + " " + t("to") + " " + ending,
           buttons: [
             {
-              label: "Yes",
+              label: 'Yes',
               onClick: async () => {
-               
-/*                 try {
-                  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`, {
-                    method: "PUT",
-                    headers: headers,
-                    body: JSON.stringify({})
-                  })
-    
-                  if (!response.ok) {
-                    throw new Error("Error fetching desk booking data");
-                  }
-                  const dat = await response.json();
-                  toast.success(t("booked"));
-    
-                  const booking = {
-                    id: dat.id,
-                    title: `Desk ${dat.deskId}`,
-                    start: new Date(`${dat.day}T${dat.begin}`),
-                    end: new Date(`${dat.day}T${dat.end}`)
-                  }
-    
-                  navigate("/home", { state: { booking }, replace: true });
-                } catch (error) {
-                  console.error("Error saving booking:", error);
-                } */
                 putRequest(
                   `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
                   headers,
@@ -275,23 +235,8 @@ const Booking = () => {
               },
             },
             {
-              label: "No",
+              label: 'No',
               onClick: async () => {
-               
-/*                 try {
-                  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`, {
-                    method: "DELETE",
-                    headers: headers,
-                    body: JSON.stringify({})
-                  })
-                  loadBookings();
-                  if (!response.ok) {
-                    throw new Error("Error fetching desk booking data");
-                  }
-                  
-                } catch (error) {
-                  console.error("Error saving booking:", error);
-                } */
                 deleteRequest(
                   `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`,
                   headers,
