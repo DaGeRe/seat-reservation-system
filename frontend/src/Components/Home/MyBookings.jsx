@@ -62,12 +62,22 @@ const MyBookings = () => {
     }, [i18n.language, userId, fetchBookings]); // Hier keine Abhängigkeit auf selectedEvent
   
     // useEffect für die Aktualisierung des Titels des ausgewählten Events
-    useEffect(() => {
+/*     useEffect(() => {
       if (selectedEvent) {
         const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
         setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
       }
-    }, [selectedEvent, t]); // Hier keine fetchBookings
+    }, [selectedEvent, t]); // Hier keine fetchBookings */
+    useEffect(() => {
+      if (selectedEvent) {
+        const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
+    
+        // Nur aktualisieren, wenn sich der Titel tatsächlich ändert
+        if (selectedEvent.title !== updatedTitle) {
+          setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
+        }
+      }
+    }, [selectedEvent, t]);
 
 
   const handleEventSelect = async (event) => {
