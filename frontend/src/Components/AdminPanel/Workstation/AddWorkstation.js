@@ -19,24 +19,14 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [remark, setRemark]= React.useState('');
   const [deskId, setDeskId] = React.useState('');
   React.useEffect(() => {
-      getAllRooms();
+      getAllActiveRooms();
   }, []);
 
   const handleCloseBtn = () => {
     addWorkstationModal();
   }
 
-  async function getAllRooms() {
-/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: 'GET',
-      headers: headers,
-    }).then(resp => {
-      resp.json().then(data => {
-        setAllRooms(data);
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    }); */
+  async function getAllActiveRooms() {
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
       headers,

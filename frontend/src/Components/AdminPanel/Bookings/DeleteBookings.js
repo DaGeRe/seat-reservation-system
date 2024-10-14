@@ -21,11 +21,11 @@ export default function DeleteBookings({ deleteBookingsModal }) {
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [allBookings, setAllBookings] = React.useState([]);
   React.useEffect(() => {
-      getAllRooms();
+      getAllActiveRooms();
        // getAllBookings();
       }, []);
 
-/*       async function getAllRooms(){
+/*       async function getAllActiveRooms(){
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
         method: 'GET',
         headers: headers,
@@ -38,7 +38,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
         console.log("login user err " + error);
       });
     }*/
-    async function getAllRooms(){   
+    async function getAllActiveRooms(){   
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`, 
         headers,

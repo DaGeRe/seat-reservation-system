@@ -27,20 +27,6 @@ export default function AddRoom({ addRoomModal }) {
   const [y, setY] = React.useState(0.0);
   const [remark, setRemark] = React.useState('');
   const helpText = t('helpAddRoom');
-  
-/*     React.useEffect(() => {
-        //getAllRooms();
-      }, []); */
-  
-/*     async function getAllRooms() {
-      console.log('getAllRooms')
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-        () => {},//setAllRooms,
-        () => {console.log('Failed to fetch rooms in AddRoom.jsx')},
-        headers
-      );
-    } */
 
   async function addRoom() {
     if (!x || !y) {
@@ -88,7 +74,6 @@ export default function AddRoom({ addRoomModal }) {
                       label={t("floor")}
                       onChange={(e)=>{
                         setFloor(e.target.value);
-                        //getAllRooms();
                       }}   
                     >
                       <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>

@@ -1,4 +1,3 @@
-
 import './FloorImage.css'; 
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -15,7 +14,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
     
-    const getAllRooms = useCallback(
+    const getAllActiveRooms = useCallback(
         async () => {
             getRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
@@ -28,8 +27,8 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     );
 
     useEffect(() => {
-        getAllRooms();
-      }, [getAllRooms]);
+        getAllActiveRooms();
+      }, [getAllActiveRooms]);
     
     /** Set isHoveredOverOldRoom to true to indicate that the mousepointer is above an button that locates known room on the map.*/
     const handleMouseEnter = () => {
@@ -40,16 +39,6 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     const handleMouseLeave = () => {
         setIsHoveredOverOldRoom(false);
     };
-
-
-/*     async function getAllRooms(){
-        getRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-            headers,
-            setAllRooms,
-            () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            
-        );
-    } */
 
     const handleMouseClick = (e) => {
         /**

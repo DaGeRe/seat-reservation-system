@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, {useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
@@ -12,7 +12,11 @@ import {optionToRoomId, roomToOption, isOptionEqualToValue_Room} from '../Room/R
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditWorkstation({ editWorkstationModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
@@ -20,21 +24,25 @@ export default function EditWorkstation({ editWorkstationModal }) {
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
+
+  const getAllActiveRooms = useCallback(
+    async () => {
+        getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+          headers,
+          setAllRooms,
+          () => {console.log('Failed to fetch all rooms in EditWorkstation.js.');}            
+        );
+    },
+    [headers, setAllRooms]
+) ;
+
   React.useEffect(() => {
-      getAllRooms();
-  }, []);
+      getAllActiveRooms();
+  }, [getAllActiveRooms]);
 
   const handleCloseBtn = () => {
     editWorkstationModal();
-  }
-
-  async function getAllRooms(){
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-      headers,
-      setAllRooms,
-      () => {console.log('Failed to fetch all rooms in EditWorkstation.js.');}      
-    )
   }
 
   async function getDeskByRoomId(roomId){
@@ -61,7 +69,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
         headers
       );
     //}
-  }
+  };
 
   async function updateWorkstation() {
     putRequest(

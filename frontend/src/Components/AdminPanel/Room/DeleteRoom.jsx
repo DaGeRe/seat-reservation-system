@@ -27,7 +27,6 @@ export default function DeleteRoom({ deleteRoomModal }) {
       headers,
       setAllRooms,
       () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
-
     )
   }
 

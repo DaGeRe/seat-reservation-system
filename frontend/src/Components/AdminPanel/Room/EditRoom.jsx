@@ -15,17 +15,7 @@ export default function EditRoom({ editRoomModal }) {
         getAllRooms();
       }, []);
 
-      async function getAllRooms(){
-        /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log('login user err ' + error);
-      }); */
+    async function getAllRooms(){
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms`,
         headers,
@@ -39,13 +29,6 @@ export default function EditRoom({ editRoomModal }) {
     }
 
     async function handleRoomFloorChange(e, id){
-/*       await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`, {  
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({}),
-      });
-      toast.success(t('floor'));
-      getAllRooms(); */
       putRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`,
         headers,
@@ -99,13 +82,7 @@ export default function EditRoom({ editRoomModal }) {
     }
 
     async function handleStatusChange(e, id){
-/*         await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
-          method: 'PUT',
-          headers: headers,
-          body: JSON.stringify({}),
-        });
-        toast.success(t('roomStatus'));
-        getAllRooms(); */
+
         putRequest( 
           `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`,
           headers,
