@@ -5,3 +5,7 @@ export function deskToOption(desk) {
 export function optionToDeskId(option) {
     return option.includes('-') ? option.split('-')[0] : option;
 };
+
+export function isOptionEqualToValue_Desk(option, value) {
+    return optionToDeskId(option) === value || '' === value;
+};

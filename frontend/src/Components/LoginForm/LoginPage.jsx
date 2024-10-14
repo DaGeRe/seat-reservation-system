@@ -91,9 +91,9 @@ const LoginPage = () => {
           />
           <FaLock className="icon" />
         </div>
-        <div className="forgot-password">
+{/*         <div className="forgot-password">
           <a href="/">{t("forgotPassword")}?</a>
-        </div>
+        </div> */}
         {loginError && <div className="error">{loginError}</div>}
         <button type="submit" onClick={handleLogin}>
           {t("login")}

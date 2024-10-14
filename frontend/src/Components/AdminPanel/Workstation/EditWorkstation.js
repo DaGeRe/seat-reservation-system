@@ -7,7 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {optionToDeskId, deskToOption} from './DeskAndOption'
+import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
+import {optionToRoomId, roomToOption, isOptionEqualToValue_Room} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditWorkstation({ editWorkstationModal }) {
@@ -16,7 +17,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   const [allRooms, setAllRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
-  const [selectedDesk, setSelectedDesk]= React.useState('');
+  const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
   React.useEffect(() => {
@@ -36,12 +37,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
     )
   }
 
-  async function getDeskByRoomId(e){
-    if(e){
+  async function getDeskByRoomId(roomId){
+   /*  if(e){
       let idSplit = e.split("(");
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
-
+ */
       /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
         method: 'GET',
         headers: headers,
@@ -59,24 +60,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
         () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
         headers
       );
-    }
+    //}
   }
 
-  async function updateWorkstation(){
-    /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`, {
-      method: 'PUT',
-      headers: headers,
-      body: JSON.stringify({})
-    }).then(resp => {
-      resp.json().then(data => {
-        toast.success(t('deskUpdate'));
-        editWorkstationModal();
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    }); */
+  async function updateWorkstation() {
     putRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}/${equipment}/${remark}`,
+      `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}/${equipment}/${remark}`,
       headers,
       (_) => {
         toast.success(t('deskUpdate'));
@@ -84,15 +73,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       },
       () => {console.log('Failed to update workstation in EditWorkstation.js');}
     );
-  }
-  
-/*   const deskToOption = (desk) => {
-    return desk.id.toString() + (!desk.remark ? '' : '-' + desk.remark);
   };
-
-  const optionToDeskId = (option) => {
-    return option.includes('-') ? option.split('-')[0] : option 
-  } */
 
   return (
     <React.Fragment>
@@ -100,18 +81,17 @@ export default function EditWorkstation({ editWorkstationModal }) {
         <Grid container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <Autocomplete
-              id="tags-filled"
+              id='tags-filled'
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+")" + option.remark))}
-              // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
+              options={allRooms.map(roomToOption)}
+              isOptionEqualToValue={isOptionEqualToValue_Room}
               value={selectedRoom}
-              onChange={(event, newValue) => {
+              onChange={(_, newValue) => {
                   setEquipment("");
-                  setSelectedDesk("");
-                  getDeskByRoomId(newValue);
-                  setSelectedRoom(
-                      newValue);
+                  setSelectedDeskId("");
+                  const roomId = optionToRoomId(newValue);
+                  getDeskByRoomId(roomId);
+                  setSelectedRoom(newValue);
               }}
               renderInput={(params) => (
                 <TextField
@@ -131,8 +111,9 @@ export default function EditWorkstation({ editWorkstationModal }) {
                   fullWidth
                   options={allDesks.map(deskToOption)}
                   // To avoid an warning allow every possible option.
-                  isOptionEqualToValue={(option, value) => true === true}
-                  value={selectedDesk}
+                  //isOptionEqualToValue={(option, value) => true === true}
+                  isOptionEqualToValue={isOptionEqualToValue_Desk}
+                  value={selectedDeskId}
                   onChange={(_, newValue) => {
                     const deskId = optionToDeskId(newValue);
                     const deskData = allDesks.find(e => e.id.toString()===deskId);
@@ -140,7 +121,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
                           setEquipment(deskData.equipment ? deskData.equipment : '');
                           setRemark(deskData.remark ? deskData.remark : '');
                     }
-                    setSelectedDesk(deskId);
+                    setSelectedDeskId(deskId);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -155,7 +136,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
               ):<p style={{color: 'red', textAlign:'left'}}>{t("deskNotFound")}</p>
             }
             <br></br> {
-              selectedDesk ? (
+              selectedDeskId ? (
                 <div>
                   <FormControl fullWidth size='small'>
                     <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>

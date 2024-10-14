@@ -19,11 +19,13 @@ const MyBookings = () => {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [theEvent, setTheEvent] = useState(null);
+  const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
+  // The current booking object (with id, room, desk) 
+  const [theBookingEvent, setTheBookingEvent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const userId = localStorage.getItem("userId");
   const localizer = momentLocalizer(moment);
+
   const fetchBookings = useCallback(
     async (userId) => {
       getRequest(
@@ -47,63 +49,43 @@ const MyBookings = () => {
     [headers, setEvents, t]  // Abhängigkeiten: userId kommt als Argument rein, muss hier nicht aufgenommen werden.
   );
 
-/*   useEffect(() => {
+  // useEffect für Buchungen
+  useEffect(() => {
     moment.locale(i18n.language);
     fetchBookings(userId);
-      if (selectedEvent) {
-        const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
-        setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
-      }
-  }, [i18n.language, userId, t, selectedEvent, fetchBookings, setSelectedEvent]); */
-    // useEffect für Buchungen
-    useEffect(() => {
-      moment.locale(i18n.language);
-      fetchBookings(userId);
-    }, [i18n.language, userId, fetchBookings]); // Hier keine Abhängigkeit auf selectedEvent
+  }, [i18n.language, userId, fetchBookings]); // Hier keine Abhängigkeit auf selectedBookingEvent
   
-    // useEffect für die Aktualisierung des Titels des ausgewählten Events
-/*     useEffect(() => {
-      if (selectedEvent) {
-        const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
-        setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
+  useEffect(() => {
+    if (selectedBookingEvent) {
+      const updatedTitle = `${t('desk')} ${selectedBookingEvent.desk.id}`;
+  
+      // Nur aktualisieren, wenn sich der Titel tatsächlich ändert
+      if (selectedBookingEvent.title !== updatedTitle) {
+        setSelectedBookingEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
       }
-    }, [selectedEvent, t]); // Hier keine fetchBookings */
-    useEffect(() => {
-      if (selectedEvent) {
-        const updatedTitle = `${t('desk')} ${selectedEvent.desk.id}`;
-    
-        // Nur aktualisieren, wenn sich der Titel tatsächlich ändert
-        if (selectedEvent.title !== updatedTitle) {
-          setSelectedEvent(prevEvent => ({ ...prevEvent, title: updatedTitle }));
-        }
-      }
-    }, [selectedEvent, t]);
-
+    }
+  }, [selectedBookingEvent, t]);
 
   const handleEventSelect = async (event) => {
-    if (event.id !== selectedEvent?.id) {
-      setSelectedEvent(event);
+    if (event.id !== selectedBookingEvent?.id) {
+      setSelectedBookingEvent(event);
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`,
         headers,
-        setTheEvent,
-        () => {throw new Error("Failed to fetch booking details");}        
+        setTheBookingEvent,
+        () => {throw new Error('Failed to fetch booking details');}        
       );
     }
   };
-  
-/*   const handleEditEvent = () => {
-    setShowEditModal(true);
-  }; */
 
   const reloadCalendar = async () => {
     fetchBookings(userId);
-    setSelectedEvent(null);
+    setSelectedBookingEvent(null);
   };  
 
   const deleteBooking = async () => {
     deleteRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/${theEvent.id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/${theBookingEvent.id}`,
        headers,
       reloadCalendar,
       () => {console.log('Error deleting booking:');}
@@ -115,11 +97,11 @@ const MyBookings = () => {
       title: t("deleteBookingMessage"),
       message:
         t("date") + ' ' +
-        moment(selectedEvent.start).format('YYYY-MM-DD') +
+        moment(selectedBookingEvent.start).format('YYYY-MM-DD') +
         ' ' + t("from") + ' ' +
-        moment(selectedEvent.start).format('HH:mm') +
+        moment(selectedBookingEvent.start).format('HH:mm') +
         ' ' + t("to") + ' ' +
-        moment(selectedEvent.end).format('HH:mm'),
+        moment(selectedBookingEvent.end).format('HH:mm'),
       buttons: [
         {
           label: t("yes"),
@@ -131,26 +113,27 @@ const MyBookings = () => {
       ]
     });
   };
-  
-  const renderRoomInfo = (event) => {
-    if (event && event.room) {
-      return (
-        <div>
-          <p>{t("room")}: {event.room.id}</p>
-          <p>{t("floor")}: {event.room.floor}</p>
-          <p>{t("type")}: {event.room.type}</p>
-          <p>{t("type")}: {event.room.remark}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-  
-  const renderDeskInfo = (event) => {
-    if (event && event.desk) {
-      return <p>{t("equipment")}: {event.desk.equipment}</p>;
-    }
-    return null;
+
+  function RenderSelectedBookingEventDetails () {
+    return (
+      <div>
+        {selectedBookingEvent && 
+          <div style={{ margin: '20px' }}>
+            <p>{t('day')}: {moment(selectedBookingEvent.start).format('DD.MM.YYYY')}</p>
+            <p>{t('start')}: {moment(selectedBookingEvent.start).format('HH:mm')}</p>
+            <p>{t('end')}: {moment(selectedBookingEvent.end).format('HH:mm')}</p>
+            
+            {theBookingEvent && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
+            {theBookingEvent && theBookingEvent.desk && <p>{t('desk')}: {theBookingEvent.desk.id + ' ' + theBookingEvent.desk.remark}</p> }
+            <div className="mb-buttons">
+              <button className="mb-submit-btn" onClick={handleDeleteEvent}>
+                {t("delete")}
+              </button>
+            </div>
+          </div>
+        } 
+      </div>
+    );
   };
 
   return (
@@ -196,25 +179,8 @@ const MyBookings = () => {
             />
           </div>
           <div className="mb-info-column">
-            {selectedEvent && (
-              <div>
-                <h2>{selectedEvent.title}</h2>
-                <div style={{ margin: "20px" }}>
-                  <p>{t("day")}: {moment(selectedEvent.start).format("DD.MM.YYYY")}</p>
-                  <p>{t("start")}: {moment(selectedEvent.start).format("HH:mm")}</p>
-                  <p>{t("end")}: {moment(selectedEvent.end).format("HH:mm")}</p>
-                  {renderRoomInfo(theEvent)}
-                  {renderDeskInfo(theEvent)}
-
-                  <div className="mb-buttons">
-                    <button className="mb-submit-btn" onClick={handleDeleteEvent}>
-                      {t("delete")}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {!selectedEvent && (
+            {setSelectedBookingEvent && <RenderSelectedBookingEventDetails /> }
+            {!setSelectedBookingEvent && (
               <div className="choose">
                 {t("choose")}
               </div>
@@ -228,9 +194,9 @@ const MyBookings = () => {
           <DialogContent>
             <EditBookingModal
               editBookingModal={() => setShowEditModal(false)} // Close modal function
-              id={selectedEvent.id} // Pass necessary props
-              startTimeFromDb={moment(selectedEvent.start).format("HH:mm:ss")}
-              endTimeFromDb={moment(selectedEvent.end).format("HH:mm:ss")}
+              id={selectedBookingEvent.id} // Pass necessary props
+              startTimeFromDb={moment(selectedBookingEvent.start).format("HH:mm:ss")}
+              endTimeFromDb={moment(selectedBookingEvent.end).format("HH:mm:ss")}
               onSuccess={reloadCalendar}
             />
           </DialogContent>

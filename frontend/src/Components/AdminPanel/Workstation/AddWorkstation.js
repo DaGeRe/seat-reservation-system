@@ -86,7 +86,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
               isOptionEqualToValue={(option, value) => true === true}
               value={selectedRoom}
               onChange={(_, newValue) => {
-                console.log(newValue);
                 setSelectedRoom(newValue);
               }}
               renderInput={(params) => (
