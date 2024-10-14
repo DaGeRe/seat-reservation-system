@@ -7,13 +7,17 @@ import DialogContent from '@mui/material/DialogContent';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import './AddRoom.css'; 
-import * as React from 'react';
+import React, { useMemo } from "react";
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddRoom({ addRoomModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   //const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('Ground');

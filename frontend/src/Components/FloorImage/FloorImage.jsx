@@ -4,7 +4,7 @@ import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import firstFloorImage from '../../images/firstfloor.png';
 import secondFloorImage from '../../images/secondfloor.png'; 
-import React, {useEffect } from 'react';
+import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 
@@ -15,9 +15,21 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
     
+    const getAllRooms = useCallback(
+        async () => {
+            getRequest(
+                `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+                headers,
+                setAllRooms,
+                () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            
+            );
+        },
+        [headers, setAllRooms]
+    );
+
     useEffect(() => {
         getAllRooms();
-      }, []);
+      }, [getAllRooms]);
     
     /** Set isHoveredOverOldRoom to true to indicate that the mousepointer is above an button that locates known room on the map.*/
     const handleMouseEnter = () => {
@@ -29,24 +41,15 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
         setIsHoveredOverOldRoom(false);
     };
 
-    async function getAllRooms(){
-/*         await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-            method: 'GET',
-            headers: headers,
-        }).then(resp => {
-            resp.json().then(data => {
-            setAllRooms(data);
-            });
-        }).catch(error => {
-            console.log(error);
-        }); */
+
+/*     async function getAllRooms(){
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
             headers,
             setAllRooms,
             () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            
         );
-    }
+    } */
 
     const handleMouseClick = (e) => {
         /**
@@ -92,7 +95,7 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
             onMouseDown={handleMouseClick}
         > 
             <img src={floorImage} alt='floorImage' className='floor-image' />
-                {x != 0.0 && y!= 0.0 && (
+                {x !== 0.0 && y !== 0.0 && (
                     <div
                         className='image-icon'
                         style={{
