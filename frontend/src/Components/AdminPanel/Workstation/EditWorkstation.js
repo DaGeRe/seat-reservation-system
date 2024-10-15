@@ -8,7 +8,7 @@ import React, {useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
-import {optionToRoomId, roomToOption, isOptionEqualToValue_Room} from '../Room/RoomAndOption'
+import {optionToRoomId, roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditWorkstation({ editWorkstationModal }) {
@@ -46,29 +46,13 @@ export default function EditWorkstation({ editWorkstationModal }) {
   }
 
   async function getDeskByRoomId(roomId){
-   /*  if(e){
-      let idSplit = e.split("(");
-      let idVal = idSplit[1].split(")");
-      let roomId = idVal[0];
- */
-      /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllDesks(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      }); */
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-        headers,
-        setAllDesks,
-        () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
-        headers
-      );
-    //}
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+      headers,
+      setAllDesks,
+      () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
+      headers
+    );
   };
 
   async function updateWorkstation() {
@@ -92,7 +76,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
               id='tags-filled'
               fullWidth
               options={allActiveRooms.map(roomToOption)}
-              isOptionEqualToValue={isOptionEqualToValue_Room}
+              isOptionEqualToValue={(option, value) => option === value || '' === value}
               value={selectedRoom}
               onChange={(_, newValue) => {
                   setEquipment("");
