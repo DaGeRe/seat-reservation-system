@@ -2,8 +2,8 @@ services:
   frontend:
     restart: unless-stopped
     build: 
-      context: /
-      dockerfile: ${PROJECT_PATH}/frontend/Dockerfile
+      context: /home/r/DeskSharingTool_Dev
+      dockerfile: frontend/Dockerfile
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
