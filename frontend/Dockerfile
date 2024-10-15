@@ -10,18 +10,14 @@ ENV PATH_TO_TLS=${PATH_TO_TLS}
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
-COPY ${PROJECT_PATH}/frontend/package*.json ./
+COPY tls tls
+COPY frontend/app_folder/node_modules node_modules
+COPY frontend/app_folder/public public
+COPY frontend/app_folder/server server
+COPY frontend/app_folder/package.json .
+COPY frontend/app_folder/package-lock.json . 
 
-# Install all dependencies, including @mui/icons-material
-RUN npm install --lockfile-version 3 --package-lock-only
-RUN npm install @mui/icons-material
-
-# Copy cert stuff
-COPY ${PATH_TO_TLS} ./tls
-
-# Copy the application code to the container
-COPY ${PROJECT_PATH}/frontend/ ./
+COPY frontend/src src
 
 # Define the command to run your application
 CMD ["npm", "start"]
