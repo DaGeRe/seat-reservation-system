@@ -2,7 +2,7 @@ import {Grid, TextField } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Autocomplete from '@mui/material/Autocomplete';
-import { roomToOption, optionToRoomId, isOptionEqualToValue_Room} from '../Room/RoomAndOption';
+import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React, { useMemo, useCallback } from 'react';
@@ -111,8 +111,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
               //options={allActiveRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
               options={allActiveRooms.map(roomToOption)}
               value={selectedRoom}
-              // To avoid an warning allow every possible option.
-              isOptionEqualToValue={isOptionEqualToValue_Room}
+              isOptionEqualToValue={(option, value) => option === value || '' === value}
               onChange={(_, choosedOption) => {
                 const roomId = optionToRoomId(choosedOption);
                 setSelectedDesk("");
@@ -136,11 +135,8 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
                   fullWidth
                   options={allDesks.map(deskToOption)}
                   value={selectedDesk}
-                  // To avoid an warning allow every possible option.
-                  isOptionEqualToValue={(option, value) => option === value}
+                  isOptionEqualToValue={(option, value) => option === value || '' === value}
                   onChange={(_, choosedDeskOption) => {
-                    console.log('choosedDeskOption ', choosedDeskOption);
-                    //const deskId = optionToDeskId(newValue);
                     setSelectedDesk(choosedDeskOption);
                   }}
                   renderInput={(params) => (

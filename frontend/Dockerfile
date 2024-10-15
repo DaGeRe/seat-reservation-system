@@ -9,22 +9,18 @@ ENV PATH_TO_TLS=$PATH_TO_TLS
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory first
-# This ensures that the npm install step is only re-run if these files change
+# Copy package.json and package-lock.json to the working directory
 COPY $PROJECT_PATH/frontend/package*.json ./
-
-# Install dependencies
-RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128 && npm config set proxy http://proxy.justiz.sachsen.de:3128 && npm install --lockfile-version 3
 
 # Copy cert stuff
 COPY $PATH_TO_TLS tls
 
-# Copy the rest of the application code
-COPY $PROJECT_PATH/frontend/ .
+# Install dependencies
+RUN npm install --lockfile-version 3 --package-lock-only
+RUN npm install @mui/icons-material
 
-# Install MUI icons (consider putting this in package.json)
-#RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128 && npm config set proxy http://proxy.justiz.sachsen.de:3128 && npm install @mui/icons-material
-RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128 && npm config set proxy http://proxy.justiz.sachsen.de:3128 && npm install @mui/icons-material
+# Copy the application code to the container
+COPY $PROJECT_PATH/frontend/ .
 
 # Define the command to run your application
 CMD ["npm", "start"]

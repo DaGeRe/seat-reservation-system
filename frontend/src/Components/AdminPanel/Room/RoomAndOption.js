@@ -5,7 +5,3 @@ export function roomToOption(room) {
 export function optionToRoomId(option) {
     return option.includes('-') ? option.split('-')[0] : option;
 };
-
-export function isOptionEqualToValue_Room(option, value) {
-    return option === value || '' === value;
-};
