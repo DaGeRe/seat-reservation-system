@@ -1,0 +1,62 @@
+/* Allgemeine Stile */
+body {
+    font-family: Arial, sans-serif;
+  }
+  /* .image-icon-old {
+    color: grey;
+  } */
+  .help-button {
+    font-size: 24px;
+    padding: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    background-color: #008444;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .close-button {
+    padding: 10px 20px;
+    background-color: #008444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 4px;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Halbtransparenter Hintergrund */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+
+  .close-button {
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    border-radius: 4px;
+  }

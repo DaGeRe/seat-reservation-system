@@ -1,0 +1,26 @@
+.floor-image {
+  max-width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-icon {
+  position: absolute;
+  font-size: 30px; /* Adjust size as needed */
+  /* Prevents the icon from interfering with mouse events.*/
+  /* pointer-events: none;  */
+  transform: translate(-50%, -50%); /* Centers the icon.*/
+}
+
+.image-icon-old {
+  color: grey;
+}
+
+.image-icon-new {
+  color: blue;
+}

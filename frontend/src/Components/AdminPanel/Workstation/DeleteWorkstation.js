@@ -1,13 +1,11 @@
 import {Grid, TextField } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Autocomplete from '@mui/material/Autocomplete';
+import { roomToOption, optionToRoomId, isOptionEqualToValue_Room} from '../Room/RoomAndOption';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
@@ -15,51 +13,43 @@ import {optionToDeskId, deskToOption} from './DeskAndOption'
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
- /*  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  }; */
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
+  const getAllActiveRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers,
+        setAllActiveRooms,
+        () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
+      );
+    },
+    [headers, setAllActiveRooms]
+  );
 
   React.useEffect(() => {
       getAllActiveRooms();
-  }, []);
+  }, [getAllActiveRooms]);
 
   const handleClose = () => {
     deleteWorkstationModal();
-  }
-
-  async function getAllActiveRooms() {
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-      headers,
-      setAllRooms,
-      () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
-    );
   };
 
-  function getDeskByRoomId(e) {
-    if(e) {
-        let idSplit = e.split("(");
+  function getDeskByRoomId(roomId) {
+    if(roomId) {
+        /* let idSplit = e.split("(");
         let idVal = idSplit[1].split(")");
         let roomId = idVal[0];
-
-/*         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`, {
-        method: 'GET',
-        headers: headers
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllDesks(data);
-        });
-      }).catch(error => {
-        console.log('login user err ' + error);
-      }); */
+ */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
         headers,
@@ -70,36 +60,13 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   };
 
   async function deleteWorkstation(){
-    if(selectedDesk){   
-/*       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`;
-      try {
-        fetch(url, {
-          method: 'DELETE',
-          headers: headers,
-          body: JSON.stringify({})
-        })
-        .then(resp => {
-          resp.json().then(data => {
-            if (data != 0) {
-              setOpenFfDialog(true);
-            }
-            else {
-              toast.success(t('deskDelete'));
-              deleteWorkstationModal();
-            }
-          })
-        })
-        .catch((error) => {
-          console.log('fehler');
-      });
-    }catch (e) {
-      console.log('nope');
-    } */
+    if(selectedDesk){
+      const deskId = optionToDeskId(selectedDesk);
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDesk}`,
+        `${process.env.REACT_APP_BACKEND_URL}/desks/${deskId}`,
         headers,
         (data) => {
-          if (data != 0) {
+          if (data !== 0) {
             setOpenFfDialog(true);
           }
           else {
@@ -114,32 +81,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   async function deleteWorkstationFf(){
     if(selectedDesk) {
-/*       const url = `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`;
-      try {
-        await fetch(url, {
-          method: 'DELETE',
-          headers: headers,
-          body: JSON.stringify({})
-        })
-        .then(resp => {
-          if (resp.ok) {
-            toast.success(t("deskDelete"));
-            deleteWorkstationModal();
-          }
-          else if (resp.status === 400) {
-            //setOpen(true);
-          }
-          else {
-            console.error('unknown error');
-          }
-        }).catch((error) => {
-          console.log('fehler deleteWorkstationFf');
-        });
-    }catch (e) {
-      console.log('nope');
-    } */
+      const deskId = optionToDeskId(selectedDesk);
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDesk}`,
+        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${deskId}`,
         headers,
         (_) => {
           toast.success(t('deskDelete'));
@@ -164,14 +108,16 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
+              //options={allActiveRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
+              options={allActiveRooms.map(roomToOption)}
               value={selectedRoom}
               // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
-              onChange={(event, newValue) => {
+              isOptionEqualToValue={isOptionEqualToValue_Room}
+              onChange={(_, choosedOption) => {
+                const roomId = optionToRoomId(choosedOption);
                 setSelectedDesk("");
-                getDeskByRoomId(newValue);
-                setSelectedRoom(newValue);
+                getDeskByRoomId(roomId);
+                setSelectedRoom(choosedOption);
               }}
               renderInput={(params) => (
                 <TextField
@@ -191,10 +137,11 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
                   options={allDesks.map(deskToOption)}
                   value={selectedDesk}
                   // To avoid an warning allow every possible option.
-                  isOptionEqualToValue={(option, value) => true === true}
-                  onChange={(_, newValue) => {
-                    const deskId = optionToDeskId(newValue);
-                    setSelectedDesk(deskId);
+                  isOptionEqualToValue={(option, value) => option === value}
+                  onChange={(_, choosedDeskOption) => {
+                    console.log('choosedDeskOption ', choosedDeskOption);
+                    //const deskId = optionToDeskId(newValue);
+                    setSelectedDesk(choosedDeskOption);
                   }}
                   renderInput={(params) => (
                     <TextField
