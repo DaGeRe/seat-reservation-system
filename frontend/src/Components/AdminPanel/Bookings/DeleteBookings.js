@@ -25,19 +25,6 @@ export default function DeleteBookings({ deleteBookingsModal }) {
        // getAllBookings();
       }, []);
 
-/*       async function getAllActiveRooms(){
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          console.log(data);
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-    }*/
     async function getAllActiveRooms(){   
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`, 
@@ -46,73 +33,33 @@ export default function DeleteBookings({ deleteBookingsModal }) {
         () => {console.log('Error fetching room status')}, 
         
       );
-    }
+    };
 
-      async function getAllBookings(){
-        
-      /*   const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
-            method: 'GET',
-            headers: headers,
-          }).then(resp => {
-            resp.json().then(data => {
-              console.log(data);
-              setAllBookings(data);
-            });
-          }).catch(error => {
-            console.log("login user err " + error);
-          }); */
+    const handleClose = () => {
+        deleteBookingsModal();
+    };
+
+    async function deleteBookingsById(id) {
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
+        headers,
+        () => {
+          toast.success(t('bookingDeleted'));
+          searchBooking();
+        },
+        () => {console.log('Error deleting bookings.')}
+      );
+    };
+
+    async function searchBooking(){
+        if(selectedRoom){
+          const roomId = optionToRoomId(selectedRoom);
           getRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/bookings`, 
+            `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
             headers,
             setAllBookings, 
             () => {console.log('Error fetching bookings')}, 
           );
-      }
-
-    const handleClose = () => {
-        deleteBookingsModal();
-    }
-
-    async function deleteBookingsById(id){
-/*         await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
-          method: 'DELETE',
-          headers: headers,
-          body: JSON.stringify({}),
-        });
-        toast.success(t("bookingDeleted"));
-        searchBooking(); */
-        deleteRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
-          headers,
-          () => {
-            toast.success(t('bookingDeleted'));
-            searchBooking();
-          },
-          () => {console.log('Error deleting bookings.')}
-        );
-      
-    }
-
-    async function searchBooking(){
-        if(selectedRoom){
-           const roomId = optionToRoomId(selectedRoom);
-
-            /* const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
-              method: 'GET',
-              headers: headers,
-            }).then(resp => {
-              resp.json().then(data => {
-                setAllBookings(data);
-              });
-            }).catch(error => {
-              console.log("login user err " + error);
-            }); */
-            getRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
-              headers,
-              setAllBookings, 
-              () => {console.log('Error fetching bookings')}, 
-            );
         }
     }
 
@@ -168,7 +115,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                           ):<p style={{color: 'red', textAlign:'left'}}>{t("dataNotFound")}</p>
                         }
                 
-    </>
+            </>
                     </Grid>
 
             </DialogContent>

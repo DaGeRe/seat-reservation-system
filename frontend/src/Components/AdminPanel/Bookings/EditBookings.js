@@ -16,7 +16,7 @@ export default function EditBookings({ editBookingsModal }) {
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
   const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedId, setSelectedId]= React.useState('');
   const [selectedStartTime, setSelectedStartTime] = React.useState();
@@ -31,7 +31,7 @@ export default function EditBookings({ editBookingsModal }) {
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
       headers,
-      setAllRooms,
+      setAllActiveRooms,
       () => {console.log('Error fetching rooms')},
     );
   }
@@ -59,17 +59,6 @@ export default function EditBookings({ editBookingsModal }) {
       let idSplit = selectedRoom.split("(");
       let idVal = idSplit[1].split(")");
       let roomId = idVal[0];
-
-/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllBookings(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      }); */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`,
         headers,
@@ -95,7 +84,7 @@ export default function EditBookings({ editBookingsModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
+              options={allActiveRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
               value={selectedRoom}
               onChange={(event, newValue) => {
                 console.log(newValue);

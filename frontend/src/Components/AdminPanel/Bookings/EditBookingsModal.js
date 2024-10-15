@@ -28,28 +28,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       toast.error("Fields cannot be blank!");
       return false;
     }
-      
-/*     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
-      method: 'PUT',
-      headers: headers,
-      body: JSON.stringify({
-        "begin": moment(startTime, "HH:mm:ss a").format("HH:mm:ss"),
-        "end": moment(endTime, "HH:mm:ss a").format("HH:mm:ss"),
-        "id": id
-      })
-    }).then(resp => {
-      if(resp.status === 200){
-          toast.success(t("bookingUpdated"));
-          editBookingModal();
-          onSuccess();
-      } else if(resp.status === 400){
-        resp.json().then( dat => {
-          toast.error(dat.message);
-        }) 
-      }  
-    }).catch(error => {
-      console.log("login user err " + error);
-    }); */
+    
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`,
       headers,
