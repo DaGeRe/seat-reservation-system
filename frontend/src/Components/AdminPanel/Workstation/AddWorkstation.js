@@ -1,4 +1,4 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,7 +17,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
-  const [deskId, setDeskId] = React.useState('');
   React.useEffect(() => {
       getAllActiveRooms();
   }, []);
@@ -55,7 +54,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
       },
       () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
       JSON.stringify({
-        'deskId': deskId,
         'roomId': roomId,
         'equipment': equipment,
         'remark': remark
