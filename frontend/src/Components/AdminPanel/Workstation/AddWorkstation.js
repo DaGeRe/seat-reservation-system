@@ -4,34 +4,40 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
+  const getAllActiveRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers,
+        setAllActiveRooms,
+        () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
+      );
+    },
+    [headers, setAllActiveRooms]
+  );
   React.useEffect(() => {
       getAllActiveRooms();
-  }, []);
+  }, [getAllActiveRooms]);
 
   const handleCloseBtn = () => {
     addWorkstationModal();
-  }
-
-  async function getAllActiveRooms() {
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-      headers,
-      setAllRooms,
-      () => {console.log('Failed to fetch all rooms in AddWorkstation.js');},
-    );
   };
 
   async function addWorkstation(){
@@ -69,9 +75,9 @@ export default function AddWorkstation({ addWorkstationModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map(roomToOption)}
+              options={allActiveRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
+              isOptionEqualToValue={(option, value) => option === value || '' === value}
               value={selectedRoom}
               onChange={(_, newValue) => {
                 setSelectedRoom(newValue);

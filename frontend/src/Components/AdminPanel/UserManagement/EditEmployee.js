@@ -1,9 +1,8 @@
-import { Dialog, DialogTitle, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Dialog, DialogTitle, Grid, IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
-import { toast } from 'react-toastify';
+import React, { useMemo, useCallback } from 'react';
 import { useTranslation } from "react-i18next";
 import styled from '@emotion/styled';
 import EditEmployeeModal from './EditEmployeeModal';
@@ -11,18 +10,31 @@ import EmployeeTable from './EmployeeTable';
 import {getRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditEmployee({ editEmployeeModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const [allEmployee, setAllEmployee] = React.useState([]);
   const [isEditEmployeeOpen, setIsEditEmployeeOpen] = React.useState(false);
   const [id, setId] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
   const [name, setName ] = React.useState('');
   const [surname, setSurname] = React.useState('');
   const [visibility, setVisibility] = React.useState();
   const [isAdmin, setIsAdmin] = React.useState();
-
+  const getAllEmployee = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+        headers,
+        setAllEmployee,
+        () => {console.log('Failed to fetch all employees in EditEmployee.js')}
+      );
+    },
+    [headers, setAllEmployee]
+  );
 
   const toggleEditEmployeeModal = () => {
     getAllEmployee();
@@ -30,16 +42,9 @@ export default function EditEmployee({ editEmployeeModal }) {
   }
   React.useEffect(() => {
     getAllEmployee();
-  }, []);
+  }, [getAllEmployee]);
 
-  async function getAllEmployee(){
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/users/get`,
-      headers,
-      setAllEmployee,
-      () => {console.log('Failed to fetch all employees in EditEmployee.js')}
-    );
-  };
+
 
   const handleClose = () => {
       editEmployeeModal();
@@ -64,21 +69,20 @@ export default function EditEmployee({ editEmployeeModal }) {
   };
 
   function editEmployeeById(id){
-      
-    let data = allEmployee.filter(e => {
-        if(e.id===id){
-            return e;
-        }
-    });
-    let val = data.at(0);
-    setId(val.id);
-    setEmail(val.email);
-    setPassword(val.password);
-    setName(val.name);
-    setSurname(val.surname);
-    setIsAdmin(val.admin);
-    setVisibility(val.visibility);
-    setIsEditEmployeeOpen(true);
+    // Usally there is one and only on employee with the requested id. 
+    const potential_employees = allEmployee.filter(employee => employee.id === id);
+    try {
+      const to_be_edited_employee = potential_employees.at(0);
+      setId(to_be_edited_employee.id);
+      setEmail(to_be_edited_employee.email);
+      setName(to_be_edited_employee.name);
+      setSurname(to_be_edited_employee.surname);
+      setIsAdmin(to_be_edited_employee.admin);
+      setVisibility(to_be_edited_employee.visibility);
+      setIsEditEmployeeOpen(true);
+    } catch (e) {
+      console.error(`Error in editEmployeeById with employee with the id ${id}: ${e.message}.`)
+    }
   }
 
   return (
