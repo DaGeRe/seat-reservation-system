@@ -4,6 +4,7 @@ services:
     build: 
       context: ${PROJECT_PATH}
       dockerfile: frontend/Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
@@ -48,7 +49,8 @@ services:
       #- /home/r/.m2:/root/.m2
     build: 
       context: ${PROJECT_PATH}
-      dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
+      dockerfile: ${PROJECT_PATH}/backend/Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}
