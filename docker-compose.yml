@@ -2,7 +2,7 @@ services:
   frontend:
     restart: unless-stopped
     build: 
-      context: /home/r/DeskSharingTool_Dev
+      context: ${PROJECT_PATH}
       dockerfile: frontend/Dockerfile
       args:
         PROJECT_PATH: ${PROJECT_PATH}
@@ -47,7 +47,7 @@ services:
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
       #- /home/r/.m2:/root/.m2
     build: 
-      context: /
+      context: ${PROJECT_PATH}
       dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
       args:
         PROJECT_PATH: ${PROJECT_PATH}
