@@ -2,18 +2,9 @@ package com.desk_sharing.model;
 
 public class DeskDTO {
 
-	private Long deskId;
 	private Long roomId;
 	private String equipment;
 	private String remark;
-
-	public Long getDeskId() {
-		return deskId;
-	}
-
-	public void setDeskId(Long deskId) {
-		this.deskId = deskId;
-	}
 
 	public Long getRoomId() {
 		return roomId;
