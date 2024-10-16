@@ -1,32 +1,39 @@
-import { FormControl, Grid, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { FormControl, Grid2, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditRoom({ editRoomModal }) {
-    const headers = JSON.parse(sessionStorage.getItem('headers'));
-    const { t } = useTranslation();
-    const [allRooms, setAllRooms] = React.useState([]);
-    React.useEffect(() => {
-        getAllRooms();
-      }, []);
-
-    async function getAllRooms(){
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const { t } = useTranslation();
+  const [allRooms, setAllRooms] = React.useState([]);
+  const getAllRooms = useCallback(
+    async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms`,
         headers,
         setAllRooms,
         () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
       )
-    }
+    }, 
+    [headers, setAllRooms]  
+  );
 
-    const handleClose = () => {
-        editRoomModal();
-    }
+  React.useEffect(() => {
+      getAllRooms();
+    }, [getAllRooms]);
+
+  const handleClose = () => {
+      editRoomModal();
+  };
 
     async function handleRoomFloorChange(e, id){
       putRequest(
@@ -97,7 +104,7 @@ export default function EditRoom({ editRoomModal }) {
     return (
         <React.Fragment>
             <DialogContent>
-                <Grid container >
+                <Grid2 container >
                   <TableContainer  component={Paper}>
                     <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
                       <TableHead sx={{backgroundColor: 'green', color:'white'}}>
@@ -190,7 +197,7 @@ export default function EditRoom({ editRoomModal }) {
         </TableBody>
       </Table>
     </TableContainer>
-                    </Grid>
+                    </Grid2>
 
             </DialogContent>
             <DialogActions>

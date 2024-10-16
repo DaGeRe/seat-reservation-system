@@ -1,33 +1,40 @@
-import {Grid, Button} from '@mui/material';
+import {Grid2, Button} from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DeleteFf from '../../DeleteFf/DeleteFf';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteEmployee({ deleteEmployeeModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const [currUserId, setCurrUserId] = React.useState(-1);
   const { t } = useTranslation();
   const [allEmployee, setAllEmployee] = React.useState([]);
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
-
+  const getAllEmployee = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+        headers,
+        setAllEmployee,
+        () => {console.log('Failed to fetch all employees in DeleteEmployee.js')}
+      );
+    },
+    [headers, setAllEmployee]
+  );
   // Refresh every time if something changes in allEmployee.
   React.useEffect(() => {
       getAllEmployee();
-    }, [allEmployee]);
+    }, [getAllEmployee]);
 
-  async function getAllEmployee(){
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/users/get`,
-      headers,
-      setAllEmployee,
-      () => {console.log('Failed to fetch all employees in DeleteEmployee.js')}
-    );
-  };
+  
 
   const handleClose = () => {
       deleteEmployeeModal();
@@ -39,7 +46,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
       `${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
       headers,
       (data) => {
-        if (data != 0) {
+        if (data !== 0) {
           setOpenFfDialog(true);
         }
         else {
@@ -82,9 +89,9 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
               text={t('fFDeleteEmployee')}
             />
             <DialogContent>
-                <Grid container >
+                <Grid2 container >
                 <EmployeeTable employees={allEmployee} onAction={deleteEmployeeById} action={t("delete").toUpperCase()} t={t}/>
-              </Grid>
+              </Grid2>
 
             </DialogContent>
             <DialogActions>
