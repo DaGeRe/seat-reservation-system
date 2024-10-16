@@ -11,11 +11,16 @@ ENV PATH_TO_TLS=${PATH_TO_TLS}
 WORKDIR /usr/src/app
 
 COPY tls tls
-COPY frontend/app_folder/node_modules node_modules
-COPY frontend/app_folder/public public
-COPY frontend/app_folder/server server
-COPY frontend/app_folder/package.json .
-COPY frontend/app_folder/package-lock.json . 
+#COPY frontend/app_folder/node_modules node_modules
+#COPY frontend/app_folder/public public
+#COPY frontend/app_folder/server server
+#COPY frontend/app_folder/package.json .
+#COPY frontend/app_folder/package-lock.json . 
+COPY frontend/node_modules node_modules
+COPY frontend/public public
+COPY frontend/server server
+COPY frontend/package.json .
+COPY frontend/package-lock.json .
 
 COPY frontend/src src
 
