@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SidebarComponent from "../Home/SidebarComponent";
 import { FaAddressBook, FaPlusMinus } from "react-icons/fa6";
 import { FaBook } from "react-icons/fa";
@@ -57,42 +57,18 @@ const AdminPage = () => {
     if (currentFloor === "First") {
       setFloor("first");
     }
-/*     const options = {
-      method: "GET", // or "POST", "PUT", etc.
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      }
-  }; */
-
-/*     fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, options)
-      .then((response) => response.json())
-      .then((data) => {
-        // Filter rooms based on the current floor
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+      headers,
+      (data) => {
         const filteredRooms = data.filter(
           (room) => room.floor === currentFloor
         );
         setDeskList(filteredRooms);
-        setTab("statistics");
-        console.log(filteredRooms);
-        // setRooms(filteredRooms);
-      })
-      .catch((error) => {
-        console.error("Error fetching room data:", error);
-      }); */
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms`,
-        headers,
-        (data) => {
-          const filteredRooms = data.filter(
-            (room) => room.floor === currentFloor
-          );
-          setDeskList(filteredRooms);
-          setTab('statistics');
-        },
-        () => {console.log('Failed to fetch rooms in AdminPage.jsx');},
-        
-      );
+        setTab('statistics');
+      },
+      () => {console.log('Failed to fetch rooms in AdminPage.jsx');},
+    );
   };
 
   const randomiseData = () => {

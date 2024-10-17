@@ -1,39 +1,40 @@
-import { Autocomplete, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { Autocomplete, FormControl, Grid2, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
 import {roomToOption, optionToRoomId} from './RoomAndOption';
-/* import {getRequest} from '../../RequestFunctions/GetRequest';
-import {deleteRequest} from '../../RequestFunctions/DeleteRequest.js'; */
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function DeleteBookings({ deleteBookingsModal }) {
-
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [allBookings, setAllBookings] = React.useState([]);
+  const getAllActiveRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers,
+        setAllActiveRooms,
+        () => {console.log('Failed to fetch all rooms in EditBookings.js');},
+      );
+    },
+    [headers, setAllActiveRooms]
+  );
   React.useEffect(() => {
       getAllActiveRooms();
-       // getAllBookings();
-      }, []);
-
-    async function getAllActiveRooms(){   
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`, 
-        headers,
-        setAllRooms, 
-        () => {console.log('Error fetching room status')}, 
-        
-      );
-    };
+  }, [getAllActiveRooms]);
 
     const handleClose = () => {
         deleteBookingsModal();
@@ -66,17 +67,17 @@ export default function DeleteBookings({ deleteBookingsModal }) {
     return (
         <React.Fragment>
             <DialogContent>
-                <Grid container >
+                <Grid2 container >
                     <>
                     <Stack direction={"row"} style={{padding:"30px"}} width={"100%"}>
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map(roomToOption)}
+              options={allActiveRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
+              isOptionEqualToValue={(option, value) => {return option === value || '' === value;}}
               value={selectedRoom}
-              onChange={(event, newValue) => {
+              onChange={(_, newValue) => {
                   setSelectedRoom(
                       newValue);
               }}
@@ -116,7 +117,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                         }
                 
             </>
-                    </Grid>
+                    </Grid2>
 
             </DialogContent>
             <DialogActions>
