@@ -2,8 +2,8 @@ services:
   frontend:
     restart: unless-stopped
     build: 
-      context: ${PROJECT_PATH}
-      dockerfile: frontend/Dockerfile
+      context: ${PROJECT_PATH}/frontend
+      dockerfile: Dockerfile
       pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
@@ -48,8 +48,8 @@ services:
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
       #- /home/r/.m2:/root/.m2
     build: 
-      context: ${PROJECT_PATH}
-      dockerfile: ${PROJECT_PATH}/backend/Dockerfile
+      context: ${PROJECT_PATH}/backend
+      dockerfile: Dockerfile
       pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
@@ -78,8 +78,9 @@ services:
   database:
     restart: unless-stopped
     build: 
-      context: /
-      dockerfile: ${PROJECT_PATH}/database/Dockerfile
+      context: ${PROJECT_PATH}/database
+      dockerfile: Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
     environment:

@@ -11,13 +11,15 @@ ENV PATH_TO_TLS=${PATH_TO_TLS}
 WORKDIR /usr/src/app
 
 COPY tls tls
-COPY frontend/node_modules node_modules
-COPY frontend/public public
-COPY frontend/server server
-COPY frontend/package.json .
-COPY frontend/package-lock.json .
+COPY public public
+COPY server server
+COPY node_modules node_modules
 
-COPY frontend/src src
+
+COPY package.json .
+COPY package-lock.json .
+
+COPY src src
 
 # Define the command to run your application
 CMD ["npm", "start"]
