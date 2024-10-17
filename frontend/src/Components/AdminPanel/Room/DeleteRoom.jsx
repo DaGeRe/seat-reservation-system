@@ -1,34 +1,40 @@
-import {Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-/* import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle'; */
 import DeleteFf from '../../DeleteFf/DeleteFf';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function DeleteRoom({ deleteRoomModal }) {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
   const { t } = useTranslation();
   const [allRooms, setAllRooms] = React.useState([]);
+  const getAllRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+        headers,
+        setAllRooms,
+        () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
+      );
+    },
+    [headers, setAllRooms]
+  );
   
   React.useEffect(() => {
     getAllRooms();
-  }, []);
+  }, [getAllRooms]);
 
-  async function getAllRooms(){
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms`,
-      headers,
-      setAllRooms,
-      () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
-    )
-  }
+
 
   const handleClose = () => {
       deleteRoomModal();
@@ -39,7 +45,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
       `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`,
       headers,
       (data) => {
-        if (data != 0) {
+        if (data !== 0) {
           setOpenFfDialog(true);
         }
         else {
@@ -77,7 +83,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
             text={t('fFDeleteRoom')}
           />
           <DialogContent>
-              <Grid container >
+              <Grid2 container >
                     <TableContainer  component={Paper}>
                       <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
                         <TableHead sx={{backgroundColor: 'green', color:'white'}}>
@@ -117,7 +123,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
                         </TableBody>
                       </Table>
                     </TableContainer>
-                  </Grid>
+                  </Grid2>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
