@@ -35,8 +35,8 @@ const MyBookings = () => {
           const calendarEvents = bookings.map((booking) => ({
             id: booking.id,
             title: `${t('desk')} ${booking.desk.id}`,
-            start: new Date(booking.day + "T" + booking.begin),
-            end: new Date(booking.day + "T" + booking.end),
+            start: new Date(booking.day + 'T' + booking.begin),
+            end: new Date(booking.day + 'T' + booking.end),
             desk: booking.desk
           }));
           setEvents(calendarEvents);
