@@ -14,21 +14,21 @@ ENV PATH_TO_TLS=$PATH_TO_TLS
 WORKDIR /usr/src/app
 
 # Copy the Maven project files into the container
-COPY backend ./
+COPY . ./
 
 # Copy TLS certificates
 COPY tls src/main/resources/tls
 
 # Copy Maven proxy and settings (offline pre-configured)
-COPY backend/pom.xml .
-COPY backend/settings.xml /usr/share/maven/
-COPY backend/settings.xml /root/.m2/
+COPY pom.xml .
+COPY settings.xml /usr/share/maven/
+COPY settings.xml /root/.m2/
 
 # Copy pre-downloaded Maven dependencies to avoid network access
-COPY backend/.m2 /root/.m2/
+COPY .m2 /root/.m2/
 
 # Copy the test data dumps
-COPY backend/src/test/resources/dumps dumps
+COPY src/test/resources/dumps dumps
 
 # Build the Maven project in offline mode (skip tests)
 RUN mvn clean package -DskipTests -o

@@ -23,7 +23,7 @@ const MyBookings = () => {
   // The current booking object (with id, room, desk) 
   const [theBookingEvent, setTheBookingEvent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem('userId');
   const localizer = momentLocalizer(moment);
 
   const fetchBookings = useCallback(
