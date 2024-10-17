@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # If needed: unset http_proxy and unset https_proxy
+# Also see SecurityConfiguration.java and uncomment the line .antMatchers("/users/register").permitAll() // Allow registration even if you not authorized.
 
 # Assign command line parameters to variables
 email="admin@mail.com"
 password="admin"
 is_admin="true"
-port="8081"
+port="8081" # stands for real application, while 8082 is for dev.
 
 # Check if the required command line parameters are provided
 if [ $# -eq 4 ]; then
