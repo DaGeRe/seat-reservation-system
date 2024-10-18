@@ -1,37 +1,34 @@
-import java.io.File; // Ensure you import the File class
-import java.nio.file.Paths;
-
+package com.desk_sharing;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.junit.BeforeClass;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.utility.MountableFile; // Make sure to import this class
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.DriverManager;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.repositories.UserRepository;
 
-//@SpringBootTest
+@SpringBootTest(classes = DeskSharingToolApplication.class)
 @Testcontainers
 public class MyTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
     private static final String DUMP_FILE_PATH = "dumps/test.sql"; // Update this path
     static String user = "root"; // Wichtig, da nur root die datenbank ändern kann
     static String pw = "password";
@@ -80,7 +77,13 @@ public class MyTest {
         String jdbcUrl = mariadb.getJdbcUrl();
         System.out.println("JDBC URL: " + jdbcUrl);
     }
-    
+    @Test 
+    void test_user_repo() {
+        UserEntity user = userRepository.findByEmail("");
+        assertNull(user);  
+        user = userRepository.findByEmail("jupp.engel@mail.com");
+        assertNotNull(user);
+    }
     @AfterAll
     public static void teardown() {
         // Stop the MariaDB container
@@ -94,45 +97,3 @@ public class MyTest {
        assertNull(null); 
     }
 }
-/* package com.desk_sharing.controllers;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.MariaDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-@Testcontainers
-public class MyTest {
-    private static String mariadb_latest = "mariadb:11.5"; //"mariadb:10.6"
-    
-    @Container
-    public static MariaDBContainer<?> mariaDBContainer = new MariaDBContainer<>(mariadb_latest)
-        .withDatabaseName("testdb")
-        .withUsername("user")
-        .withPassword("password")
-    ; 
-
-    @BeforeAll
-    public static void setup() {
-        // Setting the Docker client strategy to use the Unix socket
-        System.setProperty("testcontainers.dockerclient.strategy", "unix:///var/run/docker.sock");
-        
-        // Start the MariaDB container
-        mariaDBContainer.start();
-    }
-
-    @Test
-    public void testFindByEmail_NotFound() {
-        System.setProperty("testcontainers.dockerclient.strategy", "unix:///var/run/docker.sock");
-        int i = 0;  
-        // Verify the result 
-       assertNull(null); 
-    }   
-}
- */
