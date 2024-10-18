@@ -66,7 +66,8 @@ COPY --from=build /usr/src/app/run_test.sh /usr/src/app/run_test.sh
 RUN chmod +x /usr/src/app/run_test.sh
 
 # Copy pre-loaded test data
-COPY --from=build /usr/src/app/dumps /usr/src/app/src/test/resources
-
+#COPY --from=build /usr/src/app/dumps /usr/src/app/src/test/resources
+#COPY --from=build /usr/src/app/dumps /usr/src/app/src/main/resources
+COPY --from=build /usr/src/app/dumps dumps
 # Disable external access in runtime with JVM options
 CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
