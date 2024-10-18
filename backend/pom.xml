@@ -146,30 +146,28 @@
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
 			<version>1.1.0</version>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.11.0</version>
-		</dependency> -->
 	</dependencies>
 
 	<build>
-<!--  	    <resources>
-        <resource>
+  	    <resources>
+       		<!--resource>
             <directory>src/test/resources</directory>
             <includes>
                 <include>**/*.sql</include>
             </includes>
-        </resource>
-    	</resources>  -->
+        </resource-->
+			<!--resource>
+				<directory>/usr/src/app/dumps</directory>
+				<includes>
+					<include>**/*.sql</include>
+				</includes>
+			</resource-->
+    	</resources>  
 		<testResources>
-    <testResource>
-        <directory>src/test/resources</directory>
-        <includes>
-            <include>**/*.sql</include>
-        </includes>
-    </testResource>
-</testResources>
+    		<testResource>
+        		<directory>src/test/resources</directory>
+    		</testResource>
+		</testResources>
 		<!--pluginManagement-->
 			<plugins>
 				<plugin>

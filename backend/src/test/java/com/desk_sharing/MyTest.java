@@ -32,26 +32,16 @@ import com.desk_sharing.entities.UserEntity;
 //@SpringBootTest
 @Testcontainers
 public class MyTest {
-    private static final String DUMP_FILE_PATH = "/usr/src/app/dumps/test.sql"; // Update this path
-    static String user = "user"; // Wichtig, da nur root die datenbank ändern kann
+    private static final String DUMP_FILE_PATH = "dumps/test.sql"; // Update this path
+    static String user = "root"; // Wichtig, da nur root die datenbank ändern kann
     static String pw = "password";
     @Container 
     private static MariaDBContainer<?> mariadb = new MariaDBContainer<>("mariadb:10.6")
-            .withDatabaseName("mydatabase_")
+            .withDatabaseName("mydatabase")
             .withUsername(user)
             .withPassword(pw)
-            //.withStartupTimeout(java.time.Duration.ofMinutes(5)) // Set a startup timeout for slow containers
-            //.waitingFor(Wait.forLogMessage(".*ready for connections.*\\n", 1))
-            //.withNetworkMode("host")
-            //.withImagePullPolicy(PullPolicy.never()) // Never pull, use only local image
             .withImagePullPolicy(PullPolicy.defaultPolicy())
-            /* .withCopyFileToContainer(
-                MountableFile.forClasspathResource(DUMP_FILE_PATH),
-                        "/docker-entrypoint-initdb.d/"
-            ) */
             .withCopyFileToContainer(MountableFile.forClasspathResource(DUMP_FILE_PATH), "/docker-entrypoint-initdb.d/test.sql")
-            
-            //.withCopyFileToContainer(MountableFile.forPath(new File(DUMP_FILE_PATH)), "/docker-entrypoint-initdb.d/dump.sql");
             ;
             
     @Autowired
@@ -59,50 +49,31 @@ public class MyTest {
     @BeforeAll
     public static void setup() {
         // Explicitly set Docker configuration
-        //System.setProperty("testcontainers.dockerclient.strategy", "org.testcontainers.dockerclient.UnixSocketClientProviderStrategy");
         System.setProperty("testcontainers.dockerclient.strategy", "unix:///var/run/docker.sock");
         System.setProperty("testcontainers.configuration.file", "");
         System.setProperty("DOCKER_HOST", "unix:///var/run/docker.sock");
         
         // Start the MariaDB container
         mariadb.start();
-       /*  System.out.println("mystart");
-        try {
-            // Load the dump file
-            Path dumpFile = Paths.get(DUMP_FILE_PATH);
-            String dumpContent = Files.readString(dumpFile);
-            System.out.println("ok1");
-            try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), user, pw)) {
-                System.out.println("ok2");
-                 for (String sql : dumpContent.split(";")) {
-                    if (!sql.trim().isEmpty()) {
-                        System.out.println("\tok2.3 " + sql);
-                        connection.createStatement().execute(sql);
-                        System.out.println("\tok2.4");
-                    }
-                } 
+        System.out.println("setup 1");
+        try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), user, pw)) {
+            System.out.println("setup 2");
+            Statement statement = connection.createStatement();
+            System.out.println("setup 3");
+            ResultSet resultSet = statement.executeQuery("select * from rooms;");
+            System.out.println("setup 4");
+            while (resultSet.next()) {
+                //String id = resultSet.getString("room_id");
+                Integer room_id = resultSet.getInt("room_id");
+                String remark = resultSet.getString("remark");
 
-                System.out.println("ok3");
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("select * from rooms;");
-                while (resultSet.next()) {
-                    //String id = resultSet.getString("room_id");
-                    Integer room_id = resultSet.getInt("room_id");
-                    String remark = resultSet.getString("remark");
-
-                    System.out.println("room_id: " + room_id + " remark: " + remark);
-                }
-                System.out.println("ok4");
+                System.out.println("room_id: " + room_id + " remark: " + remark);
             }
-            catch (SQLException e_sql) {
-                System.err.println("SQLException in setup");
-            }
-
-        } catch (IOException e) {
-            System.err.println("IOException in setup");
-        } */
+            System.out.println("ok4");
+        } catch (SQLException e_sql ) {
+            System.err.println("SQLException in setup");
+        }
     }
-    /* */
     @Test
     public void testDatabaseConnection() {
         // Your test logic
