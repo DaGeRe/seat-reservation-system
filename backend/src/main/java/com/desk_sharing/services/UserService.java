@@ -91,19 +91,20 @@ public class UserService  {
     
     public boolean changePassword(int id, String oldPassword, String newPassword) {
         try {
-            UserEntity user = userRepository.getById(id);
+	        UserEntity user = userRepository.getReferenceById(id);
             if (user != null && passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.save(user);
                 return true;
-            } else if (user == null) {
-                return false;
-            } else {
+            }
+            else {
                 return false;
             }
         } catch (EntityNotFoundException e) {
+            System.err.println("baaaaaar: " + e);
             return false;
         } catch (Exception e) {
+            System.err.println("fooooooo: " + e);
             return false;
         }
     }
