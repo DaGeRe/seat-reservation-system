@@ -127,7 +127,6 @@ public class UserController {
     public ResponseEntity<Boolean> changePassword(@PathVariable("id") int id, @RequestBody Map<String, String> request) {
         String oldPassword = request.get("oldPassword");
         String newPassword = request.get("newPassword");
-    
         boolean answer = userService.changePassword(id, oldPassword, newPassword);
         HttpStatus status = (answer) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(answer);
