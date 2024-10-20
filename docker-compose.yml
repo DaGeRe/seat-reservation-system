@@ -93,6 +93,7 @@ services:
       - ${DATABASE_PORT}:3306
     volumes:
       - ${VOLUME}:/var/lib/mysql
+      - /home/r/DeskSharingTool_Dev/database/logs_dev:/var/log/mysql/
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "localhost"]
       interval: 10s
@@ -108,3 +109,5 @@ networks:
 volumes:
   mariadb_data_dev:
   mariadb_data:
+  logs_dev:
+  logs:
