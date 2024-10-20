@@ -31,37 +31,6 @@ const Home = () => {
       navigate("/floor", { state: { date: start } });
     }, 500);
   };
-
-/*   const generateMonthDays = async (date) => {
-    const currentMonth = moment(date).startOf('month');
-    const daysInMonth = [];
-    const eventsForMonth = [];
-
-    for (let i = 0; i < currentMonth.daysInMonth(); i++) {
-      const day = currentMonth.clone().add(i, 'days');
-      daysInMonth.push(day.format('YYYY-MM-DD'));
-    }
-
-    postRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
-      headers,
-      (data) => {
-        for (const day in data) {
-          const newEvent = {
-            start: moment(day).startOf('day').toDate(),
-            end: moment(day).endOf('day').toDate(),
-            title: `${t('bookingsSum')}: ${data[day]}`,
-            allDay: true,
-          };
-          eventsForMonth.push(newEvent);
-        }
-        setEvents(eventsForMonth);
-        setNow(date);
-      },
-      () => {console.log('Failed to post booking for date in Home.jsx.');},
-      JSON.stringify(daysInMonth)
-    );
-  }; */
   const generateMonthDays = useCallback(
     async (date) => {
       const currentMonth = moment(date).startOf('month');
