@@ -46,6 +46,7 @@ services:
       #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
+      - ${BACKEND_LOGS}:/usr/src/app/logs
       #- /home/r/.m2:/root/.m2
     build: 
       context: ${PROJECT_PATH}/backend
@@ -68,12 +69,6 @@ services:
       - PW_DB=${PW_DB}
       - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
       - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
-    #command: mvn test
-#    healthcheck:
-#      test: ["CMD", "ping", "-c", "1", "localhost"]
-#      interval: 10s
-#      retries: 5
-#      timeout: 10s
 
   database:
     restart: unless-stopped
@@ -93,7 +88,7 @@ services:
       - ${DATABASE_PORT}:3306
     volumes:
       - ${VOLUME}:/var/lib/mysql
-      - /home/r/DeskSharingTool_Dev/database/logs_dev:/var/log/mysql/
+      - ${DB_LOGS}:/var/log/mysql/
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "localhost"]
       interval: 10s
@@ -111,3 +106,5 @@ volumes:
   mariadb_data:
   logs_dev:
   logs:
+  logs_dev_backend:
+  logs_backend:
