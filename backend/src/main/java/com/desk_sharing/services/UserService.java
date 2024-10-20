@@ -6,17 +6,25 @@ import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.controllers.BookingController;
 import com.desk_sharing.entities.Booking;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService  {
-    
+    private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -24,6 +32,18 @@ public class UserService  {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    public void logging(String msg) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String name = authentication.getName(); // Gibt den Benutzernamen zurück
+            logger.info("Name: " + name + " Msg: " + msg + ".");
+        }
+        else {
+            logger.info("Cant find name Msg: " + msg + ".");
+        }
+    }
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
