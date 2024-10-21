@@ -12,5 +12,5 @@ if [ $# -ne 1 ]; then
     outputfile="$2"
 fi
 
-
-docker exec $container mariadb-dump --complete-insert -u root -pmypasss --databases mydatabase >> dumps/$outputfile
+. .env
+docker exec $container mariadb-dump --complete-insert -u root -p${PW_DB} --databases mydatabase >> dumps/$outputfile

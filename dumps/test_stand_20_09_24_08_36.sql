@@ -47,7 +47,7 @@ CREATE TABLE `bookings` (
   CONSTRAINT `FKaoxaafgq2jdhblkwiutyggant` FOREIGN KEY (`desk_id`) REFERENCES `desks` (`desk_id`),
   CONSTRAINT `FKeyog2oic85xg7hsu2je2lx3s6` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `FKrgoycol97o21kpjodw1qox4nc` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,8 @@ INSERT INTO `bookings` (`booking_id`, `begin`, `booking_in_progress`, `day`, `en
 (19,'09:00:00','\0','2024-09-16','18:00:00',NULL,4,1,6),
 (21,'10:30:00','\0','2024-09-16','14:00:00',NULL,3,1,6),
 (22,'15:00:00','\0','2024-09-16','17:00:00',NULL,14,7,3),
-(24,'08:30:00','\0','2024-09-17','16:00:00',NULL,9,3,3);
+(24,'08:30:00','\0','2024-09-17','16:00:00',NULL,9,3,3),
+(25,'08:00:00','\0','2024-09-20','16:00:00',NULL,14,7,6);
 /*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -194,10 +195,8 @@ LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
 INSERT INTO `user_roles` (`user_id`, `role_id`) VALUES (2,1),
 (3,1),
-(4,1),
-(5,1),
 (6,1),
-(7,1);
+(8,1);
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +216,7 @@ CREATE TABLE `users` (
   `surname` varchar(255) DEFAULT NULL,
   `visibility` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,10 +227,8 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `admin`, `email`, `name`, `password`, `surname`, `visibility`) VALUES (2,'','richard.lehmann@mail.com','Richard','$2a$10$GVDPddeU5mqLdZGBsl1PUeaSNT7KYUH.pSLPtfsPCek/fSbiro/qm','Lehmann',''),
 (3,'','Juliane.Goellner@mail.com','Juliane','$2a$10$.pFs8/48EdhJVRtwKI/GiuptzRAAALH8F1VEuOPH3qiG6zAFglVkK','Göllner',''),
-(4,'','Anne.Richter@mail.com','Anne','$2a$10$mNOT9HsdUX8kcwoa0E8tqehU9mODBOOySOPjLf9s8fplGC2SQto4m','Richter',''),
-(5,'','Mandy.Leuschke@mail.com','Mandy','$2a$10$jcRF0KIjRRGmpZ/BLatJvukpvSLTv5VGoPcSUbm3CLcbx4KCesWpu','Leuschke',''),
 (6,'','Jupp.Engel@mail.com','Jupp','$2a$10$j.vmxMvBkoYYYAUHTi4EYOEnecSZVMqJmBS0qE3eWKsjphNwKPoLm','Engel',''),
-(7,'','admin@mail.com','Max','$2a$10$IMpzNWfOVRMFUbHfqDYKvOzgUvMxPhPBnRpX/mcrdwE61E1Ar5zWK','Mustermann','');
+(8,'','claudia.glausch@mail.com','Claudia','$2a$10$mknFfG0p6xkImbnWGgz78.CGbcINT5tk1.VZ2WTwhlJcRsprd7ZH.','Glausch','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -244,4 +241,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-18 14:44:47
+-- Dump completed on 2024-09-20  8:36:38
