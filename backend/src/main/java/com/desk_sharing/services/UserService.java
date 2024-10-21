@@ -81,7 +81,7 @@ public class UserService  {
     
     public UserEntity updateUserById(int id, UserEntity user) {
         try {
-            UserEntity userFromDB = userRepository.getById(id);
+            UserEntity userFromDB = userRepository.getReferenceById(id);
             if (userFromDB != null) {
             	
             	if (userRepository.existsByEmail(user.getEmail()) && !userFromDB.getEmail().equals(user.getEmail())) {
