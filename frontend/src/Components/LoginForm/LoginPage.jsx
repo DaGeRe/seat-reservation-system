@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./LoginPage.css";
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
@@ -41,8 +41,10 @@ const LoginPage = () => {
 
       const data = await response.json();
       if (data !== null) {
-        localStorage.setItem('accessToken', String(data['accessToken']));
-        //localStorage.setItem("username", String(data.username));
+        sessionStorage.setItem('headers',  JSON.stringify({
+          'Authorization': 'Bearer ' +  String(data['accessToken']),
+          'Content-Type': 'application/json',
+        }));
         localStorage.setItem("email", String(data.email));
         localStorage.setItem("userId", String(data.id));
         localStorage.setItem("name", String(data.name));
@@ -89,9 +91,9 @@ const LoginPage = () => {
           />
           <FaLock className="icon" />
         </div>
-        <div className="forgot-password">
+{/*         <div className="forgot-password">
           <a href="/">{t("forgotPassword")}?</a>
-        </div>
+        </div> */}
         {loginError && <div className="error">{loginError}</div>}
         <button type="submit" onClick={handleLogin}>
           {t("login")}

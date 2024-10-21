@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,16 +51,16 @@ public class DeskController {
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/{equipment}")
-    public ResponseEntity<Desk> updateDesk(@PathVariable("id") Long id, @PathVariable("equipment") String equipment) {
-    	Desk updatedDesk = deskService.updateDesk(id, equipment);
+    @PutMapping("/{id}/{equipment}/{remark}")
+    public ResponseEntity<Desk> updateDesk(@PathVariable("id") Long id, @PathVariable("equipment") String equipment, @PathVariable("remark") String remark) {
+    	Desk updatedDesk = deskService.updateDesk(id, equipment, remark);
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDesk(@PathVariable("id") Long id) {
-        deskService.deleteDesk(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Integer> deleteDesk(@PathVariable("id") Long id) {
+        int ret = deskService.deleteDesk(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @DeleteMapping("/ff/{id}")

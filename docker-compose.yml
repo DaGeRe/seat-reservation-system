@@ -2,8 +2,9 @@ services:
   frontend:
     restart: unless-stopped
     build: 
-      context: /
-      dockerfile: ${PROJECT_PATH}/frontend/Dockerfile
+      context: ${PROJECT_PATH}/frontend
+      dockerfile: Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
@@ -35,10 +36,22 @@ services:
   #     - ${NETWORK}
 
   backend:
-    restart: unless-stopped
+    #restart: unless-stopped
+    privileged: true
+    #command: mvn test
+    #stdin_open: true
+    #tty: true
+    volumes:
+      #- ./test-results:/foo:rw
+      #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/docker/daemon.json:/etc/docker/daemon.json 
+      - ${BACKEND_LOGS}:/usr/src/app/logs
+      #- /home/r/.m2:/root/.m2
     build: 
-      context: /
-      dockerfile: ${PROJECT_PATH}/backend/Dockerfile 
+      context: ${PROJECT_PATH}/backend
+      dockerfile: Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}
@@ -47,18 +60,22 @@ services:
       - ${BACKEND_PORT}:8080
     networks:
       - ${NETWORK}
-    depends_on:
-      - database
+    #depends_on:
+     # - database
     environment:
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
+      - DOCKER_HOST=unix:///var/run/docker.sock
       - PW_TLS=${PW_TLS}
       - PW_DB=${PW_DB}
+      - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
+      - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
 
   database:
     restart: unless-stopped
     build: 
-      context: /
-      dockerfile: ${PROJECT_PATH}/database/Dockerfile
+      context: ${PROJECT_PATH}/database
+      dockerfile: Dockerfile
+      pull: false
       args:
         PROJECT_PATH: ${PROJECT_PATH}
     environment:
@@ -71,6 +88,7 @@ services:
       - ${DATABASE_PORT}:3306
     volumes:
       - ${VOLUME}:/var/lib/mysql
+      - ${DB_LOGS}:/var/log/mysql/
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "localhost"]
       interval: 10s
@@ -86,3 +104,7 @@ networks:
 volumes:
   mariadb_data_dev:
   mariadb_data:
+  logs_dev:
+  logs:
+  logs_dev_backend:
+  logs_backend:

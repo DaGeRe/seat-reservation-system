@@ -10,7 +10,9 @@ import java.util.Dictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +34,8 @@ import com.desk_sharing.services.UserService;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
- 
+   
+
     @Autowired
     BookingService bookingService;
 
@@ -136,16 +139,19 @@ public class BookingController {
     
     @PutMapping("/edit/timings")
     public ResponseEntity<Booking> editBookingTimings(@RequestBody BookingEditDTO booking) {
+       
         Booking updatedBooking = bookingService.editBookingTimings(booking);
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
     @PostMapping("/days")
     public Dictionary<Date, Integer> getBookingsForDays(@RequestBody List<Date> days) {
+        userService.logging("getBookingsForDays( " + days.toString() + " )");
         return bookingService.getAvailableDays(days);
     }
     @PostMapping("/getAllBookingsForDate")
-    public Dictionary<Date, Integer> getAllBookingsForDate(@RequestBody List<Date> days) {
+    public Dictionary<Date, Integer> getAllBookingsForDate(@RequestBody List<Date> days) {       
+        userService.logging("getAllBookingsForDate( " + days.toString() + " )");
         return bookingService.getAllBookingsForDates(days);
     }
 /*     @GetMapping("/allbookingsfortoday")

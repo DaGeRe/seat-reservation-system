@@ -1,115 +1,83 @@
-import { Autocomplete, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { Autocomplete, FormControl, Grid2, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
+import {roomToOption, optionToRoomId} from './RoomAndOption';
+import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function DeleteBookings({ deleteBookingsModal }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [allBookings, setAllBookings] = React.useState([]);
+  const getAllActiveRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers,
+        setAllActiveRooms,
+        () => {console.log('Failed to fetch all rooms in EditBookings.js');},
+      );
+    },
+    [headers, setAllActiveRooms]
+  );
   React.useEffect(() => {
-      getAllRooms();
-       // getAllBookings();
-      }, []);
-
-      async function getAllRooms(){
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-      }).then(resp => {
-        resp.json().then(data => {
-          console.log(data);
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-      }
-
-      async function getAllBookings(){
-        
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-      }).then(resp => {
-        resp.json().then(data => {
-          console.log(data);
-          setAllBookings(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-      }
+      getAllActiveRooms();
+  }, [getAllActiveRooms]);
 
     const handleClose = () => {
         deleteBookingsModal();
-    }
+    };
 
-    async function deleteBookingsById(id){
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/`+id, {
-          method: "DELETE",
-          headers: {
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        });
-        toast.success(t("bookingDeleted"));
-        searchBooking();
-    }
+    async function deleteBookingsById(id) {
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
+        headers,
+        () => {
+          toast.success(t('bookingDeleted'));
+          searchBooking();
+        },
+        () => {console.log('Error deleting bookings.')}
+      );
+    };
 
     async function searchBooking(){
         if(selectedRoom){
-            let idSplit = selectedRoom.split("(");
-            let idVal = idSplit[1].split(")");
-            let roomId = idVal[0];
-
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllBookings(data);
-        });
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-
+          const roomId = optionToRoomId(selectedRoom);
+          getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
+            headers,
+            setAllBookings, 
+            () => {console.log('Error fetching bookings')}, 
+          );
         }
     }
 
     return (
         <React.Fragment>
             <DialogContent>
-                <Grid container >
+                <Grid2 container >
                     <>
                     <Stack direction={"row"} style={{padding:"30px"}} width={"100%"}>
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (option.floor +"-"+ option.type + ' - ' + option.remark))}
+              options={allActiveRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
+              isOptionEqualToValue={(option, value) => {return option === value || '' === value;}}
               value={selectedRoom}
-              onChange={(event, newValue) => {
+              onChange={(_, newValue) => {
                   setSelectedRoom(
                       newValue);
               }}
@@ -148,8 +116,8 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                           ):<p style={{color: 'red', textAlign:'left'}}>{t("dataNotFound")}</p>
                         }
                 
-    </>
-                    </Grid>
+            </>
+                    </Grid2>
 
             </DialogContent>
             <DialogActions>

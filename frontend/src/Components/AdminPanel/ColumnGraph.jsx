@@ -1,23 +1,33 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useMemo } from 'react';
+import { useEffect } from "react";
 import { Chart } from "react-google-charts";
 import { useTranslation } from "react-i18next";
 
 export function ColumnGraph(props) {
   const { t } = useTranslation();
-  const [receivedValue, setReceivedValue] = useState("");
-  useEffect(() => {
+  //const [receivedValue, setReceivedValue] = useState("");
+/*   useEffect(() => {
     setReceivedValue(props.value);
-  }, [receivedValue]);
-
-  const data = [
+  }, [setReceivedValue, props.value]); */
+  const data = useMemo(() => {
+      return  [
+        [t("dayOfTheWeek"), t("hours"), { role: "style" }],
+        [t("monday"), getRandomInt(7, 20), "gold"], // RGB value
+        [t("tuesday"), getRandomInt(7, 20), "gold"], // English color name
+        [t("wednesday"), getRandomInt(7, 20), "gold"],
+        [t("thursday"), getRandomInt(7, 20), "gold"], // CSS-style declaration
+        [t("friday"), getRandomInt(7, 20), "gold"],
+      ];
+    }, [t]
+  );
+  /* const data = [
     [t("dayOfTheWeek"), t("hours"), { role: "style" }],
     [t("monday"), getRandomInt(7, 20), "gold"], // RGB value
     [t("tuesday"), getRandomInt(7, 20), "gold"], // English color name
     [t("wednesday"), getRandomInt(7, 20), "gold"],
     [t("thursday"), getRandomInt(7, 20), "gold"], // CSS-style declaration
     [t("friday"), getRandomInt(7, 20), "gold"],
-  ];
+  ]; */
 
   // Function to generate random integer between min and max (inclusive)
   function getRandomInt(min, max) {

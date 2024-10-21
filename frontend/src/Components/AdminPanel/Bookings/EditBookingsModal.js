@@ -7,10 +7,10 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
+import {putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditBookingModal({ editBookingModal, id, startTimeFromDb, endTimeFromDb, onSuccess }) {
-  // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [startTime, setStartTime] = React.useState("ttt");
   const [endTime, setEndTime] = React.useState("fff");
@@ -28,30 +28,24 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
       toast.error("Fields cannot be blank!");
       return false;
     }
-      
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`, {
-      method: "PUT",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },body: JSON.stringify({
+    
+    putRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/edit/timings`,
+      headers,
+      JSON.stringify({
         "begin": moment(startTime, "HH:mm:ss a").format("HH:mm:ss"),
         "end": moment(endTime, "HH:mm:ss a").format("HH:mm:ss"),
         "id": id
-      })
-    }).then(resp => {
-      if(resp.status === 200){
-          toast.success(t("bookingUpdated"));
-          editBookingModal();
-          onSuccess();
-      } else if(resp.status === 400){
-        resp.json().then( dat => {
-          toast.error(dat.message);
-        }) 
-      }  
-    }).catch(error => {
-      console.log("login user err " + error);
-    });
+      }),
+      () => {
+        toast.success(t('bookingUpdated'));
+        editBookingModal();
+        onSuccess();
+      },
+      () => {
+        console.log('Failing to update timing of booking.');
+      }
+    );
   }
     
   return (
@@ -71,7 +65,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
               />
             </FormControl>
             <br></br><br></br>
-            {/* <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("end")}
@@ -80,7 +74,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
                 value={endTime}
                 onChange={(e)=>setEndTime(e.target.value)}
               />
-            </FormControl> */}
+            </FormControl>
           </Box>
         </Grid>
       </DialogContent>

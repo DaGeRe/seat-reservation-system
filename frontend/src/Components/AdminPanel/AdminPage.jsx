@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SidebarComponent from "../Home/SidebarComponent";
 import { FaAddressBook, FaPlusMinus } from "react-icons/fa6";
 import { FaBook } from "react-icons/fa";
@@ -21,52 +21,18 @@ import { HeatMap } from "./HeatMap";
 import { UsageGraph } from "./UsageGraph";
 import noDataImage from "../Assets/nodb.png";
 import { useTranslation } from "react-i18next";
+import {getRequest} from '../RequestFunctions/RequestFunctions';
 
 const AdminPage = () => {
   // The jwt.
-  const accessToken = localStorage.getItem('accessToken');
+  //const accessToken = localStorage.getItem('accessToken');
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
   const [graph, setGraph] = useState("column-map");
   const [floor, setFloor] = useState("ground");
   const [activeTab, setTab] = useState("general");
   const [deskList, setDeskList] = useState([]);
   const [refresh, setRefresh] = useState(true);
-
-  const floorFilter = (currentFloor) => {
-    // const currentFloor = "Ground";
-    if (currentFloor === "Ground") {
-      setFloor("ground");
-    }
-    if (currentFloor === "First") {
-      setFloor("first");
-    }
-    const options = {
-      method: "GET", // or "POST", "PUT", etc.
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      }
-  };
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, options)
-      .then((response) => response.json())
-      .then((data) => {
-        // Filter rooms based on the current floor
-        const filteredRooms = data.filter(
-          (room) => room.floor === currentFloor
-        );
-        setDeskList(filteredRooms);
-        setTab("statistics");
-        console.log(filteredRooms);
-        // setRooms(filteredRooms);
-      })
-      .catch((error) => {
-        console.error("Error fetching room data:", error);
-      });
-  };
-
-  const randomiseData = () => {
-    setRefresh(!refresh);
-  };
   const [showEmployeeButtons, setShowEmployeeButtons] = useState(false);
   const [showWorkstationButtons, setShowWorkstationButtons] = useState(false);
   const [showBookingButtons, setShowBookingButtons] = useState(false);
@@ -82,6 +48,33 @@ const AdminPage = () => {
 
   const [isEditBookingsOpen, setIsEditBookingsOpen] = useState(false);
   const [isDeleteBookingsOpen, setIsDeleteBookingsOpen] = useState(false);
+
+  const floorFilter = (currentFloor) => {
+    // const currentFloor = "Ground";
+    if (currentFloor === "Ground") {
+      setFloor("ground");
+    }
+    if (currentFloor === "First") {
+      setFloor("first");
+    }
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+      headers,
+      (data) => {
+        const filteredRooms = data.filter(
+          (room) => room.floor === currentFloor
+        );
+        setDeskList(filteredRooms);
+        setTab('statistics');
+      },
+      () => {console.log('Failed to fetch rooms in AdminPage.jsx');},
+    );
+  };
+
+  const randomiseData = () => {
+    setRefresh(!refresh);
+  };
+
   const toggleEmployeeButtons = () => {
     setShowEmployeeButtons(!showEmployeeButtons);
     if (showEmployeeButtons === false) {

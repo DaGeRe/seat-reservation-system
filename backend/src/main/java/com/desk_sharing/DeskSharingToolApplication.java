@@ -11,5 +11,4 @@ public class DeskSharingToolApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DeskSharingToolApplication.class, args);
 	}
-
 }
