@@ -30,8 +30,8 @@ COPY .m2 /root/.m2/
 # Copy the test data dumps
 COPY src/test/resources/dumps dumps
 
-# Build the Maven project in offline mode (skip tests)
-RUN mvn clean package -DskipTests -o
+# Build the Maven project in offline mode (skip tests). Before: mvn clean install and copy ~/.m2 to backend/.m2
+RUN mvn clean package -DskipTests -o 
 
 # Stage 3: Use a lightweight Java runtime image
 FROM openjdk:17-slim-bullseye
