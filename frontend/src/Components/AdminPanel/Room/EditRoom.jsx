@@ -1,13 +1,12 @@
-import { FormControl, Grid2, Box, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { FormControl, Grid2, Box, InputLabel, MenuItem, TextField, Select } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import Autocomplete from '@mui/material/Autocomplete';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
-import {optionToRoomId, roomToOption} from '../Room/RoomAndOption'
+import { putRequest } from '../../RequestFunctions/RequestFunctions';
+import { roomToOption } from '../Room/RoomAndOption'
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 
 export default function EditRoom({ editRoomModal }) {
@@ -18,32 +17,22 @@ export default function EditRoom({ editRoomModal }) {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('Ground');
-  const [allRooms, setAllRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom] = React.useState('');
-  
   const [newFloor, setNewFloor] = React.useState('');
   const [newRoomType, setNewRoomType] = React.useState('');
   const [newRoomStatus, setNewRoomStatus] = React.useState('');
   const [newRoomRemark, setNewRoomRemark] = React.useState('');
 
-  const getAllRooms = useCallback(
-    async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms`,
-        headers,
-        setAllRooms,
-        () => {'Failed to fetch rooms in EditRoom.jsx.'},
-      )
-    }, 
-    [headers, setAllRooms]  
-  );
-
-  React.useEffect(() => {
-      getAllRooms();
-    }, [getAllRooms]);
-
   const handleClose = () => {
       editRoomModal();
+  };
+
+  const deselectRoom = () => {
+    setSelectedRoom(null);
+    setNewFloor('');
+    setNewRoomType('');
+    setNewRoomStatus('');
+    setNewRoomRemark('');
   };
 
   async function updateRoom() {
@@ -63,15 +52,8 @@ export default function EditRoom({ editRoomModal }) {
         'remark': newRoomRemark
       })
     );
-
-    getAllRooms();
     editRoomModal();
-
-    setSelectedRoom(null);
-    setNewFloor('');
-    setNewRoomType('');
-    setNewRoomStatus('');
-    setNewRoomRemark('');
+    deselectRoom();
   };
 
     return (
@@ -88,11 +70,7 @@ export default function EditRoom({ editRoomModal }) {
                   label={t("floor")}
                   onChange={(e)=>{
                     setFloor(e.target.value);
-                    setSelectedRoom(null);
-                    setNewFloor('');
-                    setNewRoomType('');
-                    setNewRoomStatus('');
-                    setNewRoomRemark('');
+                    deselectRoom();
                   }}   
                 >
                   <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
@@ -122,11 +100,7 @@ export default function EditRoom({ editRoomModal }) {
                         id='demo-simple-select-floor'
                         value={newFloor}
                         label={t('floor')}
-                        onChange={
-                          (event) => {
-                            setNewFloor(event.target.value);
-                          }
-                        }
+                        onChange={(event) => setNewFloor(event.target.value)}
                       >
                         <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
                         <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
@@ -140,11 +114,7 @@ export default function EditRoom({ editRoomModal }) {
                         id="demo-simple-select"
                         value={newRoomType}
                         label={t("type")}
-                        onChange={
-                          (event) => {
-                            setNewRoomType(event.target.value);
-                          }
-                        }
+                        onChange={(event) => setNewRoomType(event.target.value)}
                       >
                     <MenuItem value={'Silence'}>{t('silence').toUpperCase()}</MenuItem>
                     <MenuItem value={'Normal'}>{t('normal').toUpperCase()}</MenuItem>
@@ -177,14 +147,16 @@ export default function EditRoom({ editRoomModal }) {
                 </FormControl>
                 <br></br> <br></br>
                 <DialogActions>
-                    <Button onClick={updateRoom}>&nbsp;{t("submit").toUpperCase()}</Button>
-                    <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-                  </DialogActions>
+                  <Button onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
+                </DialogActions>
                 </div>
                 )
               }
             </Box>
           </Grid2>
+          <DialogActions>
+            <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+          </DialogActions>
         </DialogContent>
       </React.Fragment>
     );
