@@ -1,4 +1,4 @@
-import { FormControl, Grid, TextField, InputLabel, MenuItem, Select} from '@mui/material';
+import { FormControl, Grid2, TextField, InputLabel, MenuItem, Select} from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -63,7 +63,7 @@ export default function AddRoom({ addRoomModal }) {
       <React.Fragment>
           <InfoModal text={helpText}/>
           <DialogContent>
-              <Grid container >
+              <Grid2 container >
                 <Box sx={{ flexGrow: 1, padding: '10px' }}>
                   <FormControl required={true} size="small" fullWidth>
                     <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
@@ -132,7 +132,7 @@ export default function AddRoom({ addRoomModal }) {
                     <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
                   </DialogActions>
                 </Box>
-              </Grid>
+              </Grid2>
             </DialogContent>
       </React.Fragment>
     );

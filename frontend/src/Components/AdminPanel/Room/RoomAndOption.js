@@ -3,5 +3,8 @@ export function roomToOption(room) {
 };
 
 export function optionToRoomId(option) {
+    if (!option || option === '') {
+        return null;
+    }
     return option.includes('-') ? option.split('-')[0] : option;
 };

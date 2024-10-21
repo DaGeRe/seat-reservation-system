@@ -118,6 +118,7 @@ public class UserController {
     
     @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
+        userService.logging("updateUserById( " + id + ", " + user.toString() + " )");
         UserEntity updateUser = userService.updateUserById(id, user);
         HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
         return ResponseEntity.status(status).body(updateUser);
@@ -125,6 +126,7 @@ public class UserController {
 
     @PutMapping("/password/{id}")
     public ResponseEntity<Boolean> changePassword(@PathVariable("id") int id, @RequestBody Map<String, String> request) {
+        userService.logging("changePassword( " + id + ", " + "***" + " )");
         String oldPassword = request.get("oldPassword");
         String newPassword = request.get("newPassword");
         boolean answer = userService.changePassword(id, oldPassword, newPassword);

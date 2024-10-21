@@ -17,7 +17,8 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
     const getAllActiveRooms = useCallback(
         async () => {
             getRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+                //`${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+                `${process.env.REACT_APP_BACKEND_URL}/rooms`,
                 headers,
                 setAllRooms,
                 () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            

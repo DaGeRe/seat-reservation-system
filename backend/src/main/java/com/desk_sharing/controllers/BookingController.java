@@ -62,6 +62,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingDTO> addBooking(@RequestBody Map<String, Object> bookingData) {
+        userService.logging("confirmBooking( "+bookingData.toString()+" )");
         try {
             Booking savedBooking = bookingService.createBooking(bookingData);
             BookingDTO bookingDTO = convertToDTO(savedBooking);
@@ -77,6 +78,7 @@ public class BookingController {
     
     @PutMapping("/confirm/{id}")
     public ResponseEntity<Booking> confirmBooking(@PathVariable("id") long bookingId) {
+        userService.logging("confirmBooking( "+bookingId+" )");
         Booking updatedBooking = bookingService.confirmBooking(bookingId);
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
@@ -84,12 +86,14 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
+        userService.logging("getAllBookings()");
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
+        userService.logging("getBookingById( " + id  +" )");
         Optional<Booking> booking = bookingService.getBookingById(id);
         return booking.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -97,49 +101,56 @@ public class BookingController {
 
     @PutMapping("/edit")
     public ResponseEntity<Booking> editBooking(@RequestBody Booking booking) {
+        userService.logging("editBooking( " + booking.toString()  +" )");
         Booking updatedBooking = bookingService.editBooking(booking);
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable("id") Long id) {
+        userService.logging("deleteBooking( " + id  +" )");
         bookingService.deleteBooking(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<List<Booking>> getUserBookings(@PathVariable("id") int user_id) {
+        userService.logging("getUserBookings( " + user_id  +" )");
         List<Booking> bookings = bookingService.findByUserId(user_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/room/{id}")
     public ResponseEntity<List<Booking>> getRoomBookings(@PathVariable("id") Long room_id) {
+        userService.logging("getRoomBookings( " + room_id  +" )");
         List<Booking> bookings = bookingService.findByRoomId(room_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/desk/{id}")
     public ResponseEntity<List<Booking>> geDeskBookings(@PathVariable("id") Long desk_id) {
+        userService.logging("geDeskBookings( " + desk_id  +" )");
         List<Booking> bookings = bookingService.findByDeskId(desk_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/date/{id}")
     public ResponseEntity<List<Booking>> geDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
+        userService.logging("geDateBookings( " + desk_id + ", " + request + " )");
         List<Booking> bookings = bookingService.findByDeskIdAndDay(desk_id, Date.valueOf(request.get("day")));
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
     
     @GetMapping("/room/date/{id}")
     public ResponseEntity<List<Booking>> getRoomBookingsByDayAndRoomId(@PathVariable("id") Long roomId, @RequestParam("day") String day) {
+        userService.logging("getRoomBookingsByDayAndRoomId( " + roomId + ", " + day + " )");
         List<Booking> bookings = bookingService.findByRoomIdAndDay(roomId, Date.valueOf(day));
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
     
     @PutMapping("/edit/timings")
     public ResponseEntity<Booking> editBookingTimings(@RequestBody BookingEditDTO booking) {
-       
+        userService.logging("editBookingTimings( " + booking.toString() + " )");
         Booking updatedBooking = bookingService.editBookingTimings(booking);
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }

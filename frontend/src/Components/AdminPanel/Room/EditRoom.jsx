@@ -1,11 +1,14 @@
-import { FormControl, Grid2, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { FormControl, Grid2, Box, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import Autocomplete from '@mui/material/Autocomplete';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
+import {optionToRoomId, roomToOption} from '../Room/RoomAndOption'
+import FloorImage from '../../FloorImage/FloorImage.jsx'
 
 export default function EditRoom({ editRoomModal }) {
   const headers = useMemo(() => {
@@ -14,14 +17,22 @@ export default function EditRoom({ editRoomModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
+  const [floor, setFloor] = React.useState('Ground');
   const [allRooms, setAllRooms] = React.useState([]);
+  const [selectedRoom, setSelectedRoom] = React.useState('');
+  
+  const [newFloor, setNewFloor] = React.useState('');
+  const [newRoomType, setNewRoomType] = React.useState('');
+  const [newRoomStatus, setNewRoomStatus] = React.useState('');
+  const [newRoomRemark, setNewRoomRemark] = React.useState('');
+
   const getAllRooms = useCallback(
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms`,
         headers,
         setAllRooms,
-        () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
+        () => {'Failed to fetch rooms in EditRoom.jsx.'},
       )
     }, 
     [headers, setAllRooms]  
@@ -35,174 +46,147 @@ export default function EditRoom({ editRoomModal }) {
       editRoomModal();
   };
 
-    async function handleRoomFloorChange(e, id){
-      putRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`,
-        headers,
-        (_) => {
-          toast.success(t('floor'));
-          getAllRooms();
-        },
-        () => {console.log('Failed to handle floor change in EditRoom.jsx');},
-        JSON.stringify({})
-      )
-  }
-
-  async function handleRoomRemarkChange(e, id){
-/*     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
-      method: 'PUT',
-      headers: headers,
-      body: JSON.stringify({}),
-    });
-    toast.success(t("roomRemark"));
-    getAllRooms(); */
-    putRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`,
+  async function updateRoom() {
+    putRequest( 
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/${selectedRoom.id}`,
       headers,
       (_) => {
-        toast.success(t('roomRemark'));
-        getAllRooms();
+        toast.success(t('roomType'));
       },
-      () => {console.log('Failed to handle room remark change in EditRoom.jsx');},
-      JSON.stringify({})
-    )
-  }
+      () => {console.log('Failed to handle room type change in EditRoom.jsx');},
+      JSON.stringify({
+        'floor': newFloor,
+        'status': newRoomStatus,
+        'type': newRoomType,
+        'x': selectedRoom.x,
+        'y': selectedRoom.y,
+        'remark': newRoomRemark
+      })
+    );
 
-    async function handleRoomTypeChange(e, id){
-      /* await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`, {  
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({}),
-      });
-      toast.success(t('roomType'));
-      getAllRooms(); */
-      putRequest( 
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`,
-        headers,
-        (_) => {
-          toast.success(t('roomType'));
-          getAllRooms();
-        },
-        () => {console.log('Failed to handle room type change in EditRoom.jsx');},
-        JSON.stringify({})
-      );
-    }
+    getAllRooms();
+    editRoomModal();
 
-    async function handleStatusChange(e, id){
-
-        putRequest( 
-          `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`,
-          headers,
-          (_) => {
-            toast.success(t('roomStatus'));
-            getAllRooms();
-          },
-          () => {console.log('Failed to handle room status change in EditRoom.jsx');}
-        );
-    }
+    setSelectedRoom(null);
+    setNewFloor('');
+    setNewRoomType('');
+    setNewRoomStatus('');
+    setNewRoomRemark('');
+  };
 
     return (
-        <React.Fragment>
-            <DialogContent>
-                <Grid2 container >
-                  <TableContainer  component={Paper}>
-                    <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
-                      <TableHead sx={{backgroundColor: 'green', color:'white'}}>
-                        <TableRow >
-                          <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t('floor')}</TableCell>
-                          <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('type')}</TableCell>
-                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }}>{t('action')}</TableCell>
-                          <TableCell sx={{textAlign: 'center',fontSize:15,color:'white' }}>{t('roomRemark')}</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {allRooms.map((row) => (
-                          <TableRow  key={row.id}>
-                            <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                              <FormControl fullWidth size='small'>
-                                <InputLabel id='demo-simple-select-label-floor'>{t('floor')}</InputLabel>
-                                <Select
-                                  labelId='demo-simple-select-label-floor'
-                                  id='demo-simple-select-floor'
-                                  value={row.floor}
-                                  label={t('floor')}
-                                  onChange={(e) => handleRoomFloorChange(e, row.id)} 
-                                >
-                                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
-                                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
-                                </Select>
-                              </FormControl>
-                            </TableCell>
-                            <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
-                <FormControl fullWidth size='small'>
-                  <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
-                  <Select
-                    size='small'
-                    id="demo-simple-select"
-                    value={row.type}
-                    label={t("type")}
-                    onChange={(e) => handleRoomTypeChange(e, row.id)}
-                  >
-                    <MenuItem value={"Silence"}>{t("silence").toUpperCase()}</MenuItem>
-                    <MenuItem value={"Normal"}>{t("normal").toUpperCase()}</MenuItem>
+      <React.Fragment>
+        <DialogContent>
+          <Grid2 container >
+            <Box sx={{ flexGrow: 1, padding: '10px' }}>
+              <FormControl required={true} size="small" fullWidth>
+                <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label-floor"
+                  id="demo-simple-select-floor"
+                  value={floor}
+                  label={t("floor")}
+                  onChange={(e)=>{
+                    setFloor(e.target.value);
+                    setSelectedRoom(null);
+                    setNewFloor('');
+                    setNewRoomType('');
+                    setNewRoomStatus('');
+                    setNewRoomRemark('');
+                  }}   
+                >
+                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+                </Select>
+              </FormControl>
+              <br></br> <br></br>
+              <FloorImage 
+                floor={floor}
+                headers={headers}
+                setCurrentRoom={(room) => {
+                  setSelectedRoom(room);
+                  setNewFloor(room.floor);
+                  setNewRoomType(room.type);
+                  setNewRoomStatus(room.status);
+                  setNewRoomRemark(room.remark);
+                }}
+              />
+              {
+                selectedRoom && selectedRoom !== '' && (
+                  <div> 
+                    <h2>{roomToOption(selectedRoom)}</h2>
+                    <FormControl required={true} fullWidth size='small'>
+                      <InputLabel id='demo-simple-select-label-floor'>{t('floor')}</InputLabel>
+                      <Select
+                        labelId='demo-simple-select-label-floor'
+                        id='demo-simple-select-floor'
+                        value={newFloor}
+                        label={t('floor')}
+                        onChange={
+                          (event) => {
+                            setNewFloor(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                        <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth size='small'>
+                      <InputLabel id="demo-simple-select-label">{t('type')}</InputLabel>
+                      <Select
+                        size='small'
+                        id="demo-simple-select"
+                        value={newRoomType}
+                        label={t("type")}
+                        onChange={
+                          (event) => {
+                            setNewRoomType(event.target.value);
+                          }
+                        }
+                      >
+                    <MenuItem value={'Silence'}>{t('silence').toUpperCase()}</MenuItem>
+                    <MenuItem value={'Normal'}>{t('normal').toUpperCase()}</MenuItem>
                   </Select>
                 </FormControl>
-              </TableCell>
-              
-              <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
-                <FormControl fullWidth size='small'>
+                <br></br> <br></br>
+                <FormControl required={true} fullWidth size='small'>
                   <InputLabel id="demo-simple-select-label">{t("status")}</InputLabel>
                   <Select
                     size='small'
                     id="demo-simple-select"
-                    value={row.status}
+                    value={newRoomStatus}
                     label={t("status")}
-                    onChange={(e) => handleStatusChange(e, row.id)}
+                    onChange={(event) => setNewRoomStatus(event.target.value)}
                   >
-                    <MenuItem value={"enable"}>{t("enable").toUpperCase()}</MenuItem>
-                    <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
-                </Select>
+                    <MenuItem value={'enable'}>{t('enable').toUpperCase()}</MenuItem>
+                    <MenuItem value={'disable'}>{t('disable').toUpperCase()}</MenuItem>
+                  </Select>
                 </FormControl>
-              </TableCell>
-
-              <TableCell sx={{fontSize:14, width:'30%'   }} component="th" scope="row">
-                <FormControl fullWidth size='small'>
-                  {row.remark && ( 
-                    <TextField
-                        size='small'
-                        id="demo-simple-select-floor"
-                        value={row.remark}
-                        label={t("roomRemark")}
-                        onChange={(e) => handleRoomRemarkChange(e, row.id)}
-                      >
-                  </TextField>
-                  )}
-                  {
-                    !row.remark && (
-                      <TextField
-                      size='small'
-                      id="demo-simple-select-floor"
-                      value=''
-                      label={t("roomRemark")}
-                      onChange={(e) => handleRoomRemarkChange(e, row.id)}
-                    >
-                </TextField>
-                    )
-                  }
+                <br></br> <br></br>
+                <FormControl required={true} size="small" fullWidth variant="standard">
+                  <TextField
+                    id='room-remark'
+                    label={t("roomRemark")}
+                    size='small'
+                    type={'text'}
+                    value={newRoomRemark}
+                    onChange={(event)=>setNewRoomRemark(event.target.value)}
+                  />
                 </FormControl>
-             </TableCell>
-
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-                    </Grid2>
-
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-            </DialogActions>
-        </React.Fragment>
+                <br></br> <br></br>
+                <DialogActions>
+                    <Button onClick={updateRoom}>&nbsp;{t("submit").toUpperCase()}</Button>
+                    <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                  </DialogActions>
+                </div>
+                )
+              }
+            </Box>
+          </Grid2>
+        </DialogContent>
+      </React.Fragment>
     );
+
 }

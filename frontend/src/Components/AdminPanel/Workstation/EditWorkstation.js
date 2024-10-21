@@ -1,4 +1,4 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, Grid2, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -70,7 +70,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   return (
     <React.Fragment>
       <DialogContent>
-        <Grid container >
+        <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <Autocomplete
               id='tags-filled'
@@ -102,8 +102,6 @@ export default function EditWorkstation({ editWorkstationModal }) {
                   id="tags-filled"
                   fullWidth
                   options={allDesks.map(deskToOption)}
-                  // To avoid an warning allow every possible option.
-                  //isOptionEqualToValue={(option, value) => true === true}
                   isOptionEqualToValue={isOptionEqualToValue_Desk}
                   value={selectedDeskId}
                   onChange={(_, newValue) => {
@@ -159,7 +157,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
               ):''
             }     
           </Box>
-        </Grid>
+        </Grid2>
       </DialogContent>
       <DialogActions>
         <Button onClick={()=>updateWorkstation()}>&nbsp;{t("update").toUpperCase()}</Button>
