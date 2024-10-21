@@ -7,16 +7,18 @@ import DialogContent from '@mui/material/DialogContent';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import './AddRoom.css'; 
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddRoom({ addRoomModal }) {
-  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
-  const [allRooms, setAllRooms] = React.useState([]);
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  //const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('Ground');
   const [status, setStatus] = React.useState('');
@@ -25,23 +27,6 @@ export default function AddRoom({ addRoomModal }) {
   const [y, setY] = React.useState(0.0);
   const [remark, setRemark] = React.useState('');
   const helpText = t('helpAddRoom');
-  
-    React.useEffect(() => {
-        getAllRooms();
-      }, []);
-  
-    async function getAllRooms(){
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log(error);
-      });
-    }
 
   async function addRoom() {
     if (!x || !y) {
@@ -52,24 +37,23 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('fields_not_empty'));
       return false;
     }
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/create`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-          "floor": floor,
-          "status": status,
-          "type": type,
-          "x": x,
-          "y": y,
-          "remark": remark
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
+      headers,
+      (_) => {
+        toast.success(t('roomCreated'));
+        addRoomModal();
+      },
+      () => {console.log('Failed to create room in AddRoom.jsx.')},
+      JSON.stringify({
+        'floor': floor,
+        'status': status,
+        'type': type,
+        'x': x,
+        'y': y,
+        'remark': remark
       })
-    }).then(resp => {
-      toast.success(t("roomCreated"));
-      addRoomModal();
-    }).catch(error => {
-      toast.error(t("roomCreationFailed"));
-      console.log("room creation err " + error);
-    });
+    );
   }
     const handleClose = () => {
         addRoomModal();
@@ -90,7 +74,6 @@ export default function AddRoom({ addRoomModal }) {
                       label={t("floor")}
                       onChange={(e)=>{
                         setFloor(e.target.value);
-                        getAllRooms();
                       }}   
                     >
                       <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>

@@ -5,7 +5,6 @@ import java.util.Date;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-//import java.security.KeyPair;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.security.Key;
@@ -24,10 +23,9 @@ public class JWTGenerator {
 		try {
 			String token = Jwts.builder()
 				.setSubject(username)
-				.setIssuedAt( new Date())
+				.setIssuedAt(new Date())
 				.setExpiration(expireDate)
-				.signWith(key,SignatureAlgorithm.HS512)
-				.claim("foo", "bar")
+				.signWith(key, SignatureAlgorithm.HS512)
 				.compact();
 			return token;
 		}

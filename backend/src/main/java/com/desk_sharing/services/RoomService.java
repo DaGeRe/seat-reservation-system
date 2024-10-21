@@ -86,23 +86,37 @@ public class RoomService {
     }
     
 
-    public void deleteRoom(Long id) {
-        roomRepository.deleteById(id);
+    public int deleteRoom(Long id) {
+        List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
+        if (desksPerRoom.size() > 0) {
+            return desksPerRoom.size();
+        }
+        else {
+            try {
+                roomRepository.deleteById(id);
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
     }
 
-    public void deleteRoomFf(Long id) {
-        List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
-        //System.out.println("desksPerRoom 1 " + desksPerRoom.size());
-        for (Desk desk: desksPerRoom) {
-            List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
-            for (Booking booking: bookingsPerDesk) {
-                bookingRepository.deleteById(booking.getId());
+    public boolean deleteRoomFf(Long id) {
+        try {
+            List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
+            for (Desk desk: desksPerRoom) {
+                List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
+                for (Booking booking: bookingsPerDesk) {
+                    bookingRepository.deleteById(booking.getId());
+                }
+                deskRepository.deleteById(desk.getId());
             }
-            deskRepository.deleteById(desk.getId());
+            roomRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        
-        desksPerRoom = deskRepository.findByRoomId(id);
-        //System.out.println("desksPerRoom 2" + desksPerRoom.size());
-        roomRepository.deleteById(id);
     }
 }

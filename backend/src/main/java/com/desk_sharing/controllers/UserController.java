@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.services.UserService;
@@ -33,11 +30,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Collections;
-import java.util.Map;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/users")
@@ -63,15 +56,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){ 
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
+        // Check if mail exists and password is correct.
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
             )
         );
-
-
 
         // If login was successful search for the dataset in the database.
         UserEntity user = userRepository.findByEmail(loginDto.getEmail());   
@@ -127,7 +119,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
         UserEntity updateUser = userService.updateUserById(id, user);
-        System.out.println("updateUserById: " + user.getPassword());
         HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
         return ResponseEntity.status(status).body(updateUser);
     }
@@ -136,15 +127,20 @@ public class UserController {
     public ResponseEntity<Boolean> changePassword(@PathVariable("id") int id, @RequestBody Map<String, String> request) {
         String oldPassword = request.get("oldPassword");
         String newPassword = request.get("newPassword");
-    
         boolean answer = userService.changePassword(id, oldPassword, newPassword);
         HttpStatus status = (answer) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(answer);
     }
 
+    @DeleteMapping("/ff/{id}")
+    public boolean deleteUserFf(@PathVariable("id") int id) {
+        return userService.deleteUserFf(id);
+    }
+
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable("id") int id) {
-        return userService.deleteUser(id);
+    public ResponseEntity<Integer> deleteUser(@PathVariable("id") int id) {
+        int ret = userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @GetMapping("/get/{id}")

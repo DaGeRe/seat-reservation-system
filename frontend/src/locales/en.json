@@ -2,6 +2,7 @@
     "login": "Login",
     "forgotPassword": "Forgot Password",
     "invalidEmail": "Invalid email",
+    "emailAlreadyTaken": "Creation was not successful. Is the email already used?",
     "invalidCredentials": "Invalid email or password",
     "loginFailed": "Login failed. Please try again later.",
     "email": "Email",
@@ -85,7 +86,8 @@
     "deskDelete": "Desk deleted successfully",
     "deskCreated": "Desk created successfully",
     "roomStatus": "Room status changed successfully",
-    "roomRemark": "Remark",
+    "roomRemark": "Room Remark",
+    "deskRemark": "Desk Remark",
     "roomCreated": "Room was created successfully",
     "roomDeleted": "Room was deleted successfully",
     "roomCreationFailed": "Room was not created",
@@ -94,6 +96,7 @@
     "userCreationFailed": "User was not",
     "userUpdated": "User updated successfully",
     "userDeleted": "User deleted successfully",
+    "userDeletionFailed": "User was not deleted",
     "bookingDeleted": "Bookings deleted successfully",
     "bookingUpdated": "Bookings updated successfully",
     
@@ -164,10 +167,12 @@
     "begin": "Begin",
     "update": "Update",
     "close": "Close",
+    "deleteMoreElements": "Delete more elements",
 
     "selectRoomError":"Please select an existing room",
     "fFDeleteWorkStation":"All bookings that belongs to this desk wil also be deleted.",
     "fFDeleteRoom":"All desks and bookings that belongs to this room will also be deleted.",
+    "fFDeleteEmployee":"All bookings that belongs to this user will also be deleted.",
     "helpAddRoom":"Please choose a location for an new room on the map and click on it.<br/>Additionally provide all necessary informations and push <strong>Submit</strong>."
     ,"helpChooseRoom":"Please choose an existing room and click on it."
     ,"helpCreateBooking":"Please choose first an desk and then a timespan. Finish with a push on <strong>Book</strong>."

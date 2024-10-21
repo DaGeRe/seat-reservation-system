@@ -32,7 +32,8 @@ public class DeskService {
     		//desk.setId(deskDto.getDeskId());
     		desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
-    		 return deskRepository.save(desk);
+            desk.setRemark(deskDto.getRemark());
+    		return deskRepository.save(desk);
     	} else {
     		return null;
     	}
@@ -50,26 +51,47 @@ public class DeskService {
         return deskRepository.findByRoomId(roomId);
     }
 
-    public Desk updateDesk(Long id, String equipment) {
+    public Desk updateDesk(Long id, String equipment, String remark) {
         Optional<Desk> optional = getDeskById(id);
         if(optional.isPresent()) {
         	Desk desk = optional.get();
         	desk.setEquipment(equipment);
+            desk.setRemark(remark);
         	return deskRepository.save(desk);
         } 
         return null;
         
     }
 
-    public void deleteDesk(Long id) {
-        deskRepository.deleteById(id);
+    public int deleteDesk(Long id) {
+        List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
+        if (bookingsPerDesk.size() > 0) {
+            return bookingsPerDesk.size();
+        }
+        else {
+            try {
+                deskRepository.deleteById(id);
+                return 0;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+        
     }
 
-    public void deleteDeskFf(Long id) {
-        List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
-        for (Booking booking: bookingsPerDesk) {
-            bookingRepository.deleteById(booking.getId());
+    public boolean deleteDeskFf(Long id) {
+        try {
+            List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(id);
+            for (Booking booking: bookingsPerDesk) {
+                bookingRepository.deleteById(booking.getId());
+            }
+            deskRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        deskRepository.deleteById(id);
     }
 }

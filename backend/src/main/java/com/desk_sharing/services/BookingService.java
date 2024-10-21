@@ -23,7 +23,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.UserEntity;
 
 @Service

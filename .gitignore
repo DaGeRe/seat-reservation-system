@@ -8,3 +8,7 @@ sql
 .env
 scripts/stop_containers.sh
 scripts/exec_db.sh
+scripts/test.sh
+scripts/copy_mytest.sh 
+node_modules
+node_modules

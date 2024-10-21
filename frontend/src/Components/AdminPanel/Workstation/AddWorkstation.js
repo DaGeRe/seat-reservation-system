@@ -1,75 +1,70 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
+import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  const headers = {
-    'Authorization': 'Bearer ' +  localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allRooms, setAllRooms] = React.useState([]);
+  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
-  const [deskId, setDeskId] = React.useState('');
+  const [remark, setRemark]= React.useState('');
+  const getAllActiveRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers,
+        setAllActiveRooms,
+        () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
+      );
+    },
+    [headers, setAllActiveRooms]
+  );
   React.useEffect(() => {
-      getAllRooms();
-  }, []);
+      getAllActiveRooms();
+  }, [getAllActiveRooms]);
 
   const handleCloseBtn = () => {
     addWorkstationModal();
-  }
+  };
 
   async function addWorkstation(){
     if(!selectedRoom){
       toast.error(t("selectRoomError"));
       return false;
     }
-    //console.log(selectedRoom);
-/*     let idSplit = selectedRoom.split("(");
-    let idVal = idSplit[1].split(")");
-    let roomId = idVal[0]; */
-    const splitted = selectedRoom.split('-');
-    const roomId = splitted[0];
-
-    if(!roomId /*|| !deskId*/ || !equipment ){
+    const roomId = optionToRoomId(selectedRoom);
+    
+    if(!roomId || !equipment ){
       toast.error("Field cannot be blank!");
       return false;
     }
-
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/desks`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-        "deskId": deskId,
-        "roomId": roomId,
-        "equipment": equipment
-      })
-      }).then(resp => {
-        toast.success(t("deskCreated"));
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks`,
+      headers,
+      (_) => {
+        toast.success(t('deskCreated'));
         addWorkstationModal();
-      }).catch(error => {
-        console.log("login user err " + error);
-      });
-  }
-
-  async function getAllRooms() {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/status`, {
-      method: 'GET',
-      headers: headers,
-    }).then(resp => {
-      resp.json().then(data => {
-        setAllRooms(data);
-      });
-    }).catch(error => {
-      console.log("login user err " + error);
-    });
+      },
+      () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
+      JSON.stringify({
+        'roomId': roomId,
+        'equipment': equipment,
+        'remark': remark
+      })
+    );
   }
 
   return (
@@ -80,15 +75,11 @@ export default function AddWorkstation({ addWorkstationModal }) {
             <Autocomplete
               id="tags-filled"
               fullWidth
-              options={allRooms.map((option) => (
-                  /* option.floor +"-"+option.id+"-"+option.type+'-' + option.remark */
-                  option.id+'-'+option.remark
-                )
-              )}
+              options={allActiveRooms.map(roomToOption)}
               // To avoid an warning allow every possible option.
-              isOptionEqualToValue={(option, value) => true === true}
+              isOptionEqualToValue={(option, value) => option === value || '' === value}
               value={selectedRoom}
-              onChange={(event, newValue) => {
+              onChange={(_, newValue) => {
                 setSelectedRoom(newValue);
               }}
               renderInput={(params) => (
@@ -101,18 +92,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 />
               )}
             />
-            {/*<br></br>
-             <FormControl required={true} size="small" fullWidth variant="standard">
-              <TextField
-                id="standard-adornment-reason"
-                label={t("deskID")}
-                size="small"
-                type={"number"}
-                value={deskId}
-                onChange={(e)=>setDeskId(e.target.value)}
-              />
-            </FormControl> */}
-            <br></br><br></br>
+            <br></br>
             <FormControl fullWidth size='small'>
               <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
               <Select
@@ -127,6 +107,17 @@ export default function AddWorkstation({ addWorkstationModal }) {
                 <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
                 <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
               </Select>
+            </FormControl>
+            <br></br><br></br>
+            <FormControl required={false} size="small" fullWidth variant="standard">
+              <TextField
+                id='standard-adornment-reason'
+                label={t('deskRemark')}
+                size='small'
+                type={'string'}
+                value={remark}
+                onChange={(e)=>setRemark(e.target.value)}
+              />
             </FormControl>
           </Box>
         </Grid>

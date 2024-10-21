@@ -1,12 +1,11 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]; then
-    echo "Usage: import_db.sh <container> <dumpfile>"
+if [ $# -ne 1 ]; then
+    echo "Usage: import_db.sh <dumpfile>"
+    echo "Eg: scripts/export_db.sh desksharingtool_dev-database-1 bookings_03.sql"
     exit
 fi
-
-container="$1"
-dumpfile="$2"
+dumpfile="$1"
 database="mydatabase"
 . .env
-cat $dumpfile | docker exec -i $container mariadb -p${PW_DB}  $database
+cat backend/src/test/resources/dumps/$dumpfile | docker exec -i $DATABASE_CONTAINER mariadb -p${PW_DB}  $database

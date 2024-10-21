@@ -1,83 +1,110 @@
-import { FormControl, Grid, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { FormControl, Grid2, InputLabel, MenuItem, Paper, TextField, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import * as React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 
 export default function EditRoom({ editRoomModal }) {
-    const headers = {
-      'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-      'Content-Type': 'application/json',
-    };
-    const { t } = useTranslation();
-    const [allRooms, setAllRooms] = React.useState([]);
-    React.useEffect(() => {
-        getAllRooms();
-      }, []);
+  const headers = useMemo(() => {
+    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const { t } = useTranslation();
+  const [allRooms, setAllRooms] = React.useState([]);
+  const getAllRooms = useCallback(
+    async () => {
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+        headers,
+        setAllRooms,
+        () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
+      )
+    }, 
+    [headers, setAllRooms]  
+  );
 
-      async function getAllRooms(){
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms`, {
-        method: 'GET',
-        headers: headers,
-      }).then(resp => {
-        resp.json().then(data => {
-          setAllRooms(data);
-        });
-      }).catch(error => {
-        console.log('login user err ' + error);
-      });
-      }
+  React.useEffect(() => {
+      getAllRooms();
+    }, [getAllRooms]);
 
-    const handleClose = () => {
-        editRoomModal();
-    }
+  const handleClose = () => {
+      editRoomModal();
+  };
 
     async function handleRoomFloorChange(e, id){
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`, {  
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({}),
-      });
-      toast.success(t('floor'));
-      getAllRooms();
+      putRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/floor/${e.target.value}`,
+        headers,
+        (_) => {
+          toast.success(t('floor'));
+          getAllRooms();
+        },
+        () => {console.log('Failed to handle floor change in EditRoom.jsx');},
+        JSON.stringify({})
+      )
   }
 
   async function handleRoomRemarkChange(e, id){
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
+/*     await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`, {
       method: 'PUT',
       headers: headers,
       body: JSON.stringify({}),
     });
     toast.success(t("roomRemark"));
-    getAllRooms();
-}
+    getAllRooms(); */
+    putRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/remark/${e.target.value}`,
+      headers,
+      (_) => {
+        toast.success(t('roomRemark'));
+        getAllRooms();
+      },
+      () => {console.log('Failed to handle room remark change in EditRoom.jsx');},
+      JSON.stringify({})
+    )
+  }
 
     async function handleRoomTypeChange(e, id){
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`, {  
+      /* await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`, {  
         method: 'PUT',
         headers: headers,
         body: JSON.stringify({}),
       });
       toast.success(t('roomType'));
-      getAllRooms();
-  }
+      getAllRooms(); */
+      putRequest( 
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/type/${e.target.value}`,
+        headers,
+        (_) => {
+          toast.success(t('roomType'));
+          getAllRooms();
+        },
+        () => {console.log('Failed to handle room type change in EditRoom.jsx');},
+        JSON.stringify({})
+      );
+    }
 
     async function handleStatusChange(e, id){
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`, {
-          method: 'PUT',
-          headers: headers,
-          body: JSON.stringify({}),
-        });
-        toast.success(t('roomStatus'));
-        getAllRooms();
+
+        putRequest( 
+          `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}/${e.target.value}`,
+          headers,
+          (_) => {
+            toast.success(t('roomStatus'));
+            getAllRooms();
+          },
+          () => {console.log('Failed to handle room status change in EditRoom.jsx');}
+        );
     }
 
     return (
         <React.Fragment>
             <DialogContent>
-                <Grid container >
+                <Grid2 container >
                   <TableContainer  component={Paper}>
                     <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
                       <TableHead sx={{backgroundColor: 'green', color:'white'}}>
@@ -170,7 +197,7 @@ export default function EditRoom({ editRoomModal }) {
         </TableBody>
       </Table>
     </TableContainer>
-                    </Grid>
+                    </Grid2>
 
             </DialogContent>
             <DialogActions>

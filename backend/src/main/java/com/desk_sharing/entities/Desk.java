@@ -18,6 +18,9 @@ public class Desk {
     @Column(name = "equipment", nullable = false)
     private String equipment;
 
+    @Column(name = "remark", nullable = true)
+    private String remark;
+
     public Desk() {
     }
 
@@ -48,5 +51,13 @@ public class Desk {
 
     public void setEquipment(String equipment) {
         this.equipment = equipment;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

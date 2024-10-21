@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -7,17 +7,17 @@ import "./Home.css";
 import "./HomeCalendar.scss";
 import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
+import { postRequest } from '../RequestFunctions/RequestFunctions';
 
 const Home = () => {
-  const headers = {
-    'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-    'Content-Type': 'application/json',
-  };
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [now, setNow] = useState(moment());
-
+  const headers = useMemo(() => {
+    const storedHeaders = sessionStorage.getItem('headers');
+    return storedHeaders ? JSON.parse(storedHeaders) : {};
+  }, []);
   const handleSelectSlot = ({ start }) => {
     const selectedDateEvent = {
       start,
@@ -31,51 +31,47 @@ const Home = () => {
       navigate("/floor", { state: { date: start } });
     }, 500);
   };
-
-  const generateMonthDays = async (date) => {
-    const currentMonth = moment(date).startOf('month');
-    const daysInMonth = [];
-    const eventsForMonth = [];
-
-    for (let i = 0; i < currentMonth.daysInMonth(); i++) {
-      const day = currentMonth.clone().add(i, 'days');
-      daysInMonth.push(day.format('YYYY-MM-DD'));
-    }
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(daysInMonth),
-      });
+  const generateMonthDays = useCallback(
+    async (date) => {
+      const currentMonth = moment(date).startOf('month');
+      const daysInMonth = [];
+      const eventsForMonth = [];
   
-      if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
+      // Erstellen der Tage des Monats
+      for (let i = 0; i < currentMonth.daysInMonth(); i++) {
+        const day = currentMonth.clone().add(i, 'days');
+        daysInMonth.push(day.format('YYYY-MM-DD'));
       }
   
-      const data = await response.json();
-      
-      // Create an event for each day of the month
-      for (const day in data) {
-        const newEvent = {
-          start: moment(day).startOf('day').toDate(),
-          end: moment(day).endOf('day').toDate(),
-          title: `${t('bookingsSum')}: ${data[day]}`,
-          allDay: true,
-        };
-        eventsForMonth.push(newEvent);
-      }
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
-    }
-
-    setEvents(eventsForMonth);
-    setNow(date);
-  };
+      // Post-Request senden
+      postRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
+        headers,
+        (data) => {
+          for (const day in data) {
+            const newEvent = {
+              start: moment(day).startOf('day').toDate(),
+              end: moment(day).endOf('day').toDate(),
+              title: `${t('bookingsSum')}: ${data[day]}`,
+              allDay: true,
+            };
+            eventsForMonth.push(newEvent);
+          }
+          setEvents(eventsForMonth);  // Ereignisse für den Monat setzen
+          setNow(date);  // Aktuelles Datum setzen
+        },
+        () => {
+          console.log('Failed to post booking for date in Home.jsx.');
+        },
+        JSON.stringify(daysInMonth)  // Tage des Monats an den Server senden
+      );
+    },
+    [headers, t, setEvents, setNow]  // Abhängigkeiten, die sich ändern könnten
+  );
 
   useEffect(() => {
     generateMonthDays(now);
-  }, [t]);
+  }, [t, generateMonthDays, now]);
 
   const handleNavigate = (newDate, view) => {
     if (view === 'month') {
@@ -95,11 +91,6 @@ const Home = () => {
       <div>
         <SidebarComponent />
       </div>
-      {/*
-      <div>
-        <p>{mytest}</p>
-      </div>
-      */}
       <div className="home-content">
         <div className="choose-date">
           <h1>{t("chooseDate")}</h1>

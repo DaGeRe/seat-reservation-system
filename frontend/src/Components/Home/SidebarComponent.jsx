@@ -11,12 +11,14 @@ import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from "react-icons/ci";
 import { MdGTranslate } from "react-icons/md";
 import { toast } from 'react-toastify';
+import { putRequest } from '../RequestFunctions/RequestFunctions';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem("sidebarCollapsed") === "true"
   );
+  const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [activeTab, setActiveTab] = useState("calendar");
   const location = useLocation();
   const navigate = useNavigate();
@@ -101,7 +103,7 @@ const SidebarComponent = () => {
   };
 
   const changeVisibility = async () => {
-    try {
+/*     try {
       const response = await fetch(`/users/visibility/${localStorage.getItem("userId")}`, {
         method: "PUT"
       });
@@ -121,7 +123,27 @@ const SidebarComponent = () => {
       }
     } catch (error) {
         console.log("Error changing visibility");
-    }  
+    }   */
+    putRequest(
+      `/users/visibility/${localStorage.getItem("userId")}`,
+      headers,
+      (data) => {
+        if (data === -1) {
+          toast.warning(t("failVisibility"));
+        }
+        if (data === 1) {
+          setVisibility("true");
+          localStorage.setItem("visibility", "true");
+          toast.success(t("visible"));
+        }
+        else {
+          setVisibility("false");
+          localStorage.setItem("visibility", "false");
+          toast.success(t("anonymousMessage"));
+        }
+      },
+      () => {console.log(`Failed to put visibility for userId: ${localStorage.getItem("userId")}.`);}
+    );
   }
 
   return (

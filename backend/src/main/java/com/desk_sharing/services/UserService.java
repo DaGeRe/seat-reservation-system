@@ -6,19 +6,44 @@ import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/* import com.desk_sharing.entities.User; */
 import com.desk_sharing.repositories.UserRepository;
+import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.controllers.BookingController;
+import com.desk_sharing.entities.Booking;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class UserService  {
-    
-     @Autowired
+    private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
+
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    public void logging(String msg) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String name = authentication.getName(); // Gibt den Benutzernamen zurück
+            logger.info("Name: " + name + " Msg: " + msg + ".");
+        }
+        else {
+            logger.info("Cant find name Msg: " + msg + ".");
+        }
+    }
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
@@ -31,27 +56,6 @@ public class UserService  {
             user = (UserEntity) hibernateProxy.getHibernateLazyInitializer().getImplementation();
         }
         return user;
-    }
-
-    public UserEntity registerUser(UserEntity user) {
-        if (!userRepository.existsByEmail(user.getEmail())) {
-            // Encrypt the password before saving
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-    
-            return userRepository.save(user);
-        }
-        else return null;
-    }
-
-    public UserEntity loginUser(String email, String password) {
-        UserEntity user = userRepository.findByEmail(email);
-        if (user != null) {
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return user;
-            }
-            else return null;
-        }
-        return null;
     }
 
     public UserEntity findByEmail(String email) {
@@ -107,28 +111,50 @@ public class UserService  {
     
     public boolean changePassword(int id, String oldPassword, String newPassword) {
         try {
-            UserEntity user = userRepository.getById(id);
+	        UserEntity user = userRepository.getReferenceById(id);
             if (user != null && passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.save(user);
                 return true;
-            } else if (user == null) {
-                return false;
-            } else {
+            }
+            else {
                 return false;
             }
         } catch (EntityNotFoundException e) {
+            System.err.println("baaaaaar: " + e);
             return false;
         } catch (Exception e) {
+            System.err.println("fooooooo: " + e);
             return false;
         }
     }
     
-    public boolean deleteUser(int id) {
+    public int deleteUser(int id) {
+        List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+        if (bookingsPerUser.size() > 0) {
+            return bookingsPerUser.size();
+        }
+        else {
+            try {
+                userRepository.deleteById(id);
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+        }
+    }
+
+    public boolean deleteUserFf(int id) {
         try {
+            List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+            for (Booking booking: bookingsPerUser) {
+                bookingRepository.deleteById(booking.getId());
+            }
             userRepository.deleteById(id);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

@@ -2,17 +2,9 @@ package com.desk_sharing.model;
 
 public class DeskDTO {
 
-	private Long deskId;
 	private Long roomId;
 	private String equipment;
-
-	public Long getDeskId() {
-		return deskId;
-	}
-
-	public void setDeskId(Long deskId) {
-		this.deskId = deskId;
-	}
+	private String remark;
 
 	public Long getRoomId() {
 		return roomId;
@@ -28,5 +20,12 @@ public class DeskDTO {
 	
 	public void setEquipment(String equipment) {
 		this.equipment = equipment;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
