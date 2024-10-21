@@ -36,18 +36,12 @@ services:
   #     - ${NETWORK}
 
   backend:
-    #restart: unless-stopped
+    restart: unless-stopped
     privileged: true
-    #command: mvn test
-    #stdin_open: true
-    #tty: true
     volumes:
-      #- ./test-results:/foo:rw
-      #- $HOME/.docker/run/docker.sock:/var/run/docker.sock
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
       - ${BACKEND_LOGS}:/usr/src/app/logs
-      #- /home/r/.m2:/root/.m2
     build: 
       context: ${PROJECT_PATH}/backend
       dockerfile: Dockerfile
@@ -60,8 +54,6 @@ services:
       - ${BACKEND_PORT}:8080
     networks:
       - ${NETWORK}
-    #depends_on:
-     # - database
     environment:
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
       - DOCKER_HOST=unix:///var/run/docker.sock

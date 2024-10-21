@@ -64,7 +64,7 @@ public class UserService  {
 
     public int changeVisibility(int id) {
         try {
-            UserEntity user = userRepository.getById(id);
+            UserEntity user = userRepository.getReferenceById(id);
             if (user.getVisibility()) {
                 user.setVisibility(false);
                 userRepository.save(user);
@@ -80,33 +80,25 @@ public class UserService  {
     }
     
     public UserEntity updateUserById(int id, UserEntity user) {
-        try {
-            UserEntity userFromDB = userRepository.getReferenceById(id);
-            if (userFromDB != null) {
-            	
-            	if (userRepository.existsByEmail(user.getEmail()) && !userFromDB.getEmail().equals(user.getEmail())) {
-            		return null;
-            	}
-            	
-            	if(user.getEmail() != null) {
-            		userFromDB.setEmail(user.getEmail());
-            	}
-            	
-            	if(user.getName() != null) {
-            		userFromDB.setName(user.getName());
-            	}
-            	
-            	if(user.getSurname() != null) {
-            		userFromDB.setSurname(user.getSurname());
-            	}
-            	userFromDB.setVisibility(user.getVisibility());
-            	userFromDB.setAdmin(user.getAdmin());
-                return userRepository.save(userFromDB);
+            UserEntity userFromDB = userRepository.getReferenceById(id);            	
+            if (userRepository.existsByEmail(user.getEmail()) && !userFromDB.getEmail().equals(user.getEmail())) {
+                return null;
             }
-        } catch (Exception e) {
-            return null;
-        }
-        return null;
+            
+            if(user.getEmail() != null) {
+                userFromDB.setEmail(user.getEmail());
+            }
+            
+            if(user.getName() != null) {
+                userFromDB.setName(user.getName());
+            }
+            
+            if(user.getSurname() != null) {
+                userFromDB.setSurname(user.getSurname());
+            }
+            userFromDB.setVisibility(user.getVisibility());
+            userFromDB.setAdmin(user.getAdmin());
+            return userRepository.save(userFromDB);
     }
     
     public boolean changePassword(int id, String oldPassword, String newPassword) {
@@ -121,10 +113,8 @@ public class UserService  {
                 return false;
             }
         } catch (EntityNotFoundException e) {
-            System.err.println("baaaaaar: " + e);
             return false;
         } catch (Exception e) {
-            System.err.println("fooooooo: " + e);
             return false;
         }
     }
@@ -160,7 +150,7 @@ public class UserService  {
     }
 
     public boolean isAdmin(int id) {
-        UserEntity user = userRepository.getById(id);
+        UserEntity user = userRepository.getReferenceById(id);
         return user.getAdmin();
     }
 }
