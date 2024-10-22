@@ -8,7 +8,7 @@ import React, {useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
-import {optionToRoomId, roomToOption} from '../Room/RoomAndOption'
+import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
@@ -32,7 +32,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
 
   const helpText = t('helpEditWorkstation');
 
-  const getAllActiveRooms = useCallback(
+/*   const getAllActiveRooms = useCallback(
     async () => {
         getRequest(
           `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
@@ -42,12 +42,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
         );
     },
     [headers, setAllActiveRooms]
-) ;
+) ; */
 
-  React.useEffect(() => {
+/*   React.useEffect(() => {
       getAllActiveRooms();
   }, [getAllActiveRooms]);
-
+ */
   const handleCloseBtn = () => {
     editWorkstationModal();
   }
@@ -62,8 +62,10 @@ export default function EditWorkstation({ editWorkstationModal }) {
     );
   };
 
-  async function updateWorkstation() {
+/*   async function updateWorkstation() {
+    console.log('updateWorkstation #1 ', selectedDeskId, equipment, remark);
     if (selectedDeskId && equipment && remark) {
+      console.log('updateWorkstation #2 ', selectedDeskId, equipment, remark);
       putRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}/${equipment}/${remark}`,
         headers,
@@ -72,6 +74,27 @@ export default function EditWorkstation({ editWorkstationModal }) {
           editWorkstationModal();
         },
         () => {console.log('Failed to update workstation in EditWorkstation.js');}
+      );
+    }
+    else {
+      toast.error(t('deskUpdateFailed'));
+    }
+  }; */
+  async function updateWorkstation() {
+    if (selectedDeskId && equipment && remark) {
+      putRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/updateDesk`,
+        headers,
+        (_) => {
+          toast.success(t('deskUpdate'));
+          editWorkstationModal();
+        },
+        () => {console.log('Failed to update workstation in EditWorkstation.js');},
+        JSON.stringify({
+          'deskId': selectedDeskId,
+          'equipment': equipment,
+          'remark': remark
+        })
       );
     }
     else {
@@ -98,6 +121,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
                   setAllDesks(null);
                   setEquipment('');
                   setRemark('');
+                  setSelectedDesk('');
                 }}   
                 >
                   <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
@@ -126,6 +150,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
                           fullWidth
                           options={allDesks.map(deskToOption)}
                           isOptionEqualToValue={isOptionEqualToValue_Desk}
+                          freeSolo={false} // Eingabe ist deaktiviert
                           value={selectedDesk}
                           onChange={(_, selectedDeskStr) => {
                             setSelectedDesk(selectedDeskStr);
@@ -142,8 +167,14 @@ export default function EditWorkstation({ editWorkstationModal }) {
                               {...params}
                               variant="outlined"
                               size='small' 
+                              disabled
+                              
                               label={t("selectDesk")}
                               placeholder={t("selectDesk")}
+      /*                         InputProps={{
+                                ...params.InputProps,
+                                readOnly: true, // Setzt das Textfeld auf read-only
+                              }} */
                             />
                             )}
                         />
