@@ -11,8 +11,8 @@ import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
-import FloorSelector
- from '../../FloorSelector/FloorSelector.js';
+import FloorSelector from '../../FloorSelector/FloorSelector.js';
+
 export default function AddWorkstation({ addWorkstationModal }) {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -29,7 +29,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
 
   const helpText = t('helpAddWorkstation');
 
-  const getAllActiveRooms = useCallback(
+/*   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
@@ -42,7 +42,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
   );
   React.useEffect(() => {
       getAllActiveRooms();
-  }, [getAllActiveRooms]);
+  }, [getAllActiveRooms]); */
 
   const handleCloseBtn = () => {
     addWorkstationModal();

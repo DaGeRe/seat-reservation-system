@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import Box from '@mui/material/Box';
 import React, { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import SidebarComponent from "../Home/SidebarComponent"
 import { useTranslation } from "react-i18next";
 import FloorImage from '../FloorImage/FloorImage.jsx'
+import FloorSelector from '../FloorSelector/FloorSelector.js';
 
 const Floor = () => {
   const headers = useMemo(() => {
@@ -18,19 +19,11 @@ const Floor = () => {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const navigate = useNavigate();
-  //const [selectedRoom, setSelectedRoom] = useState(null);
   const [currentFloor, setCurrentFloor] = useState('Ground');
   const location = useLocation();
   const { date } = location.state || {};
   const formattedDate = date ? new Date(date).toLocaleDateString() : '';
   const helpText = t('helpChooseRoom');
-  
-
-  const toggleFloor = () => {
-    setCurrentFloor(currentFloor === 'Ground' ? 'First' : 'Ground');
-    
-    //setSelectedRoom(null); // Reset selected room when changing floors
-  };
 
   function back() {
     navigate(-1);
@@ -52,19 +45,19 @@ const Floor = () => {
       <React.Fragment>
         <InfoModal text={helpText}/>
         <DialogContent>
-          <Grid container >
+          <Grid2 container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
-              <h1>{currentFloor === 'Ground' ? t('groundFloor') : t('firstFloor')}</h1>
-              {date && <p>{t("chosenDate")}: {formattedDate}</p>}
-              {}
-              <button className='workstation-button' onClick={toggleFloor}>{t('switchFloor')}</button>
+              <FloorSelector
+                floor={currentFloor}
+                setFloor={setCurrentFloor}
+              />
               <FloorImage 
                 floor={currentFloor}
                 headers={headers}
                 setCurrentRoom={handleRoomClick}
               />
             </Box>
-          </Grid>
+          </Grid2>
         </DialogContent> 
       </React.Fragment> 
       <div className='backButtonDiv'>
