@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
 import {optionToDeskId, deskToOption} from './DeskAndOption'
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import FloorImage from '../../FloorImage/FloorImage.jsx'
+import InfoModal from '../../InfoModal/InfoModal.jsx'
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const headers = useMemo(() => {

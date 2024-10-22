@@ -32,6 +32,12 @@ public class DeskController {
         return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
     }
 
+    @PutMapping("/updateDesk")
+    public ResponseEntity<Desk> updateDesk(@RequestBody DeskDTO desk) {
+        Desk updatedDesk = deskService.updateDesk(desk.getDeskId(), desk.getEquipment(), desk.getRemark());
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<Desk>> getAllDesks() {
         List<Desk> desks = deskService.getAllDesks();
@@ -51,11 +57,13 @@ public class DeskController {
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/{equipment}/{remark}")
+/*     @PutMapping("/{id}/{equipment}/{remark}")
     public ResponseEntity<Desk> updateDesk(@PathVariable("id") Long id, @PathVariable("equipment") String equipment, @PathVariable("remark") String remark) {
-    	Desk updatedDesk = deskService.updateDesk(id, equipment, remark);
+    	System.out.println(id + " | " + equipment + " | " + remark);
+        Desk updatedDesk = deskService.updateDesk(id, equipment, remark);
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
-    }
+    } */
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Integer> deleteDesk(@PathVariable("id") Long id) {

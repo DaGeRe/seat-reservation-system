@@ -170,7 +170,8 @@
     "close": "Schließen",
     "deleteMoreElements": "Löschen weiterer Elemente",
 
-    "selectRoomError":"Bittw wählen Sie einen existierenden Raum aus",
+    "forbiddenChar":"Bitte geben sie erlaubte Zeichen ein. (Kein !, ? usw.)"
+    ,"selectRoomError":"Bitte wählen Sie einen existierenden Raum aus",
     "fFDeleteWorkStation":"Es werden neben dem Arbeitsplatz auch alle damit verbundenen Buchungen gelöscht.",
     "fFDeleteRoom":"Es werden neben dem Raum auch alle damit verbundenen Tische und Buchungen gelöscht.",
     "fFDeleteEmployee":"Es werden neben dem Nutzer auch alle damit verbundenen Buchungen gelöscht.",

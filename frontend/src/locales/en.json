@@ -170,8 +170,9 @@
     "update": "Update",
     "close": "Close",
     "deleteMoreElements": "Delete more elements",
-
-    "selectRoomError":"Please select an existing room",
+    
+    "forbiddenChar":"Please only use allowed characters. (No !, ? etc.)"
+    ,"selectRoomError":"Please select an existing room",
     "fFDeleteWorkStation":"All bookings that belongs to this desk wil also be deleted.",
     "fFDeleteRoom":"All desks and bookings that belongs to this room will also be deleted.",
     "fFDeleteEmployee":"All bookings that belongs to this user will also be deleted.",
