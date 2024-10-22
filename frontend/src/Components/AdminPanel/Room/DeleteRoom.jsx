@@ -90,6 +90,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
             </FormControl>
             <br></br> <br></br>
             <FloorImage 
+              present_color='red'
               floor={floor}
               headers={headers}
               setCurrentRoom={(room) => {
