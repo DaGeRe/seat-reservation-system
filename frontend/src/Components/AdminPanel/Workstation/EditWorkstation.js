@@ -13,6 +13,7 @@ import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import DeskSelector from '../DeskSelector/DeskSelector.js';
 import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import WorkStationDefinition from './WorkStationDefinition.js';
 
 export default function EditWorkstation({ editWorkstationModal }) {
   const headers = useMemo(() => {
@@ -117,40 +118,18 @@ export default function EditWorkstation({ editWorkstationModal }) {
               isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
               t={t}
             />
+            <br></br><br></br>
             {
               selectedDesk && (
-                <div>
-                  <br></br><br></br>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
-                      <Select
-                        size='small'
-                          labelId='demo-simple-select-label'
-                          id='demo-simple-select'
-                          value={equipment}
-                          label='Equipments'
-                          onChange={(e) => setEquipment(e.target.value)}
-                      >
-                        <MenuItem value={'with equipment'}>{t('withEquipment').toUpperCase()}</MenuItem>
-                        <MenuItem value={'without equipment'}>{t('withoutEquipment').toUpperCase()}</MenuItem>
-                      </Select>
-                  </FormControl>
-                  <br></br><br></br>
-                  <FormControl required={false} size='small' fullWidth variant='standard'>
-                    <TextField
-                      id='standard-adornment-reason'
-                      label={t('deskRemark')}
-                      size='small'
-                      type={'string'}
-                      value={remark}
-                      onChange={(e)=>setRemark(e.target.value)}
-                    />
-                  </FormControl>
-                </div>
+                <WorkStationDefinition
+                  t={t}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  remark={remark}
+                  setRemark={setRemark}
+                />
               )
-            }
-                        
-                   
+            }                   
           </Box>
         </Grid2>
       </DialogContent>
