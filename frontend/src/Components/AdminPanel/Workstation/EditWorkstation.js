@@ -20,7 +20,6 @@ export default function EditWorkstation({ editWorkstationModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
@@ -109,7 +108,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FormControl required={true} size="small" fullWidth>
-              <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+              <InputLabel id="demo-simple-select-label-floor">{t('floor')}</InputLabel>
               <Select
                 labelId="demo-simple-select-label-floor"
                 id="demo-simple-select-floor"
