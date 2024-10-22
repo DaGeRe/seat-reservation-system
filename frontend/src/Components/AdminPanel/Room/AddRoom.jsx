@@ -11,6 +11,7 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
+import FloorSelector from '../../FloorSelector/FloorSelector.js';
 
 export default function AddRoom({ addRoomModal }) {
   const headers = useMemo(() => {
@@ -65,21 +66,10 @@ export default function AddRoom({ addRoomModal }) {
           <DialogContent>
               <Grid2 container >
                 <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                  <FormControl required={true} size="small" fullWidth>
-                    <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label-floor"
-                      id="demo-simple-select-floor"
-                      value={floor}
-                      label={t("floor")}
-                      onChange={(e)=>{
-                        setFloor(e.target.value);
-                      }}   
-                    >
-                      <MenuItem value={"First"}>{t("firstFloor").toUpperCase()}</MenuItem>
-                      <MenuItem value={"Ground"}>{t("groundFloor").toUpperCase()}</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <FloorSelector
+                    floor={floor}
+                    setFloor={setFloor}
+                  />
                   <br></br> <br></br>
                   <FloorImage 
                     floor={floor}
