@@ -85,19 +85,10 @@ export default function EditRoom({ editRoomModal }) {
                 selectedRoom && selectedRoom !== '' && (
                   <div> 
                     <h2>{roomToOption(selectedRoom)}</h2>
-                    <FormControl required={true} fullWidth size='small'>
-                      <InputLabel id='demo-simple-select-label-floor'>{t('floor')}</InputLabel>
-                      <Select
-                        labelId='demo-simple-select-label-floor'
-                        id='demo-simple-select-floor'
-                        value={newFloor}
-                        label={t('floor')}
-                        onChange={(event) => setNewFloor(event.target.value)}
-                      >
-                        <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
-                        <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <FloorSelector
+                      floor={newFloor}
+                      setFloor={setNewFloor}
+                    />
                     <br></br> <br></br>
                     <FormControl required={true} fullWidth size='small'>
                       <InputLabel id="demo-simple-select-label">{t('type')}</InputLabel>

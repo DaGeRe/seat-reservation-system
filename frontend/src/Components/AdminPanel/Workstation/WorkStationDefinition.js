@@ -1,4 +1,4 @@
-import { FormControl, Grid2, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 
 export default function WorkStationDefinition({
     t, 
@@ -6,7 +6,7 @@ export default function WorkStationDefinition({
     setEquipment,
     remark,
     setRemark}) {
-        
+
     return (
         <div>
             <FormControl fullWidth size='small'>
