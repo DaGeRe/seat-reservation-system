@@ -1,4 +1,4 @@
-import {Grid, TextField } from '@mui/material';
+import {FormControl, Grid2, TextField, InputLabel, MenuItem, Select } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -9,7 +9,7 @@ import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
-import {optionToDeskId, deskToOption} from './DeskAndOption'
+import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
@@ -26,6 +26,13 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
+
+  // The current floor. (either Ground or First)
+  const [floor, setFloor] = React.useState('Ground');
+
+  const helpText = t('helpDeleteWorkstation');
+  
+
   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
@@ -98,6 +105,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   
   return (
     <React.Fragment>
+      <InfoModal text={helpText}/>
       <DeleteFf 
           open={openFfDialog}
           onClose={handleClose}
@@ -105,9 +113,85 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
           text={t('fFDeleteWorkStation')}
         />
       <DialogContent>
-        <Grid container >
+        <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <Autocomplete
+          <FormControl required={true} size="small" fullWidth>
+              <InputLabel id="demo-simple-select-label-floor">{t('floor')}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label-floor"
+                id="demo-simple-select-floor"
+                value={floor}
+                label={t("floor")}
+                onChange={(e)=>{
+                  setFloor(e.target.value);
+                  setSelectedRoom(null);
+                  setAllDesks(null);
+                  setEquipment('');
+                  setRemark('');
+                  setSelectedDesk('');
+                }}   
+                >
+                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+              </Select>
+            </FormControl>
+            <br></br> <br></br>
+            <FloorImage 
+              floor={floor}
+              headers={headers}
+              setCurrentRoom={(room) => {
+                setSelectedRoom(room);
+                getDeskByRoomId(room.id);
+              }}
+            />
+            {
+              selectedRoom && (
+                <div>
+                  <h2>{roomToOption(selectedRoom)}</h2>
+                  {
+                    allDesks && allDesks.length > 0 ? (
+                      <div>
+                        <Autocomplete
+                          id='tags-filled'
+                          fullWidth
+                          options={allDesks.map(deskToOption)}
+                          isOptionEqualToValue={isOptionEqualToValue_Desk}
+                          freeSolo={false} // Eingabe ist deaktiviert
+                          value={selectedDesk}
+                          onChange={(_, selectedDeskStr) => {
+                            setSelectedDesk(selectedDeskStr);
+                            /* const deskId = optionToDeskId(selectedDeskStr);
+                            const deskData = allDesks.find(e => e.id.toString()===deskId);
+                            if(deskData){
+                              setEquipment(deskData.equipment ? deskData.equipment : '');
+                              setRemark(deskData.remark ? deskData.remark : '');
+                            }
+                            setSelectedDeskId(deskId); */
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              size='small' 
+                              disabled
+                              
+                              label={t("selectDesk")}
+                              placeholder={t("selectDesk")}
+      /*                         InputProps={{
+                                ...params.InputProps,
+                                readOnly: true, // Setzt das Textfeld auf read-only
+                              }} */
+                            />
+                            )}
+                        />
+                      </div>
+                    ) :
+                    <div>{t('noWorkstationForThisRoom')}</div>
+                  }
+                </div>
+              )
+            }
+{/*             <Autocomplete
               id="tags-filled"
               fullWidth
               //options={allActiveRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
@@ -152,9 +236,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
                   )}
                 />
               ):<p style={{color: 'red', textAlign:'left'}}>{t("deskNotFound")}</p>
-            }
+            } */}
             </Box>
-          </Grid>
+          </Grid2>
         </DialogContent>
       <DialogActions>
         <Button onClick={()=>deleteWorkstation()}>&nbsp;{t("delete").toUpperCase()}</Button>
