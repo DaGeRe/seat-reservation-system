@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
+import FloorSelector from '../../FloorSelector/FloorSelector.js';
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = useMemo(() => {
@@ -74,7 +75,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FormControl required={true} size="small" fullWidth>
+{/*             <FormControl required={true} size="small" fullWidth>
               <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
               <Select
                 labelId="demo-simple-select-label-floor"
@@ -88,7 +89,11 @@ export default function DeleteRoom({ deleteRoomModal }) {
                   <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
                   <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
+            <FloorSelector
+              floor={floor}
+              setFloor={setFloor}
+            />
             <br></br> <br></br>
             <FloorImage 
               present_color='red'
