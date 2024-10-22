@@ -1,7 +1,6 @@
 import {FormControl, Grid2, TextField, InputLabel, MenuItem, Select } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import Autocomplete from '@mui/material/Autocomplete';
 import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,6 +12,7 @@ import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAnd
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
+import DeskSelector from '../DeskSelector/DeskSelector.js';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const headers = useMemo(() => {
@@ -55,10 +55,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   function getDeskByRoomId(roomId) {
     if(roomId) {
-        /* let idSplit = e.split("(");
-        let idVal = idSplit[1].split(")");
-        let roomId = idVal[0];
- */
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
         headers,
@@ -144,99 +140,16 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
                 getDeskByRoomId(room.id);
               }}
             />
-            {
-              selectedRoom && (
-                <div>
-                  <h2>{roomToOption(selectedRoom)}</h2>
-                  {
-                    allDesks && allDesks.length > 0 ? (
-                      <div>
-                        <Autocomplete
-                          id='tags-filled'
-                          fullWidth
-                          options={allDesks.map(deskToOption)}
-                          isOptionEqualToValue={isOptionEqualToValue_Desk}
-                          freeSolo={false} // Eingabe ist deaktiviert
-                          value={selectedDesk}
-                          onChange={(_, selectedDeskStr) => {
-                            setSelectedDesk(selectedDeskStr);
-                            /* const deskId = optionToDeskId(selectedDeskStr);
-                            const deskData = allDesks.find(e => e.id.toString()===deskId);
-                            if(deskData){
-                              setEquipment(deskData.equipment ? deskData.equipment : '');
-                              setRemark(deskData.remark ? deskData.remark : '');
-                            }
-                            setSelectedDeskId(deskId); */
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              size='small' 
-                              disabled
-                              
-                              label={t("selectDesk")}
-                              placeholder={t("selectDesk")}
-      /*                         InputProps={{
-                                ...params.InputProps,
-                                readOnly: true, // Setzt das Textfeld auf read-only
-                              }} */
-                            />
-                            )}
-                        />
-                      </div>
-                    ) :
-                    <div>{t('noWorkstationForThisRoom')}</div>
-                  }
-                </div>
-              )
-            }
-{/*             <Autocomplete
-              id="tags-filled"
-              fullWidth
-              //options={allActiveRooms.map((option) => (option.floor +"-"+ option.type +"("+option.id+") " + option.remark))}
-              options={allActiveRooms.map(roomToOption)}
-              value={selectedRoom}
-              isOptionEqualToValue={(option, value) => option === value || '' === value}
-              onChange={(_, choosedOption) => {
-                const roomId = optionToRoomId(choosedOption);
-                setSelectedDesk("");
-                getDeskByRoomId(roomId);
-                setSelectedRoom(choosedOption);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  size='small' 
-                  label={t("selectRoom")}
-                  placeholder={t("selectRoom")}
-                />
-              )}
+            <DeskSelector
+              selectedRoom={selectedRoom}
+              allDesks={allDesks}
+              selectedDesk={selectedDesk}
+              setSelectedDesk={setSelectedDesk}
+              roomToOption={roomToOption}
+              deskToOption={deskToOption}
+              isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
+              t={t}
             />
-            <br></br> {
-              allDesks && allDesks.length > 0 ? (
-                <Autocomplete
-                  id="tags-filled"
-                  fullWidth
-                  options={allDesks.map(deskToOption)}
-                  value={selectedDesk}
-                  isOptionEqualToValue={(option, value) => option === value || '' === value}
-                  onChange={(_, choosedDeskOption) => {
-                    setSelectedDesk(choosedDeskOption);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      size='small' 
-                      label={t("selectDesk")}
-                      placeholder={t("selectDesk")}
-                    />
-                  )}
-                />
-              ):<p style={{color: 'red', textAlign:'left'}}>{t("deskNotFound")}</p>
-            } */}
             </Box>
           </Grid2>
         </DialogContent>
