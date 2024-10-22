@@ -11,7 +11,8 @@ import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
-
+import FloorSelector
+ from '../../FloorSelector/FloorSelector.js';
 export default function AddWorkstation({ addWorkstationModal }) {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -49,15 +50,13 @@ export default function AddWorkstation({ addWorkstationModal }) {
 
   async function addWorkstation(){
     if(!selectedRoom){
-      toast.error(t("selectRoomError"));
+      toast.error(t('selectRoomError'));
       return false;
     }
-    console.log(selectedRoom);
     const roomId = selectedRoom.id;
-/*     const roomId = optionToRoomId(selectedRoom);*/
     
     if(!roomId || !equipment ){
-      toast.error("Field cannot be blank!");
+      toast.error('Field cannot be blank!');
       return false;
     }
     postRequest(
@@ -82,27 +81,16 @@ export default function AddWorkstation({ addWorkstationModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-          <FormControl required={true} size="small" fullWidth>
-            <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
-            <Select
-              labelId="demo-simple-select-label-floor"
-              id="demo-simple-select-floor"
-              value={floor}
-              label={t("floor")}
-              onChange={(e)=>{
-                setFloor(e.target.value);
-              }}   
-              >
-                <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
-                <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
-            </Select>
-          </FormControl>
-          <br></br> <br></br>
-          <FloorImage 
-            floor={floor}
-            headers={headers}
-            setCurrentRoom={setSelectedRoom}
-          />
+            <FloorSelector
+              floor={floor}
+              setFloor={setFloor}
+            />
+            <br></br> <br></br>
+            <FloorImage 
+              floor={floor}
+              headers={headers}
+              setCurrentRoom={setSelectedRoom}
+            />
           {
             selectedRoom && (
               <div>
