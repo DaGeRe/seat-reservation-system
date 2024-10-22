@@ -1,4 +1,4 @@
-import {Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {FormControl, Grid2, Box, InputLabel,  MenuItem, Select } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -6,7 +6,9 @@ import DeleteFf from '../../DeleteFf/DeleteFf';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import FloorImage from '../../FloorImage/FloorImage.jsx'
+import InfoModal from '../../InfoModal/InfoModal.jsx'
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = useMemo(() => {
@@ -14,27 +16,12 @@ export default function DeleteRoom({ deleteRoomModal }) {
     const storedHeaders = sessionStorage.getItem('headers');
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const { t } = useTranslation();
+  const [floor, setFloor] = React.useState('Ground');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
-  const { t } = useTranslation();
-  const [allRooms, setAllRooms] = React.useState([]);
-  const getAllRooms = useCallback(
-    async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms`,
-        headers,
-        setAllRooms,
-        () => {'Failed to fetch rooms in DeleteRoom.jsx.'},
-      );
-    },
-    [headers, setAllRooms]
-  );
-  
-  React.useEffect(() => {
-    getAllRooms();
-  }, [getAllRooms]);
 
-
+  const helpText = 'Klicken Sie auf den jeweiligen Raum um diesen zu löschen.'
 
   const handleClose = () => {
       deleteRoomModal();
@@ -50,7 +37,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
         }
         else {
           toast.success(t('roomDeleted'));
-          getAllRooms();
+          //getAllRooms();
+          deleteRoomModal();
         }
       },
       () => {'Failed to delete room in DeleteRoom.jsx.'},
@@ -59,75 +47,63 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }
 
   async function deleteRoomFf(){
-    if (currRoomId === -1) {
-      toast.error('select an room');
-    }
-    else {
+    if (currRoomId !== -1) {
+      
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`,
         headers,
         (_) => {
           toast.success(t('roomDeleted'));
-          getAllRooms();
+          //getAllRooms();
+          deleteRoomModal();
         }
       );
     }
   } 
 
   return (
-      <React.Fragment>
-          <DeleteFf 
-            open={openFfDialog}
-            onClose={handleClose}
-            onDelete={deleteRoomFf}
-            text={t('fFDeleteRoom')}
-          />
-          <DialogContent>
-              <Grid2 container >
-                    <TableContainer  component={Paper}>
-                      <Table sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }} >
-                        <TableHead sx={{backgroundColor: 'green', color:'white'}}>
-                          <TableRow>
-                            <TableCell sx={{textAlign: 'center', fontSize:15, color:'white'}}>{t('floor')}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('status')}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('type')}</TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:15,color:'white' }}>{t('roomRemark')}</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {allRooms.map((row) => (
-                            <TableRow  key={row.id}>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.floor}
-                              </TableCell>
-                            <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.status}
-                              </TableCell>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.type}
-                              </TableCell>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                                {row.remark}
-                              </TableCell>
-                              <TableCell sx={{textAlign: 'center', fontSize:14, width:'30%'   }} component="th" scope="row">
-                              <Button onClick={() => {
-                                  setCurrRoomId(row.id);
-                                  deleteRoomById(row.id);
-                                }
-                              }
-                              >{t('delete').toUpperCase()}</Button>
-                            </TableCell>
-
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Grid2>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
-        </DialogActions>
-      </React.Fragment>
-    );
+    <React.Fragment>
+      <InfoModal text={helpText}/>
+      <DeleteFf 
+        open={openFfDialog}
+        onClose={handleClose}
+        onDelete={deleteRoomFf}
+        text={t('fFDeleteRoom')}
+      />
+      <DialogContent>
+        <Grid2 container >
+          <Box sx={{ flexGrow: 1, padding: '10px' }}>
+            <FormControl required={true} size="small" fullWidth>
+              <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label-floor"
+                id="demo-simple-select-floor"
+                value={floor}
+                label={t("floor")}
+                onChange={(e)=>{
+                  setFloor(e.target.value);
+                }}   
+                >
+                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+              </Select>
+            </FormControl>
+            <br></br> <br></br>
+            <FloorImage 
+              floor={floor}
+              headers={headers}
+              setCurrentRoom={(room) => {
+                const room_id = room.id;
+                deleteRoomById(room_id);
+                setCurrRoomId(room_id);
+              }}
+            />
+          </Box>
+        </Grid2>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+      </DialogActions>
+    </React.Fragment>
+  );
 }
