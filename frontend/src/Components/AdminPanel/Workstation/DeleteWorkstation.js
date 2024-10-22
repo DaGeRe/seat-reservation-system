@@ -1,10 +1,10 @@
-import {FormControl, Grid2, TextField, InputLabel, MenuItem, Select } from '@mui/material';
+import {Grid2} from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
+import { roomToOption} from '../Room/RoomAndOption';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf/DeleteFf';
@@ -13,6 +13,7 @@ import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import DeskSelector from '../DeskSelector/DeskSelector.js';
+import FloorSelector from '../../FloorSelector/FloorSelector.js';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const headers = useMemo(() => {
@@ -21,7 +22,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
@@ -32,23 +32,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   const helpText = t('helpDeleteWorkstation');
   
-
-/*   const getAllActiveRooms = useCallback(
-    async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-        headers,
-        setAllActiveRooms,
-        () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
-      );
-    },
-    [headers, setAllActiveRooms]
-  );
-
-  React.useEffect(() => {
-      getAllActiveRooms();
-  }, [getAllActiveRooms]);
-   */
   const handleClose = () => {
     deleteWorkstationModal();
   };
@@ -98,7 +81,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       )
     }
   }
-  
+
   return (
     <React.Fragment>
       <InfoModal text={helpText}/>
@@ -111,26 +94,10 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-          <FormControl required={true} size="small" fullWidth>
-              <InputLabel id="demo-simple-select-label-floor">{t('floor')}</InputLabel>
-              <Select
-                labelId="demo-simple-select-label-floor"
-                id="demo-simple-select-floor"
-                value={floor}
-                label={t("floor")}
-                onChange={(e)=>{
-                  setFloor(e.target.value);
-                  setSelectedRoom(null);
-                  setAllDesks(null);
-                  setEquipment('');
-                  setRemark('');
-                  setSelectedDesk('');
-                }}   
-                >
-                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
-                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
-              </Select>
-            </FormControl>
+          <FloorSelector
+              floor={floor}
+              setFloor={setFloor}
+            />
             <br></br> <br></br>
             <FloorImage 
               floor={floor}
