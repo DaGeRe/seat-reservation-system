@@ -33,7 +33,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const helpText = t('helpDeleteWorkstation');
   
 
-  const getAllActiveRooms = useCallback(
+/*   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
@@ -48,7 +48,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   React.useEffect(() => {
       getAllActiveRooms();
   }, [getAllActiveRooms]);
-
+   */
   const handleClose = () => {
     deleteWorkstationModal();
   };

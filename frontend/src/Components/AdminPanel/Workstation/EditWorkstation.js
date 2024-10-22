@@ -140,43 +140,28 @@ export default function EditWorkstation({ editWorkstationModal }) {
             {
               selectedRoom && (
                 <div>
-                  <h2>{roomToOption(selectedRoom)}</h2>
                   {
                     allDesks && allDesks.length > 0 ? (
                       <div>
-                        {/* {allDesks.length} */}
-                        <Autocomplete
-                          id='tags-filled'
-                          fullWidth
-                          options={allDesks.map(deskToOption)}
-                          isOptionEqualToValue={isOptionEqualToValue_Desk}
-                          freeSolo={false} // Eingabe ist deaktiviert
-                          value={selectedDesk}
-                          onChange={(_, selectedDeskStr) => {
-                            setSelectedDesk(selectedDeskStr);
-                            const deskId = optionToDeskId(selectedDeskStr);
-                            const deskData = allDesks.find(e => e.id.toString()===deskId);
-                            if(deskData){
-                              setEquipment(deskData.equipment ? deskData.equipment : '');
-                              setRemark(deskData.remark ? deskData.remark : '');
+                        <DeskSelector
+                          selectedRoom={selectedRoom}
+                          allDesks={allDesks}
+                          selectedDesk={selectedDesk}
+                          setSelectedDesk={(selectedDeskStr) => {
+                              setSelectedDesk(selectedDeskStr);
+                              const deskId = optionToDeskId(selectedDeskStr);
+                              const deskData = allDesks.find(e => e.id.toString()===deskId);
+                              if(deskData){
+                                setEquipment(deskData.equipment ? deskData.equipment : '');
+                                setRemark(deskData.remark ? deskData.remark : '');
+                              }
+                              setSelectedDeskId(deskId);
                             }
-                            setSelectedDeskId(deskId);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              size='small' 
-                              disabled
-                              
-                              label={t("selectDesk")}
-                              placeholder={t("selectDesk")}
-      /*                         InputProps={{
-                                ...params.InputProps,
-                                readOnly: true, // Setzt das Textfeld auf read-only
-                              }} */
-                            />
-                            )}
+                          }
+                          roomToOption={roomToOption}
+                          deskToOption={deskToOption}
+                          isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
+                          t={t}
                         />
                         {
                           selectedDesk && (
