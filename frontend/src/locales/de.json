@@ -82,6 +82,7 @@
     "selectDeskMessage": "Bitte wählen Sie zuerst einen Arbeitsplatz",
     "blank": "Bitte wählen Sie zuerst einen Arbeitsplatz und Zeitraum vor der Buchung",
     "deskUpdate": "Arbeitsplatz erfolgreich aktualisiert",
+    "deskUpdateFailed": "Arbeitsplatz konnte nicht aktualisiert werden",
     "deskDelete": "Arbeitsplatz erfolgreich gelöscht",
     "deskCreated": "Arbeitsplatz erfolgreich erstellt",
     "roomStatus": "Status des Zimmers erfolgreich aktualisiert",
@@ -124,6 +125,7 @@
     "addWorkstation": "Arbeitsplatz Hinzufügen",
     "deleteWorkstation": "Arbeitsplatz Entfernen",
     "editWorkstation": "Arbeitsplatz Bearbeiten",
+    "noWorkstationForThisRoom": "Es existiert kein Arbeitsplatz in diesem Raum.",
     "status": "Status",
     "enable": "Aktivieren",
     "disable": "Deaktivieren",
@@ -177,5 +179,6 @@
     ,"helpCreateBooking":"Bitte wählen Sie zuerst ein Arbeitsplatz und dann eine Zeitspanne aus. Klicken Sie anschließend <strong>Buchen</strong>."
     ,"helpDeleteRoom":"Klicken Sie auf den jeweiligen Raum um diesen zu löschen."
     ,"helpAddWorkstation":"Bitte wählen Sie einen existierenden Raum durch einen Klick aus. Anschließend definieren Sie bitte den jeweiligen Arbeitsplatz."
+    ,"helpEditWorkstation":"Bitte wählen Sie einen existierenden Raum durch einen Klick aus. Anschließend wählen Sie bitte den jeweiligen Arbeitsplatz aus. Im Anschluss können Sie die Änderungen definieren."
     ,"bookingsSum":"Buchungen Gesamt"
 }

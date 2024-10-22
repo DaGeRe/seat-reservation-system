@@ -83,6 +83,7 @@
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
     "deskUpdate": "Desk updated successfully",
+    "deskUpdateFailed": "Desk updated was not successfully",
     "deskDelete": "Desk deleted successfully",
     "deskCreated": "Desk created successfully",
     "roomStatus": "Room status changed successfully",
@@ -125,6 +126,7 @@
     "addWorkstation": "Add Workstation",
     "deleteWorkstation": "Delete Workstation",
     "editWorkstation": "Edit Workstation",
+    "noWorkstationForThisRoom": "No workstation exists in this Room.",
     "status": "Status",
     "enable": "Enable",
     "disable": "Disable",
@@ -178,5 +180,6 @@
     ,"helpCreateBooking":"Please choose first an desk and then a timespan. Finish with a push on <strong>Book</strong>."
     ,"helpDeleteRoom":"Click on the room you want to be deleted."
     ,"helpAddWorkstation":"Please choose an existing room with an click on it. After this define the new workstation."
+    ,"helpEditWorkstation":"Please choose an existing room with an click on it. After this choose the workstation to be changed. After this take the changes you want."
     ,"bookingsSum":"Bookings sum"
 }

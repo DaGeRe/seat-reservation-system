@@ -101,7 +101,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
           <FloorImage 
             floor={floor}
             headers={headers}
-           setCurrentRoom={setSelectedRoom}
+            setCurrentRoom={setSelectedRoom}
           />
           {
             selectedRoom && (

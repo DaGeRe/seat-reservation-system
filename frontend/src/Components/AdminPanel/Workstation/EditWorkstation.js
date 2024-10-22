@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
 import {optionToRoomId, roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
+import FloorImage from '../../FloorImage/FloorImage.jsx'
+import InfoModal from '../../InfoModal/InfoModal.jsx'
 
 export default function EditWorkstation({ editWorkstationModal }) {
   const headers = useMemo(() => {
@@ -22,8 +24,13 @@ export default function EditWorkstation({ editWorkstationModal }) {
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
+  const [selectedDesk, setSelectedDesk]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
+  // The current floor. (either Ground or First)
+  const [floor, setFloor] = React.useState('Ground');
+
+  const helpText = t('helpEditWorkstation');
 
   const getAllActiveRooms = useCallback(
     async () => {
@@ -56,106 +63,129 @@ export default function EditWorkstation({ editWorkstationModal }) {
   };
 
   async function updateWorkstation() {
-    putRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}/${equipment}/${remark}`,
-      headers,
-      (_) => {
-        toast.success(t('deskUpdate'));
-        editWorkstationModal();
-      },
-      () => {console.log('Failed to update workstation in EditWorkstation.js');}
-    );
+    if (selectedDeskId && equipment && remark) {
+      putRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}/${equipment}/${remark}`,
+        headers,
+        (_) => {
+          toast.success(t('deskUpdate'));
+          editWorkstationModal();
+        },
+        () => {console.log('Failed to update workstation in EditWorkstation.js');}
+      );
+    }
+    else {
+      toast.error(t('deskUpdateFailed'));
+    }
   };
 
   return (
     <React.Fragment>
+      <InfoModal text={helpText}/>
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <Autocomplete
-              id='tags-filled'
-              fullWidth
-              options={allActiveRooms.map(roomToOption)}
-              isOptionEqualToValue={(option, value) => option === value || '' === value}
-              value={selectedRoom}
-              onChange={(_, newValue) => {
-                  setEquipment("");
-                  setSelectedDeskId("");
-                  const roomId = optionToRoomId(newValue);
-                  getDeskByRoomId(roomId);
-                  setSelectedRoom(newValue);
+            <FormControl required={true} size="small" fullWidth>
+              <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label-floor"
+                id="demo-simple-select-floor"
+                value={floor}
+                label={t("floor")}
+                onChange={(e)=>{
+                  setFloor(e.target.value);
+                  setSelectedRoom(null);
+                  setAllDesks(null);
+                  setEquipment('');
+                  setRemark('');
+                }}   
+                >
+                  <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
+                  <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
+              </Select>
+            </FormControl>
+            <br></br> <br></br>
+            <FloorImage 
+              floor={floor}
+              headers={headers}
+              setCurrentRoom={(room) => {
+                setSelectedRoom(room);
+                getDeskByRoomId(room.id);
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  size='small' 
-                  label={t("selectRoom")}
-                  placeholder={t("selectRoom")}
-                />
-              )}
             />
-            <br></br>
             {
-              allDesks && allDesks.length > 0 ? (
-                <Autocomplete
-                  id="tags-filled"
-                  fullWidth
-                  options={allDesks.map(deskToOption)}
-                  isOptionEqualToValue={isOptionEqualToValue_Desk}
-                  value={selectedDeskId}
-                  onChange={(_, newValue) => {
-                    const deskId = optionToDeskId(newValue);
-                    const deskData = allDesks.find(e => e.id.toString()===deskId);
-                    if(deskData){
-                          setEquipment(deskData.equipment ? deskData.equipment : '');
-                          setRemark(deskData.remark ? deskData.remark : '');
-                    }
-                    setSelectedDeskId(deskId);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      size='small' 
-                      label={t("selectDesk")}
-                      placeholder={t("selectDesk")}
-                    />
-                  )}
-                />
-              ):<p style={{color: 'red', textAlign:'left'}}>{t("deskNotFound")}</p>
-            }
-            <br></br> {
-              selectedDeskId ? (
+              selectedRoom && (
                 <div>
-                  <FormControl fullWidth size='small'>
-                    <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
-                      <Select
-                        size='small'
-                          labelId='demo-simple-select-label'
-                          id='demo-simple-select'
-                          value={equipment}
-                          label='Equipments'
-                          onChange={(e) => setEquipment(e.target.value)}
-                      >
-                        <MenuItem value={'with equipment'}>{t('withEquipment').toUpperCase()}</MenuItem>
-                        <MenuItem value={'without equipment'}>{t('withoutEquipment').toUpperCase()}</MenuItem>
-                      </Select>
-                  </FormControl>
-                  <br></br><br></br>
-                  <FormControl required={false} size='small' fullWidth variant='standard'>
-                    <TextField
-                      id='standard-adornment-reason'
-                      label={t('deskRemark')}
-                      size='small'
-                      type={'string'}
-                      value={remark}
-                      onChange={(e)=>setRemark(e.target.value)}
-                    />
-                  </FormControl>
+                  <h2>{roomToOption(selectedRoom)}</h2>
+                  {
+                    allDesks && allDesks.length > 0 ? (
+                      <div>
+                        {/* {allDesks.length} */}
+                        <Autocomplete
+                          id='tags-filled'
+                          fullWidth
+                          options={allDesks.map(deskToOption)}
+                          isOptionEqualToValue={isOptionEqualToValue_Desk}
+                          value={selectedDesk}
+                          onChange={(_, selectedDeskStr) => {
+                            setSelectedDesk(selectedDeskStr);
+                            const deskId = optionToDeskId(selectedDeskStr);
+                            const deskData = allDesks.find(e => e.id.toString()===deskId);
+                            if(deskData){
+                              setEquipment(deskData.equipment ? deskData.equipment : '');
+                              setRemark(deskData.remark ? deskData.remark : '');
+                            }
+                            setSelectedDeskId(deskId);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              size='small' 
+                              label={t("selectDesk")}
+                              placeholder={t("selectDesk")}
+                            />
+                            )}
+                        />
+                        {
+                          selectedDesk && (
+                            <div>
+                              <br></br><br></br>
+                              <FormControl fullWidth size='small'>
+                                <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
+                                  <Select
+                                    size='small'
+                                      labelId='demo-simple-select-label'
+                                      id='demo-simple-select'
+                                      value={equipment}
+                                      label='Equipments'
+                                      onChange={(e) => setEquipment(e.target.value)}
+                                  >
+                                    <MenuItem value={'with equipment'}>{t('withEquipment').toUpperCase()}</MenuItem>
+                                    <MenuItem value={'without equipment'}>{t('withoutEquipment').toUpperCase()}</MenuItem>
+                                  </Select>
+                              </FormControl>
+                              <br></br><br></br>
+                              <FormControl required={false} size='small' fullWidth variant='standard'>
+                                <TextField
+                                  id='standard-adornment-reason'
+                                  label={t('deskRemark')}
+                                  size='small'
+                                  type={'string'}
+                                  value={remark}
+                                  onChange={(e)=>setRemark(e.target.value)}
+                                />
+                              </FormControl>
+                            </div>
+                          )
+                        }
+                      </div>
+                    ) :
+                    <div>{t('noWorkstationForThisRoom')}</div>
+                  }
                 </div>
-              ):''
-            }     
+              )
+            }
           </Box>
         </Grid2>
       </DialogContent>
