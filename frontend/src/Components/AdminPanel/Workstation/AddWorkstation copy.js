@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
 
 export default function AddWorkstation({ addWorkstationModal }) {
   const headers = useMemo(() => {
@@ -23,11 +22,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
-  // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState('Ground');
-
-  const helpText = t('helpAddWorkstation');
-
   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
@@ -52,9 +46,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
       toast.error(t("selectRoomError"));
       return false;
     }
-    console.log(selectedRoom);
-    const roomId = selectedRoom.id;
-/*     const roomId = optionToRoomId(selectedRoom);*/
+    const roomId = optionToRoomId(selectedRoom);
     
     if(!roomId || !equipment ){
       toast.error("Field cannot be blank!");
@@ -78,64 +70,56 @@ export default function AddWorkstation({ addWorkstationModal }) {
 
   return (
     <React.Fragment>
-      <InfoModal text={helpText}/>
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-          <FormControl required={true} size="small" fullWidth>
-            <InputLabel id="demo-simple-select-label-floor">{t("floor")}</InputLabel>
-            <Select
-              labelId="demo-simple-select-label-floor"
-              id="demo-simple-select-floor"
-              value={floor}
-              label={t("floor")}
-              onChange={(e)=>{
-                setFloor(e.target.value);
-              }}   
+            {/* <Autocomplete
+              id="tags-filled"
+              fullWidth
+              options={allActiveRooms.map(roomToOption)}
+              // To avoid an warning allow every possible option.
+              isOptionEqualToValue={(option, value) => option === value || '' === value}
+              value={selectedRoom}
+              onChange={(_, newValue) => {
+                setSelectedRoom(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  size='small' 
+                  label={t("selectRoom")}
+                  placeholder={t("selectRoom")}
+                />
+              )}
+            />
+            <br></br>
+            <FormControl fullWidth size='small'>
+              <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
+              <Select
+                size='small'
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={equipment}
+                placeholder='Equipments'
+                label="Equipments"
+                onChange={(e) => setEquipment(e.target.value)}
               >
-                <MenuItem value={'First'}>{t('firstFloor').toUpperCase()}</MenuItem>
-                <MenuItem value={'Ground'}>{t('groundFloor').toUpperCase()}</MenuItem>
-            </Select>
-          </FormControl>
-          <br></br> <br></br>
-          <FloorImage 
-            floor={floor}
-            headers={headers}
-           setCurrentRoom={setSelectedRoom}
-          />
-          {
-            selectedRoom && (
-              <div>
-                <h2>{roomToOption(selectedRoom)}</h2>
-                <FormControl fullWidth size='small'>
-                  <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
-                  <Select
-                    size='small'
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={equipment}
-                    placeholder='Equipments'
-                    label="Equipments"
-                    onChange={(e) => setEquipment(e.target.value)}
-                  >
-                    <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
-                    <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
-                  </Select>
-                </FormControl>
-                <br></br><br></br>
-                <FormControl required={false} size="small" fullWidth variant="standard">
-                  <TextField
-                    id='standard-adornment-reason'
-                    label={t('deskRemark')}
-                    size='small'
-                    type={'string'}
-                    value={remark}
-                    onChange={(e)=>setRemark(e.target.value)}
-                  />
-                </FormControl>
-              </div>
-            )
-          }
+                <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
+                <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
+              </Select>
+            </FormControl>
+            <br></br><br></br>
+            <FormControl required={false} size="small" fullWidth variant="standard">
+              <TextField
+                id='standard-adornment-reason'
+                label={t('deskRemark')}
+                size='small'
+                type={'string'}
+                value={remark}
+                onChange={(e)=>setRemark(e.target.value)}
+              />
+            </FormControl> */}
           </Box>
         </Grid2>
       </DialogContent>

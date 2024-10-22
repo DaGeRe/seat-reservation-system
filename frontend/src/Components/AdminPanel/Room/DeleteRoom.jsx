@@ -17,11 +17,12 @@ export default function DeleteRoom({ deleteRoomModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
+  // The current floor. (either Ground or First)
   const [floor, setFloor] = React.useState('Ground');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
 
-  const helpText = 'Klicken Sie auf den jeweiligen Raum um diesen zu löschen.'
+  const helpText = t('helpDeleteRoom');
 
   const handleClose = () => {
       deleteRoomModal();
