@@ -7,12 +7,23 @@ import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 
-export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom}) {
+/**
+ * @param floor The current floor. (either First or Ground)
+ * @param headers The headers including the jwt.
+ * @param clickedXPosition The x coordinate clicked on the map.
+ * @param clickedYPosition The y coordinate clicked on the map.
+ * @param setCurrentRoom A function that is executed if the user has clicked on an known room.
+ * @param presentRoom The color (green, blue, ...) of the known rooms.
+ * @returns The rendered map with known rooms and the option to add an room.
+ */
+export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom, present_color = 'blue'}) {
     const [allRooms, setAllRooms] = React.useState([]);
     /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
+    //const present_color = 'blue';
+    const new_color = 'green';
     
     const getAllActiveRooms = useCallback(
         async () => {
@@ -71,6 +82,8 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
           [`& .${tooltipClasses.tooltip}`]: {
             backgroundColor: '#f5f5f9',
             color: 'rgba(0, 0, 0, 0.87)',
+/*             backgroundColor: '#000000',
+            color: 'green', */
             maxWidth: 220,
             fontSize: theme.typography.pxToRem(12),
             border: '1px solid #dadde9',
@@ -94,7 +107,10 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                         }}
                     >
                         <IconButton>
-                            <LaptopIcon
+                            <LaptopIcon style={{ 
+                                color: new_color, 
+                                fontSize: '24px' 
+                            }}
                                 className='image-icon-new'
                             />
                         </IconButton>
@@ -134,6 +150,10 @@ export default function FloorImage({floor, headers, clickedXPosition, clickedYPo
                                         }
                                 }}>
                                   <LaptopIcon
+                                    style={{ 
+                                        color: present_color, 
+                                        fontSize: '24px',
+                                    }}
                                     className='image-icon-old'
                                   />
                                 </IconButton>      
