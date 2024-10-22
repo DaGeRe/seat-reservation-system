@@ -22,7 +22,8 @@ async function request(type, url, headers, successFunction, failFunction, body=J
                     successFunction(null);
                 }
                 else {
-                    console.log('Unknown error in DeleteReuest.js.');
+                    console.log(e);
+                    console.log(`Unknown error in ${type}Reuest.js.`);
                 };
             }
         }
