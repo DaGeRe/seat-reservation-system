@@ -12,6 +12,7 @@ import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
+import DeskSelector from '../DeskSelector/DeskSelector.js';
 
 export default function EditWorkstation({ editWorkstationModal }) {
   const headers = useMemo(() => {
