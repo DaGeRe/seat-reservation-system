@@ -12,6 +12,7 @@ import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import WorkStationDefinition from './WorkStationDefinition.js';
 
 export default function AddWorkstation({ addWorkstationModal }) {
   const headers = useMemo(() => {
@@ -28,21 +29,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [floor, setFloor] = React.useState('Ground');
 
   const helpText = t('helpAddWorkstation');
-
-/*   const getAllActiveRooms = useCallback(
-    async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-        headers,
-        setAllActiveRooms,
-        () => {console.log('Failed to fetch all rooms in DeleteWorkstation.js');},
-      );
-    },
-    [headers, setAllActiveRooms]
-  );
-  React.useEffect(() => {
-      getAllActiveRooms();
-  }, [getAllActiveRooms]); */
 
   const handleCloseBtn = () => {
     addWorkstationModal();
@@ -95,32 +81,13 @@ export default function AddWorkstation({ addWorkstationModal }) {
             selectedRoom && (
               <div>
                 <h2>{roomToOption(selectedRoom)}</h2>
-                <FormControl fullWidth size='small'>
-                  <InputLabel id="demo-simple-select-label">{t("equipment")}</InputLabel>
-                  <Select
-                    size='small'
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={equipment}
-                    placeholder='Equipments'
-                    label="Equipments"
-                    onChange={(e) => setEquipment(e.target.value)}
-                  >
-                    <MenuItem value={"with equipment"}>{t("withEquipment").toUpperCase()}</MenuItem>
-                    <MenuItem value={"without equipment"}>{t("withoutEquipment").toUpperCase()}</MenuItem>
-                  </Select>
-                </FormControl>
-                <br></br><br></br>
-                <FormControl required={false} size="small" fullWidth variant="standard">
-                  <TextField
-                    id='standard-adornment-reason'
-                    label={t('deskRemark')}
-                    size='small'
-                    type={'string'}
-                    value={remark}
-                    onChange={(e)=>setRemark(e.target.value)}
-                  />
-                </FormControl>
+                <WorkStationDefinition
+                  t={t}
+                  equipment={equipment}
+                  setEquipment={setEquipment}
+                  remark={remark}
+                  setRemark={setRemark}
+                />
               </div>
             )
           }
