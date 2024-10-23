@@ -1,4 +1,4 @@
-import {Grid2, Box} from '@mui/material';
+import {Grid2} from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
