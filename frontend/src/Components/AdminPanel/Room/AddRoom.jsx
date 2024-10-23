@@ -1,4 +1,4 @@
-import { FormControl, Grid2, TextField, InputLabel, MenuItem, Select} from '@mui/material';
+import {Grid2, Box} from '@mui/material';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import RoomDefinition from '../Room/RoomDefinition.js';
 
 export default function AddRoom({ addRoomModal }) {
   const headers = useMemo(() => {
@@ -77,45 +78,15 @@ export default function AddRoom({ addRoomModal }) {
                     clickedXPosition={setX}
                     clickedYPosition={setY}
                   />
-                  <br></br> <br></br>
-                  <FormControl required={true} fullWidth>
-                    <InputLabel id="demo-simple-select-label">{t("type")}</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={type}
-                      label={t("type")}
-                      onChange={(e)=>setType(e.target.value)}
-                    >
-                      <MenuItem value={"Silence"}>{t("silence").toUpperCase()}</MenuItem>
-                      <MenuItem value={"Normal"}>{t("normal").toUpperCase()}</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <br></br> <br></br>
-                  <FormControl required={true} fullWidth>
-                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={status}
-                      label={t("status")}
-                      onChange={(e)=>setStatus(e.target.value)}
-                    >
-                      <MenuItem value={"enable"}>{t("enable").toUpperCase()}</MenuItem>
-                      <MenuItem value={"disable"}>{t("disable").toUpperCase()}</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <br></br> <br></br>
-                  <FormControl required={true} size="small" fullWidth variant="standard">
-                    <TextField
-                        id="room-remark"
-                        label={t("roomRemark")}
-                        size="small"
-                        type={"text"}
-                        value={remark}
-                        onChange={(e)=>setRemark(e.target.value)}
-                    />
-                  </FormControl>
+                  <RoomDefinition 
+                    t={t}
+                    type={type}
+                    setType={setType}
+                    status_val={status}
+                    setStatus={setStatus}
+                    remark={remark}
+                    setRemark={setRemark}
+                  />
                   <br></br> <br></br>
                   <DialogActions>
                     <Button onClick={()=>addRoom()}>&nbsp;{t("submit").toUpperCase()}</Button>
