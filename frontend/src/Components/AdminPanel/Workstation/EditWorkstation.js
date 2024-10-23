@@ -93,7 +93,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
     <React.Fragment>
       <InfoModal text={helpText}/>
       <DialogContent>
-        <Grid2 container >
+        <Grid2 container>
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FloorSelector
               floor={floor}
