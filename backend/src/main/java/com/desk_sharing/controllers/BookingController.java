@@ -124,12 +124,12 @@ public class BookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-/*     @GetMapping("/desk/{id}")
-    public ResponseEntity<List<Booking>> geDeskBookings(@PathVariable("id") Long desk_id) {
-        userService.logging("geDeskBookings( " + desk_id  +" )");
+    @GetMapping("/desk/{id}")
+    public ResponseEntity<List<Booking>> getDeskBookings(@PathVariable("id") Long desk_id) {
+        userService.logging("getDeskBookings( " + desk_id  +" )");
         List<Booking> bookings = bookingService.findByDeskId(desk_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
-    } */
+    }
 
     @GetMapping("/date/{id}")
     public ResponseEntity<List<Booking>> geDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
