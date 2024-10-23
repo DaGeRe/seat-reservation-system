@@ -10,9 +10,6 @@ import java.util.Dictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +59,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingDTO> addBooking(@RequestBody Map<String, Object> bookingData) {
-        userService.logging("confirmBooking( "+bookingData.toString()+" )");
+        userService.logging("addBooking( "+bookingData.toString()+" )");
         try {
             Booking savedBooking = bookingService.createBooking(bookingData);
             BookingDTO bookingDTO = convertToDTO(savedBooking);
@@ -127,12 +124,12 @@ public class BookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-    @GetMapping("/desk/{id}")
+/*     @GetMapping("/desk/{id}")
     public ResponseEntity<List<Booking>> geDeskBookings(@PathVariable("id") Long desk_id) {
         userService.logging("geDeskBookings( " + desk_id  +" )");
         List<Booking> bookings = bookingService.findByDeskId(desk_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }
+    } */
 
     @GetMapping("/date/{id}")
     public ResponseEntity<List<Booking>> geDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
