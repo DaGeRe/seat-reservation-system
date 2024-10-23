@@ -52,11 +52,13 @@ public class UserController {
 
     @GetMapping("/get")
     public List<UserEntity> getAllUsers() {
+        userService.logging("getAllUsers()");
         return userService.getAllUsers();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
+        userService.logging("login( " + loginDto + " )");
         // Check if mail exists and password is correct.
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -89,6 +91,7 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+        userService.logging("register( " + registerDto + " )");
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
         }
@@ -113,6 +116,7 @@ public class UserController {
 
     @PutMapping("/visibility/{id}")
     public int changeVisibility(@PathVariable("id") int id) {
+        userService.logging("changeVisibility( " + id + " )");
         return userService.changeVisibility(id);
     }
     
@@ -136,23 +140,26 @@ public class UserController {
 
     @DeleteMapping("/ff/{id}")
     public boolean deleteUserFf(@PathVariable("id") int id) {
+        userService.logging("deleteUserFf( " + id + " )");
         return userService.deleteUserFf(id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Integer> deleteUser(@PathVariable("id") int id) {
+        userService.logging("deleteUser( " + id + " )");
         int ret = userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
     @GetMapping("/get/{id}")
     public UserEntity getUser(@PathVariable("id") int id) {
+        userService.logging("deleteUser( " + id + " )");
         return userService.getUser(id);
     }
 
     @GetMapping("/admin/{id}")
     public boolean isAdmin(@PathVariable("id") int id) {
+        userService.logging("isAdmin( " + id + " )");
         return userService.isAdmin(id);
     }
-    
 }
