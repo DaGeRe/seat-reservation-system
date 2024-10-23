@@ -1,4 +1,4 @@
-import {Grid2} from '@mui/material';
+import {Grid2, Box} from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
