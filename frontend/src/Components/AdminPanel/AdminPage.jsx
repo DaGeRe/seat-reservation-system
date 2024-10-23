@@ -341,7 +341,7 @@ const AdminPage = () => {
         <EditRoom editRoomModal={toggleEditRoomModal} />
       </BootstrapDialog>
 
-      <BootstrapWorkstationDialog onClose={toggleAddWorkstationModal} aria-labelledby="customized-dialog-title" open={isAddWorkstationOpen}>
+{/*       <BootstrapWorkstationDialog onClose={toggleAddWorkstationModal} aria-labelledby="customized-dialog-title" open={isAddWorkstationOpen}>
         <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
           {t("addWorkstation").toUpperCase()}
         </BootstrapDialogTitle>
@@ -360,7 +360,27 @@ const AdminPage = () => {
           {t("deleteWorkstation").toUpperCase()}
         </BootstrapDialogTitle>
         <DeleteWorkstation deleteWorkstationModal={toggleDeleteWorkstationModal} />
-      </BootstrapWorkstationDialog>
+      </BootstrapWorkstationDialog> */}
+      <BootstrapDialog onClose={toggleAddWorkstationModal} aria-labelledby="customized-dialog-title" open={isAddWorkstationOpen}>
+        <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+          {t("addWorkstation").toUpperCase()}
+        </BootstrapDialogTitle>
+        <AddWorkstation addWorkstationModal={toggleAddWorkstationModal} />
+      </BootstrapDialog>
+
+      <BootstrapDialog onClose={toggleEditWorkstationModal} aria-labelledby="customized-dialog-title" open={isEditWorkstationOpen}>
+        <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+          {t("editWorkstation").toUpperCase()}
+        </BootstrapDialogTitle>
+        <EditWorkstation editWorkstationModal={toggleEditWorkstationModal} />
+      </BootstrapDialog>
+
+      <BootstrapDialog onClose={toggleDeleteWorkstationModal} aria-labelledby="customized-dialog-title" open={isDeleteWorkstationOpen}>
+        <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+          {t("deleteWorkstation").toUpperCase()}
+        </BootstrapDialogTitle>
+        <DeleteWorkstation deleteWorkstationModal={toggleDeleteWorkstationModal} />
+      </BootstrapDialog>
 
 
       <BootstrapWorkstationDialog onClose={toggleAddEmployeeModal} aria-labelledby="customized-dialog-title" open={isAddEmployeeOpen}>

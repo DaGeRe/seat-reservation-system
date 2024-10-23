@@ -59,6 +59,11 @@ export default function EditRoom({ editRoomModal }) {
   };
 
     return (
+    /*   <div style={{ 
+        display: 'flex', 
+        width: '100vw', 
+        height: '100vh'
+       }}> */
       <React.Fragment>
         <DialogContent>
           <Grid2 container >
@@ -113,6 +118,7 @@ export default function EditRoom({ editRoomModal }) {
           </DialogActions>
         </DialogContent>
       </React.Fragment>
+      /* </div> */
     );
 
 }
