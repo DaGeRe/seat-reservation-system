@@ -75,6 +75,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
               floor={floor}
               headers={headers}
               setCurrentRoom={setSelectedRoom}
+              
             />
           {
             selectedRoom && (

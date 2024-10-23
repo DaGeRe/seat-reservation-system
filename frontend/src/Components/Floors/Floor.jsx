@@ -10,6 +10,8 @@ import SidebarComponent from "../Home/SidebarComponent"
 import { useTranslation } from "react-i18next";
 import FloorImage from '../FloorImage/FloorImage.jsx'
 import FloorSelector from '../FloorSelector/FloorSelector.js';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/system';
 
 const Floor = () => {
   const headers = useMemo(() => {
@@ -25,6 +27,22 @@ const Floor = () => {
   const formattedDate = date ? new Date(date).toLocaleDateString() : '';
   const helpText = t('helpChooseRoom');
 
+  const StyledButton = styled(Button)({
+    backgroundColor: '#008444',
+    color: '#fff',
+    position: 'fixed',
+    top: '10px',
+    right: '10px',
+    '&:hover': {
+      backgroundColor: '#006633',
+    },
+  });
+
+  const ContentWrapper = styled('div')({
+    paddingTop: '50px',  // Platz nach oben schaffen
+    paddingRight: '50px', // Platz nach rechts schaffen
+  });
+
   function back() {
     navigate(-1);
   }
@@ -37,11 +55,18 @@ const Floor = () => {
 
   return (
     
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+    <div style={{ 
+      display: 'flex', 
+      width: '100vw', 
+      height: '100vh'
+     }}>
     <div className="sidebar">
       <SidebarComponent />
     </div>
-
+    <StyledButton  onClick={back} variant="contained">
+        {t('back')}
+      </StyledButton>
+      <ContentWrapper>
       <React.Fragment>
         <InfoModal text={helpText}/>
         <DialogContent>
@@ -60,9 +85,11 @@ const Floor = () => {
           </Grid2>
         </DialogContent> 
       </React.Fragment> 
-      <div className='backButtonDiv'>
+      </ContentWrapper>
+{/*       <div className='backButtonDiv'>
         <button className='backButton' onClick={back}>Back</button>
-      </div>
+      </div> */}
+
    </div>
   );
 };

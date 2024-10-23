@@ -13,10 +13,18 @@ import {getRequest} from '../RequestFunctions/RequestFunctions';
  * @param clickedXPosition The x coordinate clicked on the map.
  * @param clickedYPosition The y coordinate clicked on the map.
  * @param setCurrentRoom A function that is executed if the user has clicked on an known room.
- * @param presentRoom The color (green, blue, ...) of the known rooms.
+ * @param present_color The color (green, blue, ...) of the known rooms.
  * @returns The rendered map with known rooms and the option to add an room.
  */
-export default function FloorImage({floor, headers, clickedXPosition, clickedYPosition, setCurrentRoom, present_color = 'blue'}) {
+export default function FloorImage(
+    {
+        floor, 
+        headers, 
+        clickedXPosition, 
+        clickedYPosition, 
+        setCurrentRoom, 
+        present_color = 'blue'
+    }) {
     const [allRooms, setAllRooms] = React.useState([]);
     /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
