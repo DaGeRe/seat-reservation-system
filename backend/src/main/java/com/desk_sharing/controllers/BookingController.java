@@ -132,8 +132,8 @@ public class BookingController {
     }
 
     @GetMapping("/date/{id}")
-    public ResponseEntity<List<Booking>> geDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
-        userService.logging("geDateBookings( " + desk_id + ", " + request + " )");
+    public ResponseEntity<List<Booking>> getDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
+        userService.logging("getDateBookings( " + desk_id + ", " + request + " )");
         List<Booking> bookings = bookingService.findByDeskIdAndDay(desk_id, Date.valueOf(request.get("day")));
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
