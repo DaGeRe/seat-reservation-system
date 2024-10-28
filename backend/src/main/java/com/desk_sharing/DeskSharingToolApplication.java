@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class DeskSharingToolApplication {
 
 	public static void main(String[] args) {
-		//System.out.println("Spring Framework Version: " + SpringVersion.getVersion());
 		SpringApplication.run(DeskSharingToolApplication.class, args);
 	}
 }

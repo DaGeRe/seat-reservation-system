@@ -65,7 +65,7 @@ public class UserService  {
     public int changeVisibility(int id) {
         try {
             UserEntity user = userRepository.getReferenceById(id);
-            if (user.getVisibility()) {
+            if (user.isVisibility()) {
                 user.setVisibility(false);
                 userRepository.save(user);
                 return 0;
@@ -96,8 +96,8 @@ public class UserService  {
             if(user.getSurname() != null) {
                 userFromDB.setSurname(user.getSurname());
             }
-            userFromDB.setVisibility(user.getVisibility());
-            userFromDB.setAdmin(user.getAdmin());
+            userFromDB.setVisibility(user.isVisibility());
+            userFromDB.setAdmin(user.isAdmin());
             return userRepository.save(userFromDB);
     }
     
@@ -151,6 +151,6 @@ public class UserService  {
 
     public boolean isAdmin(int id) {
         UserEntity user = userRepository.getReferenceById(id);
-        return user.getAdmin();
+        return user.isAdmin();
     }
 }

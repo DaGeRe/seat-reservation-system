@@ -24,7 +24,7 @@ public class UserEntity {
     private boolean visibility;
     private boolean admin;
 
-    public int getId() {
+   /*  public int getId() {
         return id;
     }
 
@@ -78,7 +78,7 @@ public class UserEntity {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
-    }
+    } */
    /*  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
         name = "user_roles", 
@@ -90,11 +90,11 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
 
-    public List<Role> getRoles() {
+   /*  public List<Role> getRoles() {
         return roles;
     }
 
     public void setRoles( List<Role> roles) {
         this.roles = roles;
-    }
+    } */
 }

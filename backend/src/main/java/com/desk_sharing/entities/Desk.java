@@ -2,11 +2,13 @@ package com.desk_sharing.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "desks")
 public class Desk {
     
@@ -25,43 +27,8 @@ public class Desk {
     @Column(name = "remark", nullable = true)
     private String remark;
 
-    public Desk() {
-    }
-
     public Desk(Room room, String equipment) {
         this.room = room;
         this.equipment = equipment;
     }
-
-/*     public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public String getEquipment() {
-        return equipment;
-    }
-
-    public void setEquipment(String equipment) {
-        this.equipment = equipment;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    } */
 }
