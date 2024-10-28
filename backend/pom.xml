@@ -29,6 +29,9 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.release>17</maven.compiler.release>
+
+		<spring-security.version>5.8.15</spring-security.version>
+		<spring.version>5.3.39</spring.version>
 	</properties>
 
 	<dependencies>
@@ -106,10 +109,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!--dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency-->
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-api</artifactId>
@@ -145,24 +144,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.0</version> 
 		</dependency>
 	</dependencies>
 
 	<build>
   	    <resources>
-       		<!--resource>
-            <directory>src/test/resources</directory>
-            <includes>
-                <include>**/*.sql</include>
-            </includes>
-        </resource-->
-			<!--resource>
-				<directory>/usr/src/app/dumps</directory>
-				<includes>
-					<include>**/*.sql</include>
-				</includes>
-			</resource-->
     	</resources>  
 		<testResources>
     		<testResource>
