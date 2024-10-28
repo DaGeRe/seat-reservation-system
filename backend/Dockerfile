@@ -14,7 +14,8 @@ ENV PATH_TO_TLS=$PATH_TO_TLS
 WORKDIR /usr/src/app
 
 # Copy the Maven project files into the container
-COPY . ./
+COPY src src
+COPY run_test.sh .
 
 # Copy TLS certificates
 COPY tls src/main/resources/tls
