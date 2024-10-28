@@ -3,20 +3,20 @@
   <groupId>com.desk_sharing</groupId>
   <artifactId>backend</artifactId>
   <versioning>
-    <lastUpdated>20241028103813</lastUpdated>
+    <lastUpdated>20241028124235</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
-        <extension>jar</extension>
-        <value>0.0.1-SNAPSHOT</value>
-        <updated>20241028103813</updated>
-      </snapshotVersion>
-      <snapshotVersion>
         <extension>pom</extension>
         <value>0.0.1-SNAPSHOT</value>
-        <updated>20241028103813</updated>
+        <updated>20241028124235</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>0.0.1-SNAPSHOT</value>
+        <updated>20241028124235</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -57,13 +56,6 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
-        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy());
-        return expressionHandler;
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -72,7 +64,6 @@ public class SecurityConfiguration {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/users/login").permitAll()
-                // Uncomment the line below to allow registration if needed
                 //.requestMatchers("/users/register").permitAll()
                 .requestMatchers("/users/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
