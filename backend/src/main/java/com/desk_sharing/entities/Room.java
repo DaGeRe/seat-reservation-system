@@ -1,6 +1,6 @@
 package com.desk_sharing.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rooms")

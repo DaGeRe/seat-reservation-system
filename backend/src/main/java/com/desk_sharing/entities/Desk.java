@@ -1,8 +1,12 @@
 package com.desk_sharing.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "desks")
 public class Desk {
     
@@ -29,7 +33,7 @@ public class Desk {
         this.equipment = equipment;
     }
 
-    public Long getId() {
+/*     public Long getId() {
         return id;
     }
 
@@ -59,5 +63,5 @@ public class Desk {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
+    } */
 }
