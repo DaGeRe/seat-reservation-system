@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+**/maven-metadata-local.xml
 ### STS ###
 .apt_generated
 .classpath
@@ -48,3 +48,7 @@ scripts/copy_mytest.sh
 node_modules
 node_modules
 backend/logs_dev_backend/*
+backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.pom
+backend/.m2/repository/com/desk_sharing/backend/maven-metadata-local.xml
+backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/_remote.repositories
+backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.jar
