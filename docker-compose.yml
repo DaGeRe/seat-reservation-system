@@ -36,7 +36,7 @@ services:
   #     - ${NETWORK}
 
   backend:
-    restart: unless-stopped
+    #restart: unless-stopped
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
