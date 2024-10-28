@@ -22,19 +22,6 @@ services:
       - backend
       - database
 
-  # nginx:
-  #   image: nginx:alpine
-  #   container_name: nginx
-  #   ports:
-  #     - "80:80"
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-  #     - ./ca/desksharingtool/desksharingtool.crt:/etc/nginx/ssl/cert.pem:ro
-  #     - ./ca/desksharingtool/desksharingtool_unencrypted.key:/etc/nginx/ssl/cert.key:ro
-  #   networks:
-  #     - ${NETWORK}
-
   backend:
     #restart: unless-stopped
     privileged: true
