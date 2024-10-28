@@ -2,10 +2,11 @@ package com.desk_sharing.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.desk_sharing.entities.Role;
-import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 @Data

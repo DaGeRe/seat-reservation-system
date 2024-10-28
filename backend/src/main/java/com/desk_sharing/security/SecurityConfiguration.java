@@ -26,7 +26,6 @@ import java.util.Arrays;
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfiguration {
     
     private JwtAuthEntryPoint authEntryPoint;
@@ -69,7 +68,7 @@ public class SecurityConfiguration {
         return expressionHandler;
     }
 
-    @Bean
+/*     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
          http
             .authorizeRequests()
@@ -97,7 +96,29 @@ public class SecurityConfiguration {
         ;
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
+    } */
+/*     @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests(withDefaults())
+                // <Einschub>
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
+                // </Einschub>
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeRequests(requests -> requests
+                        .expressionHandler(customWebSecurityExpressionHandler())
+                        .antMatchers("/users/login").permitAll() // Allow login even if you not authorized.
+                        //.antMatchers("/users/register").permitAll() // Allow registration even if you not authorized.
+                        .antMatchers("/users/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+        ;
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    } */
 
     @Bean
     public AuthenticationManager authenticationManager(
