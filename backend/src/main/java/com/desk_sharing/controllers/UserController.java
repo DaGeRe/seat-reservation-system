@@ -88,8 +88,8 @@ public class UserController {
                 user.getId(),
                 user.getName(),
                 user.getSurname(),
-                user.getAdmin(),
-                user.getVisibility()
+                user.isAdmin(),
+                user.isVisibility()
             ), 
             HttpStatus.OK
         );     
