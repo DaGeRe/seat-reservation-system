@@ -52,3 +52,9 @@ backend/.m2/repository/com/desk_sharing/backend/maven-metadata-local.xml
 backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/_remote.repositories
 backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.jar
 backend/.m2/repository/*
+
+
+**/maven-metadata-local.xml
+*.jar
+backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.jar
+**/_remote.repositories
