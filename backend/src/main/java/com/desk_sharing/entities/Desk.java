@@ -1,5 +1,4 @@
 package com.desk_sharing.entities;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "desks")
 public class Desk {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "desk_id", unique = true)
@@ -26,6 +24,10 @@ public class Desk {
 
     @Column(name = "remark", nullable = true)
     private String remark;
+
+    /** The number of the desk in the room. */
+    @Column(name = "deskNumberInRoom", nullable = true)
+    private Long deskNumberInRoom;
 
     public Desk(Room room, String equipment) {
         this.room = room;

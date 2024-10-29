@@ -21,6 +21,7 @@ public class DeskService {
 
     @Autowired
     BookingRepository bookingRepository;
+
     
     @Autowired
     RoomService roomService;
@@ -33,6 +34,14 @@ public class DeskService {
     		desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
             desk.setRemark(deskDto.getRemark());
+            List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
+            Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
+            .filter(d -> d.getDeskNumberInRoom() != null)
+            .map(Desk::getDeskNumberInRoom)
+            .max(Long::compareTo)
+            .orElse((long)0);
+            System.out.println("allDesksInCurrentRoomn.size(): " + allDesksInCurrentRoomn.size() + " | " + newDeskNumberInRoom);
+            desk.setDeskNumberInRoom((long)newDeskNumberInRoom);
     		return deskRepository.save(desk);
     	} else {
     		return null;

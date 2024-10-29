@@ -28,7 +28,11 @@ public class RoomService {
     }
 
     public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+        System.out.println("Get all Rooms1");
+        List<Room> ret= roomRepository.findAll();
+        System.out.println(ret);
+        System.out.println("Get all Rooms2");
+        return ret;
     }
     
     public List<Room> getAllRoomsByActiveStatus() {
