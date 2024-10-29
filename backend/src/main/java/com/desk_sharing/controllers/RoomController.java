@@ -47,8 +47,10 @@ public class RoomController {
     public ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
         userService.logging("getRoomById( + " + id + " )");
         Optional<Room> room = roomService.getRoomById(id);
-        return room.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        ResponseEntity<Room> ret = room.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        System.out.println(ret);
+        return ret;
     }
 
     @PutMapping("/{id}")
