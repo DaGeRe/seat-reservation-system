@@ -30,7 +30,6 @@ public class DeskService {
     	Optional<Room> optional = roomService.getRoomById(deskDto.getRoomId());
     	if(optional.isPresent()) {
     		Desk desk = new Desk();
-    		//desk.setId(deskDto.getDeskId());
     		desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
             desk.setRemark(deskDto.getRemark());
@@ -40,7 +39,6 @@ public class DeskService {
             .map(Desk::getDeskNumberInRoom)
             .max(Long::compareTo)
             .orElse((long)0);
-            System.out.println("allDesksInCurrentRoomn.size(): " + allDesksInCurrentRoomn.size() + " | " + newDeskNumberInRoom);
             desk.setDeskNumberInRoom((long)newDeskNumberInRoom);
     		return deskRepository.save(desk);
     	} else {
