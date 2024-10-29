@@ -124,6 +124,7 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookingsForDate(Date date) {
+        System.out.println("getAllBookingsForDate " + date);
         return bookingRepository.getBookingForDate(date);
     }
 
