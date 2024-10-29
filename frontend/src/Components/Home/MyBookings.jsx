@@ -124,7 +124,7 @@ const MyBookings = () => {
             <p>{t('end')}: {moment(selectedBookingEvent.end).format('HH:mm')}</p>
             
             {theBookingEvent && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
-            {theBookingEvent && theBookingEvent.desk && <p>{t('desk')}: {theBookingEvent.desk.id + ' ' + theBookingEvent.desk.remark}</p> }
+            {theBookingEvent && theBookingEvent.desk && <p>{t('desk')}: {/*theBookingEvent.desk.id + ' ' + */theBookingEvent.desk.remark}</p> }
             <div className="mb-buttons">
               <button className="mb-submit-btn" onClick={handleDeleteEvent}>
                 {t("delete")}

@@ -10,8 +10,8 @@ import SidebarComponent from "../Home/SidebarComponent"
 import { useTranslation } from "react-i18next";
 import FloorImage from '../FloorImage/FloorImage.jsx'
 import FloorSelector from '../FloorSelector/FloorSelector.js';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
+import GenericBackButton from '../GenericBackButton.js';
 
 const Floor = () => {
   const headers = useMemo(() => {
@@ -27,17 +27,6 @@ const Floor = () => {
   const formattedDate = date ? new Date(date).toLocaleDateString() : '';
   const helpText = t('helpChooseRoom');
 
-  const StyledButton = styled(Button)({
-    backgroundColor: '#008444',
-    color: '#fff',
-    position: 'fixed',
-    top: '10px',
-    right: '10px',
-    '&:hover': {
-      backgroundColor: '#006633',
-    },
-  });
-
   const ContentWrapper = styled('div')({
     paddingTop: '50px',  // Platz nach oben schaffen
     paddingRight: '50px', // Platz nach rechts schaffen
@@ -49,7 +38,6 @@ const Floor = () => {
 
   const handleRoomClick = (room) => {
     const roomId = room.id;
-    //setSelectedRoom(roomId);
     navigate("/desks", { state: { roomId, date } });
   }
 
@@ -63,9 +51,7 @@ const Floor = () => {
     <div className="sidebar">
       <SidebarComponent />
     </div>
-    <StyledButton  onClick={back} variant="contained">
-        {t('back')}
-      </StyledButton>
+    <GenericBackButton/>
       <ContentWrapper>
       <React.Fragment>
         <InfoModal text={helpText}/>

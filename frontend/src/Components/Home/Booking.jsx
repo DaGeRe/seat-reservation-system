@@ -11,6 +11,7 @@ import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import GenericBackButton from "../GenericBackButton.js";
 
 const Booking = () => {
   const headers = useMemo(() => {
@@ -31,7 +32,7 @@ const Booking = () => {
   const [clickedDeskNumberInRoom, setClickedDeskNumberInRoom] = useState(null);
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const helpText = t('helpCreateBooking');
-  
+
   const fetchDesks = useCallback(
     async () => {
       getRequest(
@@ -46,15 +47,10 @@ const Booking = () => {
 
   const fetchRoom = useCallback(
     async () => {
-      console.log("fetchRoom");
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${roomId}`,
         headers,
-        (e) => {
-          console.log(e, ' !?!!');
-          setRoom(e);
-
-        }, 
+        setRoom, 
         () => {console.log('Failed to fetch desks in Booking.jsx');}
       )
     },
@@ -63,7 +59,6 @@ const Booking = () => {
 
   useEffect(() => {
       fetchRoom();
-      //console.log(room);
   }, [fetchRoom]);
 
   useEffect(() => {
@@ -72,15 +67,9 @@ const Booking = () => {
     }
   }, [roomId, fetchDesks]);
 
-/*   useEffect(() => {
-    moment.locale(i18n.language);
-    setEvents([...events]);
-  }, [i18n.language, events]); */
   useEffect(() => {
     moment.locale(i18n.language);
-    }, [i18n.language]);
-
-
+  }, [i18n.language]);
 
   const loadBookings = useCallback(
     async () => {
@@ -109,8 +98,6 @@ const Booking = () => {
   useEffect(() => {
     desks.forEach(desk => {
       if (desk.id === clickedDeskId) {
-        //handleDeskClick(desk);
-        //setClickedDeskId(desk.id);
         loadBookings();
       }
     });
@@ -178,7 +165,6 @@ const Booking = () => {
     const room_Id = roomId;
     const deskId = clickedDeskId;
     const day = moment(event.start).format("YYYY-MM-DD");
-    //const day = moment(event.start).format("DD-MM-YYYY");
     const start = moment(event.start).format("HH:mm:ss");
     const ending = moment(event.end).format("HH:mm:ss");
     const bookingData = {
@@ -199,7 +185,6 @@ const Booking = () => {
       headers,
       (data) => {
         confirmAlert({
-          //title: t('desk') + " " + clickedDeskNumberInRoom + " in " + t('room') + " " + roomId,
           title: confirmAlertTitel(),
           message: t("date") + " " + formatDate(day) + " " + t("from") + " " + start + " " + t("to") + " " + ending,
           buttons: [
@@ -242,59 +227,10 @@ const Booking = () => {
       () => {console.log('Failed to post booking in Booking.jsx.');},
       JSON.stringify(bookingData)
     )
-
-
-/*     postRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings`,
-      headers,
-      (data) => {
-        confirmAlert({
-          title: t('bookDesk') + " " + clickedDeskId,
-          message: t("date") + " " + day + " " + t("from") + " " + start + " " + t("to") + " " + ending,
-          buttons: [
-            {
-              label: 'Yes',
-              onClick: async () => {
-                putRequest(
-                  `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
-                  headers,
-                  (dat) => {
-                    toast.success(t("booked"));
-    
-                    const booking = {
-                      id: dat.id,
-                      title: `Desk ${dat.deskId}`,
-                      start: new Date(`${dat.day}T${dat.begin}`),
-                      end: new Date(`${dat.day}T${dat.end}`)
-                    }
-      
-                    navigate("/home", { state: { booking }, replace: true });
-                  },
-                  () => {console.log('Failed to confirm booking in Booking.jsx');}
-                );
-              },
-            },
-            {
-              label: 'No',
-              onClick: async () => {
-                deleteRequest(
-                  `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`,
-                  headers,
-                  (_) => {loadBookings();},
-                  () => {console.log('Failed to delete bookings in Booking.jsx.');}
-                )
-              },
-            },
-          ],
-        })
-      },
-      () => {console.log('Failed to post booking in Booking.jsx.');},
-      JSON.stringify(bookingData)
-    ) */
   };
 
-  function back() {
-    navigate(-1);
+  function getHeadline() {
+    return t('availableDesks') + (room !== null ? 'in ' + room.remark : '');
   }
 
   return (
@@ -303,21 +239,19 @@ const Booking = () => {
         <SidebarComponent />
       </div>
       <div>
-        <button className="submit-btn" onClick={back}>
-        {t('back')} 
-        </button>
+      <GenericBackButton/>
       </div>
       <InfoModal text={helpText}/>
       <div className="container">
         <div className="choose-date">
-          <h1>{t("availableDesks")}</h1>
+          <h1>{getHeadline()}</h1>
         </div>
 
         <div className="info-container">
           <div>
             {desks.map((desk, index) => (
               <div className="desk-component" key={index}>
-                <div>{desk.id}.</div>
+                <div>{desk.deskNumberInRoom}.</div>
                 <div className={`desk-description ${desk.id === clickedDeskId ? 'clicked' : ''}`} 
                   onClick={
                     () => {
@@ -325,12 +259,9 @@ const Booking = () => {
                       setClickedDeskNumberInRoom(desk.deskNumberInRoom);
                     }}
                 >
-                  {/*roomId*/}
-                  <p className='item-name'>{}: </p>
                   <p className='item-name'>{desk.remark}</p>
-                  {/* <p className="item-name">{desk.remark}</p>
-                  <p className="item-name">{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p> */}
-                  {/*<p className="item-taken">{t("available")}</p>*/}
+                  <p className="item-name">{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p>
+                  {/* <p className="item-taken">{t("available")}</p> */}
                 </div>
               </div>
             ))}
