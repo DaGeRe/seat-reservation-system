@@ -1,6 +1,8 @@
-mvn clean install -U -DskipTests -Dmaven.repo.local=/home/r/DeskSharingTool_Dev/backend/.m2/repository
-mvn clean package -DskipTests -Dmaven.repo.local=/home/r/DeskSharingTool_Dev/backend/.m2/repository
-mvn dependency:go-offline -Dmaven.repo.local=/home/r/DeskSharingTool_Dev/backend/.m2/repository
+. ../.env
+
+mvn clean install -U -DskipTests -Dmaven.repo.local=${PROJECT_PATH}/backend/.m2/repository
+mvn clean package -DskipTests -Dmaven.repo.local=${PROJECT_PATH}/backend/.m2/repository
+mvn dependency:go-offline -Dmaven.repo.local=${PROJECT_PATH}/backend/.m2/repository
 
 mvn clean install -U -DskipTests
 mvn clean package -DskipTests
