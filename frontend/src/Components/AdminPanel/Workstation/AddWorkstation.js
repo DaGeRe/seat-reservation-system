@@ -26,6 +26,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [remark, setRemark]= React.useState('');
   // The current floor. (either Ground or First)
   const [floor, setFloor] = React.useState('Ground');
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
 
   const helpText = t('helpAddWorkstation');
 
@@ -66,16 +67,13 @@ export default function AddWorkstation({ addWorkstationModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorSelector
-              floor={floor}
-              setFloor={setFloor}
-            />
-            <br></br> <br></br>
             <FloorImage 
               floor={floor}
+              setFloor={setFloor}
+              building={building}
+              setBuilding={setBuilding}
               headers={headers}
               setCurrentRoom={setSelectedRoom}
-              
             />
           {
             selectedRoom && (

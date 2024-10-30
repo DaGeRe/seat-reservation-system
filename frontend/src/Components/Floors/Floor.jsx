@@ -7,11 +7,11 @@ import InfoModal from '../InfoModal/InfoModal.jsx'
 import './Floor.css'; 
 import { useNavigate } from "react-router-dom";
 import SidebarComponent from "../Home/SidebarComponent"
-import { useTranslation } from "react-i18next";
 import FloorImage from '../FloorImage/FloorImage.jsx'
 import FloorSelector from '../FloorSelector/FloorSelector.js';
 import { styled } from '@mui/system';
 import GenericBackButton from '../GenericBackButton.js';
+import { useTranslation } from 'react-i18next';
 
 const Floor = () => {
   const headers = useMemo(() => {
@@ -22,9 +22,10 @@ const Floor = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentFloor, setCurrentFloor] = useState('Ground');
+  const [building, setBuilding] = useState('building_bautzner_a_b');
   const location = useLocation();
   const { date } = location.state || {};
-  const formattedDate = date ? new Date(date).toLocaleDateString() : '';
+ // const formattedDate = date ? new Date(date).toLocaleDateString() : '';
   const helpText = t('helpChooseRoom');
 
   const ContentWrapper = styled('div')({
@@ -58,12 +59,11 @@ const Floor = () => {
         <DialogContent>
           <Grid2 container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
-              <FloorSelector
-                floor={currentFloor}
-                setFloor={setCurrentFloor}
-              />
               <FloorImage 
                 floor={currentFloor}
+                setFloor={setCurrentFloor}
+                building={building}
+                setBuilding={setBuilding}
                 headers={headers}
                 setCurrentRoom={handleRoomClick}
               />
@@ -72,9 +72,6 @@ const Floor = () => {
         </DialogContent> 
       </React.Fragment> 
       </ContentWrapper>
-{/*       <div className='backButtonDiv'>
-        <button className='backButton' onClick={back}>Back</button>
-      </div> */}
 
    </div>
   );

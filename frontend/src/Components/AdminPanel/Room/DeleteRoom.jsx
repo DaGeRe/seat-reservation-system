@@ -22,7 +22,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
   const [floor, setFloor] = React.useState('Ground');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
-
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
   const helpText = t('helpDeleteRoom');
 
   const handleClose = () => {
@@ -75,14 +75,12 @@ export default function DeleteRoom({ deleteRoomModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorSelector
-              floor={floor}
-              setFloor={setFloor}
-            />
-            <br></br> <br></br>
             <FloorImage 
               present_color='red'
               floor={floor}
+              setFloor={setFloor}
+              building={building}
+              setBuilding={setBuilding}
               headers={headers}
               setCurrentRoom={(room) => {
                 const room_id = room.id;

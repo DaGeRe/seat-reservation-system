@@ -18,9 +18,9 @@ export default function AddRoom({ addRoomModal }) {
     const storedHeaders = sessionStorage.getItem('headers');
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
-  //const [allRooms, setAllRooms] = React.useState([]);
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState('Ground');
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
   const [status, setStatus] = React.useState('');
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);
@@ -33,6 +33,7 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('x_y_not_empty'));
       return false;
     }
+    console.log(floor);
     if (!floor || !type) {
       toast.error(t('fields_not_empty'));
       return false;
@@ -65,13 +66,11 @@ export default function AddRoom({ addRoomModal }) {
           <DialogContent>
               <Grid2 container >
                 <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                  <FloorSelector
-                    floor={floor}
-                    setFloor={setFloor}
-                  />
-                  <br></br> <br></br>
                   <FloorImage 
                     floor={floor}
+                    setFloor={setFloor}
+                    building={building}
+                    setBuilding={setBuilding}
                     headers={headers}
                     clickedXPosition={setX}
                     clickedYPosition={setY}

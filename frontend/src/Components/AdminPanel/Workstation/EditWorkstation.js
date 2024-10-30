@@ -30,7 +30,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   const [remark, setRemark]= React.useState('');
   // The current floor. (either Ground or First)
   const [floor, setFloor] = React.useState('Ground');
-
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
   const helpText = t('helpEditWorkstation');
  
   const handleCloseBtn = () => {
@@ -95,13 +95,11 @@ export default function EditWorkstation({ editWorkstationModal }) {
       <DialogContent>
         <Grid2 container>
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorSelector
-              floor={floor}
-              setFloor={onFloorChange}
-            />
-            <br></br> <br></br>
             <FloorImage 
               floor={floor}
+              setFloor={onFloorChange}
+              building={building}
+              setBuilding={setBuilding}
               headers={headers}
               setCurrentRoom={(room) => {
                 setSelectedRoom(room);

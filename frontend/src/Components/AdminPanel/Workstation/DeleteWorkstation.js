@@ -29,7 +29,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
 
   // The current floor. (either Ground or First)
   const [floor, setFloor] = React.useState('Ground');
-
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
   const helpText = t('helpDeleteWorkstation');
   
   const handleClose = () => {
@@ -94,13 +94,11 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
-          <FloorSelector
-              floor={floor}
-              setFloor={setFloor}
-            />
-            <br></br> <br></br>
             <FloorImage 
               floor={floor}
+              setFloor={setFloor}
+              building={building}
+              setBuilding={setBuilding}
               headers={headers}
               setCurrentRoom={(room) => {
                 setSelectedRoom(room);

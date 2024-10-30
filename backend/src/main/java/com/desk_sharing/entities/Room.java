@@ -19,6 +19,9 @@ public class Room {
     @Column(name = "type", nullable = false)
     private String type;
 
+    @Column(name = "building", nullable = true)
+    private String building;
+
     @Column(name = "x", nullable = false)
     private int x;
 

@@ -1,12 +1,16 @@
-import './FloorImage.css'; 
+import './FloorImage.css';
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import firstFloorImage from '../../images/firstfloor.png';
-import secondFloorImage from '../../images/secondfloor.png'; 
+import secondFloorImage from '../../images/secondfloor.png';
+import firstFloorC from '../../images/bautzner_19_c_1.png';
+import secondFloorC from '../../images/bautzner_19_c_2.png';
+import thirdFloorC from '../../images/bautzner_19_c_3.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
-
+import { useTranslation } from 'react-i18next';
+import FloorSelector from '../FloorSelector/FloorSelector.js';
 /**
  * @param floor The current floor. (either First or Ground)
  * @param headers The headers including the jwt.
@@ -19,12 +23,16 @@ import {getRequest} from '../RequestFunctions/RequestFunctions';
 export default function FloorImage(
     {
         floor, 
+        setFloor,
+        building,
+        setBuilding,
         headers, 
         clickedXPosition, 
         clickedYPosition, 
         setCurrentRoom, 
         present_color = 'blue'
     }) {
+    const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
     /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
@@ -97,79 +105,168 @@ export default function FloorImage(
             border: '1px solid #dadde9',
           },
       }));
-
-    const floorImage = floor === 'Ground' ? firstFloorImage : secondFloorImage;
-
-    return (
-        <div
-            className='image-container'
-            onMouseDown={handleMouseClick}
-        > 
-            <img src={floorImage} alt='floorImage' className='floor-image' />
-                {x !== 0.0 && y !== 0.0 && (
-                    <div
-                        className='image-icon'
-                        style={{
-                            top: `${y}%`,
-                            left: `${x}%`
-                        }}
-                    >
-                        <IconButton>
-                            <LaptopIcon style={{ 
-                                color: new_color, 
-                                fontSize: '24px' 
-                            }}
-                                className='image-icon-new'
-                            />
-                        </IconButton>
-                    </div>
-            )}
-            {
-                allRooms
-                .filter((room) => {
-                  return room.floor === floor
-                })
-                .map((room, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className='image-icon'
-                            style={{
-                                top:  `${room.y}%`,
-                                left: `${room.x}%`
+        var floorImage = null;
+        if (building === 'building_bautzner_a_b') {
+            if (floor === 'Ground')
+                floorImage = firstFloorImage;
+            if (floor == 'First')
+                floorImage = secondFloorImage;
+            /**
+             * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
+             */
+            else {
+                floor === 'Ground'
+            }
+        }
+        if (building === 'building_bautzner_c') {
+            if (floor === 'Ground')
+                floorImage = firstFloorC;
+            if (floor == 'First')
+                floorImage = secondFloorC;
+            if (floor === 'Second') {
+                floorImage = thirdFloorC;
+            }
+        }
+        return (
+            <>
+                {/* Floor Selector as the first element */}
+                <FloorSelector
+                    floor={floor}
+                    setFloor={setFloor}
+                    building={building}
+                    setBuilding={setBuilding}
+                    />
+                <br></br> <br></br>
+                {floorImage && (
+                    
+                    <div className="image-container" onMouseDown={handleMouseClick}>
+                        {/* Floor Image */}
+                        <img src={floorImage} alt="floorImage" className="floor-image" />
+        
+                        {/* Conditional render for specific coordinates */}
+                        {x !== 0.0 && y !== 0.0 && (
+                            <div
+                                className="image-icon"
+                                style={{
+                                    top: `${y}%`,
+                                    left: `${x}%`
                                 }}
                             >
-                             <HtmlTooltip
-                                title={
-                                  <React.Fragment>
-                                    <em>{room.remark}</em>
-                                  </React.Fragment>
-                                }
-                              >
-                                <IconButton
-                                    onMouseEnter={handleMouseEnter}
-                                    onMouseLeave={handleMouseLeave}
-                                    onClick={_ => {
-                                        if (setCurrentRoom) {
-                                            setCurrentRoom(room);
-                                        }
-                                        else {
-
-                                        }
-                                }}>
-                                  <LaptopIcon
-                                    style={{ 
-                                        color: present_color, 
-                                        fontSize: '24px',
+                                <IconButton>
+                                    <LaptopIcon 
+                                        style={{ 
+                                            color: new_color, 
+                                            fontSize: '24px' 
+                                        }}
+                                        className="image-icon-new"
+                                    />
+                                </IconButton>
+                            </div>
+                        )}
+        
+                        {/* Render icons for all rooms matching the current floor */}
+                        {allRooms
+                            .filter(room => room.floor === floor)
+                            .map((room, i) => (
+                                <div
+                                    key={i}
+                                    className="image-icon"
+                                    style={{
+                                        top: `${room.y}%`,
+                                        left: `${room.x}%`
                                     }}
-                                    className='image-icon-old'
-                                  />
-                                </IconButton>      
-                            </HtmlTooltip>   
-                        </div>
-                    )
-                })
-            }
-        </div>
-      );
+                                >
+                                    <HtmlTooltip
+                                        title={
+                                            <React.Fragment>
+                                                <em>{room.remark}</em>
+                                            </React.Fragment>
+                                        }
+                                    >
+                                        <IconButton
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseLeave={handleMouseLeave}
+                                            onClick={() => setCurrentRoom && setCurrentRoom(room)}
+                                        >
+                                            <LaptopIcon
+                                                style={{ 
+                                                    color: present_color, 
+                                                    fontSize: '24px' 
+                                                }}
+                                                className="image-icon-old"
+                                            />
+                                        </IconButton>
+                                    </HtmlTooltip>
+                                </div>
+                            ))}
+                    </div>
+                )}
+            </>
+        );
+        
+/*         return (
+            
+                floorImage && (
+                    <div className="image-container" onMouseDown={handleMouseClick}>
+                        <img src={floorImage} alt="floorImage" className="floor-image" />
+            
+                       
+                        {x !== 0.0 && y !== 0.0 && (
+                            <div
+                                className="image-icon"
+                                style={{
+                                    top: `${y}%`,
+                                    left: `${x}%`
+                                }}
+                            >
+                                <IconButton>
+                                    <LaptopIcon 
+                                        style={{ 
+                                            color: new_color, 
+                                            fontSize: '24px' 
+                                        }}
+                                        className="image-icon-new"
+                                    />
+                                </IconButton>
+                            </div>
+                        )}
+            
+                        {allRooms
+                            .filter(room => room.floor === floor)
+                            .map((room, i) => (
+                                <div
+                                    key={i}
+                                    className="image-icon"
+                                    style={{
+                                        top: `${room.y}%`,
+                                        left: `${room.x}%`
+                                    }}
+                                >
+                                    <HtmlTooltip
+                                        title={
+                                            <React.Fragment>
+                                                <em>{room.remark}</em>
+                                            </React.Fragment>
+                                        }
+                                    >
+                                        <IconButton
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseLeave={handleMouseLeave}
+                                            onClick={() => setCurrentRoom && setCurrentRoom(room)}
+                                        >
+                                            <LaptopIcon
+                                                style={{ 
+                                                    color: present_color, 
+                                                    fontSize: '24px' 
+                                                }}
+                                                className="image-icon-old"
+                                            />
+                                        </IconButton>
+                                    </HtmlTooltip>
+                                </div>
+                            ))}
+                    </div>
+                )
+        ); */
+        
     };

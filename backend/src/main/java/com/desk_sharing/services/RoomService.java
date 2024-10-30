@@ -24,6 +24,9 @@ public class RoomService {
     BookingRepository bookingRepository;
 
     public Room saveRoom(Room room) {
+        if (room.getBuilding() == null) {
+            room.setBuilding("Bautzner Str. 19a/b");
+        }
         return roomRepository.save(room);
     }
 

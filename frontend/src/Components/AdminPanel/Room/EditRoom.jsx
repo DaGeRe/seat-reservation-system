@@ -24,6 +24,7 @@ export default function EditRoom({ editRoomModal }) {
   const [newRoomType, setNewRoomType] = React.useState('');
   const [newRoomStatus, setNewRoomStatus] = React.useState('');
   const [newRoomRemark, setNewRoomRemark] = React.useState('');
+  const [building, setBuilding] = React.useState('building_bautzner_a_b');
 
   const handleClose = () => {
       editRoomModal();
@@ -68,16 +69,17 @@ export default function EditRoom({ editRoomModal }) {
         <DialogContent>
           <Grid2 container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
-              <FloorSelector
+              <FloorImage 
                 floor={floor}
                 setFloor={(floorStr) => {
                   setFloor(floorStr);
                   deselectRoom();
                 }}
-              />  
-              <br></br> <br></br>
-              <FloorImage 
-                floor={floor}
+                building={building}
+                setBuilding={(buildingStr) => {
+                  setBuilding(building);
+                  deselectRoom();
+                }}
                 headers={headers}
                 setCurrentRoom={(room) => {
                   setSelectedRoom(room);
