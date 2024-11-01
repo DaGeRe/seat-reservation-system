@@ -22,21 +22,16 @@ import com.desk_sharing.model.AuthResponseDTO;
 import com.desk_sharing.model.LoginDto;
 import com.desk_sharing.entities.Role;
 import com.desk_sharing.security.JWTGenerator;
-/* import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException; */
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.RoleRepository;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-/* import org.springframework.security.authentication.AuthenticationManager;*/
 import org.springframework.security.crypto.password.PasswordEncoder;
-/*import org.springframework.security.core.Authentication;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;  */
 import java.util.Collections;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -96,7 +91,7 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-        userService.logging("register( " + registerDto + " )");
+        userService.logging("register( " + registerDto.getEmail() + ", " + registerDto.getName() + ", " + registerDto.getSurname() + ", " + registerDto.getName() + " )");
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
         }
