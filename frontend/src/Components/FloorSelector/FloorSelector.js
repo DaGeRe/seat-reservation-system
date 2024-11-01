@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../../constants';
 
 const FloorSelector = ({
   building,
@@ -11,16 +12,16 @@ const FloorSelector = ({
   const { t } = useTranslation();
 
   function createFloorsPerBuilding(building_name) {
-    if (building_name === 'building_bautzner_a_b') {
+    if (building_name === BAUTZNER_STR_19_A_B) {
       return [
-        <MenuItem key="groundFloor" value="Ground">{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="firstFloor" value="First">{t('firstFloor').toUpperCase()}</MenuItem>
+        <MenuItem key="groundFloor" value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key="firstFloor" value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
       ];
-    } else if (building_name === 'building_bautzner_c') {
+    } else if (building_name === BAUTZNER_STR_19_C) {
       return [
-        <MenuItem key="groundFloor" value="Ground">{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="firstFloor" value="First">{t('firstFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="thirdFloor" value="Second">{t('thirdFloor').toUpperCase()}</MenuItem>
+        <MenuItem key="groundFloor" value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key="firstFloor" value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key="thirdFloor" value={SECOND}>{t('thirdFloor').toUpperCase()}</MenuItem>
       ];
     }
     return [];
@@ -37,8 +38,8 @@ const FloorSelector = ({
           label={t('building')}
           onChange={(e) => setBuilding(e.target.value)}
         >
-          <MenuItem value="building_bautzner_a_b">{t('building_bautzner_a_b').toUpperCase()}</MenuItem>
-          <MenuItem value="building_bautzner_c">{t('building_bautzner_c').toUpperCase()}</MenuItem>
+          <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B.toUpperCase()}</MenuItem>
+          <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C.toUpperCase()}</MenuItem>
         </Select>
       </FormControl>
       <br /><br />

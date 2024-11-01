@@ -9,8 +9,8 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
-import FloorSelector from '../../FloorSelector/FloorSelector.js';
 import RoomDefinition from '../Room/RoomDefinition.js';
+import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function AddRoom({ addRoomModal }) {
   const headers = useMemo(() => {
@@ -19,8 +19,8 @@ export default function AddRoom({ addRoomModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [floor, setFloor] = React.useState('Ground');
-  const [building, setBuilding] = React.useState('building_bautzner_a_b');
+  const [floor, setFloor] = React.useState(GROUND);
+  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
   const [status, setStatus] = React.useState('');
   const [type, setType] = React.useState('');
   const [x, setX] = React.useState(0.0);

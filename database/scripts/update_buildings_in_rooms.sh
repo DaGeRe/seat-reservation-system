@@ -1,0 +1,1 @@
+mariadb -p${PW_DB} <  update_buildings_in_rooms.sql

@@ -8,10 +8,10 @@ import './Floor.css';
 import { useNavigate } from "react-router-dom";
 import SidebarComponent from "../Home/SidebarComponent"
 import FloorImage from '../FloorImage/FloorImage.jsx'
-import FloorSelector from '../FloorSelector/FloorSelector.js';
 import { styled } from '@mui/system';
 import GenericBackButton from '../GenericBackButton.js';
 import { useTranslation } from 'react-i18next';
+import { GROUND, BAUTZNER_STR_19_A_B } from '../../constants.js';
 
 const Floor = () => {
   const headers = useMemo(() => {
@@ -21,8 +21,8 @@ const Floor = () => {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [currentFloor, setCurrentFloor] = useState('Ground');
-  const [building, setBuilding] = useState('building_bautzner_a_b');
+  const [currentFloor, setCurrentFloor] = useState(GROUND);
+  const [building, setBuilding] = useState(BAUTZNER_STR_19_A_B);
   const location = useLocation();
   const { date } = location.state || {};
  // const formattedDate = date ? new Date(date).toLocaleDateString() : '';
@@ -32,10 +32,6 @@ const Floor = () => {
     paddingTop: '50px',  // Platz nach oben schaffen
     paddingRight: '50px', // Platz nach rechts schaffen
   });
-
-  function back() {
-    navigate(-1);
-  }
 
   const handleRoomClick = (room) => {
     const roomId = room.id;

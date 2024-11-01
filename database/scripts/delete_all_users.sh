@@ -1,1 +1,1 @@
-mariadb -p${PW_DB}s < delete_all_users.sql
+mariadb -p${PW_DB} < delete_all_users.sql

@@ -11,6 +11,7 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import { useTranslation } from 'react-i18next';
 import FloorSelector from '../FloorSelector/FloorSelector.js';
+import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C } from '../../constants.js';
 /**
  * @param floor The current floor. (either First or Ground)
  * @param headers The headers including the jwt.
@@ -48,7 +49,7 @@ export default function FloorImage(
                 `${process.env.REACT_APP_BACKEND_URL}/rooms`,
                 headers,
                 setAllRooms,
-                () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}            
+                () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}
             );
         },
         [headers, setAllRooms]
@@ -56,7 +57,7 @@ export default function FloorImage(
 
     useEffect(() => {
         getAllActiveRooms();
-      }, [getAllActiveRooms]);
+    }, [getAllActiveRooms]);
     
     /** Set isHoveredOverOldRoom to true to indicate that the mousepointer is above an button that locates known room on the map.*/
     const handleMouseEnter = () => {
@@ -105,31 +106,31 @@ export default function FloorImage(
             border: '1px solid #dadde9',
           },
       }));
+
         var floorImage = null;
-        if (building === 'building_bautzner_a_b') {
-            if (floor === 'Ground')
+        if (building === BAUTZNER_STR_19_A_B) {
+            if (floor === GROUND)
                 floorImage = firstFloorImage;
-            if (floor == 'First')
+            if (floor == FIRST)
                 floorImage = secondFloorImage;
             /**
              * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
              */
             else {
-                floor === 'Ground'
+                floor === GROUND
             }
         }
-        if (building === 'building_bautzner_c') {
-            if (floor === 'Ground')
+        if (building === BAUTZNER_STR_19_C) {
+            if (floor === GROUND)
                 floorImage = firstFloorC;
-            if (floor == 'First')
+            if (floor == FIRST)
                 floorImage = secondFloorC;
-            if (floor === 'Second') {
+            if (floor === SECOND) {
                 floorImage = thirdFloorC;
             }
         }
         return (
             <>
-                {/* Floor Selector as the first element */}
                 <FloorSelector
                     floor={floor}
                     setFloor={setFloor}
@@ -165,8 +166,9 @@ export default function FloorImage(
                         )}
         
                         {/* Render icons for all rooms matching the current floor */}
-                        {allRooms
-                            .filter(room => room.floor === floor)
+                        {
+                            allRooms
+                            .filter(room => room.floor === floor && room.building === building)
                             .map((room, i) => (
                                 <div
                                     key={i}
@@ -202,71 +204,5 @@ export default function FloorImage(
                     </div>
                 )}
             </>
-        );
-        
-/*         return (
-            
-                floorImage && (
-                    <div className="image-container" onMouseDown={handleMouseClick}>
-                        <img src={floorImage} alt="floorImage" className="floor-image" />
-            
-                       
-                        {x !== 0.0 && y !== 0.0 && (
-                            <div
-                                className="image-icon"
-                                style={{
-                                    top: `${y}%`,
-                                    left: `${x}%`
-                                }}
-                            >
-                                <IconButton>
-                                    <LaptopIcon 
-                                        style={{ 
-                                            color: new_color, 
-                                            fontSize: '24px' 
-                                        }}
-                                        className="image-icon-new"
-                                    />
-                                </IconButton>
-                            </div>
-                        )}
-            
-                        {allRooms
-                            .filter(room => room.floor === floor)
-                            .map((room, i) => (
-                                <div
-                                    key={i}
-                                    className="image-icon"
-                                    style={{
-                                        top: `${room.y}%`,
-                                        left: `${room.x}%`
-                                    }}
-                                >
-                                    <HtmlTooltip
-                                        title={
-                                            <React.Fragment>
-                                                <em>{room.remark}</em>
-                                            </React.Fragment>
-                                        }
-                                    >
-                                        <IconButton
-                                            onMouseEnter={handleMouseEnter}
-                                            onMouseLeave={handleMouseLeave}
-                                            onClick={() => setCurrentRoom && setCurrentRoom(room)}
-                                        >
-                                            <LaptopIcon
-                                                style={{ 
-                                                    color: present_color, 
-                                                    fontSize: '24px' 
-                                                }}
-                                                className="image-icon-old"
-                                            />
-                                        </IconButton>
-                                    </HtmlTooltip>
-                                </div>
-                            ))}
-                    </div>
-                )
-        ); */
-        
+        );        
     };

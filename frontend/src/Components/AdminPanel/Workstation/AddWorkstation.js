@@ -8,10 +8,10 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
-import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
-import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import FloorImage from '../../FloorImage/FloorImage.jsx';
+import InfoModal from '../../InfoModal/InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
+import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function AddWorkstation({ addWorkstationModal }) {
   const headers = useMemo(() => {
@@ -25,8 +25,8 @@ export default function AddWorkstation({ addWorkstationModal }) {
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
   // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState('Ground');
-  const [building, setBuilding] = React.useState('building_bautzner_a_b');
+  const [floor, setFloor] = React.useState(GROUND);
+  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
 
   const helpText = t('helpAddWorkstation');
 

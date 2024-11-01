@@ -7,9 +7,9 @@ import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
-import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
-import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import FloorImage from '../../FloorImage/FloorImage.jsx';
+import InfoModal from '../../InfoModal/InfoModal.jsx';
+import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function DeleteRoom({ deleteRoomModal }) {
   const headers = useMemo(() => {
@@ -19,10 +19,10 @@ export default function DeleteRoom({ deleteRoomModal }) {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
   // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState('Ground');
+  const [floor, setFloor] = React.useState(GROUND);
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
   const [currRoomId, setCurrRoomId] = React.useState(-1);
-  const [building, setBuilding] = React.useState('building_bautzner_a_b');
+  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
   const helpText = t('helpDeleteRoom');
 
   const handleClose = () => {

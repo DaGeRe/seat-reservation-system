@@ -1,0 +1,1 @@
+UPDATE rooms SET building='Bautzner Str. 19a/b' where building is NULL;

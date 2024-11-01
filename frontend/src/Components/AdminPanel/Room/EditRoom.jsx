@@ -10,6 +10,7 @@ import { roomToOption } from '../Room/RoomAndOption'
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import FloorSelector from '../../FloorSelector/FloorSelector.js';
 import RoomDefinition from './RoomDefinition.js';
+import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function EditRoom({ editRoomModal }) {
   const headers = useMemo(() => {
@@ -18,13 +19,13 @@ export default function EditRoom({ editRoomModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [floor, setFloor] = React.useState('Ground');
+  const [floor, setFloor] = React.useState(GROUND);
   const [selectedRoom, setSelectedRoom] = React.useState('');
   const [newFloor, setNewFloor] = React.useState('');
   const [newRoomType, setNewRoomType] = React.useState('');
   const [newRoomStatus, setNewRoomStatus] = React.useState('');
   const [newRoomRemark, setNewRoomRemark] = React.useState('');
-  const [building, setBuilding] = React.useState('building_bautzner_a_b');
+  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
 
   const handleClose = () => {
       editRoomModal();
