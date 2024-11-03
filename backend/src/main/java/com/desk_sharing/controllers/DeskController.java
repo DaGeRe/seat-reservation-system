@@ -74,9 +74,11 @@ public class DeskController {
     }
 
     @DeleteMapping("/ff/{id}")
-    public ResponseEntity<Void> deleteDeskFf(@PathVariable("id") Long id) {
+    public ResponseEntity<Integer> deleteDeskFf(@PathVariable("id") Long id) {
         userService.logging("deleteDeskFf( " + id + " )");
         deskService.deleteDeskFf(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        //return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        // The return value 0 means everything was done right.
+        return ResponseEntity.status(HttpStatus.OK).body(0);
     }
 }

@@ -47,12 +47,17 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     }
   };
 
+  /**
+   * Delete the desk identified by selectedDeskId 
+   * @param {*} urlExtension Is set to 'ff/' if fast forward deletion is needed. This means also delete all bookings associated wit this desk.
+   */
   async function deleteWorkstation (urlExtension = '') {
     if(selectedDeskId){
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
         headers,
         (data) => {
+          console.log(data);
           if (data !== 0) {
             setOpenFfDialog(true);
           }
