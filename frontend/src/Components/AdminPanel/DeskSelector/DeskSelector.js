@@ -40,9 +40,12 @@ export default function DeskSelector(
                         const currEquipment = currEquipment_translated === 'Mit Austattung' ? 'with equipment' : 'without equipment';
                         const currRemark = array[2];
                         const deskId = allDesks.find(desk => desk.deskNumberInRoom.toString() === currDeskNumberInRoom).id;
+                        
                         setSelectedDeskId(deskId);
-                        setRemark(currRemark);
-                        setEquipment(currEquipment);
+                        if (setRemark)
+                            setRemark(currRemark);
+                        if (setEquipment)
+                            setEquipment(currEquipment);
                     }}
                     renderInput={(params) => (
                         <TextField

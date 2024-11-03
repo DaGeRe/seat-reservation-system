@@ -25,6 +25,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [selectedDesk, setSelectedDesk]= React.useState('');
+  const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
   // The current floor. (either Ground or First)
@@ -48,10 +49,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   };
 
   async function deleteWorkstation(){
-    if(selectedDesk){
-      const deskId = optionToDeskId(selectedDesk);
+    if(selectedDeskId){
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/${deskId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}`,
         headers,
         (data) => {
           if (data !== 0) {
@@ -68,10 +68,9 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   }
 
   async function deleteWorkstationFf(){
-    if(selectedDesk) {
-      const deskId = optionToDeskId(selectedDesk);
+    if(selectedDeskId){
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${deskId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDeskId}`,
         headers,
         (_) => {
           toast.success(t('deskDelete'));
@@ -109,7 +108,8 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
               selectedRoom={selectedRoom}
               allDesks={allDesks}
               selectedDesk={selectedDesk}
-              setSelectedDesk={setSelectedDesk}
+              //setSelectedDesk={setSelectedDesk}
+              setSelectedDeskId={setSelectedDeskId}
               roomToOption={roomToOption}
               deskToOption={deskToOption}
               isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
