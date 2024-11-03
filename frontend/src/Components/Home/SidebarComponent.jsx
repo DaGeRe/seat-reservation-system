@@ -75,9 +75,9 @@ const SidebarComponent = () => {
         setIsLogoutConfirmationOpen(true);
         break;
 
-      case "visibility":
+/*       case "visibility":
         changeVisibility();
-        break;
+        break; */
 
       default:
         break;
