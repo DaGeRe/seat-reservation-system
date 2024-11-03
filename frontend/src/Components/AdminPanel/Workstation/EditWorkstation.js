@@ -110,7 +110,6 @@ export default function EditWorkstation({ editWorkstationModal }) {
               selectedRoom={selectedRoom}
               allDesks={allDesks}
               selectedDesk={selectedDesk}
-              //setSelectedDesk={onSelectDesk}
               roomToOption={roomToOption}
               setSelectedDeskId={setSelectedDeskId}
               setEquipment={setEquipment}
