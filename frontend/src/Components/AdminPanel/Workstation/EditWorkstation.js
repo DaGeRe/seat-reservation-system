@@ -69,7 +69,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
     }
   };
 
-  const onSelectDesk = (selectedDeskStr) => {
+/*   const onSelectDesk = (selectedDeskStr) => {
     setSelectedDesk(selectedDeskStr);
     const deskId = optionToDeskId(selectedDeskStr);
     const deskData = allDesks.find(e => e.id.toString()===deskId);
@@ -78,7 +78,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
       setRemark(deskData.remark ? deskData.remark : '');
     }
     setSelectedDeskId(deskId);
-  };
+  }; */
 
   const onFloorChange = (floor) => {
     setFloor(floor);
@@ -110,15 +110,17 @@ export default function EditWorkstation({ editWorkstationModal }) {
               selectedRoom={selectedRoom}
               allDesks={allDesks}
               selectedDesk={selectedDesk}
-              setSelectedDesk={onSelectDesk}
+              //setSelectedDesk={onSelectDesk}
               roomToOption={roomToOption}
-              deskToOption={deskToOption}
+              setSelectedDeskId={setSelectedDeskId}
+              setEquipment={setEquipment}
+              setRemark={setRemark}
               isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
               t={t}
             />
             <br></br><br></br>
             {
-              selectedDesk && (
+              selectedDeskId && (
                 <WorkStationDefinition
                   t={t}
                   equipment={equipment}
@@ -127,13 +129,13 @@ export default function EditWorkstation({ editWorkstationModal }) {
                   setRemark={setRemark}
                 />
               )
-            }                   
+            }
           </Box>
         </Grid2>
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>updateWorkstation()}>&nbsp;{t("update").toUpperCase()}</Button>
-        <Button onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
+        <Button onClick={()=>updateWorkstation()}>&nbsp;{t('update').toUpperCase()}</Button>
+        <Button onClick={handleCloseBtn}>&nbsp;{t('close').toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );

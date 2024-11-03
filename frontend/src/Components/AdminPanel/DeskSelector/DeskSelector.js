@@ -7,14 +7,13 @@ export default function DeskSelector(
         selectedRoom,
         allDesks,
         selectedDesk,
-        setSelectedDesk,
         roomToOption,
-        deskToOption,
-        isOptionEqualToValue_Desk,
+        setSelectedDeskId,
+        setEquipment,
+        setRemark,
         t
     }
 ) {
-
     return (
         selectedRoom && (
             <div>
@@ -22,14 +21,29 @@ export default function DeskSelector(
                 {allDesks && allDesks.length > 0 ? (
                 <div>
                     <Autocomplete
-                    id="tags-filled"
+                    id='tags-filled'
                     fullWidth
-                    options={allDesks.map(deskToOption)}
-                    isOptionEqualToValue={isOptionEqualToValue_Desk}
+                    options={
+                        allDesks.map(
+                            (desk) => {
+                                const equipment = desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment');
+                                return desk.deskNumberInRoom + '-' + equipment  + '-' + desk.remark;
+                            }
+                        )
+                    }
+                    //isOptionEqualToValue={isOptionEqualToValue_Desk}
                     freeSolo={false} // Eingabe ist deaktiviert
                     value={selectedDesk}
-                    onChange={(_, selectedDeskStr) => {
-                        setSelectedDesk(selectedDeskStr);
+                    onChange={(_, option) => {
+                        const array = option.split('-');
+                        const currDeskNumberInRoom = array[0];
+                        const currEquipment_translated = array[1];
+                        const currEquipment = currEquipment_translated === 'Mit Austattung' ? 'with equipment' : 'without equipment';
+                        const currRemark = array[2];
+                        const deskId = allDesks.find(desk => desk.deskNumberInRoom.toString() === currDeskNumberInRoom).id;
+                        setSelectedDeskId(deskId);
+                        setRemark(currRemark);
+                        setEquipment(currEquipment);
                     }}
                     renderInput={(params) => (
                         <TextField
