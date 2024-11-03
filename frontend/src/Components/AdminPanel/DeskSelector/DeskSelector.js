@@ -31,7 +31,6 @@ export default function DeskSelector(
                             }
                         )
                     }
-                    //isOptionEqualToValue={isOptionEqualToValue_Desk}
                     freeSolo={false} // Eingabe ist deaktiviert
                     value={selectedDesk}
                     onChange={(_, option) => {
@@ -48,11 +47,11 @@ export default function DeskSelector(
                     renderInput={(params) => (
                         <TextField
                         {...params}
-                        variant="outlined"
-                        size="small"
+                        variant='outlined'
+                        size='small'
                         disabled
-                        label={t("selectDesk")}
-                        placeholder={t("selectDesk")}
+                        label={t('selectDesk')}
+                        placeholder={t('selectDesk')}
                         />
                     )}
                     />
