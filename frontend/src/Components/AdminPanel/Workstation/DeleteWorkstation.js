@@ -28,7 +28,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
-  // The current floor. (either Ground or First)
   const [floor, setFloor] = React.useState(GROUND);
   const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
   const helpText = t('helpDeleteWorkstation');
@@ -48,7 +47,26 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     }
   };
 
-  async function deleteWorkstation(){
+  async function deleteWorkstation (urlExtension = '') {
+    if(selectedDeskId){
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
+        headers,
+        (data) => {
+          if (data !== 0) {
+            setOpenFfDialog(true);
+          }
+          else {
+            toast.success(t('deskDelete'));
+            deleteWorkstationModal();
+          }
+        },
+        () => {console.log('Failed to delete workstation in DeleteWorkstation.js');}
+      );
+    }
+  }
+
+ /*  async function deleteWorkstation(){
     if(selectedDeskId){
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}`,
@@ -65,10 +83,11 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         () => {console.log('Failed to delete workstation in DeleteWorkstation.js');}
       );
     }
-  }
+  } */
 
   async function deleteWorkstationFf(){
-    if(selectedDeskId){
+    deleteWorkstation('ff/')
+/*     if(selectedDeskId){
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDeskId}`,
         headers,
@@ -78,7 +97,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         },
         () => {console.log('Failed to delete workstation fast forward in DeleteWorkstation.js.');}
       )
-    }
+    } */
   }
 
   return (
