@@ -57,7 +57,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
         `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
         headers,
         (data) => {
-          console.log(data);
           if (data !== 0) {
             setOpenFfDialog(true);
           }

@@ -47,25 +47,21 @@ export default function EditRoom({ editRoomModal }) {
         toast.success(t('roomType'));
       },
       () => {console.log('Failed to handle room type change in EditRoom.jsx');},
-      JSON.stringify({
-        'floor': newFloor,
-        'status': newRoomStatus,
-        'type': newRoomType,
-        'x': selectedRoom.x,
-        'y': selectedRoom.y,
-        'remark': newRoomRemark
-      })
+        JSON.stringify({
+          'floor': selectedRoom.floor,
+          'status': newRoomStatus,
+          'type': newRoomType,
+          'x': selectedRoom.x,
+          'y': selectedRoom.y,
+          'remark': newRoomRemark,
+          'building':selectedRoom.building
+        })
     );
     editRoomModal();
     deselectRoom();
   };
 
     return (
-    /*   <div style={{ 
-        display: 'flex', 
-        width: '100vw', 
-        height: '100vh'
-       }}> */
       <React.Fragment>
         <DialogContent>
           <Grid2 container >
@@ -78,7 +74,7 @@ export default function EditRoom({ editRoomModal }) {
                 }}
                 building={building}
                 setBuilding={(buildingStr) => {
-                  setBuilding(building);
+                  setBuilding(buildingStr);
                   deselectRoom();
                 }}
                 headers={headers}
@@ -92,12 +88,14 @@ export default function EditRoom({ editRoomModal }) {
               />
               {
                 selectedRoom && selectedRoom !== '' && (
-                  <div> 
+                  <> 
                     <h2>{roomToOption(selectedRoom)}</h2>
-                    <FloorSelector
+{/*                     <FloorSelector
+                      building={building}
+                      setBuilding={setBuilding}
                       floor={newFloor}
                       setFloor={setNewFloor}
-                    />
+                    /> */}
                     <RoomDefinition 
                       t={t}
                       type={newRoomType}
@@ -107,17 +105,18 @@ export default function EditRoom({ editRoomModal }) {
                       remark={newRoomRemark}
                       setRemark={setNewRoomRemark}
                     />
-                    <br></br> <br></br>
+{/*                     <br></br> <br></br>
                     <DialogActions>
-                      <Button onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
-                    </DialogActions>
-                    </div>
+                     
+                    </DialogActions> */}
+                  </>
                 )
               }
             </Box>
           </Grid2>
           <DialogActions>
             <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+            <Button onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
           </DialogActions>
         </DialogContent>
       </React.Fragment>

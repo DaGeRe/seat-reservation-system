@@ -3,10 +3,10 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, {useMemo, useCallback } from 'react';
+import React, {useMemo} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
+import {isOptionEqualToValue_Desk} from './DeskAndOption'
 import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'

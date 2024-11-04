@@ -49,7 +49,6 @@ public class RoomController {
         Optional<Room> room = roomService.getRoomById(id);
         ResponseEntity<Room> ret = room.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        System.out.println(ret);
         return ret;
     }
 

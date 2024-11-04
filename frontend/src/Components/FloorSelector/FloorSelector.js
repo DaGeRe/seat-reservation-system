@@ -14,14 +14,14 @@ const FloorSelector = ({
   function createFloorsPerBuilding(building_name) {
     if (building_name === BAUTZNER_STR_19_A_B) {
       return [
-        <MenuItem key="groundFloor" value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="firstFloor" value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
+        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
       ];
     } else if (building_name === BAUTZNER_STR_19_C) {
       return [
-        <MenuItem key="groundFloor" value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="firstFloor" value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key="thirdFloor" value={SECOND}>{t('thirdFloor').toUpperCase()}</MenuItem>
+        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>,
+        <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor').toUpperCase()}</MenuItem>
       ];
     }
     return [];
