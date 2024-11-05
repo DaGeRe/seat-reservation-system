@@ -60,6 +60,9 @@ backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNA
 **/_remote.repositories
 
 # TLS
-backend/tls
-frontend/tls
+backend/tls/*
+frontend/tls/*
 tls*
+backend/tls/jus-srv-test30.justiz.sachsen.de.p12
+/frontend/tls/jus-srv-test30.justiz.sachsen.de.crt
+>>>>>>> master
