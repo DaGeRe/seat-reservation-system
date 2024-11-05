@@ -230,7 +230,7 @@ const Booking = () => {
   };
 
   function getHeadline() {
-    return t('availableDesks') + (room !== null ? 'in ' + room.remark : '');
+    return t('availableDesks') + (room !== null ? ' in ' + room.remark : '');
   }
 
   return (
@@ -249,22 +249,26 @@ const Booking = () => {
 
         <div className="info-container">
           <div>
-            {desks.map((desk, index) => (
-              <div className="desk-component" key={index}>
-                <div>{desk.deskNumberInRoom}.</div>
-                <div className={`desk-description ${desk.id === clickedDeskId ? 'clicked' : ''}`} 
-                  onClick={
-                    () => {
-                      setClickedDeskId(desk.id);
-                      setClickedDeskNumberInRoom(desk.deskNumberInRoom);
-                    }}
-                >
-                  <p className='item-name'>{desk.remark}</p>
-                  <p className="item-name">{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p>
-                  {/* <p className="item-taken">{t("available")}</p> */}
+            {desks && desks.length > 0 ?
+              (desks.map((desk, index) => (
+                <div className='desk-component' key={index}>
+                  <div>{desk.deskNumberInRoom}.</div>
+                  <div className={`desk-description ${desk.id === clickedDeskId ? 'clicked' : ''}`} 
+                    onClick={
+                      () => {
+                        setClickedDeskId(desk.id);
+                        setClickedDeskNumberInRoom(desk.deskNumberInRoom);
+                      }}
+                  >
+                    <p className='item-name'>{desk.remark}</p>
+                    <p className='item-name'>{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p>
+                    {/* <p className="item-taken">{t("available")}</p> */}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))) : (
+                <p>{t('noAvailableDesks')}</p> 
+              )
+            }
           </div>
           <div>
             <div className='calendar-container'>
