@@ -33,7 +33,6 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('x_y_not_empty'));
       return false;
     }
-    console.log(floor);
     if (!floor || !type) {
       toast.error(t('fields_not_empty'));
       return false;
