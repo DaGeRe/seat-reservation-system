@@ -1,0 +1,773 @@
+-- MariaDB dump 10.19-11.3.2-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: mydatabase
+-- ------------------------------------------------------
+-- Server version	11.3.2-MariaDB-1:11.3.2+maria~ubu2204-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `mydatabase`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mydatabase` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
+
+USE `mydatabase`;
+
+--
+-- Table structure for table `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bookings` (
+  `booking_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `begin` time(6) NOT NULL,
+  `booking_in_progress` bit(1) NOT NULL,
+  `day` date NOT NULL,
+  `end` time(6) NOT NULL,
+  `lock_expiry_time` datetime(6) DEFAULT NULL,
+  `desk_id` bigint(20) NOT NULL,
+  `room_id` bigint(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`booking_id`),
+  KEY `FKaoxaafgq2jdhblkwiutyggant` (`desk_id`),
+  KEY `FKrgoycol97o21kpjodw1qox4nc` (`room_id`),
+  KEY `FKeyog2oic85xg7hsu2je2lx3s6` (`user_id`),
+  CONSTRAINT `FKaoxaafgq2jdhblkwiutyggant` FOREIGN KEY (`desk_id`) REFERENCES `desks` (`desk_id`),
+  CONSTRAINT `FKeyog2oic85xg7hsu2je2lx3s6` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `FKrgoycol97o21kpjodw1qox4nc` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bookings`
+--
+
+LOCK TABLES `bookings` WRITE;
+/*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
+INSERT INTO `bookings` VALUES
+(26,'09:30:00.000000','\0','2024-10-29','12:00:00.000000',NULL,1,1,1),
+(30,'17:00:00.000000','\0','2024-10-29','20:30:00.000000',NULL,1,1,1),
+(31,'08:00:00.000000','\0','2024-10-29','12:00:00.000000',NULL,2,3,1),
+(35,'13:30:00.000000','\0','2024-10-29','16:30:00.000000',NULL,1,1,1),
+(44,'07:30:00.000000','\0','2024-10-30','13:30:00.000000',NULL,2,3,1),
+(45,'07:00:00.000000','\0','2024-10-30','12:30:00.000000',NULL,1,1,1),
+(53,'09:00:00.000000','\0','2024-11-04','12:00:00.000000',NULL,1,1,1),
+(54,'12:30:00.000000','\0','2024-11-04','14:30:00.000000',NULL,1,1,1),
+(57,'09:30:00.000000','\0','2024-11-04','17:30:00.000000',NULL,19,9,1),
+(60,'08:30:00.000000','\0','2024-11-05','13:00:00.000000',NULL,1,1,1),
+(61,'07:30:00.000000','\0','2024-11-05','14:30:00.000000',NULL,2,3,1),
+(62,'15:00:00.000000','\0','2024-11-05','20:00:00.000000',NULL,1,1,1),
+(65,'08:00:00.000000','\0','2024-11-06','12:00:00.000000',NULL,23,11,1),
+(66,'11:00:00.000000','\0','2024-11-06','17:30:00.000000',NULL,25,11,1),
+(67,'07:30:00.000000','\0','2024-11-08','13:00:00.000000',NULL,1,1,177);
+/*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `desks`
+--
+
+DROP TABLE IF EXISTS `desks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `desks` (
+  `desk_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `desk_number_in_room` bigint(20) DEFAULT NULL,
+  `equipment` varchar(255) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `room_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`desk_id`),
+  KEY `FK1glnwylpo1qx4k8ckyg6sd65y` (`room_id`),
+  CONSTRAINT `FK1glnwylpo1qx4k8ckyg6sd65y` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `desks`
+--
+
+LOCK TABLES `desks` WRITE;
+/*!40000 ALTER TABLE `desks` DISABLE KEYS */;
+INSERT INTO `desks` VALUES
+(1,1,'with equipment','Sonniger Arbeitsplatz !',1),
+(2,1,'with equipment','Desk 1',3),
+(3,2,'with equipment','Desk 2',3),
+(5,3,'with equipment','b',3),
+(19,2,'with equipment','Schreibtisch',9),
+(23,2,'with equipment','Schreibtisch 2',11),
+(25,3,'with equipment','neuer arbeitsplatz',11);
+/*!40000 ALTER TABLE `desks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `roles`
+--
+
+DROP TABLE IF EXISTS `roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `roles`
+--
+
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES
+(1,'ROLE_ADMIN'),
+(2,'ROLE_USER');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rooms`
+--
+
+DROP TABLE IF EXISTS `rooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rooms` (
+  `room_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `floor` varchar(255) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `type` varchar(255) NOT NULL,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `building` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rooms`
+--
+
+LOCK TABLES `rooms` WRITE;
+/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+INSERT INTO `rooms` VALUES
+(1,'Ground','Zimmer 01-01','enable','Silence',9,21,'Bautzner Str. 19a/b'),
+(2,'Ground','Zimmer 01-02','enable','Normal',9,31,'Bautzner Str. 19a/b'),
+(3,'First','Zimmer 02-01','enable','Normal',10,9,'Bautzner Str. 19a/b'),
+(4,'First','Zimmer 02-02','enable','Normal',11,19,'Bautzner Str. 19a/b'),
+(5,'Ground','Zimmer 01-03','enable','Normal',8,68,'Bautzner Str. 19a/b'),
+(6,'Ground','Zimmer 01-04','enable','Normal',56,89,'Bautzner Str. 19a/b'),
+(7,'Ground','Zimmer 01-05','enable','Silence',67,88,'Bautzner Str. 19a/b'),
+(9,'First','Zimmer 02-03','enable','Normal',9,36,'Bautzner Str. 19a/b'),
+(10,'Ground','Zimmer 01-06','enable','Normal',84,90,'Bautzner Str. 19a/b'),
+(11,'First','Zimmer 01-04','enable','Normal',9,69,'Bautzner Str. 19a/b');
+/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_roles`
+--
+
+DROP TABLE IF EXISTS `user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_roles` (
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  KEY `FKh8ciramu9cc9q3qcqiv4ue8a6` (`role_id`),
+  KEY `FKhfh9dx7w3ubf1co1vdev94g3f` (`user_id`),
+  CONSTRAINT `FKh8ciramu9cc9q3qcqiv4ue8a6` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `FKhfh9dx7w3ubf1co1vdev94g3f` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES
+(1,1),
+(34,2),
+(35,2),
+(36,2),
+(37,2),
+(38,2),
+(39,2),
+(40,2),
+(41,2),
+(42,2),
+(43,2),
+(44,2),
+(45,2),
+(46,2),
+(47,2),
+(48,2),
+(49,2),
+(50,2),
+(51,2),
+(52,2),
+(53,2),
+(54,2),
+(55,2),
+(56,2),
+(57,2),
+(58,2),
+(59,2),
+(60,2),
+(61,2),
+(62,2),
+(63,2),
+(64,2),
+(65,2),
+(66,2),
+(67,2),
+(68,2),
+(69,2),
+(70,2),
+(71,2),
+(72,2),
+(73,2),
+(74,2),
+(75,2),
+(76,2),
+(77,2),
+(78,2),
+(79,2),
+(80,2),
+(81,2),
+(82,2),
+(83,2),
+(84,2),
+(85,2),
+(86,2),
+(87,2),
+(88,2),
+(89,2),
+(90,2),
+(91,2),
+(92,2),
+(93,2),
+(94,2),
+(95,2),
+(96,2),
+(97,2),
+(98,2),
+(99,2),
+(100,2),
+(101,2),
+(102,2),
+(103,2),
+(104,2),
+(105,2),
+(106,2),
+(107,2),
+(108,2),
+(109,2),
+(110,2),
+(111,2),
+(112,2),
+(113,2),
+(114,2),
+(115,2),
+(116,2),
+(117,2),
+(118,2),
+(119,2),
+(120,2),
+(121,2),
+(122,2),
+(123,2),
+(124,2),
+(125,2),
+(126,2),
+(127,2),
+(128,2),
+(129,2),
+(130,2),
+(131,2),
+(132,2),
+(133,2),
+(134,2),
+(135,2),
+(136,2),
+(137,2),
+(138,2),
+(139,2),
+(140,2),
+(141,2),
+(142,2),
+(143,2),
+(144,2),
+(145,2),
+(146,2),
+(147,2),
+(148,2),
+(149,2),
+(150,2),
+(151,2),
+(152,2),
+(153,2),
+(154,2),
+(155,2),
+(156,2),
+(157,2),
+(158,2),
+(159,2),
+(160,2),
+(161,2),
+(162,2),
+(163,2),
+(164,2),
+(165,2),
+(166,2),
+(167,2),
+(168,2),
+(169,2),
+(170,2),
+(171,2),
+(172,2),
+(173,2),
+(174,2),
+(175,2),
+(176,2),
+(177,2),
+(178,2),
+(179,2),
+(180,2),
+(181,2),
+(182,2),
+(183,2),
+(184,2),
+(185,2),
+(186,2),
+(187,2),
+(188,2),
+(189,2),
+(190,2),
+(191,2),
+(192,2),
+(193,2),
+(194,2),
+(195,2),
+(196,2),
+(197,2),
+(198,2),
+(199,2),
+(200,2),
+(201,2),
+(202,2),
+(203,2),
+(204,2),
+(205,2),
+(206,2),
+(207,2),
+(208,2),
+(209,2),
+(210,2),
+(211,2),
+(212,2),
+(213,2),
+(214,2),
+(215,2),
+(216,2),
+(217,2),
+(218,2),
+(219,2),
+(220,2),
+(221,2),
+(222,2),
+(223,2),
+(224,2),
+(225,2),
+(226,2),
+(227,2),
+(228,2),
+(229,2),
+(230,2),
+(231,2),
+(232,2),
+(233,2),
+(234,2),
+(235,2),
+(236,2),
+(237,2),
+(238,2),
+(239,2),
+(240,2),
+(241,2),
+(242,2),
+(243,2),
+(244,2),
+(245,2),
+(246,2),
+(247,2),
+(248,2),
+(249,2),
+(250,2),
+(251,2),
+(252,2),
+(253,2),
+(254,2),
+(255,2),
+(256,2),
+(257,2),
+(258,2),
+(259,2),
+(260,2),
+(261,2),
+(262,2),
+(263,2),
+(264,2),
+(265,2),
+(266,2),
+(267,2),
+(268,2),
+(269,2),
+(270,2),
+(271,2),
+(272,2),
+(273,2),
+(274,2),
+(275,2),
+(276,2),
+(277,2),
+(278,2),
+(279,2),
+(280,2),
+(281,2),
+(282,2),
+(283,2),
+(284,2),
+(285,2),
+(286,2),
+(287,2),
+(288,2),
+(289,2),
+(290,2),
+(291,2),
+(292,2),
+(293,2),
+(294,2),
+(295,2),
+(296,2);
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `admin` bit(1) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `surname` varchar(255) DEFAULT NULL,
+  `visibility` bit(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=298 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES
+(1,'','richard.lehmann@mail.com','mustermann','$2a$10$dstvNGZrZPYo2jof90XBEe2icVdNZSS7jCvA6v0MVn6wqzQ3BcXrG','max',''),
+(34,'\0','Enrico.Kreher@lit.justiz.sachsen.de','Enrico','$2a$10$H7VSR3r..WKqwQqAF1.RdOC3OAYQacjIZ56/qLXL5Q9qcCwBx3Fgu','Kreher',''),
+(35,'\0','Lindsey.Bringmann@lit.justiz.sachsen.de','Lindsey','$2a$10$jDY3clUhJtnGHMouV7gCdOZHz5UU9S4IOHeA3p51t6w0ab0eT4jWi','Bringmann',''),
+(36,'\0','Ralf.Wunderlich@lit.justiz.sachsen.de','Ralf','$2a$10$6lfaylJxpmw537utdJJ7geH2FuLw5o3khw.b4MVfP5lNJrYrUtGli','Wunderlich',''),
+(37,'\0','Tester.Testmann@lit.justiz.sachsen.de','Tester','$2a$10$hQ9IZ9TbwI6M.0T0B0DvWeybLRsVXFQR0WWawcMhavT0ePHFjgB4m','Testmann',''),
+(38,'\0','Rene.Bereczky@lit.justiz.sachsen.de','René','$2a$10$Ahp4w/bg5bLY3pbKRyB6Uu/wEJ38SWjkVDgfvA5De9jOp6NBz/OXi','Bereczky',''),
+(39,'\0','Nutzer-Anlegen.TEST@lit.justiz.sachsen.de','Nutzer-Anlegen','$2a$10$BIj1fejNJBk2mikBS1goLe0pnH5.R3jCZkzDC7siXrCR8PpXIsB7m','TEST',''),
+(40,'\0','Nadine.Lebek@lit.justiz.sachsen.de','Nadine','$2a$10$fPwZbm6HLpZvnOKObN6DAu4YXX9ULAZKdRSvhTwDGLD/rcWkQFvIW','Lebek',''),
+(41,'\0','andreas.wende@lit.justiz.sachsen.de','Andreas','$2a$10$sAZlik6XwNIULFa9YKj/AuUqJNDzKQV2ptTEPOh9lJg9znHZtwRti','Wende',''),
+(42,'\0','Ute.Stein@lit.justiz.sachsen.de','Ute','$2a$10$UnEbp.nNeanu/FR96pYTxebv8xRItWzoRW2z5qFXLf3mcphDe198.','Stein',''),
+(43,'\0','Moritz.Hempel@lit.justiz.sachsen.de','Moritz','$2a$10$0pJ4IqdZWWI5phnYQv84YeQISi9D0252WErjeWXadOMFb3hwPQ5PW','Hempel',''),
+(44,'\0','Maximilian.Tronick@lit.justiz.sachsen.de','Maximilian','$2a$10$q/thTToH3LPvxenInUcKwuXFE00z1u2Rj8JBpReRdE8ULeVrid4fW','Tronick',''),
+(45,'\0','Marcus.Boehm@lit.justiz.sachsen.de','Marcus','$2a$10$Z3H.3ewHsOWjhfYLYgQm3.9a6B.ipr0NPfw0tjFoA.DNdS7C1AYk.','Böhm',''),
+(46,'\0','Axel.Werner@lit.justiz.sachsen.de','Axel','$2a$10$2lFWLUqbTT1ih3fAWKCUNexmNmquFNKuHip785HPakDumtL2wyuAa','Werner',''),
+(47,'\0','Moritz.Hannuth@lit.justiz.sachsen.de','Moritz','$2a$10$IZ3hQ2rSh5T74wtnjMDbveR4kOlnsKmTwo5ndDVDjjdaXCB3z1aXK','Hannuth',''),
+(48,'\0','Joanna.Arndt@lit.justiz.sachsen.de','Joanna','$2a$10$/VyLzObSCdmqicxfG9xPBOqREa5Fv0t/HjSH0tkoiz8f2Gn60IiKK','Arndt',''),
+(49,'\0','Hubert.Schwarze@lit.justiz.sachsen.de','Hubert','$2a$10$rZkh4cWilRyjZv7Uso1BJeX3voG2jtl4TH8a/CTzjY/06R5/7moH2','Schwarze',''),
+(50,'\0','Martin.Knappe@lit.justiz.sachsen.de','Martin','$2a$10$DxeV9.ncixnLfMtAXZhUieCUKPcKj5YYsbqn87r.sXe7n1SsSs8cG','Knappe',''),
+(51,'\0','Maurice.Mollenhauer@lit.justiz.sachsen.de','Maurice','$2a$10$GLbsoJ3DHDndZIiP8UIwQuhui78/6Yyat4gymnijNfCrX3/ko6sOe','Mollenhauer',''),
+(52,'\0','Ines.Glaubitz@lit.justiz.sachsen.de','Ines','$2a$10$kFAqATcU2IWFTuAPKWknguw8/KSyeKOsinyknN67Ni79gntg7Imnq','Glaubitz',''),
+(53,'\0','Matthias.Boehme@lit.justiz.sachsen.de','Matthias','$2a$10$IrB0mygCBgIsFrozKXV38ubgC4YxUgzWCgwuu8DfdKKth0P8W5q6K','Böhme',''),
+(54,'\0','Lars.Nitzsche@lit.justiz.sachsen.de','Lars','$2a$10$OI1sbodYpN32joPzGLwS/eozcgvDqtf9AAwpM6ebU7hLiHWFv3czO','Nitzsche',''),
+(55,'\0','Julia.Kretzschmar@lit.justiz.sachsen.de','Julia','$2a$10$Ej3sp//UFJpuDUXGYqt/suoTJ7lJuf7QQa/0A5dwYlW0KtAIH1CEe','Kretzschmar',''),
+(56,'\0','Marika.Eckart@lit.justiz.sachsen.de','Marika','$2a$10$jcFt1rSj22.AxilW8PuefevkVJ.hNyNe0hOThUuhXeZ/e/5LX2pla','Eckart',''),
+(57,'\0','Torsten.Kunath@lit.justiz.sachsen.de','Torsten','$2a$10$8dvW6RIURQ.vNiY/ZApSs.M5WjbO9CrV/.eBNLsQxCvcv6FSrkgTG','Kunath',''),
+(58,'\0','Christian.Traeger@lit.justiz.sachsen.de','Christian','$2a$10$q4xC/AU5AIdAqjNITV3RCuemAbC3NbFTXVTmpC9GWTvHzdvJMvpCa','Träger',''),
+(59,'','Richard.Lehmann@lit.justiz.sachsen.de','Richard','$2a$10$.6FNtj4JuE6chMrxPss9zunf.zbtxaTBJc/LT5rJi5RDkjvtwNW8a','Lehmann',''),
+(60,'\0','Torsten.Frost@lit.justiz.sachsen.de','Torsten','$2a$10$pxdiinMXpkNesPe4KHtTN.J26r3u6wpSeiY8GQiqGsPtyVOVoF.RG','Frost',''),
+(61,'\0','Jasmine.Franz@lit.justiz.sachsen.de','Jasmine','$2a$10$IkJAkaqSEBuqNMMcwCsev.bXBWofGyy4a2O5xCZXwHZFqoQDXxHKq','Franz',''),
+(62,'\0','Katharina.Schneider@lit.justiz.sachsen.de','Katharina','$2a$10$m0tyfwl7v5MybmDt1fyno.AULtp6/pulOxz1.kKOFCtQHzPK1abt6','Schneider',''),
+(63,'\0','Rene.Ewald@lit.justiz.sachsen.de','Rene','$2a$10$73V8xMRzjKu9K0Eyo2Xu3O5TL6acjht9knw.3C9NNmzWmTdibMPi.','Ewald',''),
+(64,'\0','Christin.Lehnhardt@lit.justiz.sachsen.de','Christin','$2a$10$CF//aP20jI0cJCvyVgoM9.rXg28GgSZFrfa5dkteyU2GBIK5faKAC','Lehnhardt',''),
+(65,'\0','Vivien.Jur@lit.justiz.sachsen.de','Vivien','$2a$10$ik/xqw3mTkcymb2aVNCCYuIVKmR9cI6C3dTQ/mbh/ldZ6zSmIdAc.','Jur',''),
+(66,'\0','Eric.Dietz@lit.justiz.sachsen.de','Eric','$2a$10$j1VgmqovaNJfko8eA64xHeOuVCpHbwWimseavn49Bis7Ba67Fu4k2','Dietz',''),
+(67,'\0','Danilo.Diener@lit.justiz.sachsen.de','Danilo','$2a$10$h2uE6KpvtukJdzfhE0O3beVnXiwiDvOipJt/JLTCxyEmaTKH/ZR5G','Diener',''),
+(68,'\0','Danilo.Lehmann@lit.justiz.sachsen.de','Danilo','$2a$10$jwnyTPMl6ZJZzCunSzXiOOlw/ItXgakl8yK.5vOsahJhB8g72/4Pu','Lehmann',''),
+(69,'\0','Jan.Schuetze@lit.justiz.sachsen.de','Jan','$2a$10$fRpgqJwvOeKeiRU/Gvlbs.xT.bqE4jMvCK6MaOrb2bIp5xkFgVrGi','Schütze',''),
+(70,'\0','Alexander.Oblaender@lit.justiz.sachsen.de','Alexander','$2a$10$lBlV.CvE8YwF9pHnQNhBPuJC5U69MrjGAdHeGPjcypTgRRkjO1QMq','Obländer',''),
+(71,'\0','Bjoern.Scholz@lit.justiz.sachsen.de','Björn','$2a$10$ywroX/HGQygRTchCmmGtSudSSu2AGjYxjFXTrE8d0RwfEK6VD5Sey','Scholz',''),
+(72,'\0','Daniel.Kaminski@lit.justiz.sachsen.de','Daniel','$2a$10$WZOv9.7wIR0Mrn1ZXRuEpeCCctCua2BifKBd/XVmCP4k.jiRoSjj2','Kaminski',''),
+(73,'\0','Andreas.Reichel@lit.justiz.sachsen.de','Andreas','$2a$10$DUluxMy3OuZ4mcb9oV1rVOBNLPoDU2Is61n21tEBSXF7s0HmublN.','Reichel',''),
+(74,'\0','Marcel.Wagner@lit.justiz.sachsen.de','Marcel','$2a$10$TWFQbpTFF.S1iOEnCpUFPOzBFqUVNzLziSvacY7paxUJNNkZdeSfe','Wagner',''),
+(75,'\0','Jens.Schneider@lit.justiz.sachsen.de','Jens','$2a$10$tBIKKi7xOhUZgh6PpJJlGOz5aQfelZJbrtRpRo0WRxRsu.6QoJqfa','Schneider',''),
+(76,'\0','Nick.Wahl@lit.justiz.sachsen.de','Nick','$2a$10$EsJNHYLQYTMfDuTrIpnaYehQHyc3Z8pEks40ve0RTWZM3D6IR5aRW','Wahl',''),
+(77,'\0','Martin.Schneider@lit.justiz.sachsen.de','Martin','$2a$10$KRYtK5YQPD8.wnEy.ulmo.UsYmfWyZ1crLXslZ/fVNbhRuDzABzdq','Schneider',''),
+(78,'\0','Torsten.Heider@lit.justiz.sachsen.de','Torsten','$2a$10$pxrmi.5gA.nqKJN0GriBwuPrzjjMsptC49OT2tp.WHkT.HQ9MJJw.','Heider',''),
+(79,'\0','Sebastian.Linge@lit.justiz.sachsen.de','Sebastian','$2a$10$AzUtNRG/erA6rYsE6UNrROqa6TLTPgqDlFUBqbbj5pqG7NnnDXxpS','Linge',''),
+(80,'\0','Katrin.Reissig@lit.justiz.sachsen.de','Katrin','$2a$10$gEzRDoDUMGoir/YQw2Mqh.UWNNytiPmLhvRRJF0P1Bzkm8zuBd9RG','Reißig',''),
+(81,'\0','Nico.Hoch@lit.justiz.sachsen.de','Nico','$2a$10$Qci19XFhbjEBTzuSQEMSF.tGLaGaOTOMxhIhbPJTWYKSg1HFT31f2','Hoch',''),
+(82,'\0','Falco.Bartl@lit.justiz.sachsen.de','Falco','$2a$10$VL/cG5wXpINeWryvoXup6eZ8/exLHzztooPejNMZY6.K9DfT0EJVm','Bartl',''),
+(83,'\0','Paul.Schubert@lit.justiz.sachsen.de','Paul','$2a$10$/wqjhn/DGkMTqgw2lZ9bj.ZBrWVAlKYQ5EyWPQxVf6rt7m8rByIZm','Schubert',''),
+(84,'\0','Thomas.Boettrich@lit.justiz.sachsen.de','Thomas','$2a$10$.CPtCTRZHNI3RUzpYwz55u36uVuAHw8fjwhu4hw33MamzwshF6bN2','Böttrich',''),
+(85,'\0','Katleen.Marx@lit.justiz.sachsen.de','Katleen','$2a$10$kKA.70MBr2OoJcrTH11CdOD.Xt.V2ygUTtenrEziCv8Qr6ZH4HkCi','Marx',''),
+(86,'\0','Marcel.Kuehne@lit.justiz.sachsen.de','Marcel','$2a$10$sS30rKCvgGLBQGdCtNui9Oku/3EEO9nis.w6mIzqFtX2OC9A38b7u','Kühne',''),
+(87,'\0','Joerg.Seiffert@lit.justiz.sachsen.de','Jörg','$2a$10$ezwZxo5yKT7mlTYg/xhu.ORJUfeKcEaGcRAM8xveFsCaI1Lyzh7Tm','Seiffert',''),
+(88,'\0','Florian.Napp@lit.justiz.sachsen.de','Florian','$2a$10$gxXYR4AlU0gXcqphPNoj8u8hKAFqgOZGNKm1viqaUl.xCc0RG.rnG','Napp',''),
+(89,'\0','Richard.Hahn@lit.justiz.sachsen.de','Richard','$2a$10$BBYIcwYFnmveqC/Hme2dQ.K3AYMPdmJ1Wn2hMQMr22LzEcWNELFle','Hahn',''),
+(90,'\0','Jacqueline.Nemitz@lit.justiz.sachsen.de','Jacqueline','$2a$10$zPhzBRAeQUpKxKf1Kq0yv.S87.OrTZ1lhyRkuOADpM.sG/VbSh01G','Nemitz',''),
+(91,'\0','Sven.Krause@lit.justiz.sachsen.de','Sven','$2a$10$tO5oEBQ6/Elef9SmrJZQ7er2IE3p5MHlzPpZbGtGBvZryMImw9rVu','Krause',''),
+(92,'\0','Arthur.Geisler@lit.justiz.sachsen.de','Arthur','$2a$10$jUJ5G52vb50EnXuBEqQxLeqFl6T9TIlVNmJ3JgC7wm18/nek2E3bO','Geisler',''),
+(93,'\0','Sven.Knabe@lit.justiz.sachsen.de','Sven','$2a$10$NXKVw2OIbKN3I4ON3KgoiuV4jooTe3U4CFjcBGnughHd3/1F7uI3y','Knabe',''),
+(94,'\0','Jens.Kiessling@lit.justiz.sachsen.de','Jens','$2a$10$/gX/9siEUCbran.C9mKR7.Zp/Hq7gLE4hgcpnjtX.e4sM0/4v8yT2','Kießling',''),
+(95,'\0','Christoph.Guessow@lit.justiz.sachsen.de','Christoph','$2a$10$vsNK3iU34c6oDdQNHHgf0elr0lZ2NbrjR1MI/gNhyM8svbj6bqISK','Güssow',''),
+(96,'\0','Tom.Hadamietz@lit.justiz.sachsen.de','Tom','$2a$10$GLqU4xyRIQNItGp6r6HBZ.c3WjFBgulH/HOgkXl1BlsrHyqo.Zniq','Hadamietz',''),
+(97,'\0','Torsten.Jessa@lit.justiz.sachsen.de','Torsten','$2a$10$AeIteBui2qQXl/LkoVuVyuojqvz/K6Qx8iKEJp5Ya.mnhU/xqDzJC','Jessa',''),
+(98,'\0','Lukas.Paschold@lit.justiz.sachsen.de','Lukas','$2a$10$t.HKqcNndYiGFAxYd6lNVeMuM5o6mOVW4GTr.cP2MGqoW16d792mG','Paschold',''),
+(99,'\0','Nico.Wagner@lit.justiz.sachsen.de','Nico','$2a$10$2G5.zX6v4qwmLH2LtlBNcOImXW8k8.3T5gsU7nf.sqGgcionWSvO2','Wagner',''),
+(100,'\0','Hasibie.Ismail@lit.justiz.sachsen.de','Hasibie','$2a$10$hh.KPenUEEBdYtF.f2JfL.lds0p.PDBjZ3UGwrXJ/h3nv/1IW2yzO','Ismail',''),
+(101,'\0','Steffen.Blaser@lit.justiz.sachsen.de','Steffen','$2a$10$pyGbEROrUV5/bCEsyhKmMeY4JAxyvRLsv0pWAlt3yP51Jt5pbzyIC','Blaser',''),
+(102,'\0','Peggy.Gietzelt@lit.justiz.sachsen.de','Peggy','$2a$10$fyGlpbGpGCjOSPVMJ3Y/O.9GZ9N3GyoEUVlfkAde/2npjZOyJRzOm','Gietzelt',''),
+(103,'\0','Christopher.Feige@lit.justiz.sachsen.de','Christopher','$2a$10$PPKaKZ2B0G8tWj7us5nAKejnfbUUSe9GoDH209yNiS2ogXzR0yyai','Feige',''),
+(104,'\0','Lars.Jaekel@lit.justiz.sachsen.de','Lars','$2a$10$Fj7i2djO9WVlmgy0.JAK.eqVUaEPkcGjY01BepN5LjdT8zkZQNXQK','Jäkel',''),
+(105,'\0','Albrecht.Kaufmann@lit.justiz.sachsen.de','Albrecht','$2a$10$aOz089tcVhrd34oRc9cgUePidzrHlfTGE.y8dOQLkcKzth9o/zHvm','Kaufmann',''),
+(106,'\0','Linda.Helbig@lit.justiz.sachsen.de','Linda','$2a$10$UaJpV65EnBCfhHGOVJ0bw.KyxwgMy5toRke0kRJE6yRyCFv8wgtuS','Helbig',''),
+(107,'\0','Babett.Horky@lit.justiz.sachsen.de','Babett','$2a$10$5MaBisGh5ps68gFAmDUMKOzI.tRDVZTVSq1rZFdKY46UpCbefccTm','Horky',''),
+(108,'\0','Cornelius.Schan@lit.justiz.sachsen.de','Cornelius','$2a$10$W6YXIi20zDD8nUWFYFIFnuAIF4Fhn73Zyo8N2QGXmGsjwKavQBQ5m','Schan',''),
+(109,'\0','Robert.Vaupel@lit.justiz.sachsen.de','Robert','$2a$10$L150.Nj7.excvESfQz4uT.Pi7XEIHSQjZExswpbNxiSPTcOKEZl9C','Vaupel',''),
+(110,'\0','Andreas.Lindner@lit.justiz.sachsen.de','Andreas','$2a$10$kXMxl0vhTN8SQjj0oq8Eq.H2I0pmRoXUQVu0dH5P6Fls0/L3eL6ci','Lindner',''),
+(111,'\0','Maria.Kuhl@lit.justiz.sachsen.de','Maria','$2a$10$QYwYvJJ7dZutLKghCLVrIOs9xFRFljBMb5HGixaX.CYXbGverRliK','Kuhl',''),
+(112,'\0','Matthias.Pierschel@lit.justiz.sachsen.de','Matthias','$2a$10$6MjIK1WRePaoU.6TEKOK/.raT1dd9ejcza6wemwKesVQbYkkLXFMK','Pierschel',''),
+(113,'\0','Uwe.Thomas@lit.justiz.sachsen.de','Uwe','$2a$10$Z4b87c3/xsr7st.BSgeFROorZf54OraoXSxwDx.76EM6V687UpUbm','Thomas',''),
+(114,'\0','Mathias.Altner@lit.justiz.sachsen.de','Mathias','$2a$10$sEBn5G03GTBkp7Fb00mRSeXTcnPBvGcBAjufUIFCPQi2mxheZbmj2','Altner',''),
+(115,'\0','Stefanie.Forgber@lit.justiz.sachsen.de','Stefanie','$2a$10$M/uToFccqwMzOYN5wLqXNOuNmQeX81LTmXHOYxoZuRP0vAmgIxeMS','Forgber',''),
+(116,'\0','Gabriele.Blume@lit.justiz.sachsen.de','Gabriele','$2a$10$llLJDhbDyrHEXD4WYkEXNO.qVmIL.t7PSROayy55RML3qrjrCpQje','Blume',''),
+(117,'\0','Sebastian.Nuernberger@lit.justiz.sachsen.de','Sebastian','$2a$10$E5iO4rmyXIOJy1ArjJ3/MOF/y9fJWniF8YSwEfQ8UEardIf71jEl2','Nürnberger',''),
+(118,'\0','Marco.Richter@lit.justiz.sachsen.de','Marco','$2a$10$FQp7cHO7QAeSXCPvnO1PTe.ppe.GM775r6NaM.ELqKgfxjonEnCGa','Richter',''),
+(119,'\0','Anne.Melzer@lit.justiz.sachsen.de','Anne','$2a$10$I8uWjlOf12enaCjgLAvqhecNHAC2loWrr6lpLBTPjM4S3vIGDgZOO','Melzer',''),
+(120,'\0','Stefan.Wendt@lit.justiz.sachsen.de','Stefan','$2a$10$pz.1I/WQ4PXwswWo72vewevGDXIvCVTmXyNYfqr5o55hoQxxRRvUi','Wendt',''),
+(121,'\0','Sven.Blochwitz@lit.justiz.sachsen.de','Sven','$2a$10$q0/jtR3Tx8ydNgfv3TMFYOQssb/EZHQANXVHborpuliUpiYTOnvkC','Blochwitz',''),
+(122,'\0','Dieter.Hausser@lit.justiz.sachsen.de','Dieter','$2a$10$5OANKBjEwM4vx7oX7SthueDmVXgN4LRgyT4t0VT8i7Un8fAJ/xY9y','Haußer',''),
+(123,'\0','Katarzyna.Barczynska@lit.justiz.sachsen.de','Katarzyna','$2a$10$.no5ODE5zhpBYbtK2Rd0z.uAt3LTmCljQzRxEnzWFNUvVnBiuj5Qi','Barczynska',''),
+(124,'\0','Thomas.Stahr@lit.justiz.sachsen.de','Thomas','$2a$10$but6BqMWYCFHd26sHZ0IxuMSilw.rmXOjXBgb6AG3kqkdPlgKHfzG','Stahr',''),
+(125,'\0','Andreas.Strakosch@lit.justiz.sachsen.de','Andreas','$2a$10$4SqBfUiIoE3Xc9XBTmd0ouu9CQFFsuZDlafsxEzjxBplrcoSXL.06','Strakosch',''),
+(126,'\0','Sven.Bosshammer@lit.justiz.sachsen.de','Sven','$2a$10$dbvCyHy6a3y3eM2e4BMZzeA62S8z/8gKt77QTb8drHLa4VCeQcL8y','Boßhammer',''),
+(127,'\0','Patrick.Werneck@lit.justiz.sachsen.de','Patrick','$2a$10$OSaLn2O27AC/l0MrvJxNn..k1CqNGR18XDikAKhgrfNbr6wJfM1HO','Werneck',''),
+(128,'\0','I.BVDD@lit.justiz.sachsen.de','I','$2a$10$wlzstsfiEH3si4OMpm5UiOzbr3CmUfvggY1aWde/C0uJ7CwSO6w/2','BVDD',''),
+(129,'\0','Heiko.Fahrion@lit.justiz.sachsen.de','Heiko','$2a$10$Zj9gGelaQqT3slcmokrcuuA1CPXQaL.iAKkLVhqsBeb8o9VAZhSwi','Fahrion',''),
+(130,'\0','Falk.Grunert@lit.justiz.sachsen.de','Falk','$2a$10$QoRwZLPBsfuY9ozpgRqRs.2m99aNlZzSwHOLMHGRxJeYYDMwu3rj6','Grunert',''),
+(131,'\0','Friedrich.Tischer@lit.justiz.sachsen.de','Friedrich','$2a$10$ViSJr9.aEhwrxVyJQrKoyOgAnJWHTd0x3hjg92lJhHZQWRHHQh2cW','Tischer',''),
+(132,'\0','Katharina.Rosenbaum@lit.justiz.sachsen.de','Katharina','$2a$10$no97gnE3GmA7QtjSb9yiB.6YVjPW61fRb22/hwmgltatLLW1IFVoW','Rosenbaum',''),
+(133,'\0','Isabell.Oehlmann@lit.justiz.sachsen.de','Isabell','$2a$10$qWz33e2zl2mYR0kEIGJdb.l1J5qNgINBRTz46jGVY6fJ7bC8HJpZy','Öhlmann',''),
+(134,'\0','Marie.Brenner@lit.justiz.sachsen.de','Marie','$2a$10$V04Fo8StJQI66.axEZDZIehFMM6s98U1jDIVT7lE0B.jgFQA9LB76','Brenner',''),
+(135,'\0','Matthias.Daehn@lit.justiz.sachsen.de','Matthias','$2a$10$n6n7wU045FQFO86Ebl.2nuU9reM7Ubwppw/MYpmynwARILPsTLni.','Dähn',''),
+(136,'\0','Andre.Jakob@lit.justiz.sachsen.de','André','$2a$10$p1oY0Aob6CaOyMl796vlq.VbYfy1m2M7G11tLCxGBCQPFYpxSngQW','Jakob',''),
+(137,'\0','Ronny.Lauber@lit.justiz.sachsen.de','Ronny','$2a$10$cpFVsDFTiAJ8O7fzzKKvc.xcYDeFRCS3wjMkYuVI3NKhubca6ezu2','Lauber',''),
+(138,'\0','Annett.Zimmermann@lit.justiz.sachsen.de','Annett','$2a$10$nCRba7dRXw92e5Ee77M6ROMoXMN.QoBlJIMlh2PCc2qQf.PSVF4wi','Zimmermann',''),
+(139,'\0','Rico.Ullmann@lit.justiz.sachsen.de','Rico','$2a$10$QcldB3vgqAo6OSltIwh6xuZV2ErwyXfS7DBViZNicYqVfF0QmORMy','Ullmann',''),
+(140,'\0','Juergen.Schuster@lit.justiz.sachsen.de','Jürgen','$2a$10$4Qd1erFOYK9VRqnRGvowv..izcf4G1j2dnG0nRqyt2w6nnmbm59HW','Schuster',''),
+(141,'\0','Diana.Kubaink@lit.justiz.sachsen.de','Diana','$2a$10$6lVz0Vr69Uk4IKQEAX3JY.0Z7raBZeNrXHSJDl20oqeRtjW0kx3Gu','Kubaink',''),
+(142,'\0','Gerd.Tomaschek@lit.justiz.sachsen.de','Gerd','$2a$10$wIcYLH3TFAIUYFvfrjjkQOtnafNy1.P.eQjrAqRMUXAW6eMemymSu','Tomaschek',''),
+(143,'\0','Maik.Friebe@lit.justiz.sachsen.de','Maik','$2a$10$0dVe43YQ9AFn8160ljSDeu0akFo8txNqB9DjN5W3I5cj95Vn6/ifi','Friebe',''),
+(144,'\0','Nicole.Huebschmann@lit.justiz.sachsen.de','Nicole','$2a$10$1N8ggyCtlcFjXoNhY9u8f.9FN0krpGSitpRoeecRBCEEbciiPqk8y','Hübschmann',''),
+(145,'\0','Marcus.Gerhardt@lit.justiz.sachsen.de','Marcus','$2a$10$19NRaqN0Q4YLmCVGHhf2I.0qlIJnqQhgEYKw1q/qnNIkU/ttzwuLO','Gerhardt',''),
+(146,'\0','Claudia.Herzog@lit.justiz.sachsen.de','Claudia','$2a$10$J.CQJAhxHT393xK71QpCL.RqvFbUNsq5TE5iX7909oOH5xNQNQDIi','Herzog',''),
+(147,'\0','Bjoern.Scheffel@lit.justiz.sachsen.de','Björn','$2a$10$mVWO9r8CErfPHJ3gojkNf.TsD7mU1lyp0A9Lz9GJsoF3OmwcGjbEW','Scheffel',''),
+(148,'\0','Matthias.Otte@lit.justiz.sachsen.de','Matthias','$2a$10$xoNUDkCxsuIcdgZyRe5B.uVFqAFB2zu90OI18vzus3ptgAV5xtmyO','Otte',''),
+(149,'\0','Jenny.Macherius@lit.justiz.sachsen.de','Jenny','$2a$10$uwEgdTRDyh.xqhRVeccN.u7YCv8WZ9vltZrw2vSdjp6uoK1Jv36h6','Macherius',''),
+(150,'\0','Uta.Fischer@agbz.justiz.sachsen.de','Uta','$2a$10$7E/brH6yxqOh.qDSS397yOXi.cVNS1.ga0G7843by.IoLguiCX3Ae','Fischer',''),
+(151,'\0','Jan.Reiter@lit.justiz.sachsen.de','Jan','$2a$10$NTrletk0Kpi7qFiFIWgGU.ua7iAKnT8s1T3LgGUj8tCNPkHcOObcy','Reiter',''),
+(152,'\0','Gerd.Uhlemann@lit.justiz.sachsen.de','Gerd','$2a$10$dCNmcROaRaNpR5Bk5LjLAusHBiqN7/0wH6USfoBRGG.Ud0wY6HTQy','Uhlemann',''),
+(153,'\0','Christian.Wlotzka@lit.justiz.sachsen.de','Christian','$2a$10$I/MhgDS75Lipv4.NfCCd9OBOCySCD1saDzZ1JHntl4DVJ/7OKoyHm','Wlotzka',''),
+(154,'\0','Jochen.Kley@lit.justiz.sachsen.de','Jochen','$2a$10$KlmqpsDUfEZ4xjFFAC7j9O/y3wnEi0H6.msKbYzWXAlKLBuRwLDAS','Kley',''),
+(155,'\0','Grit.Fichtner@lit.justiz.sachsen.de','Grit','$2a$10$OpxuEOSdvbC24HY1lcmFUumAW71whHb80mhTAAwg7RvpNUi0FYMWW','Fichtner',''),
+(156,'\0','Christiane.Thonig@lit.justiz.sachsen.de','Christiane','$2a$10$43KV46a.GUtO8wnwidQ/7u6eGAVI.QluB04DB6CUh.Q.1GktzWEk6','Thonig',''),
+(157,'\0','Rene.Weber@lit.justiz.sachsen.de','René','$2a$10$sRF6ACakSeb11jEqKJ9z0uO4JCROD.8BocaBu7e8JxiADlm3vm5wi','Weber',''),
+(158,'\0','EVJuS-Test_lit.EVJuS-Test_lit@intern.sachsen.de','EVJuS-Test_lit','$2a$10$7SZsUJOfp6ZUCh09yKnGvel6WP/YA.c1.UQ99P06CwHI7AvGg4ZUC','EVJuS-Test_lit',''),
+(159,'\0','E.Testuser5@lit.justiz.sachsen.de','E','$2a$10$Pn4d8zBjkAKcE6lxtiqYZeUqJmsle3zZLtTYiDDQKIOOuoUd2vT7m','Testuser5',''),
+(160,'\0','Frank.Wemme@lit.justiz.sachsen.de','Frank','$2a$10$3gU/HAQuwLCTrS1VBWuF8..POadRiLDirfEIw3FawgI/W3AiuDNXy','Wemme',''),
+(161,'\0','Tom.Schneider@lit.justiz.sachsen.de','Tom','$2a$10$g6RKxPtKQZ42zPa.Xw9EtOkmwhI9DqcqdfQ6quaSES2ZCSGhkP8me','Schneider',''),
+(162,'\0','Chris.Lischke@lit.justiz.sachsen.de','Chris','$2a$10$n2/mR7FidJqINJUCaH2zLeonA4SzFLgilNSGNCUxPPMeFQv/J2Wva','Lischke',''),
+(163,'\0','Stanislaw.Schevnin@lit.justiz.sachsen.de','Stanislaw','$2a$10$PDNVnLd/m1SQqBUoFwyPe.psmtYDBYcZGyctOtsp8CwuBg3bxZDia','Schevnin',''),
+(164,'\0','Sandra.Heyme@lit.justiz.sachsen.de','Sandra','$2a$10$1fqrymnGpnHmyg8b/r8Y6.YPxNHF9arnILiuwzvyN/v6PjWXRr7I.','Heyme',''),
+(165,'\0','Christian.Schreiner@lit.justiz.sachsen.de','Christian','$2a$10$3aDntLa.KrD0KkqpFbt2SuJHqgMC/W9PclZmPEm18nuTFcorCDopy','Schreiner',''),
+(166,'\0','Annabell.Krappidel@lit.justiz.sachsen.de','Annabell','$2a$10$ezhQXK3mNZ1pnraYHUdxEe2zJ9ubeSmr3mB4QjCyyZannDTjA2oMq','Krappidel',''),
+(167,'\0','robert.socke@lit.justiz.sachsen.de','Robert','$2a$10$MjtAwJc1TdkWtFxDvqkHsuVYetPGxx.gUabWVb881SdjfLevuXhve','Socke',''),
+(168,'\0','Torsten.Kloss@lit.justiz.sachsen.de','Torsten','$2a$10$yJHDRXjWjg09M/q397h2w.UqfCIG6ifh.zZLOW9rCj1XxqRcEl1qm','Kloss',''),
+(169,'\0','Marco.Linke@lit.justiz.sachsen.de','Marco','$2a$10$2LrS9E6qfK9Sr6Y5gfjDEucxGPGDz80BzlhIBjyKU59gkttZj.8kK','Linke',''),
+(170,'\0','Claudia.Glausch@lit.justiz.sachsen.de','Claudia','$2a$10$CcRGNhjjnACMJOT4ctPvO.bA2VetMay2kit0ZMhWDPjeC0ewVrQE2','Glausch',''),
+(171,'\0','Jens.Hermanns@lit.justiz.sachsen.de','Jens','$2a$10$oaBLPgd5v5KdMM9cV2O2ZOsXSNv7yptgqdeEn1El7k3mkLoNsxR6G','Hermanns',''),
+(172,'\0','Philipp.Schoen@lit.justiz.sachsen.de','Philipp','$2a$10$tCGPOAKMod3i5jnzDgRFtenh7K/PhHxjP5H0oy6inqih6S6/mlhba','Schön',''),
+(173,'\0','Anja.Zedler@lit.justiz.sachsen.de','Anja','$2a$10$9cmxZgbKTvhFv5e8JAbj6O1Z3UzP5jBBSSb9ibj/Bxyk25VBnyCFi','Zedler',''),
+(174,'\0','Anne.Richter@lit.justiz.sachsen.de','Anne','$2a$10$I4b3pZe4/r88jBEwsHxswOKItfxpaTOourhnBvvqYMo8LdTIZ8Hh6','Richter',''),
+(175,'\0','Danny.Lehmann@lit.justiz.sachsen.de','Danny','$2a$10$B4lpMprp/3vLUQmBb3RNxuq3S17zpFaBFb1eWr4VOBFZW7OwK.OCe','Lehmann',''),
+(176,'\0','Marcus.Escher@lit.justiz.sachsen.de','Marcus','$2a$10$qrwAvxZ9ZMc0FWBntN3m9uRp8nvjd7HY0oH8eQDRsEQw2fIKDViLC','Escher',''),
+(177,'\0','Corinna.Tautenhahn@lit.justiz.sachsen.de','Corinna','$2a$10$bKW8dxopiyt3P76/qZh0WOL9pMcRgodAvJwaA0jwD5K56GEMI6GA.','Tautenhahn',''),
+(178,'\0','Anja.Bjoerndal-Pedersen@lit.justiz.sachsen.de','Anja','$2a$10$41hZsoea9nJ1CjKoziaPHe90UicWsL7HiLygCOhIHtKR7GCOA4VSq','Björndal-Pedersen',''),
+(179,'\0','Florian.Moebius@lit.justiz.sachsen.de','Florian','$2a$10$1efJmcOGqru/QmCgLsEIG.ZpyKEVZ7uukDN91C3bImaafG8uCqREi','Möbius',''),
+(180,'\0','Kathleen.Lange@lit.justiz.sachsen.de','Kathleen','$2a$10$Lla/aQXKs6.cH70r382sOe3haqU5Z5bveGN8oFWhsQmSFYR1c2TM6','Lange',''),
+(181,'\0','Matthias.Keck@lit.justiz.sachsen.de','Matthias','$2a$10$inV6eNgt6esb1y57a9A6mellIqf1ZmIeVVfe2fu7XzrTZ7IAuTwxS','Keck',''),
+(182,'\0','Robert.Mueller-Wojtkowiak@lit.justiz.sachsen.de','Robert','$2a$10$sFf560FWAgY32KrZQ0wSGeFQHr9dwIUhYIIFdFZgc3i/i9nM.I/bm','Müller-Wojtkowiak',''),
+(183,'\0','Jens.Range@lit.justiz.sachsen.de','Jens','$2a$10$.10R73tJT71qUfzq8MJM4uCUTm0RyhYP6FBYc.hpGiFGMkweOcOJK','Range',''),
+(184,'\0','Corinna.Taennert@lit.justiz.sachsen.de','Corinna','$2a$10$SDBgAlo9rpzwhgr35zJlROTAU98uI9sApS4z121bKo1trwMEONQDa','Tännert',''),
+(185,'\0','Wiebke.Grusa@lit.justiz.sachsen.de','Wiebke','$2a$10$V6zAcXexL0PLgMjVM9lOoupCLjKnCEd9du9E5aGk7cd/.5a7h7Egi','Grusa',''),
+(186,'\0','Ralf.Schneider@lit.justiz.sachsen.de','Ralf','$2a$10$sq6onHFYpeElqC3ToTy4ge5/qhhc6HoqTtxQORSTg1bXV7xmyThNy','Schneider',''),
+(187,'\0','Felicia.Landgraf@lit.justiz.sachsen.de','Felicia','$2a$10$5rifYTnAKIZnf0g/l.gSt.5b08hs1MBDXrYeb6hO0OTBOzkHi8aq6','Landgraf',''),
+(188,'\0','Sylvio.Ernst@lit.justiz.sachsen.de','Sylvio','$2a$10$yi8Ohw5PjnmacVSWR0gee.JR9SfgLhqM6pXhdntHni57zHEkObGWe','Ernst',''),
+(189,'\0','Juliane.Goellner@lit.justiz.sachsen.de','Juliane','$2a$10$CyXcEclOrxndLS/LmLFNrO/RuArGldb9WigzNPBqM9QtRA/PuD2Xq','Göllner',''),
+(190,'\0','Max.Muster@lit.justiz.sachsen.de','Max','$2a$10$3Hd9GihveJXPdGGfHdNJ/eGPEV4Vxdka9/jBR2Lr3Q/jWcIsXCh5e','Muster',''),
+(191,'\0','Chris.Zenner@lit.justiz.sachsen.de','Chris','$2a$10$0FHmIn5mHkoy20ltH7yvPefo6qtDT//sBayM7nvtWfWcz6MozSRhW','Zenner',''),
+(192,'\0','David.May@lit.justiz.sachsen.de','David','$2a$10$kivbGjghV9SdZP9TX0wW4eiF9uCIa0/sX/1Fe/O/PJwy0bXnGyiWe','May',''),
+(193,'\0','Henry.Bartho@lit.justiz.sachsen.de','Henry','$2a$10$zRd0bSAX2kpZpiST8MKCTOxYiDpk8bqUBKPYw92xzPTtnQeHem9i.','Bartho',''),
+(194,'\0','Swen.Sennewald@lit.justiz.sachsen.de','Swen','$2a$10$wzdJtLW8b60Jup42Hadh0.nzc3tXJguyYXJbLBCiXjHm2Ij17e4hG','Sennewald',''),
+(195,'\0','nicole.schwalbe@lit.justiz.sachsen.de','Nicole','$2a$10$q6Z0Tqu5Rsqsmn3WfmvNreu1Umc4N7WECTGq7ResmxrTg44d.GT.a','Schwalbe',''),
+(196,'\0','susan.keppler@lit.justiz.sachsen.de','Susan','$2a$10$jGo4PgoWfRl2ygbW8hCuyutZepkJTgJ6Mlg4I43P5agTDncU3TPyS','Keppler',''),
+(197,'\0','Marcus.Frosch@lit.justiz.sachsen.de','Marcus','$2a$10$9/z8K02X5B8p31/sGKGVieFrUUH0GVzJAMkOX3NsgHMYZmSMIFoXW','Frosch',''),
+(198,'\0','Frank.Kasper@lit.justiz.sachsen.de','Frank','$2a$10$vg9hWghxe/J7IYpzJMWdHOGfQvf/UCsU1NK6UFCV1mJefA9AxnbTO','Kasper',''),
+(199,'\0','Matthias.Schubert@lit.justiz.sachsen.de','Matthias','$2a$10$FXtiV5Afc3ZQLoMINPCCaujTPR6FjYq0zvNt5KgkjFS7/q5xkR3IK','Schubert',''),
+(200,'\0','Falk.Streubel@lit.justiz.sachsen.de','Falk','$2a$10$mvnUvfCfEfuAxW1tXjtlEuEUI5fMFZVV51WKXaTBPU9suH39zSRce','Streubel',''),
+(201,'\0','Mario.Schuster@lit.justiz.sachsen.de','Mario','$2a$10$Q16AzUDEbJEI2gqONQTnRelw1Sz8xn0qAk.qUEFoHT4EY.QrXIOe6','Schuster',''),
+(202,'\0','Andre.Sowart@lit.justiz.sachsen.de','André','$2a$10$/IpE5J9bzKKe.A8tRVhpc.iRFHA4cBcqtabiOZTcHJAsDTG9Z/5nW','Sowart',''),
+(203,'\0','Heidrun.Keilig@lit.justiz.sachsen.de','Heidrun','$2a$10$MU3jvQ6aCQ8Pf3BpkKDixOohjUtSaCr9agRWQtSPItDGf/V2twI1S','Keilig',''),
+(204,'\0','Nadin.Adner@lit.justiz.sachsen.de','Nadin','$2a$10$.zHvLvYmAhbEwZJM0KMvgusYN0Q1Rfd/rB7Jhx9X.TiTYFJ7RtaYi','Adner',''),
+(205,'\0','Robert.Katzer@lit.justiz.sachsen.de','Robert','$2a$10$7CyNV1vVwRfVhVCvS/toMeqqHBo.i0M5CYb6LdKE9QAFPJfG9Ii.2','Katzer',''),
+(206,'\0','Katja.Langhammer@lit.justiz.sachsen.de','Katja','$2a$10$AlSh9y//6cdxDkJJMqR9t.1kWU5Zh433dnO195/eFYfAs.VscUriS','Langhammer',''),
+(207,'\0','Elke.Meyer@lit.justiz.sachsen.de','Elke','$2a$10$nWPsEQIV8ao7/3QbrS7rdueC3eDcC7OuUfeGGjSgcQjknXxFlUt22','Meyer',''),
+(208,'\0','Katja.Paschke@lit.justiz.sachsen.de','Katja','$2a$10$F9TwByb6KckMQlarQKvFruQUMA4NxRrtqg4YismUpeKH.pCRK8lB2','Paschke',''),
+(209,'\0','kerstin.sulk@lit.justiz.sachsen.de','Kerstin','$2a$10$eZUGXhRn.YR3a3VyISAsHOg3WOyDMPuNV6sSwDfNp54mV/66DAMvy','Sulk',''),
+(210,'\0','lars.goerner@lit.justiz.sachsen.de','Lars','$2a$10$W6dlxosTN4pE9KqjCCfM6u.tffpTjEvGpNJb2mDha0WI3t2DVmQdG','Görner',''),
+(211,'\0','Stefan.Richter@lit.justiz.sachsen.de','Stefan','$2a$10$5pnkBpeaYhpIYmLRf8qWWuarTgqDAtW0ageuBYpIdWtuirH06RbH6','Richter',''),
+(212,'\0','Thomas.Kindler@lit.justiz.sachsen.de','Thomas','$2a$10$FBdeUNOxqMKMtFkkmLjHtumAtl.49Bipt2xTdS30X.nL63v4g6hKm','Kindler',''),
+(213,'\0','Michaela.Pursche@lit.justiz.sachsen.de','Michaela','$2a$10$lxR4Q5vMpuS4ZGzx.hzxte8An5/FMAMDRuWIxYDHToTd7rQASYYbu','Pursche',''),
+(214,'\0','yvonne.wachsmuth@lit.justiz.sachsen.de','Yvonne','$2a$10$8FBa5NTgmvQFV.v20PzpFeDnzJm0BsDoUL1kJ6q3WdJ3kYLT.8C1e','Wachsmuth',''),
+(215,'\0','birgit.naefe@lit.justiz.sachsen.de','Birgit','$2a$10$fk0EOgBh49yHi9Xd5tnfx.6eA5uPN0g0dK69VTZlho2sHJ/tA0NeS','Näfe',''),
+(216,'\0','mirko.zuleger@lit.justiz.sachsen.de','Mirko','$2a$10$LXSsizBZhpOfT0EyNmdANO0H.gZit9rN54vQwJavmdGiqBwT0edCK','Zuleger',''),
+(217,'\0','diana.dorn@lit.justiz.sachsen.de','Diana','$2a$10$F2pAiJkWQo2qWGZeXBwgA.17Afwe/z7oiF8QhS2r8pByUNcjQNWU2','Dorn',''),
+(218,'\0','Nicole.Keil@lit.justiz.sachsen.de','Nicole','$2a$10$SE/M4aFen45g9P.5pwX0juqhW0EoZQilDVVGtgdOY08QMJ.taKsjS','Keil',''),
+(219,'\0','Jupp.Engel@lit.justiz.sachsen.de','Jupp','$2a$10$2RuAW54nzZserUqJWYUecOjkZm2E7ktCD.x5mmTdIEjCZxNJfccNG','Engel',''),
+(220,'\0','Benjamin.Ruehl@lit.justiz.sachsen.de','Benjamin','$2a$10$0dWtfJSrMkBDvLuSNC52xubFW46eGdsVwbXN1EK5Gb5p6APTLKDSq','Rühl',''),
+(221,'\0','Anja.Seifert@lit.justiz.sachsen.de','Anja','$2a$10$wG.zMjce4mda4xEMo83yEuXyPFL3dHeLXKnYPjSNa/KDj5CNpBYmm','Seifert',''),
+(222,'\0','Jens.Haertel@lit.justiz.sachsen.de','Jens','$2a$10$A7n6cthYcvUbJVS1zYVe2.rv0VjTaC1NICmmYz5XfUjuvXUa3nR06','Härtel',''),
+(223,'\0','mandy.leuschke@lit.justiz.sachsen.de','Mandy','$2a$10$Pr2BAeyEKzjQLIx.c17BV.wHdRN7HNdeAw0vZwKNRDTy7oPTtxK2a','Leuschke',''),
+(224,'\0','kerstin.dietze@lit.justiz.sachsen.de','Kerstin','$2a$10$rw9DdY9E3z.iPUDQ5jqCfurcz5AyLfH3Y2zbCUPscfmUWV38kMUUi','Dietze',''),
+(225,'\0','Peter.Buschmann@lit.justiz.sachsen.de','Peter','$2a$10$6qJGtdYGybBrDME31Zpm6ORl51LhevUwD1eEIPHwLx/TxjWlck.ey','Buschmann',''),
+(226,'\0','Sven.Kaufmann@lit.justiz.sachsen.de','Sven','$2a$10$mts5jSkaywd7odShEE6NUeT/ephxSTuX7XQ..XlXbd0iPZLuUj1Ru','Kaufmann',''),
+(227,'\0','Thomas.Ihle@lit.justiz.sachsen.de','Thomas','$2a$10$Z2CvxphlIPlnAoweiZEWiORRawEYKX22h7anzrHVxqdDCNbjcpDY2','Ihle',''),
+(228,'\0','Tobias.Hegewald@lit.justiz.sachsen.de','Tobias','$2a$10$IaiyU753Euz/wuJxitutS.GSdoS2xmB4bAhXkhST7v4JqT99Wm1U.','Hegewald',''),
+(229,'\0','kristina.dreisigacker@lit.justiz.sachsen.de','Kristina','$2a$10$VoU321g0LnDGfOk8k8pUne9c3SHFmjQZIHDB/jIHOfN.g1cMTrE4W','Dreisigacker',''),
+(230,'\0','Katrin.Mothes@lit.justiz.sachsen.de','Katrin','$2a$10$ZUylpOYiq/ZKVlEMoTURMOKw3l4UvyYsmVYVIqiAO9K1FEGADqz.2','Mothes',''),
+(231,'\0','Diana.Hahn@lit.justiz.sachsen.de','Diana','$2a$10$yLqzZ5QmR8mOwpS1JwTA8.Q/pfyBoclXuTfRMlPQL3KI2s2UqDhKi','Hahn',''),
+(232,'\0','Ronald.Mahlendorff@lit.justiz.sachsen.de','Ronald','$2a$10$eG2xoUynmW8exZUeiPHyd.XmLMkc1kuRK.TllCPRPXLgtP4soRwF6','Mahlendorff',''),
+(233,'\0','andree.bregulla@lit.justiz.sachsen.de','Andree','$2a$10$7Zs34CGwnSuNbaxg1tCxEOdy1Zo50cQOxoPqZw5d2av9xDTD1UslS','Bregulla',''),
+(234,'\0','lars.eckart@lit.justiz.sachsen.de','Lars','$2a$10$t9/FCquObGaK6uXvKOh9wuDxcZfkJwyk0DyhjwgVhXcijvdZSH.di','Eckart',''),
+(235,'\0','Ralf.Nothhaas@lit.justiz.sachsen.de','Ralf','$2a$10$LySIC9nmXbvUvRLbFChzWup8WJU/tZ.LDhTptE0PeQUfL3DL9DUiy','Nothhaas',''),
+(236,'\0','Jana.Beyer@lit.justiz.sachsen.de','Jana','$2a$10$NGBYHgKRm7O9ivuInqMPdeJBE4xv6nkI/ziOZs7dlA8Qp7ac1M5c6','Beyer',''),
+(237,'\0','Rene.Simon@lit.justiz.sachsen.de','René','$2a$10$l4eD7I.e8/MhFrUzTQAM3.KX9h8zLfaE9facJu9l0BTpAzmhyut3i','Simon',''),
+(238,'\0','Peggy.Mende@lit.justiz.sachsen.de','Peggy','$2a$10$CeoPFcpIuupiOm.aab6e7.SoifQh6VA1s3whAMBmp791VdF5GG8XW','Mende',''),
+(239,'\0','simone.mueller@lit.justiz.sachsen.de','Simone','$2a$10$aUZLQUdw.X3G6o45apnvj.zuwNWHd4wyzLycpMjOthLARYch1Rckm','Müller',''),
+(240,'\0','Lutz.Maiwald@lit.justiz.sachsen.de','Lutz','$2a$10$wbeF0yFCLsKOtvzG391CkuIVTXupJOxlthSBnIm1.HbGyklxLhUY.','Maiwald',''),
+(241,'\0','Elena.Seregi@lit.justiz.sachsen.de','Elena','$2a$10$TnyXWKuNtciqnKiTwoWRNO.1vWWO2E1Fk5kuM3hKqa62Tn7PSFD8e','Seregi',''),
+(242,'\0','Mandy.Essler@lit.justiz.sachsen.de','Mandy','$2a$10$KWy3T.51/ykdzm4sc4E/yO3lRqY2aREzYnR44mVTTToV7qqbsX9bK','Essler',''),
+(243,'\0','anke.beeskow@lit.justiz.sachsen.de','Anke','$2a$10$FdBA64qbxaiTdpGu1quzbeJwhvqRaiXJqPyF4Brb5qqfOuVTgqKY6','Beeskow',''),
+(244,'\0','Harald.Herrmann@lit.justiz.sachsen.de','Harald','$2a$10$fXEwAGOJl1uCw7f7ndnxpOhmOT8qbV8OcXqGdWoGEQmrZo.GTEybS','Herrmann',''),
+(245,'\0','Ulrike.Kaeseberg@lit.justiz.sachsen.de','Ulrike','$2a$10$lnhN13QOwvSKaeMbYZVjYuOiXfEjxktcFGb40BHAlmj/iZ/yYQpje','Käseberg',''),
+(246,'\0','antje.fischer@lit.justiz.sachsen.de','Antje','$2a$10$R8xWi5ouPPPRuvINtAy8auo8WNVMubwcUjxuhMAiLChmUexqAge0m','Fischer',''),
+(247,'\0','Ines.Leppuhner@lit.justiz.sachsen.de','Ines','$2a$10$ZMUsF6cg4.m/dxaOpl43nuW1.lFmrD4ybZ4.FQRqu2b7aHhIPKERm','Leppuhner',''),
+(248,'\0','Gerd.Semmelroth@lit.justiz.sachsen.de','Gerd','$2a$10$gOrZWcmuG1ScHKnxgsLlw.lNzK.RYaJIJ8646pCTXj6NO.IKq1lN2','Semmelroth',''),
+(249,'\0','Anja.Simon@lit.justiz.sachsen.de','Anja','$2a$10$qIyt8kqkHOS9tS2FfHt/EeS9Ima6r1/SplHLNlImp.7egKKgMJp5y','Simon',''),
+(250,'\0','Gerd.Franke@lit.justiz.sachsen.de','Gerd','$2a$10$K59Y/N6K1JKXrrC81AkyeOhQ0NBPH8yNOPPXNeSlGgEJY2a2UiOg6','Franke',''),
+(251,'\0','Ute.Pratsch@lit.justiz.sachsen.de','Ute','$2a$10$NUjrs2ykQ2Z2u3aAZdJcGO4rbepqS3StxT1jBujOdxVLn.RMRlR7q','Pratsch',''),
+(252,'\0','Sabine.Apel@lit.justiz.sachsen.de','Sabine','$2a$10$lXPY73C7wXY5fhyrxNLvaO48INeQD29quDggg.rGbjT0Q3MmzoKdW','Apel',''),
+(253,'\0','Claudia.Welz@lit.justiz.sachsen.de','Claudia','$2a$10$jx5y1nBpxKQ3aofTj2T3ROFMtNsoMh9QFYFdETvnaoUNTgDerf5Gq','Welz',''),
+(254,'\0','Isabel.Ueberall@lit.justiz.sachsen.de','Isabel','$2a$10$hBNGs8MX4jCKUQV8fVb0wO3dOu4roNZ5OeShMXG4pOGesFXWli.VC','Ueberall',''),
+(255,'\0','Martina.Schulz@lit.justiz.sachsen.de','Martina','$2a$10$hzr0OhBqN2HrfoyUh5auzeIepGZI6Qo0Uw1zvrDGCyQjx85lgiUhC','Schulz',''),
+(256,'\0','Andreas.Pietsch@lit.justiz.sachsen.de','Andreas','$2a$10$ZbmbHDXIX5JgjE7BA1jQhOLMx/Qdq0bbDYLaFgtWjWjwZH1bbZ.DK','Pietsch',''),
+(257,'\0','Claudia.Graefe@lit.justiz.sachsen.de','Claudia','$2a$10$MwKwH9BHqSxWqbAvHV1XMeIiJY/1E/iFfR6zLEfFt.6rjy4rKYg4K','Gräfe',''),
+(258,'\0','Kerstin.Speck@lit.justiz.sachsen.de','Kerstin','$2a$10$IFy83/ItbPmKbM6rYboCH.HuLwxCam9WO6xnZGnxkCVuyElAgSqOi','Speck',''),
+(259,'\0','silke.krock@lit.justiz.sachsen.de','Silke','$2a$10$5No2gTCqyGR3GZ9uGz9L9Oze0D0gOHyVJ7X/4JWhDVBsN06z4anZ2','Krock',''),
+(260,'\0','Steffi.Kreissig@lit.justiz.sachsen.de','Steffi','$2a$10$e.u7xFX57QIcTcFsByiOKONCjkIQWN8RpVljyzYjvlKGFMNXeGg2u','Kreißig',''),
+(261,'\0','katrin.freudenberg@lit.justiz.sachsen.de','Katrin','$2a$10$W.TNNphYQiQCWzZRp0G3ZO.YG1XoEpF9Rfmj5BbpRrqCYWzxrz6wq','Freudenberg',''),
+(262,'\0','Elisabeth.Wellmann@lit.justiz.sachsen.de','Elisabeth','$2a$10$wfRdfMHAgDn4AoM4Ggg5Qu8hPcAjoCIML1vGPZZdn4.BlGlCikCv6','Wellmann',''),
+(263,'\0','Marita.Beck@lit.justiz.sachsen.de','Marita','$2a$10$eHWDcatJzzuPd0Uw63IPt.pQ.BDDVCYvX2XMCZ4uhgwa1vYDT51Ym','Beck',''),
+(264,'\0','Cloud.Lange@lit.justiz.sachsen.de','Cloud','$2a$10$4VgUSDiWE0zB.7rNPS65gOxJRIp3GOyHzUMB3nBpyJkfNip7Zoyw6','Lange',''),
+(265,'\0','Caterina.Enderlein@lit.justiz.sachsen.de','Caterina','$2a$10$K3b13snrVhVJYs/6zyI.7Oo6w5HdqFWayZgk2LGBsR9ZASSc267Ku','Enderlein',''),
+(266,'\0','Ringo.Leupold@lit.justiz.sachsen.de','Ringo','$2a$10$3J3a8MZl64kKZnBTg.VESuFn61ipUQb1gelERb6ZyYXd95ubSrerq','Leupold',''),
+(267,'\0','Andreas.Schloeffel@lit.justiz.sachsen.de','Andreas','$2a$10$ky.WZJ8VP7bzhf5gQ8i8AOiE8isfz6mGPDvw71.GS3Cy6Kwovaxwe','Schlöffel',''),
+(268,'\0','Andre.Meyer@LIT.justiz.sachsen.de','André','$2a$10$58mw.zfdA0p6IY2WlDqvs.VPFiFtdYriPI0UPgpj7Zoj45xQppv0G','Meyer',''),
+(269,'\0','Sylvia.Kaiser@lit.justiz.sachsen.de','Sylvia','$2a$10$PFIq047IJxy4EizXzJW9euqmuBX3dH3q4WtoJqwIInGgS3jBvKtCK','Kaiser',''),
+(270,'\0','Petra.Nehring@lit.justiz.sachsen.de','Petra','$2a$10$nBndIpntDBJNZkmexA6khOOfD18rzkCpV1zlGbrlPKBLvbV0Uk8aC','Nehring',''),
+(271,'\0','Sandro.Lohse@lit.justiz.sachsen.de','Sandro','$2a$10$KVDjyxO5u8tTdI.Z10N86..0aZwCEvNTLnSIGPkDZ.qVTFsDjCi5q','Lohse',''),
+(272,'\0','Anke.Leppuhner@lit.justiz.sachsen.de','Anke','$2a$10$nxIfXxg2NEIPCxerjCxA6.xLJx1neg.Qqs2PG1qF96.sOfaSiX0Pa','Leppuhner',''),
+(273,'\0','Anke.Fiebig@lit.justiz.sachsen.de','Anke','$2a$10$s5lLq4/SmBEIa9aKTLXKJOUoHLLdDXe4W2GXT.EdWdEnCNhfVT2ca','Fiebig',''),
+(274,'\0','silke.wolf@lit.justiz.sachsen.de','Silke','$2a$10$nXZokbRNJfMVA25LdY4QquiebQd2AVgAftMw77I...D8Lcwag9kT2','Wolf',''),
+(275,'\0','Thomas.Eger@lit.justiz.sachsen.de','Thomas','$2a$10$i5spaHkG0w54Gr/cnxuWoeWI4lXyVlbGt6nH9ISugeV9AiWt7vkCC','Eger',''),
+(276,'\0','Silke.Manthey@lit.justiz.sachsen.de','Silke','$2a$10$6TTLwzyv2V8TzbKXibkmnOVqFU4mSvTpsS3yXF4elswsF7Uv1fSty','Manthey',''),
+(277,'\0','Holger.Totz@lit.justiz.sachsen.de','Holger','$2a$10$X/aGG7OqRuP2xFpvO/jQkOTIdqxcCMldPTUF/nnc/T25Ur1Yr0c5u','Totz',''),
+(278,'\0','Otmar.Mueller@lit.justiz.sachsen.de','Otmar','$2a$10$kiEjmmAiLOzTrsC7VpUi3eN3bvwTplH6yM1I8bcz5okEShE8XpOfG','Müller',''),
+(279,'\0','joerg.jachmann@lit.justiz.sachsen.de','Jörg','$2a$10$/zgvDlDeRw6Yd4y.7zY2Hes3.rQ2qHnP9tY4dBSkZSQFxLjFYQFV2','Jachmann',''),
+(280,'\0','Torsten.Herzog@lit.justiz.sachsen.de','Torsten','$2a$10$xzlx5n93/lcr.aIxAf4WXOR.7IFy47VvTDFWKKiaYUlvvRNBIYnXS','Herzog',''),
+(281,'\0','Daniela.Herzog@lit.justiz.sachsen.de','Daniela','$2a$10$PXX61Xx8zXSHjYAbaPDCzegd96k7ItZ8S.vIfONAhGz1ga6LRi8oq','Herzog',''),
+(282,'\0','Gabriele.Neubert-Wetzel@lit.justiz.sachsen.de','Gabriele','$2a$10$eNJ2aag.nifpYLkOaRFdUOJn3luoAtMk49VMlE7kQ9cAgcdIztdPC','Neubert-Wetzel',''),
+(283,'\0','jens.hoehnel@lit.justiz.sachsen.de','Jens','$2a$10$DA29o1H74FX1hegqDPfey.Kmz2kk/U3GGq7T0jTvreZDWqcEkdMBy','Höhnel',''),
+(284,'\0','Bianca.Ritter@lit.justiz.sachsen.de','Bianca','$2a$10$27iy.cLP1ak0VQ3n7Ej.0./XAahqBZBDjj9K8xuO2gcWO4eikh0qG','Ritter',''),
+(285,'\0','Antje.Boerner@lit.justiz.sachsen.de','Antje','$2a$10$xPFJNl/gfTWC5XdEKWVWreEerlojtlC2xLMbuJk7S3qzyN/h1YwQS','Börner',''),
+(286,'\0','Rainer.Rudolph@lit.justiz.sachsen.de','Rainer','$2a$10$x9xx6rZSMa6Tx0YYrqwxkeCxdgw9YUPNU9xisrtwMdbKny7oR.SRG','Rudolph',''),
+(287,'\0','Anke.Aurich@lit.justiz.sachsen.de','Anke','$2a$10$Iy7xUd6FbK9eRb/dBcFRC.6.3Ke0gca0oPfXlETrmhHuaKZUJocMO','Aurich',''),
+(288,'\0','Annette.Leuner@lit.justiz.sachsen.de','Annette','$2a$10$vFIKFyrFaXShvgTMVFZooOxFLIVM.0HWaz/HfJ9Sx7pHyaOv.XOhi','Leuner',''),
+(289,'\0','Lutz.Naumann@lit.justiz.sachsen.de','Lutz','$2a$10$OzTaqmRTiwNqSAAlD.czWemkpT34hAZT.EbXD5kudjRzFjnFwIYZy','Naumann',''),
+(290,'\0','Thomas.Loeser@lit.justiz.sachsen.de','Thomas','$2a$10$MIKQr.thcyWvnd7G4nyy8.fQ9O45OQTkHTbIee2JZo2DoZbNH0Ej6','Löser',''),
+(291,'\0','Olaf.Klotz@lit.justiz.sachsen.de','Olaf','$2a$10$4NpcI9GVzLnKBCtlSUC8DuRXa2RWOQsGTEr1ICBAv4qS.GOZoXm8m','Klotz',''),
+(292,'\0','Roland.Ziesch@lit.justiz.sachsen.de','Roland','$2a$10$2wMycJnQWUY9afPcRdu3QusAZwG8w8KGAfUAUtsxVexOagxnl4cOC','Ziesch',''),
+(293,'\0','Simone.Funke@lit.justiz.sachsen.de','Simone','$2a$10$I.Y2drlbYswtQ.z684eZleGJRclA4VFZ5UGeYcZvsHfUyH/taVb2S','Funke',''),
+(294,'\0','Dennis.Gerisch@lit.justiz.sachsen.de','Dennis','$2a$10$XA4ZZrbLFmUZbOp9eHQRXOAAY2YHSTitJ686qDpRFZ/PNhx6CphSa','Gerisch',''),
+(295,'\0','Holger.Pfriem@lit.justiz.sachsen.de','Holger','$2a$10$wNaaBb1kYCu7Mxg2t9n1z.CB7WBIddVWVykN30pr..MzouCpLlg8G','Pfriem',''),
+(296,'\0','Heiko.Braeunig@lit.justiz.sachsen.de','Heiko','$2a$10$/E/5ntcVudlsI7haeOq5.ujnzf1HGtQEisMHTHNniQudniWvFkusC','Bräunig','');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-11-08  7:26:16
