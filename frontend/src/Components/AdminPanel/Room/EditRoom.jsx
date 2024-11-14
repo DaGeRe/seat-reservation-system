@@ -40,25 +40,27 @@ export default function EditRoom({ editRoomModal }) {
   };
 
   async function updateRoom() {
-    putRequest( 
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/${selectedRoom.id}`,
-      headers,
-      (_) => {
-        toast.success(t('roomType'));
-      },
-      () => {console.log('Failed to handle room type change in EditRoom.jsx');},
-        JSON.stringify({
-          'floor': selectedRoom.floor,
-          'status': newRoomStatus,
-          'type': newRoomType,
-          'x': selectedRoom.x,
-          'y': selectedRoom.y,
-          'remark': newRoomRemark,
-          'building':selectedRoom.building
-        })
-    );
-    editRoomModal();
-    deselectRoom();
+    if (selectedRoom != null && selectedRoom.id) {
+      putRequest( 
+        `${process.env.REACT_APP_BACKEND_URL}/rooms/${selectedRoom.id}`,
+        headers,
+        (_) => {
+          toast.success(t('roomType'));
+        },
+        () => {console.log('Failed to handle room type change in EditRoom.jsx');},
+          JSON.stringify({
+            'floor': selectedRoom.floor,
+            'status': newRoomStatus,
+            'type': newRoomType,
+            'x': selectedRoom.x,
+            'y': selectedRoom.y,
+            'remark': newRoomRemark,
+            'building':selectedRoom.building
+          })
+      );
+      editRoomModal();
+      deselectRoom();
+    }
   };
 
     return (
