@@ -1,7 +1,7 @@
 import {Grid2, Button} from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DeleteFf from '../../DeleteFf/DeleteFf';
+import DeleteFf from '../../DeleteFf';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";

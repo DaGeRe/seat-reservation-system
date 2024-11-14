@@ -5,6 +5,7 @@ import Floor from "./Components/Floors/Floor";
 import Booking from "./Components/Home/Booking";
 import AdminPage from "./Components/AdminPanel/AdminPage"
 import MyBookings from "./Components/Home/MyBookings";
+import Series from './Components/Series/Series';
 import {
   BrowserRouter as Router,
   Routes,
@@ -23,7 +24,7 @@ function App() {
           <Route path="/desks" element={<Booking />}></Route>
           <Route path="/admin" element={<AdminPage />}></Route>
           <Route path="/mybookings" element={<MyBookings />}></Route>
-
+          <Route path='/series' element={<Series />}></Route>
           <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </Router>

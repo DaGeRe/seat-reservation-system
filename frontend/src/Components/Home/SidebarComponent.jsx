@@ -6,12 +6,17 @@ import { RiAdminFill } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaLock, FaCog, FaBookmark, FaEye, FaEyeSlash } from "react-icons/fa";
+import { GiOfficeChair } from 'react-icons/gi';
 import ChangePassword from "./ChangePassword";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
-import { CiLogout } from "react-icons/ci";
-import { MdGTranslate } from "react-icons/md";
+import { CiLogout } from 'react-icons/ci';
+import { MdGTranslate } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { putRequest } from '../RequestFunctions/RequestFunctions';
+import FreeDesks from './FreeDesks/FreeDesks';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import { Box, Stack, Typography } from '@mui/material';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -23,6 +28,7 @@ const SidebarComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [isFreeDesksModalOpen, setIsFreeDesksModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
 
@@ -44,6 +50,15 @@ const SidebarComponent = () => {
       case "collapse":
         setCollapsed(!collapsed);
         localStorage.setItem("sidebarCollapsed", !collapsed);
+        break;
+      
+      case 'series':
+        setActiveTab("seties");
+        navigate("/series", { replace: true });
+        break;
+
+      case 'freeDesks':
+        setIsFreeDesksModalOpen(true);
         break;
 
       case "calendar":
@@ -86,6 +101,10 @@ const SidebarComponent = () => {
 
   const handleCloseChangePasswordModal = () => {
     setIsChangePasswordModalOpen(false);
+  };
+
+  const handleCloseFreeDesksModal = () => {
+    setIsFreeDesksModalOpen(false);
   };
 
   const handleCloseLogoutConfirmationModal = () => {
@@ -207,6 +226,18 @@ const SidebarComponent = () => {
           >
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
+{/*           <MenuItem
+            icon={<GiOfficeChair />}
+            onClick={() => handleClick('freeDesks')}
+          >
+            {t('freeDesks')}  
+          </MenuItem> */}
+          {/* <MenuItem
+            icon={<GiOfficeChair />}
+            onClick={() => handleClick('series')}
+          >
+            {}
+          </MenuItem> */}
         </Menu>
         <Menu>
 {/*           <SubMenu icon={<FaCog />} label={t("settings")}>
@@ -224,6 +255,12 @@ const SidebarComponent = () => {
         isOpen={isChangePasswordModalOpen}
         onClose={handleCloseChangePasswordModal}
         onSubmit={handleChangePasswordSubmit}
+      />
+
+      <FreeDesks
+        isOpen={isFreeDesksModalOpen}
+        onClose={handleCloseFreeDesksModal}
+        //onSubmit={handleChangePasswordSubmit}
       />
 
       {/* Logout Confirmation Modal */}
