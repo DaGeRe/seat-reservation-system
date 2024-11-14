@@ -30,29 +30,7 @@ export default function AddEmployee({ addEmployeeModal }) {
         toast.error('Fields cannot be blank!');
         return false;
     }
-      
-/*       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/register`, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify({
-        "email": email,
-          "password": password,
-          "name": name,
-          "surname": surname,
-          "admin": isAdmin,
-          "visibility": visibility,
-      })
-    }).then(resp => {
-        if(resp.status===409){
-            toast.error("Email already taken");
-        } else {
-            toast.success(t("userCreated"));
-            addEmployeeModal();
-        }
-       
-    }).catch(error => {
-      toast.error(t("userCreationFailed"));
-    }); */
+
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/register`,
       headers,

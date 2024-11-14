@@ -2,7 +2,7 @@ import {Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DeleteFf from '../../DeleteFf/DeleteFf';
+import DeleteFf from '../../DeleteFf';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";

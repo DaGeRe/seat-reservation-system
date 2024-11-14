@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import DeleteFf from '../../DeleteFf/DeleteFf';
+import DeleteFf from '../../DeleteFf';
 import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'

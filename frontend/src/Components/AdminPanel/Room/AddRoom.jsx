@@ -51,7 +51,8 @@ export default function AddRoom({ addRoomModal }) {
         'type': type,
         'x': x,
         'y': y,
-        'remark': remark
+        'remark': remark,
+        'building':building
       })
     );
   }

@@ -10,7 +10,7 @@ import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import { useTranslation } from 'react-i18next';
-import FloorSelector from '../FloorSelector/FloorSelector.js';
+import FloorSelector from '../FloorSelector.js';
 import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C } from '../../constants.js';
 /**
  * @param floor The current floor. (either First or Ground)

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { putRequest } from '../../RequestFunctions/RequestFunctions';
 import { roomToOption } from '../Room/RoomAndOption'
 import FloorImage from '../../FloorImage/FloorImage.jsx'
-import FloorSelector from '../../FloorSelector/FloorSelector.js';
+import FloorSelector from '../../FloorSelector.js';
 import RoomDefinition from './RoomDefinition.js';
 import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
