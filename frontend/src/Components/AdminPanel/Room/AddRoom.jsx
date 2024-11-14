@@ -86,8 +86,8 @@ export default function AddRoom({ addRoomModal }) {
                   />
                   <br></br> <br></br>
                   <DialogActions>
-                    <Button onClick={()=>addRoom()}>&nbsp;{t("submit").toUpperCase()}</Button>
-                    <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                    <Button onClick={()=>addRoom()}>&nbsp;{t('submit').toUpperCase()}</Button>
+                    <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
                   </DialogActions>
                 </Box>
               </Grid2>

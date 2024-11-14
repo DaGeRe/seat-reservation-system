@@ -15,8 +15,10 @@ import { toast } from 'react-toastify';
 import { putRequest } from '../RequestFunctions/RequestFunctions';
 import FreeDesks from './FreeDesks/FreeDesks';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { FaCalendarAlt } from "react-icons/fa";
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import { Box, Stack, Typography } from '@mui/material';
+import Series from "../Series/Series";
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -29,6 +31,7 @@ const SidebarComponent = () => {
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isFreeDesksModalOpen, setIsFreeDesksModalOpen] = useState(false);
+  const [isSeriesModalOpen, setIsSeriesModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
 
@@ -53,8 +56,9 @@ const SidebarComponent = () => {
         break;
       
       case 'series':
-        setActiveTab("seties");
-        navigate("/series", { replace: true });
+        //setActiveTab("seties");
+        //navigate("/series", { replace: true });
+        setIsSeriesModalOpen(true);
         break;
 
       case 'freeDesks':
@@ -226,6 +230,12 @@ const SidebarComponent = () => {
           >
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
+          <MenuItem
+            icon={<FaCalendarAlt />}
+            onClick={() => handleClick('series')}
+          >
+            {t('series')}
+          </MenuItem>
 {/*           <MenuItem
             icon={<GiOfficeChair />}
             onClick={() => handleClick('freeDesks')}
@@ -263,6 +273,10 @@ const SidebarComponent = () => {
         //onSubmit={handleChangePasswordSubmit}
       />
 
+      <Series 
+        isOpen={isSeriesModalOpen}
+        setIsOpen={setIsSeriesModalOpen}
+      />
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
         isOpen={isLogoutConfirmationOpen}
