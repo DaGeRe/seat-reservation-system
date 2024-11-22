@@ -13,6 +13,7 @@ import DatePicker from 'react-datepicker';
 import { de } from "date-fns/locale"; // Import German locale from date-fns
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import { BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
+import CreateDatePicker from './CreateDatePicker';
 const CreateSeries = () => {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -40,17 +41,11 @@ const CreateSeries = () => {
         
         <div className='mb-content-container'>
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                <FormControl required={true} size="small" fullWidth variant="standard">
-                         <DatePicker
-                            label={t('startDate')}
-                            selected={startDate}
-                            onChange={setStartDate}
-                            locale="de"
-                            dateFormat="dd.MM.yyyy"
-                            placeholderText={t('startDate')}
-                            showWeekNumbers
-                        />
-                </FormControl>
+                <CreateDatePicker
+                    date={startDate}
+                    setter={setStartDate}
+                    label={t('startDate')}
+                />
             </Box>
         </div>
       </div>
