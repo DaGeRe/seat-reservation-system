@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, TextField } from '@mui/material';
+import { FormControl, FormControlLabel,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,7 +12,7 @@ import SidebarComponent from '../Home/SidebarComponent';
 import DatePicker from 'react-datepicker';
 import { de } from "date-fns/locale"; // Import German locale from date-fns
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
-
+import { BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
 const CreateSeries = () => {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -38,28 +38,127 @@ const CreateSeries = () => {
         <h1 className='mb-text'>{create_headline()}</h1>
         <hr className='gradient' />
         
-
-            <React.Fragment>
-                <DialogContent>
-                    <Grid2 container >
-                        {/* <Box sx={{ flexGrow: 1, padding: '10px' }}> */}
-                            <FormControl required={true} size='big' fullWidth variant='standard'>
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)} // Handle date change
-                                    locale={de} // Set German locale
-                                    dateFormat="dd.MM.yyyy" // German date format
-                                    placeholderText="Datum auswählen"
-                                />
-                            </FormControl>
-                        {/* </Box> */}
-                    </Grid2>
-                </DialogContent>
-            </React.Fragment>
-
+        <div className='mb-content-container'>
+            <Box sx={{ flexGrow: 1, padding: '10px' }}>
+                <FormControl required={true} size="small" fullWidth variant="standard">
+                         <DatePicker
+                            label={t('startDate')}
+                            selected={startDate}
+                            onChange={setStartDate}
+                            locale="de"
+                            dateFormat="dd.MM.yyyy"
+                            placeholderText={t('startDate')}
+                            showWeekNumbers
+                        />
+                </FormControl>
+            </Box>
+        </div>
       </div>
     </div>
   );
 };
+
+{/**
+ * 
+ * <BootstrapDialog aria-labelledby="customized-dialog-title" open={isOpen}>
+        <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+            SerienTermin
+        </BootstrapDialogTitle>
+        <React.Fragment>
+                <DialogContent>
+                <Box sx={{ flexGrow: 1, padding: '10px' }}>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Startdatum</InputLabel>
+
+                        <DatePicker
+                            selected={startDatum}
+                            onChange={setStartDatum}
+                            locale="de"
+                            dateFormat="dd.MM.yyyy"
+                            placeholderText="Datum auswählen"
+                            showWeekNumbers
+                            todayButton="Heute"
+                            isClearable
+                        />
+                    </FormControl>
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Enddatum</InputLabel>
+                        <DatePicker
+                            selected={endDatum}
+                            onChange={setEndDatum}
+                            locale="de"
+                            dateFormat="dd.MM.yyyy"
+                            placeholderText="Datum auswählen"
+                            showWeekNumbers
+                            todayButton="Heute"
+                            isClearable
+                        />
+                    </FormControl>
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Wochentag</InputLabel>
+                        <Select
+                            labelId='demo-simple-select-label'
+                            id='demo-simple-select'
+                            value={wochentag}
+                            label='Wochentag'
+                            onChange={(e) => setWochentag(e.target.value)}
+                        >
+                            <MenuItem value='Montag'>Montag</MenuItem>
+                            <MenuItem value='Dienstag'>Dienstag</MenuItem>
+                            <MenuItem value='Mittwoch'>Mittwoch</MenuItem>
+                            <MenuItem value='Donnerstag'>Donnerstag</MenuItem>
+                            <MenuItem value='Freitag'>Freitag</MenuItem>
+                        </Select>
+                    </FormControl> 
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Startzeit</InputLabel>
+                        <input
+                        type='time'
+                        value={startUhrzeit}
+                        onChange={(e) => setStartUhrzeit(e.target.value)}
+                        />
+                    </FormControl>
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Endzeit</InputLabel>
+                        <input
+                            type='time'
+                            value={endUhrzeit}
+                            onChange={(e) => setEndUhrzeit(e.target.value)}
+                        />
+                    </FormControl>
+                    <br></br> <br></br>
+                    <FormControl required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>Wiederholungsfrequenz</InputLabel>
+                        <Select
+                            labelId='demo-simple-select-label'
+                            id='demo-simple-select'
+                            value={frequenz} 
+                            label='Wochentag'
+                            onChange={(e) => setFrequenz(e.target.value)}
+                        >
+                            <MenuItem value="täglich">Täglich</MenuItem>
+                            <MenuItem value="wöchentlich">Wöchentlich</MenuItem>
+                            <MenuItem value="monatlich">Monatlich</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <br></br> <br></br>
+                    <DialogActions>
+                        <Button onClick={()=>handleSubmit()}>&nbsp;{t("submit").toUpperCase()}</Button>
+                        <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                    </DialogActions>
+            </Box>
+            </DialogContent>
+        </React.Fragment>
+        </BootstrapDialog>
+    );
+});
+
+export default Series;
+ * 
+ */}
 
 export default CreateSeries;
