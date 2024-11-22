@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { confirmAlert } from 'react-confirm-alert';
 import SidebarComponent from '../Home/SidebarComponent';
+import Box from '@mui/material/Box';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 
 const ManageSeries = () => {
@@ -30,7 +31,9 @@ const ManageSeries = () => {
         <hr className='gradient' />
         
         <div className='mb-content-container'>
+            <Box sx={{ flexGrow: 1, padding: '10px' }}>
 
+            </Box>
         </div>
       </div>
     </div>

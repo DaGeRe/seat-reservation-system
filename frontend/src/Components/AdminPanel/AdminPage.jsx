@@ -20,7 +20,7 @@ import { UsageGraph } from "./UsageGraph";
 import noDataImage from "../Assets/nodb.png";
 import { useTranslation } from "react-i18next";
 import {getRequest} from '../RequestFunctions/RequestFunctions';
-import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog } from '../Bootstrap';
+import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
 const AdminPage = () => {
   // The jwt.
   //const accessToken = localStorage.getItem('accessToken');
