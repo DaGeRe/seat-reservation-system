@@ -34,7 +34,6 @@ const SidebarComponent = () => {
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isFreeDesksModalOpen, setIsFreeDesksModalOpen] = useState(false);
-  const [isSeriesModalOpen, setIsSeriesModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
 
@@ -56,10 +55,6 @@ const SidebarComponent = () => {
       case "collapse":
         setCollapsed(!collapsed);
         localStorage.setItem("sidebarCollapsed", !collapsed);
-        break;
-      
-      case 'series':
-        setIsSeriesModalOpen(true);
         break;
 
       case 'freeDesks':
@@ -230,10 +225,12 @@ const SidebarComponent = () => {
           <Menu>
             <SubMenu icon={<IoIosAlbums />} label={t('series')}>
               <MenuItem icon={<IoIosCheckbox />} onClick={() => {
-
+                 //setActiveTab("manageseries");
+                 navigate("/manageseries", { replace: true });
               }}>{t('manage')}</MenuItem>
               <MenuItem icon={<AiFillPlusCircle />} onClick={() => {
-                
+                 //setActiveTab("createseries");
+                 navigate("/createseries", { replace: true });
               }}>{t('create')}</MenuItem>
             </SubMenu> 
           </Menu>
@@ -244,24 +241,7 @@ const SidebarComponent = () => {
           >
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
-          <MenuItem
-            icon={<FaCalendarAlt />}
-            onClick={() => handleClick('series')}
-          >
-            {t('series')}
-          </MenuItem>
-{/*           <MenuItem
-            icon={<GiOfficeChair />}
-            onClick={() => handleClick('freeDesks')}
-          >
-            {t('freeDesks')}  
-          </MenuItem> */}
-          {/* <MenuItem
-            icon={<GiOfficeChair />}
-            onClick={() => handleClick('series')}
-          >
-            {}
-          </MenuItem> */}
+
         </Menu>
         <Menu>
 {/*           <SubMenu icon={<FaCog />} label={t("settings")}>
@@ -285,11 +265,6 @@ const SidebarComponent = () => {
         isOpen={isFreeDesksModalOpen}
         onClose={handleCloseFreeDesksModal}
         //onSubmit={handleChangePasswordSubmit}
-      />
-
-      <Series 
-        isOpen={isSeriesModalOpen}
-        setIsOpen={setIsSeriesModalOpen}
       />
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
