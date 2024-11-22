@@ -56,8 +56,6 @@ const SidebarComponent = () => {
         break;
       
       case 'series':
-        //setActiveTab("seties");
-        //navigate("/series", { replace: true });
         setIsSeriesModalOpen(true);
         break;
 
@@ -222,8 +220,18 @@ const SidebarComponent = () => {
             icon={<FaBookmark />}
             onClick={() => handleClick("bookings")}
           >
+
             {t("bookings")}
           </MenuItem>
+
+          
+          <Menu>
+            <SubMenu icon={<FaCog />} label={t('series')}>
+              <MenuItem icon={visibility === "true" ? <FaEye /> : <FaEyeSlash />} onClick={() => handleClick("visibility")}>{t('manage')}</MenuItem>
+              <MenuItem icon={<FaLock />} onClick={() => handleClick("changePassword")}>{t('create')}</MenuItem>
+            </SubMenu> 
+          </Menu>
+
           <MenuItem
             icon={<MdGTranslate />}
             onClick={() => handleClick("language")}
