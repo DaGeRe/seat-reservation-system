@@ -19,6 +19,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import { Box, Stack, Typography } from '@mui/material';
 import Series from "../Series/Series";
+import { AiFillPlusCircle } from 'react-icons/ai';
+import { IoIosCheckbox } from 'react-icons/io';
+import { IoIosAlbums } from 'react-icons/io';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -224,11 +227,14 @@ const SidebarComponent = () => {
             {t("bookings")}
           </MenuItem>
 
-          
           <Menu>
-            <SubMenu icon={<FaCog />} label={t('series')}>
-              <MenuItem icon={visibility === "true" ? <FaEye /> : <FaEyeSlash />} onClick={() => handleClick("visibility")}>{t('manage')}</MenuItem>
-              <MenuItem icon={<FaLock />} onClick={() => handleClick("changePassword")}>{t('create')}</MenuItem>
+            <SubMenu icon={<IoIosAlbums />} label={t('series')}>
+              <MenuItem icon={<IoIosCheckbox />} onClick={() => {
+
+              }}>{t('manage')}</MenuItem>
+              <MenuItem icon={<AiFillPlusCircle />} onClick={() => {
+                
+              }}>{t('create')}</MenuItem>
             </SubMenu> 
           </Menu>
 
