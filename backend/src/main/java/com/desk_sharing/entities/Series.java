@@ -1,5 +1,8 @@
 package com.desk_sharing.entities;
 
+import java.sql.Date;
+import java.sql.Time;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,4 +38,10 @@ public class Series {
     @ManyToOne
     @JoinColumn(name = "desk_id", nullable = false)
     private Desk desk;
+
+    private Date startDate;
+    private Date endDate;
+    private Time startTime;
+    private Time endTime;
+    private String frequency;
 }
