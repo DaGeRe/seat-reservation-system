@@ -11,7 +11,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import SidebarComponent from '../Home/SidebarComponent';
 import DatePicker from 'react-datepicker';
 import { de } from "date-fns/locale"; // Import German locale from date-fns
-import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import {getRequest, postRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import { BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
 import CreateDatePicker from './CreateDatePicker';
 import CreateTimePicker from './CreateTimePicker';
@@ -31,9 +31,59 @@ const CreateSeries = () => {
   const [endTime, setEndTime] = useState('14:00');
   const [frequency, setFrequency] = useState('daily')
 
-/*   React.useEffect(() => {
-    getAllEmployee();
-  }, [getAllEmployee]); */
+  /**
+   * Transfers an complex datestring like Sat Nov 23 2024 20:17:45 GMT+0100 (Mitteleuropäische Normalzeit)'
+   * to an simple date like 2024-11-23.
+   * @param {*} datestr The complex datestring
+   * @returns The simplified datestring yyyy-mm-dd
+   */
+  function complexDateToSimpleDate(datestring) {
+    const date = new Date(datestring);
+    const formattedDate = date.toISOString().split('T')[0];
+    return formattedDate;
+  }
+
+React.useEffect(() => {
+    /* getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/series/datesbetween`, 
+        headers,
+        (dates) => {
+          console.log(dates);
+        },
+        () => {
+          console.log('Error fetching days in ');
+        },
+        JSON.stringify({
+            id:0,
+            startDate: startDate,
+            endDate: endDate,
+            startTime: startTime,
+            endTime: endTime,
+            frequency: frequency,
+            user:null,
+            room:null,
+            desk:null
+          })
+      ); */
+    
+      postRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/series/datesbetween`, 
+        headers,
+        (b) => {
+          console.log('b', b);
+        },
+        () => {
+          console.log('Error fetching days in ');
+        },
+        JSON.stringify({
+            startDate: complexDateToSimpleDate(startDate),
+            endDate: complexDateToSimpleDate(endDate),
+            startTime: startTime + ':00',
+            endTime: endTime + ':00',
+            frequency: frequency
+          })
+      );
+}, [startDate, endDate, startTime, endTime, frequency]); 
 
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
@@ -81,7 +131,7 @@ const CreateSeries = () => {
                 </Select>
             </FormControl>
             <br/><br/>
-            <table>
+           {/*  <table>
                 <tr>
                     <th>Name</th>
                     <th>Age</th>
@@ -102,7 +152,7 @@ const CreateSeries = () => {
                     <td>25</td>
                     <td>Male</td>
                 </tr>
-            </table>
+            </table> */}
         </>
     );
   };

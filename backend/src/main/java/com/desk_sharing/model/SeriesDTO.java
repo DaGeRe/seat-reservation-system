@@ -21,4 +21,16 @@ public class SeriesDTO {
     private UserEntity user;
     private Room room;
     private Desk desk;
+
+    public SeriesDTO(Date startDate, Date endDate, Time startTime, Time endTime, String frequency) {
+        id = 0L;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.frequency = frequency;
+        this.user = null;
+        this.room = null;
+        this.desk = null;
+    }
 }
