@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { FormControl, FormControlLabel,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
+import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,6 +14,8 @@ import { de } from "date-fns/locale"; // Import German locale from date-fns
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import { BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
 import CreateDatePicker from './CreateDatePicker';
+import CreateTimePicker from './CreateTimePicker';
+
 const CreateSeries = () => {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -25,10 +27,80 @@ const CreateSeries = () => {
   const localizer = momentLocalizer(moment);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  const [startTime, setStartTime] = useState('12:00');
+  const [endTime, setEndTime] = useState('14:00');
+  const [frequency, setFrequency] = useState('daily')
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
   }
+
+  function CreateContent() {
+    return (
+        <>
+            <CreateDatePicker
+                date={startDate}
+                setter={setStartDate}
+                label={t('startDate')}
+            />
+            <br/><br/>
+            <CreateDatePicker
+                date={endDate}
+                setter={setEndDate}
+                label={t('endDate')}
+            />
+            <br/><br/>
+            <CreateTimePicker
+                time={startTime}
+                setter={setStartTime}
+                label={t('startTime')}
+            />
+            <br/><br/>
+            <CreateTimePicker
+                time={endTime}
+                setter={setEndTime}
+                label={t('endTime')}
+            />
+            <br/><br/>
+            <FormControl required={true} fullWidth>
+                <InputLabel id='demo-simple-select-label'>{t('frequency')}</InputLabel>
+                <Select
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={frequency} 
+                    label={t('frequency')}
+                    
+                >
+                    <MenuItem value='daily'>{t('daily')}</MenuItem>
+                    <MenuItem value='weekly'>{t('weekly')}</MenuItem>
+                    <MenuItem value='monthly'>{t('monthly')}</MenuItem>
+                </Select>
+            </FormControl>
+            <br/><br/>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                </tr>
+                <tr>
+                    <td>Anom</td>
+                    <td>19</td>
+                    <td>Male</td>
+                </tr>
+                <tr>
+                    <td>Megha</td>
+                    <td>19</td>
+                    <td>Female</td>
+                </tr>
+                <tr>
+                    <td>Subham</td>
+                    <td>25</td>
+                    <td>Male</td>
+                </tr>
+            </table>
+        </>
+    );
+  };
 
   return (
     <div className='mb-container'>
@@ -40,12 +112,8 @@ const CreateSeries = () => {
         <hr className='gradient' />
         
         <div className='mb-content-container'>
-            <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                <CreateDatePicker
-                    date={startDate}
-                    setter={setStartDate}
-                    label={t('startDate')}
-                />
+            <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '400px' }}>
+                <CreateContent/>
             </Box>
         </div>
       </div>
