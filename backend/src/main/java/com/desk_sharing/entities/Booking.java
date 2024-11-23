@@ -39,6 +39,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "desk_id", nullable = false)
     private Desk desk;
+
+    @ManyToOne
+    @JoinColumn(name = "series_id", nullable = true)
+    private Series series;
     
     @Column(name = "day", nullable = false)
     private Date day; // yyyy-mm-dd

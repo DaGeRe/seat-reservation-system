@@ -30,6 +30,11 @@ const CreateSeries = () => {
   const [startTime, setStartTime] = useState('12:00');
   const [endTime, setEndTime] = useState('14:00');
   const [frequency, setFrequency] = useState('daily')
+
+/*   React.useEffect(() => {
+    getAllEmployee();
+  }, [getAllEmployee]); */
+
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
   }
