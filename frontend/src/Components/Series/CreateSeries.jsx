@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
+import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup, TableContainer } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -99,28 +99,9 @@ React.useEffect(() => {
                 </Select>
             </FormControl>
             <br/><br/>
-           {/*  <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                </tr>
-                <tr>
-                    <td>Anom</td>
-                    <td>19</td>
-                    <td>Male</td>
-                </tr>
-                <tr>
-                    <td>Megha</td>
-                    <td>19</td>
-                    <td>Female</td>
-                </tr>
-                <tr>
-                    <td>Subham</td>
-                    <td>25</td>
-                    <td>Male</td>
-                </tr>
-            </table> */}
+            <TableContainer />
+
+            </TableContainer>
         </>
     );
   };
