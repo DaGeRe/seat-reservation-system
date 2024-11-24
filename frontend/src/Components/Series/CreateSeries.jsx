@@ -76,10 +76,10 @@ React.useEffect(() => {
           console.log('Error fetching days in ');
         },
         JSON.stringify({
-            startDate: complexDateToSimpleDate(startDate),
-            endDate: complexDateToSimpleDate(endDate),
-            startTime: startTime + ':00',
-            endTime: endTime + ':00',
+            startDate: startDate,
+            endDate: endDate,
+            startTime: startTime,
+            endTime: endTime,
             frequency: frequency
           })
       );
@@ -123,7 +123,9 @@ React.useEffect(() => {
                     id='demo-simple-select'
                     value={frequency} 
                     label={t('frequency')}
-                    
+                    onChange={(e)=>{
+                        setFrequency(e.target.value);
+                    }}
                 >
                     <MenuItem value='daily'>{t('daily')}</MenuItem>
                     <MenuItem value='weekly'>{t('weekly')}</MenuItem>

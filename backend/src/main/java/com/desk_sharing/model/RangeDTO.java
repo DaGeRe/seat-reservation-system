@@ -10,9 +10,9 @@ import lombok.AllArgsConstructor;
 @Data
 @AllArgsConstructor
 public class RangeDTO {
-    private Date startDate;
-    private Date endDate;
-    private Time startTime;
-    private Time endTime;
+    private String startDate;
+    private String endDate;
+    private String startTime;
+    private String endTime;
     private String frequency;
 }
