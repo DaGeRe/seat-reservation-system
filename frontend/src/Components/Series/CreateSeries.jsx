@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup, TableContainer } from '@mui/material';
+import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,14 +7,19 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { confirmAlert } from 'react-confirm-alert';
 import SidebarComponent from '../Home/SidebarComponent';
-import DatePicker from 'react-datepicker';
-import { de } from "date-fns/locale"; // Import German locale from date-fns
-import {getRequest, postRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
-import { BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
+import { postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from './CreateDatePicker';
 import CreateTimePicker from './CreateTimePicker';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+  } from "@mui/material";
 
 const CreateSeries = () => {
   const headers = useMemo(() => {
@@ -24,7 +29,7 @@ const CreateSeries = () => {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t, i18n } = useTranslation();
   const userId = localStorage.getItem('userId');
-  const localizer = momentLocalizer(moment);
+  const [possibleDesks, setPossibleDesks] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [startTime, setStartTime] = useState('12:00:00');
@@ -32,14 +37,12 @@ const CreateSeries = () => {
   const [frequency, setFrequency] = useState('daily')
 
 React.useEffect(() => {    
-      postRequest(
+    postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/series/desks`, 
         headers,
-        (b) => {
-          console.log('c', b);
-        },
+        setPossibleDesks,
         () => {
-          console.log('Error fetching days in ');
+        console.log('Error fetching days in ');
         },
         JSON.stringify({
             startDate: startDate,
@@ -47,12 +50,16 @@ React.useEffect(() => {
             startTime: startTime,
             endTime: endTime,
             frequency: frequency
-          })
-      );
+        })
+    );
 }, [startDate, endDate, startTime, endTime, frequency]); 
 
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
+  }
+
+  function createSeries(desk) {
+    console.log(desk);
   }
 
   function CreateContent() {
@@ -99,9 +106,55 @@ React.useEffect(() => {
                 </Select>
             </FormControl>
             <br/><br/>
-            <TableContainer />
-
-            </TableContainer>
+            {
+                possibleDesks && possibleDesks.length > 0 ?
+                <TableContainer component={Paper} sx={{
+                    maxHeight: 400, // Set max height
+                    overflowY: "auto", // Enable vertical scroll
+                  }}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>{t('deskRemark')}</TableCell>
+                                <TableCell>{t('equipment')}</TableCell>
+                                <TableCell>{t('roomRemark')}</TableCell>
+                                <TableCell>{t('building')}</TableCell>
+                                <TableCell>{t('floor')}</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                possibleDesks.map((possibleDesk) => (
+                                    <TableRow key={possibleDesk.id}>
+                                        <TableCell>{possibleDesk.remark}</TableCell>
+                                        <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
+                                        <TableCell>{possibleDesk.room.remark}</TableCell>
+                                        <TableCell>{possibleDesk.room.building}</TableCell>
+                                        <TableCell>{possibleDesk.room.floor === 'Ground' ? t('groundFloor') : possibleDesk.room.floor === 'First' ? t('firstFloor') : t('thirdFloor') }</TableCell>
+                                        <TableCell>
+                                            <Button variant='contained' onClick={(_)=>{createSeries(possibleDesk);}}>
+                                                {t('submit')}
+                                            </Button>
+                                        </TableCell>
+                                       
+                                    </TableRow>
+                                )
+                            )}
+                            {/*
+                            {rows.map((row) => (
+                                <TableRow key={row.id}>
+                                <TableCell>{row.id}</TableCell>
+                                <TableCell>{row.name}</TableCell>
+                                <TableCell>{row.age}</TableCell>
+                                <TableCell>{row.country}</TableCell>
+                                </TableRow>
+                            ))} */}
+                            </TableBody>
+                    </Table>
+                </TableContainer>
+                : <div>{t('noDesksForRange')}</div>
+            }
         </>
     );
   };
@@ -116,7 +169,7 @@ React.useEffect(() => {
         <hr className='gradient' />
         
         <div className='mb-content-container'>
-            <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '400px' }}>
+            <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '800px' }}>
                 <CreateContent/>
             </Box>
         </div>

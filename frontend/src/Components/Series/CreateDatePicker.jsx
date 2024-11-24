@@ -11,7 +11,7 @@ const CreateDatePicker = ({date, setter, label}) => {
                 dateFormat='dd.MM.yyyy'
                 placeholderText={label}
                 showWeekNumbers
-                isClearable
+                required
                 customInput={
                     <TextField
                         label={label}

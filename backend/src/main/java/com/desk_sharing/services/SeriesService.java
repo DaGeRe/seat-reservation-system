@@ -87,10 +87,11 @@ public class SeriesService {
      */
     public List<Desk> getDesksForDates(RangeDTO rangeDTO) {
         final List<Date> datesBetween = getDatesBetween(rangeDTO);
-        return deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
+        final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
             datesBetween, 
             timestringToTime(rangeDTO.getStartTime()),
             timestringToTime(rangeDTO.getEndTime())
         );
+        return desks;
     }
 }
