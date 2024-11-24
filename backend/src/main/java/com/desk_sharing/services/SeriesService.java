@@ -10,14 +10,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.desk_sharing.entities.Desk;
 import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.model.RangeDTO;
+import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 
 @Service
 public class SeriesService {
     @Autowired
     private SeriesRepository seriesRepository;
+    @Autowired 
+    DeskRepository deskRepository;
 
     /**
      * Transfers an ISO 8601 datestring to an java.sql.Date.
@@ -37,9 +41,13 @@ public class SeriesService {
      * @return  The java.sql.Time (e.g.: 11:30:00.000000) transfered from timestring.
      */
     private Time timestringToTime(final String timestring) {
-        final String formattedTimeString = timestring + ":00";
-        final Time time = Time.valueOf(formattedTimeString);
-        return time;
+        try { 
+            final String formattedTimeString = timestring + ":00";
+            return Time.valueOf(formattedTimeString);
+        }
+        catch (java.lang.NumberFormatException e) {
+            return Time.valueOf(timestring);
+        }
     };
 
     /**
@@ -57,8 +65,7 @@ public class SeriesService {
     public List<Date> getDatesBetween(final RangeDTO rangeDTO) {
         final Date startDate = datestringToDate(rangeDTO.getStartDate());
         final Date endDate = datestringToDate(rangeDTO.getEndDate());
-        // final Time startTime = timestringToTime(rangeDTO.getStartTime());
-        // final Time endTime = timestringToTime(rangeDTO.getEndTime());
+        
         switch (rangeDTO.getFrequency()) {
             case "daily":
                 return seriesRepository.getDaily(startDate, endDate);
@@ -70,7 +77,20 @@ public class SeriesService {
                 System.err.println(rangeDTO.getFrequency() + " is not known in SeriesService.java.");
                 return new ArrayList<>();
         }
-    };
+    }
 
-    //public List<DeskDTO> getFreeDesksForRanges 
+    /**
+     * Get all desks that have no bookings between an specified time range on days that are defined
+     * between an start- and endDate. Depending on the frequency the particular dates are calculated.
+     * @param rangeDTO  The object that contains the frequency, the start- and endtime and the start- and endDate.
+     * @return  An of desks that havent an booking between an time range on specified dates.
+     */
+    public List<Desk> getDesksForDates(RangeDTO rangeDTO) {
+        final List<Date> datesBetween = getDatesBetween(rangeDTO);
+        return deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
+            datesBetween, 
+            timestringToTime(rangeDTO.getStartTime()),
+            timestringToTime(rangeDTO.getEndTime())
+        );
+    }
 }

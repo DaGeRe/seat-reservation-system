@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.desk_sharing.entities.Booking;
+import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Series;
 
 public interface SeriesRepository extends JpaRepository<Series, Long> {
@@ -60,4 +62,55 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
         @Param("startDate") Date startDate,
         @Param("endDate") Date endDate
     );
+
+
+
+/*     @Query(value = 
+    "SELECT distinct * FROM desks d0 " +
+    "WHERE d0.desk_id NOT IN ( " +
+    "  SELECT d.desk_id " +
+    "  FROM desks d " +
+    "  JOIN bookings b ON d.desk_id = b.desk_id " +
+    "  WHERE b.day = :day " +
+    "  AND ( " +
+    "    (b.begin BETWEEN :startTime AND :endTime) " +
+    "    OR (b.end BETWEEN :startTime AND :endTime) " +
+    "    OR (b.begin <= :endTime AND b.end >= :startTime) " +  // Overlap check
+    "  ) " +
+    ") ",
+    nativeQuery = true)
+  List<Desk> getDesksThatHaveNoBookingOnDatesBetweenDays(
+    @Param("day") Date day, 
+    @Param("startTime") Time startTime, 
+    @Param("endTime") Time endTime); */
+
+    /**
+     @Query(value = 
+  "SELECT distinct * FROM desks d0 " +
+  "WHERE d0.desk_id NOT IN ( " +
+  "  SELECT d.desk_id " +
+  "  FROM desks d " +
+  "  JOIN bookings b ON d.desk_id = b.desk_id " +
+  "  WHERE b.day = :day " +
+  "  AND ( " +
+  "    (b.begin BETWEEN :startTime AND :endTime) " +
+  "    OR (b.end BETWEEN :startTime AND :endTime) " +
+  "    OR (b.begin <= :endTime AND b.end >= :startTime) " +  // Overlap check
+  "  ) " +
+  ") ",
+  nativeQuery = true)
+List<Desk> getDesksThatHaveNoBookingOnDay(
+  @Param("day") Date day, 
+  @Param("startTime") Time startTime, 
+  @Param("endTime") Time endTime);
+
+@Query(value = 
+"  select desks.* from desks"
++ "  join bookings on desks.desk_id = bookings.desk_id "
++ "  where bookings.day = :day "
+, nativeQuery = true)
+List<Desk> getDesksThatHaveNoBookingOnDay(@Param("day") Date day);
+// MariaDB [mydatabase]> select desks.remark from desks join bookings using(desk_id) where day = STR_TO_DATE('2024-11-16', '%Y-%m-%d');
+}
+     */
 }

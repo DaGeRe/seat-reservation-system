@@ -3,6 +3,9 @@ package com.desk_sharing.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.desk_sharing.entities.Booking;
+import com.desk_sharing.entities.Desk;
+import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.services.SeriesService;
 
@@ -26,6 +29,13 @@ public class SeriesController {
     public ResponseEntity<List<Date>> datesbetween(@RequestBody RangeDTO rangeDTO) {
         final List<Date> dates = seriesService.getDatesBetween(rangeDTO);
         return new ResponseEntity<List<Date>>(dates, HttpStatus.OK);
-    }
+    };
+    
+    @PostMapping("/desks")
+    public ResponseEntity<List<Desk>> getDesksForDates(@RequestBody RangeDTO rangeDTO) {
+        final List<Desk> desks = seriesService.getDesksForDates(rangeDTO);
+
+        return new ResponseEntity<List<Desk>>(desks, HttpStatus.OK);
+    };
     
 }

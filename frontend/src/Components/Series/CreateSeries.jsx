@@ -27,50 +27,16 @@ const CreateSeries = () => {
   const localizer = momentLocalizer(moment);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('14:00');
+  const [startTime, setStartTime] = useState('12:00:00');
+  const [endTime, setEndTime] = useState('14:00:00');
   const [frequency, setFrequency] = useState('daily')
 
-  /**
-   * Transfers an complex datestring like Sat Nov 23 2024 20:17:45 GMT+0100 (Mitteleuropäische Normalzeit)'
-   * to an simple date like 2024-11-23.
-   * @param {*} datestr The complex datestring
-   * @returns The simplified datestring yyyy-mm-dd
-   */
-  function complexDateToSimpleDate(datestring) {
-    const date = new Date(datestring);
-    const formattedDate = date.toISOString().split('T')[0];
-    return formattedDate;
-  }
-
-React.useEffect(() => {
-    /* getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/series/datesbetween`, 
-        headers,
-        (dates) => {
-          console.log(dates);
-        },
-        () => {
-          console.log('Error fetching days in ');
-        },
-        JSON.stringify({
-            id:0,
-            startDate: startDate,
-            endDate: endDate,
-            startTime: startTime,
-            endTime: endTime,
-            frequency: frequency,
-            user:null,
-            room:null,
-            desk:null
-          })
-      ); */
-    
+React.useEffect(() => {    
       postRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/series/datesbetween`, 
+        `${process.env.REACT_APP_BACKEND_URL}/series/desks`, 
         headers,
         (b) => {
-          console.log('b', b);
+          console.log('c', b);
         },
         () => {
           console.log('Error fetching days in ');
