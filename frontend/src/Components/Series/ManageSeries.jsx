@@ -2,11 +2,12 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { confirmAlert } from 'react-confirm-alert';
+import { toast } from 'react-toastify';
 import SidebarComponent from '../Home/SidebarComponent';
 import Box from '@mui/material/Box';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import Button from '@mui/material/Button';
+import DeleteFf from '../DeleteFf';
 import {
   Table,
   TableBody,
@@ -25,6 +26,8 @@ const ManageSeries = () => {
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t, i18n } = useTranslation();
   const [serieses, setSerieses] = useState([]);
+  const [currSeries, setCurrSeries] = useState();
+  const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
   function create_headline() {
     return i18n.language === 'de' ? 'Verwalten von Serienterminen' : 'Management of Series Bookings';
@@ -36,13 +39,33 @@ const ManageSeries = () => {
         headers,
         setSerieses,
         () => {
-        console.log('Error fetching series in ManageSeries.jsx');
+          console.log('Error fetching series in ManageSeries.jsx');
         }
     );
-  }, []); 
+  }, [currSeries]); 
 
-  function deleteSeries(series) {
-    console.log(series);
+  function deleteSeries(/*series*/) {
+    const series = currSeries;
+    setCurrSeries(null);
+    if (series) {
+      
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/series/${series.id}`,
+        headers,
+        (ret) => {
+            if (ret === 1) {
+              toast.success('de' ? `Serienterminen wurde erfolgreich gelöscht.` : `Series bookings was successful deleted.`);
+              setCurrSeries(null);
+            }
+        },
+        () => {
+          console.log('Error deleting series in ManageSeries.jsx');
+        }
+      );
+    }
+    else {
+      console.error('Current series is not defined in ManageSeries.jsx');
+    }
   }
 
   function CreateContent() {
@@ -78,7 +101,10 @@ const ManageSeries = () => {
                     <TableCell>{series.room.building}</TableCell>
                     <TableCell>{series.room.flooar}</TableCell>
                     <TableCell>
-                        <Button variant='contained' onClick={(_)=>{deleteSeries(series);}}>
+                        <Button variant='contained' onClick={(_)=>{
+                          setCurrSeries(series);
+                          setOpenFfDialog(true);
+                        }}>
                             {t('delete')}
                         </Button>
                     </TableCell>
@@ -87,7 +113,7 @@ const ManageSeries = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        : 'series 0'}
+        : <div>{i18n.language === 'de' ? 'Für Sie wurden keine Serienterminen gefunden.' : 'For the current user was no series booking found.'}</div>}
       </>
     );
   };
@@ -100,7 +126,12 @@ const ManageSeries = () => {
       <div className='mb-content'>
         <h1 className='mb-text'>{create_headline()}</h1>
         <hr className='gradient' />
-        
+        <DeleteFf 
+          open={openFfDialog}
+          onClose={()=>{setOpenFfDialog(false);setCurrSeries(null);}}
+          onDelete={deleteSeries}
+          text={i18n.language === 'de' ? 'Möchten Sie diese Serienbuchung mit allen Buchungen wirklich löschen?' : 'With this series all associated bookings will be deleted.'}
+        />
         <div className='mb-content-container'>
             <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '1000px' }}>
               <CreateContent/>

@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -24,6 +25,8 @@ import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.repositories.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class SeriesService {
@@ -173,6 +176,11 @@ public class SeriesService {
             bookings);
     }
 
+    /**
+     * Find all series associated to the user identified by email.
+     * @param email The unique email for an user.
+     * @return  All series objects associated to the user.
+     */
     public List<SeriesDTO> findSeriesForEmail(String email) {
         final UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
@@ -198,5 +206,20 @@ public class SeriesService {
             seriesDTOs.add(seriesDTO);
         }
         return seriesDTOs;
+    };
+
+    @Transactional
+    public int deleteById(long id) {
+        try {
+            final Optional<Series> seriesOpt = seriesRepository.findById(id);
+            final Series series = seriesOpt.get();
+            bookingRepository.deleteBookingsBySeriesId(id);
+            seriesRepository.delete(series);
+            return 1;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

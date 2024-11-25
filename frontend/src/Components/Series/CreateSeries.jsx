@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, FormLabel, Grid2, Radio, RadioGroup } from '@mui/material';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +7,7 @@ import SidebarComponent from '../Home/SidebarComponent';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from './CreateDatePicker';
 import CreateTimePicker from './CreateTimePicker';
+import { toast } from 'react-toastify';
 import {
     Table,
     TableBody,
@@ -32,9 +32,14 @@ const CreateSeries = () => {
   const [startTime, setStartTime] = useState('12:00:00');
   const [endTime, setEndTime] = useState('14:00:00');
   const [frequency, setFrequency] = useState('daily');
+  const [repaint, setRepaint] = useState(false)
   
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
+  }
+
+  function create_msg() {
+    return i18n.language === 'de' ? `Serienterminen von ${startDate} bis ${endDate} erfolgreich erstellt.` : `Creation of series bookings from ${startDate} to ${endDate} was successful.`;
   }
 
     React.useEffect(() => {
@@ -53,24 +58,19 @@ const CreateSeries = () => {
                 frequency: frequency
             })
         );
-    }, [startDate, endDate, startTime, endTime, frequency]); 
-
+    }, [startDate, endDate, startTime, endTime, frequency, repaint]); 
 
   function addSeries(desk) {
     postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/series`,
         headers,
         (series) => {
+            toast.success(create_msg());
             /**
              * Be sure to change an depedency of React.useEffect(..) to force an repaint.
              * This is needed because we want to remove desks that are not longer available.
              */
-            const currFrequency = frequency;
-            setFrequency('');
-            // Because of some delays, we have to wait an tiny amount of time.
-            setTimeout(() => {
-                setFrequency(currFrequency); // Second update after React processes the first
-            }, 0);
+            setRepaint(!repaint);
         },
         () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
             JSON.stringify({
