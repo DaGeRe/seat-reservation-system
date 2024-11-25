@@ -6,9 +6,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import com.desk_sharing.entities.Booking;
-import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Series;
 
 public interface SeriesRepository extends JpaRepository<Series, Long> {
@@ -63,7 +60,8 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
         @Param("endDate") Date endDate
     );
 
-
+    @Query(value="select * from series where user_id = :user_id ", nativeQuery = true)
+    public List<Series> findByUserId(@Param("user_id") Integer user_id);
 
 /*     @Query(value = 
     "SELECT distinct * FROM desks d0 " +

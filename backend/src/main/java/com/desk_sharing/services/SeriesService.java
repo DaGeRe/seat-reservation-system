@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -157,18 +158,6 @@ public class SeriesService {
             );
         }).toList();
         bookingRepository.saveAll(bookings);
-/*         for (Date date: dates) {
-            final Booking booking = new Booking(
-                userEntity,
-                seriesDTO.getRoom(),
-                seriesDTO.getDesk(),
-                date,
-                timestringToTime(seriesDTO.getStartTime()),
-                timestringToTime(seriesDTO.getEndTime()),
-                finalSeries
-            );
-            bookingRepository.save(booking);
-        } */
 
         return new SeriesDTO(
             finalSeries.getId(),
@@ -182,5 +171,32 @@ public class SeriesService {
             finalSeries.getDesk(), 
             userEntity.getEmail(), 
             bookings);
-    } 
+    }
+
+    public List<SeriesDTO> findSeriesForEmail(String email) {
+        final UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) {
+            System.err.println("Cannot find user identified by email: " + email + " in SeriesService.findSeriesForEmail().");
+            return null;
+        }
+        final List<Series> serieses = seriesRepository.findByUserId(userEntity.getId());
+        final List<SeriesDTO> seriesDTOs = new ArrayList<>();
+        for (Series series: serieses) {
+            final SeriesDTO seriesDTO = new SeriesDTO(
+                series.getId(),
+                "" + series.getStartDate(),
+                "" + series.getEndDate(),
+                "" + series.getStartTime(),
+                "" + series.getEndTime(),
+                series.getFrequency(),
+                userEntity,
+                series.getRoom(),
+                series.getDesk(),
+                userEntity.getEmail(),
+                null
+            );
+            seriesDTOs.add(seriesDTO);
+        }
+        return seriesDTOs;
+    }
 }

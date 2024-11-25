@@ -3,9 +3,6 @@ import { FormControl,Select, FormControlLabel,MenuItem,TextField, InputLabel, Fo
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import SidebarComponent from '../Home/SidebarComponent';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
@@ -19,7 +16,7 @@ import {
     TableHead,
     TableRow,
     Paper,
-  } from "@mui/material";
+  } from '@mui/material';
 
 const CreateSeries = () => {
   const headers = useMemo(() => {
@@ -141,7 +138,7 @@ const CreateSeries = () => {
                 possibleDesks && possibleDesks.length > 0 ?
                 <TableContainer component={Paper} sx={{
                     maxHeight: 400, // Set max height
-                    overflowY: "auto", // Enable vertical scroll
+                    overflowY: 'auto', // Enable vertical scroll
                 }}>
                     <Table stickyHeader>
                         <TableHead>
@@ -198,108 +195,5 @@ const CreateSeries = () => {
     </div>
   );
 };
-
-{/**
- * 
- * <BootstrapDialog aria-labelledby="customized-dialog-title" open={isOpen}>
-        <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
-            SerienTermin
-        </BootstrapDialogTitle>
-        <React.Fragment>
-                <DialogContent>
-                <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Startdatum</InputLabel>
-
-                        <DatePicker
-                            selected={startDatum}
-                            onChange={setStartDatum}
-                            locale="de"
-                            dateFormat="dd.MM.yyyy"
-                            placeholderText="Datum auswählen"
-                            showWeekNumbers
-                            todayButton="Heute"
-                            isClearable
-                        />
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Enddatum</InputLabel>
-                        <DatePicker
-                            selected={endDatum}
-                            onChange={setEndDatum}
-                            locale="de"
-                            dateFormat="dd.MM.yyyy"
-                            placeholderText="Datum auswählen"
-                            showWeekNumbers
-                            todayButton="Heute"
-                            isClearable
-                        />
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Wochentag</InputLabel>
-                        <Select
-                            labelId='demo-simple-select-label'
-                            id='demo-simple-select'
-                            value={wochentag}
-                            label='Wochentag'
-                            onChange={(e) => setWochentag(e.target.value)}
-                        >
-                            <MenuItem value='Montag'>Montag</MenuItem>
-                            <MenuItem value='Dienstag'>Dienstag</MenuItem>
-                            <MenuItem value='Mittwoch'>Mittwoch</MenuItem>
-                            <MenuItem value='Donnerstag'>Donnerstag</MenuItem>
-                            <MenuItem value='Freitag'>Freitag</MenuItem>
-                        </Select>
-                    </FormControl> 
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Startzeit</InputLabel>
-                        <input
-                        type='time'
-                        value={startUhrzeit}
-                        onChange={(e) => setStartUhrzeit(e.target.value)}
-                        />
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Endzeit</InputLabel>
-                        <input
-                            type='time'
-                            value={endUhrzeit}
-                            onChange={(e) => setEndUhrzeit(e.target.value)}
-                        />
-                    </FormControl>
-                    <br></br> <br></br>
-                    <FormControl required={true} fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Wiederholungsfrequenz</InputLabel>
-                        <Select
-                            labelId='demo-simple-select-label'
-                            id='demo-simple-select'
-                            value={frequenz} 
-                            label='Wochentag'
-                            onChange={(e) => setFrequenz(e.target.value)}
-                        >
-                            <MenuItem value="täglich">Täglich</MenuItem>
-                            <MenuItem value="wöchentlich">Wöchentlich</MenuItem>
-                            <MenuItem value="monatlich">Monatlich</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <br></br> <br></br>
-                    <DialogActions>
-                        <Button onClick={()=>handleSubmit()}>&nbsp;{t("submit").toUpperCase()}</Button>
-                        <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-                    </DialogActions>
-            </Box>
-            </DialogContent>
-        </React.Fragment>
-        </BootstrapDialog>
-    );
-});
-
-export default Series;
- * 
- */}
 
 export default CreateSeries;

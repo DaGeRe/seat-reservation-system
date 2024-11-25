@@ -1,6 +1,7 @@
 package com.desk_sharing.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desk_sharing.entities.Booking;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -45,6 +48,10 @@ public class SeriesController {
         return new ResponseEntity<SeriesDTO>(seriesService.createSeries(series), HttpStatus.OK);
     }
     
+    @GetMapping("/{email}")
+    public List<SeriesDTO> findSeriesForEmail(@PathVariable("email") String email) {
+        return seriesService.findSeriesForEmail(email);
+    }
 
 
     
