@@ -66,4 +66,13 @@ public class Booking {
         this.begin = begin;
         this.end = end;
     }
+    public Booking(UserEntity user, Room room, Desk desk, Date day, Time begin, Time end, Series series) {
+        this.user = user;
+        this.room = room;
+        this.desk = desk;
+        this.day = day;
+        this.begin = begin;
+        this.end = end;
+        this.series = series;
+    }
 }

@@ -34,32 +34,63 @@ const CreateSeries = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [startTime, setStartTime] = useState('12:00:00');
   const [endTime, setEndTime] = useState('14:00:00');
-  const [frequency, setFrequency] = useState('daily')
-
-React.useEffect(() => {    
-    postRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/series/desks`, 
-        headers,
-        setPossibleDesks,
-        () => {
-        console.log('Error fetching days in ');
-        },
-        JSON.stringify({
-            startDate: startDate,
-            endDate: endDate,
-            startTime: startTime,
-            endTime: endTime,
-            frequency: frequency
-        })
-    );
-}, [startDate, endDate, startTime, endTime, frequency]); 
-
+  const [frequency, setFrequency] = useState('daily');
+  
   function create_headline() {
     return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
   }
 
-  function createSeries(desk) {
-    console.log(desk);
+    React.useEffect(() => {
+        postRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/series/desks`, 
+            headers,
+            setPossibleDesks,
+            () => {
+            console.log('Error fetching days in ');
+            },
+            JSON.stringify({
+                startDate: startDate,
+                endDate: endDate,
+                startTime: startTime,
+                endTime: endTime,
+                frequency: frequency
+            })
+        );
+    }, [startDate, endDate, startTime, endTime, frequency]); 
+
+
+  function addSeries(desk) {
+    postRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/series`,
+        headers,
+        (series) => {
+            /**
+             * Be sure to change an depedency of React.useEffect(..) to force an repaint.
+             * This is needed because we want to remove desks that are not longer available.
+             */
+            const currFrequency = frequency;
+            setFrequency('');
+            // Because of some delays, we have to wait an tiny amount of time.
+            setTimeout(() => {
+                setFrequency(currFrequency); // Second update after React processes the first
+            }, 0);
+        },
+        () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
+            JSON.stringify({
+                'id': 0,
+                'startDate': startDate,
+                'endDate': endDate,
+                'startTime': startTime,
+                'endTime':endTime,
+                'frequency':frequency,
+                'user': null,
+                'room': desk.room,
+                'desk': desk,
+                'email':localStorage.getItem('email'),
+                'bookings': null
+            })
+    );
+
   }
 
   function CreateContent() {
@@ -111,7 +142,7 @@ React.useEffect(() => {
                 <TableContainer component={Paper} sx={{
                     maxHeight: 400, // Set max height
                     overflowY: "auto", // Enable vertical scroll
-                  }}>
+                }}>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
@@ -133,24 +164,14 @@ React.useEffect(() => {
                                         <TableCell>{possibleDesk.room.building}</TableCell>
                                         <TableCell>{possibleDesk.room.floor === 'Ground' ? t('groundFloor') : possibleDesk.room.floor === 'First' ? t('firstFloor') : t('thirdFloor') }</TableCell>
                                         <TableCell>
-                                            <Button variant='contained' onClick={(_)=>{createSeries(possibleDesk);}}>
+                                            <Button variant='contained' onClick={(_)=>{addSeries(possibleDesk);}}>
                                                 {t('submit')}
                                             </Button>
                                         </TableCell>
-                                       
                                     </TableRow>
                                 )
                             )}
-                            {/*
-                            {rows.map((row) => (
-                                <TableRow key={row.id}>
-                                <TableCell>{row.id}</TableCell>
-                                <TableCell>{row.name}</TableCell>
-                                <TableCell>{row.age}</TableCell>
-                                <TableCell>{row.country}</TableCell>
-                                </TableRow>
-                            ))} */}
-                            </TableBody>
+                        </TableBody>
                     </Table>
                 </TableContainer>
                 : <div>{t('noDesksForRange')}</div>

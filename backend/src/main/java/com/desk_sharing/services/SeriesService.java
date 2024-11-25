@@ -4,24 +4,38 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
-import com.desk_sharing.model.DeskDTO;
+import com.desk_sharing.entities.Series;
+import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.RangeDTO;
+import com.desk_sharing.model.SeriesDTO;
+import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
+import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.SeriesRepository;
+import com.desk_sharing.repositories.UserRepository;
 
 @Service
 public class SeriesService {
     @Autowired
     private SeriesRepository seriesRepository;
-    @Autowired 
+    @Autowired
     DeskRepository deskRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RoomRepository roomRepository;
+    @Autowired
+    BookingRepository bookingRepository;
 
     /**
      * Transfers an ISO 8601 datestring to an java.sql.Date.
@@ -29,10 +43,14 @@ public class SeriesService {
      * @return  The java.sql.Date (e.g.: 2024-11-24) transfered from datestring.
      */
     private Date datestringToDate(final String datestring) {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.parse(datestring);
-        final LocalDate localDate = zonedDateTime.toLocalDate();
-        final Date date = Date.valueOf(localDate);
-        return date;
+        try{
+            final ZonedDateTime zonedDateTime = ZonedDateTime.parse(datestring);
+            final LocalDate localDate = zonedDateTime.toLocalDate();
+            final Date date = Date.valueOf(localDate);
+            return date;
+        } catch (DateTimeParseException e) {
+            return Date.valueOf(datestring);
+        }
     };
 
     /**
@@ -74,7 +92,7 @@ public class SeriesService {
             case "monthly":
                 return seriesRepository.getMonthly(startDate, endDate);
             default:
-                System.err.println(rangeDTO.getFrequency() + " is not known in SeriesService.java.");
+                //System.err.println(rangeDTO.getFrequency() + " is not known in SeriesService.java.");
                 return new ArrayList<>();
         }
     }
@@ -94,4 +112,75 @@ public class SeriesService {
         );
         return desks;
     }
+
+/*     public SeriesDTO createSeries(@RequestBody SeriesDTO seriesDTO) {
+
+        return null;
+    }  */
+    public SeriesDTO createSeries(@RequestBody SeriesDTO seriesDTO) {
+        UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
+        if (userEntity == null) {
+            System.err.println("user not found in createSeries");
+            return null;
+        }
+        Series newSeries = new Series(-1L, 
+            userEntity, 
+            seriesDTO.getRoom(), 
+            seriesDTO.getDesk(), 
+            datestringToDate(seriesDTO.getStartDate()), 
+            datestringToDate(seriesDTO.getEndDate()), 
+            timestringToTime(seriesDTO.getStartTime()), 
+            timestringToTime(seriesDTO.getEndTime()), 
+            seriesDTO.getFrequency()
+        );
+        // Save the series.
+        final Series finalSeries = seriesRepository.save(newSeries);
+        // Dates of bookings.
+        final List<Date> dates = getDatesBetween(
+            new RangeDTO(
+                "" + datestringToDate(seriesDTO.getStartDate()),
+                "" + datestringToDate(seriesDTO.getEndDate()),
+                "" + timestringToTime(seriesDTO.getStartTime()),
+                "" + timestringToTime(seriesDTO.getEndTime()),
+                seriesDTO.getFrequency()
+            )
+        );
+        final List<Booking> bookings = dates.stream().map(date -> {
+            return new Booking(
+                userEntity,
+                seriesDTO.getRoom(),
+                seriesDTO.getDesk(),
+                date,
+                timestringToTime(seriesDTO.getStartTime()),
+                timestringToTime(seriesDTO.getEndTime()),
+                finalSeries
+            );
+        }).toList();
+        bookingRepository.saveAll(bookings);
+/*         for (Date date: dates) {
+            final Booking booking = new Booking(
+                userEntity,
+                seriesDTO.getRoom(),
+                seriesDTO.getDesk(),
+                date,
+                timestringToTime(seriesDTO.getStartTime()),
+                timestringToTime(seriesDTO.getEndTime()),
+                finalSeries
+            );
+            bookingRepository.save(booking);
+        } */
+
+        return new SeriesDTO(
+            finalSeries.getId(),
+            "" + finalSeries.getStartDate(), 
+            "" + finalSeries.getEndDate(), 
+            "" + finalSeries.getStartTime(), 
+            "" + finalSeries.getEndTime(), 
+            finalSeries.getFrequency(), 
+            userEntity,
+            finalSeries.getRoom(), 
+            finalSeries.getDesk(), 
+            userEntity.getEmail(), 
+            bookings);
+    } 
 }
