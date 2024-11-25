@@ -13,6 +13,7 @@
     "calendar": "Kalender",
     "freeDesks": "Freie Arbeitsplätze",
     "bookings": "Buchungen",
+    "series": "Serienbuchung",
     "settings": "Einstellungen",
     "visibility": "Sichtbarkeit",
     "logout": "Abmeldung",
@@ -193,4 +194,15 @@
     ,"contains":"Enthält"
     ,"isEqual":"="
     ,"enterText":"Texteingabe"
+    ,"create":"Erstellen"
+    ,"manage":"Verwalten"
+    ,"startDate":"Datum Beginn"
+    ,"endDate":"Datum Ende"
+    ,"startTime":"Zeit Beginn"
+    ,"endTime":"Zeit Ende"
+    ,"frequency":"Frequenz"
+    ,"daily":"Täglich"
+    ,"weekly":"Wöchentlich"
+    ,"monthly":"Monatlich"
+    ,"noDesksForRange":"Für die angegebene Zeitspanne konnte kein Arbeitsplatz gefunden werden."
 }

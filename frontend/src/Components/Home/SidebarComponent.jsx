@@ -15,8 +15,13 @@ import { toast } from 'react-toastify';
 import { putRequest } from '../RequestFunctions/RequestFunctions';
 import FreeDesks from './FreeDesks/FreeDesks';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { FaCalendarAlt } from "react-icons/fa";
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import { Box, Stack, Typography } from '@mui/material';
+import Series from "../Series/Series";
+import { AiFillPlusCircle } from 'react-icons/ai';
+import { IoIosCheckbox } from 'react-icons/io';
+import { IoIosAlbums } from 'react-icons/io';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -50,11 +55,6 @@ const SidebarComponent = () => {
       case "collapse":
         setCollapsed(!collapsed);
         localStorage.setItem("sidebarCollapsed", !collapsed);
-        break;
-      
-      case 'series':
-        setActiveTab("seties");
-        navigate("/series", { replace: true });
         break;
 
       case 'freeDesks':
@@ -218,26 +218,30 @@ const SidebarComponent = () => {
             icon={<FaBookmark />}
             onClick={() => handleClick("bookings")}
           >
+
             {t("bookings")}
           </MenuItem>
+
+          <Menu>
+            <SubMenu icon={<IoIosAlbums />} label={t('series')}>
+              <MenuItem icon={<IoIosCheckbox />} onClick={() => {
+                 //setActiveTab("manageseries");
+                 navigate("/manageseries", { replace: true });
+              }}>{t('manage')}</MenuItem>
+              <MenuItem icon={<AiFillPlusCircle />} onClick={() => {
+                 //setActiveTab("createseries");
+                 navigate("/createseries", { replace: true });
+              }}>{t('create')}</MenuItem>
+            </SubMenu> 
+          </Menu>
+
           <MenuItem
             icon={<MdGTranslate />}
             onClick={() => handleClick("language")}
           >
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
-{/*           <MenuItem
-            icon={<GiOfficeChair />}
-            onClick={() => handleClick('freeDesks')}
-          >
-            {t('freeDesks')}  
-          </MenuItem> */}
-          {/* <MenuItem
-            icon={<GiOfficeChair />}
-            onClick={() => handleClick('series')}
-          >
-            {}
-          </MenuItem> */}
+
         </Menu>
         <Menu>
 {/*           <SubMenu icon={<FaCog />} label={t("settings")}>
@@ -262,7 +266,6 @@ const SidebarComponent = () => {
         onClose={handleCloseFreeDesksModal}
         //onSubmit={handleChangePasswordSubmit}
       />
-
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
         isOpen={isLogoutConfirmationOpen}

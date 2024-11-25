@@ -39,6 +39,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "desk_id", nullable = false)
     private Desk desk;
+
+    @ManyToOne
+    @JoinColumn(name = "series_id", nullable = true)
+    private Series series;
     
     @Column(name = "day", nullable = false)
     private Date day; // yyyy-mm-dd
@@ -61,5 +65,14 @@ public class Booking {
         this.day = day;
         this.begin = begin;
         this.end = end;
+    }
+    public Booking(UserEntity user, Room room, Desk desk, Date day, Time begin, Time end, Series series) {
+        this.user = user;
+        this.room = room;
+        this.desk = desk;
+        this.day = day;
+        this.begin = begin;
+        this.end = end;
+        this.series = series;
     }
 }

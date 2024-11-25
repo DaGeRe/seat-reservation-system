@@ -3,11 +3,9 @@ import SidebarComponent from "../Home/SidebarComponent";
 import { FaAddressBook, FaPlusMinus } from "react-icons/fa6";
 import { FaBook } from "react-icons/fa";
 import "./AdminPage.css"; // Import the CSS file for AdminPage
-import styled from '@emotion/styled';
 import AddRoom from './Room/AddRoom';
 import DeleteRoom from './Room/DeleteRoom';
 import EditRoom from './Room/EditRoom';
-import { Dialog, DialogTitle, IconButton } from '@mui/material';
 import AddWorkstation from './Workstation/AddWorkstation';
 import EditWorkstation from './Workstation/EditWorkstation';
 import DeleteWorkstation from './Workstation/DeleteWorkstation';
@@ -22,7 +20,7 @@ import { UsageGraph } from "./UsageGraph";
 import noDataImage from "../Assets/nodb.png";
 import { useTranslation } from "react-i18next";
 import {getRequest} from '../RequestFunctions/RequestFunctions';
-
+import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
 const AdminPage = () => {
   // The jwt.
   //const accessToken = localStorage.getItem('accessToken');
@@ -111,38 +109,7 @@ const AdminPage = () => {
   const toggleEditBookingsModal = () => setIsEditBookingsOpen(!isEditBookingsOpen);
   const toggleDeleteBookingsModal = () => setIsDeleteBookingsOpen(!isDeleteBookingsOpen);
 
-  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialog-paper': {
-      minWidth: '800px !important',
-      height: 'auto'
-    },
-  }));
 
-  const BootstrapWorkstationDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialog-paper': {
-      minWidth: '500px !important',
-      height: 'auto'
-    },
-  }));
-
-  const BootstrapEmployeeDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialog-paper': {
-      minWidth: '1000px !important',
-      height: 'auto'
-    },
-  }));
-
-  const BootstrapDialogTitle = (props) => {
-    const { children, onClose, ...other } = props;
-    return (
-      <DialogTitle sx={{ alignItems: "center", justifyContent: "center", alignContent: "space-between" }} {...other}>
-        {children}
-        {onClose ? (
-          <IconButton aria-label="close" onClick={onClose}></IconButton>
-        ) : null}
-      </DialogTitle>
-    );
-  };
 
   return (
     <div className="adminhome-page">

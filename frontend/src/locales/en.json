@@ -15,6 +15,7 @@
     "calendar": "Calendar",
     "freeDesks": "Free Desks",
     "bookings": "Bookings",
+    "series": "Series Bookings",
     "settings": "Settings",
     "visibility": "Visibility",
     "logout": "Logout",
@@ -194,4 +195,15 @@
     ,"contains":"Contains"
     ,"isEqual":"="
     ,"enterText":"Enter text"
+    ,"create":"Create"
+    ,"manage":"Manage"
+    ,"startDate":"Start Date"
+    ,"endDate":"End Date"
+    ,"startTime":"Start Time"
+    ,"endTime":"End Time"
+    ,"frequency":"Frequency"
+    ,"daily":"Daily"
+    ,"weekly":"Weekly"
+    ,"monthly":"Monthly"
+    ,"noDesksForRange":"For the specified time range no desk is available."
 }
