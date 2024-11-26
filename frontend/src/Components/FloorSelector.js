@@ -19,9 +19,9 @@ const FloorSelector = ({
       ];
     } else if (building_name === BAUTZNER_STR_19_C) {
       return [
-        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor').toUpperCase()}</MenuItem>
+        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor_19c').toUpperCase()}</MenuItem>,
+        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor_19c').toUpperCase()}</MenuItem>,
+        <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor_19c').toUpperCase()}</MenuItem>
       ];
     }
     return [];

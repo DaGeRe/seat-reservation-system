@@ -8,6 +8,7 @@ import { postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from './CreateDatePicker';
 import CreateTimePicker from './CreateTimePicker';
 import { toast } from 'react-toastify';
+import { BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../../constants';
 import {
     Table,
     TableBody,
@@ -159,7 +160,11 @@ const CreateSeries = () => {
                                         <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                         <TableCell>{possibleDesk.room.remark}</TableCell>
                                         <TableCell>{possibleDesk.room.building}</TableCell>
-                                        <TableCell>{possibleDesk.room.floor === 'Ground' ? t('groundFloor') : possibleDesk.room.floor === 'First' ? t('firstFloor') : t('thirdFloor') }</TableCell>
+                                        <TableCell>{
+                                            possibleDesk.room.building === BAUTZNER_STR_19_C ?
+                                            (possibleDesk.room.floor === GROUND ? t('groundFloor_19c') : possibleDesk.room.floor === FIRST ? t('firstFloor_19c') : t('thirdFloor_19c') )
+                                            : possibleDesk.room.floor === GROUND ? t('groundFloor') : possibleDesk.room.floor === FIRST ? t('firstFloor') : t('thirdFloor')
+                                        }</TableCell>
                                         <TableCell>
                                             <Button variant='contained' onClick={(_)=>{addSeries(possibleDesk);}}>
                                                 {t('submit')}
