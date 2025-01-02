@@ -1,7 +1,8 @@
 import DatePicker from 'react-datepicker';
 import React, { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
-import de from 'date-fns/locale/de'; // Import the German locale from date-fns
+//import de from 'date-fns/locale/de'; // Import the German locale from date-fns
+const de = require('date-fns/locale/de');
 import './DatepickerStyles.css'; // Custom CSS file
 import { useTranslation } from "react-i18next";
 import Button from '@mui/material/Button';

@@ -16,9 +16,13 @@ COPY server server
 COPY node_modules node_modules
 
 
+
 COPY package.json .
 COPY package-lock.json .
-
+COPY run_test.sh .
+COPY .babelrc .
+COPY jest.config.js .
+RUN chmod +x run_test.sh
 COPY src src
 
 # Define the command to run your application
