@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a base image
-FROM node:14
+FROM node:18
 ENV NODE_ENV=production
 # Set environment variables for project and TLS paths
 ARG PROJECT_PATH
