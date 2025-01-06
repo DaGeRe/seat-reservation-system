@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_NO_WARNINGS=1 NODE_ENV=test jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -68,6 +68,7 @@
     "identity-obj-proxy": "latest",
     "jest": "^27.5.1",
     "jest-environment-node": "latest",
+    "jest-fetch-mock": "^3.0.3",
     "nodemon": "latest",
     "react": "latest",
     "react-dom": "latest",

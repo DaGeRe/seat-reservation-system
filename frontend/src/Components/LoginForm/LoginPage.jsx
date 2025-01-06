@@ -70,6 +70,7 @@ const LoginPage = () => {
         <div className="input-box">
           <input
             id="email"
+            data-testid='email'
             onChange={(e) =>
               setValues({ ...values, email: e.target.value.trim() })
             }
@@ -82,6 +83,7 @@ const LoginPage = () => {
         <div className="input-box">
           <input
             id="password"
+            data-testid='password'
             onChange={(e) =>
               setValues({ ...values, password: e.target.value.trim() })
             }
@@ -94,8 +96,8 @@ const LoginPage = () => {
 {/*         <div className="forgot-password">
           <a href="/">{t("forgotPassword")}?</a>
         </div> */}
-        {loginError && <div className="error">{loginError}</div>}
-        <button type="submit" onClick={handleLogin}>
+        {loginError && <div data-testid='loginErrorMsg' className="error">{loginError}</div>}
+        <button data-testid='loginBtn' type="submit" onClick={handleLogin}>
           {t("login")}
         </button>
       </form>

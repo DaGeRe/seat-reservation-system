@@ -22,6 +22,7 @@ COPY package-lock.json .
 COPY run_test.sh .
 COPY .babelrc .
 COPY jest.config.js .
+COPY jest.setup.js .
 RUN chmod +x run_test.sh
 COPY src src
 
