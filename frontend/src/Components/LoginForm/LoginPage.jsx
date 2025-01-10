@@ -22,12 +22,15 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    console.log('handle_login 01');
     if (!isEmail(values.email)) {
       setLoginError(t("invalidEmail"));
       return;
     }
+    console.log('handle_login 02');
     try {
+      // https://jus-srv-test30.justiz.sachsen.de:8082/users/login
+      console.log('handle_login 02.1', `${process.env.REACT_APP_BACKEND_URL}/users/login`);
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -35,10 +38,11 @@ const LoginPage = () => {
         },
         body: JSON.stringify(values),
       });
+      console.log('handle_login 02.2', response);
       if (!response.ok) {
         throw new Error("Login failed");
       }
-
+      console.log('handle_login 03');
       const data = await response.json();
       if (data !== null) {
         sessionStorage.setItem('headers',  JSON.stringify({
@@ -57,6 +61,7 @@ const LoginPage = () => {
         return;
       }
     } catch (error) {
+      console.log('error!!!', error);
         toast.error(t("loginFailed"));
         setLoginError(t("loginFailed"));
     }

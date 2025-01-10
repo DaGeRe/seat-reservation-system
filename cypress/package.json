@@ -1,0 +1,13 @@
+{
+    "name": "cypress-e2e-tests",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "cypress:run": "cypress run",
+      "cypress:open": "cypress open"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "cypress": "^12.14.0"
+    }
+  }

@@ -1,5 +1,8 @@
 
 module.exports = {
+  globals: {
+    fetch: global.fetch,
+  },
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ['./jest.setup.js'],
   transform: {

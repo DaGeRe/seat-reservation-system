@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "NODE_NO_WARNINGS=1 NODE_ENV=test jest",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_NO_WARNINGS=1 NODE_ENV=test jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -64,6 +64,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
     "babel-jest": "^29.7.0",
+    "cypress": "^13.17.0",
     "eslint": "latest",
     "identity-obj-proxy": "latest",
     "jest": "^27.5.1",
@@ -75,6 +76,7 @@
     "react-test-renderer": "latest",
     "rimraf": "latest",
     "sass": "latest",
-    "svgo": "latest"
+    "svgo": "latest",
+    "whatwg-fetch": "^3.6.20"
   }
 }

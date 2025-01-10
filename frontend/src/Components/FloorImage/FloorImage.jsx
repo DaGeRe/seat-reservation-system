@@ -117,7 +117,7 @@ export default function FloorImage(
              * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
              */
             else {
-                floor === GROUND
+                floorImage = firstFloorImage;
             }
         }
         if (building === BAUTZNER_STR_19_C) {
