@@ -26,6 +26,9 @@ services:
 #    build:
 #      context: ${PROJECT_PATH}/cypress
 #      pull: false
+#    
+#    networks:
+#      - ${NETWORK}
 #    depends_on:
 #      - frontend
 #      - backend

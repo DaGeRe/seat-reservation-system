@@ -6,9 +6,13 @@ COPY package.json ./package.json
 RUN npm install
 #COPY cypress ./cypress
 RUN mkdir cypress
-RUN mkdir cypress/support
-COPY support/index.js ./cypress/support/index.js
+#RUN mkdir cypress/support
+#RUN mkdir cypress/integratio
+COPY support cypress/support
+COPY tls tls
+COPY integration cypress/integration
 COPY cypress.config.js ./cypress.config.js
 
-
+#ENTRYPOINT ["bash"]
 ENTRYPOINT ["npx", "cypress", "run"]
+#ENTRYPOINT ["npx", "cypress", "open"]

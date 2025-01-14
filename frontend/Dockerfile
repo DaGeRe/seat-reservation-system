@@ -7,6 +7,11 @@ ARG PATH_TO_TLS
 ENV PROJECT_PATH=${PROJECT_PATH}
 ENV PATH_TO_TLS=${PATH_TO_TLS}
 
+RUN apt-get update
+RUN apt-get install -y net-tools
+#  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+#    net-tools \
+
 # Set the working directory in the container
 WORKDIR /usr/src/app
 

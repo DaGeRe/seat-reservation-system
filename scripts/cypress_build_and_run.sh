@@ -1,0 +1,1 @@
+docker build -t cypress_custom  ../cypress/ && docker run --network host -e HTTP_PROXY=http://proxy.justiz.sachsen.de:3128 -e HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128 -it --rm cypress_custom bash
