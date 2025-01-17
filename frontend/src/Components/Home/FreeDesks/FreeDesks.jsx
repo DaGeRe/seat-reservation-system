@@ -1,13 +1,12 @@
 import DatePicker from 'react-datepicker';
 import React, { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
-import de from 'date-fns/locale/de'; // Import the German locale from date-fns
 import './DatepickerStyles.css'; // Custom CSS file
 import { useTranslation } from "react-i18next";
 import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import { FormControl, Box, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField } from '@mui/material';
-
+const de = require('date-fns/locale/de');
 const FreeDesks = ({ isOpen, onClose }) => {
     const [date, setDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -51,9 +50,9 @@ const FreeDesks = ({ isOpen, onClose }) => {
             fontWeight: "bold",
             transition: "background-color 0.3s"
           }}>{t("submit")}</button>
-          <div>
+          {/*<div>
             {desks ? len(desks) : 123}
-          </div>
+          </div>*/}
         </div>
       </div>
     );

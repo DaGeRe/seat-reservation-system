@@ -4,6 +4,8 @@ FROM docker:24.0-cli AS docker-cli
 # Stage 2: Use an official Maven image to build the application
 FROM maven:3.8.4-openjdk-17 AS build
 
+
+
 # Set environment variables for paths
 ARG PROJECT_PATH
 ENV PROJECT_PATH=$PROJECT_PATH
@@ -36,6 +38,12 @@ RUN mvn clean package -DskipTests -o
 
 # Stage 3: Use a lightweight Java runtime image
 FROM openjdk:17-slim-bullseye
+RUN apt-get update
+RUN apt-get install curl -y
+RUN apt-get install iputils-ping -y
+RUN apt-get install telnet -y
+RUN apt-get install -y net-tools
+#, iputils-ping -y 192.168.64.4:3001
 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Europe/PARIS apt-get -y install tzdata
 ENV TZ=Europe/Paris

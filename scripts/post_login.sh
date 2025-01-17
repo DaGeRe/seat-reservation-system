@@ -12,9 +12,9 @@ echo "Try to connect to ${login_url}"
 
 echo "start" && \
 wget -d \
-    --ca-directory= $PATH_TO_TLS \
+    --ca-directory=$PATH_TO_TLS \
     -O- \
-    --post-data='{"email":"admin@mail.com","password":"admin"}' \
+    --post-data='{"email":"test@mail.com","password":"test"}' \
     --header='Content-Type:application/json' \
     $login_url
 echo "end"

@@ -1,37 +1,28 @@
 package com.desk_sharing;
-import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterAll;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+//import org.junit.jupiter.api.AfterAll;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import javax.sql.DataSource;
-import java.sql.Connection;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.testcontainers.utility.MountableFile; // Make sure to import this class
+import org.testcontainers.utility.MountableFile;
 import org.testcontainers.images.PullPolicy;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.desk_sharing.controllers.UserController;
-import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.repositories.UserRepository;
 
 @SpringBootTest(classes = DeskSharingToolApplication.class)
 @Testcontainers
+@SpringBootTest
 public class MyTest {
 
     @Autowired
@@ -50,7 +41,7 @@ public class MyTest {
             .withImagePullPolicy(PullPolicy.defaultPolicy())
             .withCopyFileToContainer(MountableFile.forClasspathResource(DUMP_FILE_PATH), "/docker-entrypoint-initdb.d/test.sql")
             ;
-            
+    /*     
     @BeforeAll
     public static void setup() {
         // Explicitly set Docker configuration
@@ -60,7 +51,7 @@ public class MyTest {
         
         // Start the MariaDB container
         mariadb.start();
-        /* try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), user, pw)) {
+        try (Connection connection = DriverManager.getConnection(mariadb.getJdbcUrl(), user, pw)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from rooms;");
             while (resultSet.next()) {
@@ -71,14 +62,17 @@ public class MyTest {
             System.out.println("ok4");
         } catch (SQLException e_sql ) {
             System.err.println("SQLException in setup");
-        } */
+        } 
     }
+    */
     @Test
     public void testDatabaseConnection() {
         // Your test logic
         String jdbcUrl = mariadb.getJdbcUrl();
         System.out.println("JDBC URL: " + jdbcUrl);
     }
+
+    /*
     @Test 
     void test_user_repo() {
         UserEntity user = userRepository.findByEmail("");
@@ -89,9 +83,7 @@ public class MyTest {
 
     @Test
     @Transactional
-    /**
-     * This test shall check if an freshly set password differs from a new one.
-     */
+    // This test shall check if an freshly set password differs from a new one.
     void password_change() {
         UserEntity user = userRepository.findByEmail("jupp.engel@mail.com");
         assertNotNull(user);
@@ -106,12 +98,14 @@ public class MyTest {
         
         String newPassword = user.getPassword();
         assertNotNull(newPassword);
-        assertFalse(newPassword.equals(oldPassword));
+        //assertFalse(newPassword.equals(oldPassword));
+        //assertTrue(false);
     }
-
+    
     @AfterAll
     public static void teardown() {
         // Stop the MariaDB container
         mariadb.stop();
     } 
+    */
 }

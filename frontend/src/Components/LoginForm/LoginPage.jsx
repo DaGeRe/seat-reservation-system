@@ -22,12 +22,13 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!isEmail(values.email)) {
       setLoginError(t("invalidEmail"));
       return;
     }
     try {
+      // https://jus-srv-test30.justiz.sachsen.de:8082/users/login
+      console.log('handle_login 02.1', `${process.env.REACT_APP_BACKEND_URL}/users/login`);
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -35,10 +36,11 @@ const LoginPage = () => {
         },
         body: JSON.stringify(values),
       });
+      console.log('handle_login 02.2', response);
       if (!response.ok) {
         throw new Error("Login failed");
       }
-
+      console.log('handle_login 03');
       const data = await response.json();
       if (data !== null) {
         sessionStorage.setItem('headers',  JSON.stringify({
@@ -70,6 +72,7 @@ const LoginPage = () => {
         <div className="input-box">
           <input
             id="email"
+            data-testid='email'
             onChange={(e) =>
               setValues({ ...values, email: e.target.value.trim() })
             }
@@ -82,6 +85,7 @@ const LoginPage = () => {
         <div className="input-box">
           <input
             id="password"
+            data-testid='password'
             onChange={(e) =>
               setValues({ ...values, password: e.target.value.trim() })
             }
@@ -94,8 +98,8 @@ const LoginPage = () => {
 {/*         <div className="forgot-password">
           <a href="/">{t("forgotPassword")}?</a>
         </div> */}
-        {loginError && <div className="error">{loginError}</div>}
-        <button type="submit" onClick={handleLogin}>
+        {loginError && <div data-testid='loginErrorMsg' className="error">{loginError}</div>}
+        <button data-testid='loginBtn' type="submit" onClick={handleLogin}>
           {t("login")}
         </button>
       </form>
