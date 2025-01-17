@@ -96,8 +96,10 @@ const Home = () => {
           <h1>{t("chooseDate")}</h1>
         </div>
         <hr className="gradient" />
-        <div>
+        <div data-testid='Home_Calendar'>
           <Calendar
+            
+            data-testid='abc'
             localizer={localizer}
             events={events}
             startAccessor="start"

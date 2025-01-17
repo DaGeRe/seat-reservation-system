@@ -166,7 +166,7 @@ const SidebarComponent = () => {
   }
 
   return (
-    <div>
+    <div data-testid='SidebarComponent'>
       <Sidebar
         collapsed={collapsed}
         backgroundColor="#008444"
@@ -191,6 +191,7 @@ const SidebarComponent = () => {
           }}
         >
           <MenuItem
+            data-testid='SidebarComponent_Collapse'
             active={activeTab === "collapse"}
             icon={<BsList />}
             onClick={() => handleClick("collapse")}
@@ -199,6 +200,7 @@ const SidebarComponent = () => {
           </MenuItem>
           {localStorage.getItem("admin") === 'true' && (
             <MenuItem
+              data-testid='SidebarComponent_Collapse'
               active={activeTab === "admin"}
               icon={<RiAdminFill />}
               onClick={() => handleClick("admin")}

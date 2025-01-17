@@ -59,6 +59,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
         userService.logging("login( " + loginDto.getEmail() + " )");
+        System.out.println("!!!!!");
         // Check if mail exists and password is correct.
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(

@@ -42,6 +42,7 @@ RUN apt-get update
 RUN apt-get install curl -y
 RUN apt-get install iputils-ping -y
 RUN apt-get install telnet -y
+RUN apt-get install -y net-tools
 #, iputils-ping -y 192.168.64.4:3001
 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Europe/PARIS apt-get -y install tzdata
