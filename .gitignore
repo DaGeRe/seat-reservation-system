@@ -33,6 +33,11 @@ build/
 .vscode/
 
 ### Misc ###
+
+lib/
+lib64
+out.json
+*.cfg
 /backend/target
 /.vscode
 #/frontend/node_modules
@@ -53,7 +58,6 @@ backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/_remote.repositor
 backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.jar
 backend/.m2/repository/*
 backend/.m2/
-cypress/screenshots/*
 
 **/maven-metadata-local.xml
 *.jar
@@ -66,3 +70,12 @@ frontend/tls/*
 tls*
 backend/tls/jus-srv-test30.justiz.sachsen.de.p12
 frontend/tls/jus-srv-test30.justiz.sachsen.de.crt
+
+# cypress
+cypress/screenshots/*
+cypress/core
+cypress/cypress/screenshots/*
+cypress/node_modules/
+cypress/package.json
+cypress/package-lock.json
+cypress/cypress/videos/

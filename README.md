@@ -18,7 +18,7 @@ If you need to build it use: `docker-compose up --build`.
 
 You will be able to access the website in `http://jus-srv-test30:3000`,
 
-The databse will be in `http://jus-srv-test30:3306` and the backend with the REST API will be in `http://jus-srv-test30:8080`.
+The databse will be in `http://jus-srv-test30:3306` and the backend with the REST API will be in `http://jus-srv-test30:8081`.
 
 
 ## Run locally
@@ -44,8 +44,21 @@ If you didnt have any error you can now run using this command: `java -jar targe
 
 Go to the frontend directory, make sure you have all the necessary packages: `npm i` or `npm install`.
 
-Set the proxy with npm config set proxy http://proxy.justiz.sachsen.de:3128 and npm config set https-proxy http://proxy.justiz.sachsen.de:3128. Check with npm config get https-proxy. Maybe you have to set the registry with npm config set registry http://registry.npmjs.org/ to an non secured connection. Reset with npm config set registry https://registry.npmjs.org/. Due to poor internet connection quality installations often fail. Update the timeout with npm config set timeout 6000000 may help. Also after changes clean up the cache with #npm cache clear --force.
+# Set the proxy with npm config set proxy http://proxy.justiz.sachsen.de:3128 and npm config set https-proxy http://proxy.justiz.sachsen.de:3128. Check with npm config get https-proxy. Maybe you have to set the registry with npm config set registry http://registry.npmjs.org/ to an non secured connection. Reset with npm config set registry https://registry.npmjs.org/. Due to poor internet connection quality installations often fail. Update the timeout with npm config set timeout 6000000 may help. Also after changes clean up the cache with #npm cache clear --force.
 
 And now run the frontend: `npm start`
 
 To run the tests, you can run: `npm run test`
+
+## Developing
+
+The three subprojects (frontend, backend and database) are separately developed as docker containers. They are deployed via docker compose. To do so run the script scripts/build_and_run.sh. 
+
+## Test
+
+It is aimed to achieve an good test coverage by implementing an e2e test with cypress.  Some test cases included are: 
+- Perform a login and a logout.
+- Create a new booking/room/desk/user.
+- Create a series booking.
+- Try to book an desk for an already occupied time range.
+- Delete a booking/room/desk/user.

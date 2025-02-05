@@ -23,3 +23,339 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import 'cypress-real-events/support';
+import '@4tw/cypress-drag-drop';
+
+
+Cypress.Commands.add('movePiece', (name, number, x, y) => {
+  cy.get(name).eq(number)
+    .trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { clientX: x, clientY: y, force: true })
+    .trigger('mouseup', { force: true });
+});
+
+Cypress.Commands.add('clickOnImage', (basename) => {
+  cy.get(basename).then(($el_base) => {
+    const base_rect = $el_base[0].getBoundingClientRect();
+    const base_rect_x = base_rect.x;
+    const base_rect_y = base_rect.y;
+
+    cy.get(basename).trigger('mousemove', { force: true, 
+      pageX: 4000, 
+      pageY: 4000
+    });
+    
+    cy.highlightMousePosition();
+    cy.screenshot('adim01');
+  });
+});
+
+Cypress.Commands.add('selectTimeRange', (startSlot, endSlot) => {
+  const basename = '.rbc-time-content';
+  const timeslotgroupname = 'div.rbc-time-slot';
+
+  cy.get(basename).then(($el_base) => {
+    const base_rect = $el_base[0].getBoundingClientRect();
+    const base_rect_x = base_rect.x;
+    const base_rect_y = base_rect.y;
+
+    // The height of every element with class rbc-timeslot-group
+    const timeslotgroup_height = 19.5;//timeslotgroup_rect.height;
+    // Offset to jump over the time header (6:00 AM etc)
+    const time_offset_x = 100;
+
+    const pos_x = base_rect_x + time_offset_x;
+    const pos_y = base_rect_y + startSlot*timeslotgroup_height
+
+    //cy.task('log', `${startSlot}, ${startSlot*timeslotgroup_height}`);
+    cy.get(basename).trigger('mousemove', { force: true, 
+      pageX: pos_x, 
+      pageY: pos_y
+    });
+      
+    cy.get(basename).trigger('mousedown', { which: 1, force: true });
+      
+    for (let i = 0; i < (endSlot-startSlot)*timeslotgroup_height; i++) {
+      cy.get('.rbc-time-content').trigger('mousemove', { force: true,
+        pageX: pos_x, 
+        pageY: pos_y + i, 
+      });
+      cy.wait(1);
+    }
+    cy.get(basename).trigger('mouseup', { which: 1, force: true }); 
+  });
+});
+
+
+
+Cypress.Commands.add('mywait', (secs)=>{
+  cy.window().then((win) => {
+    return new Cypress.Promise((resolve) => {
+        let timeout;
+        const observer = new MutationObserver(() => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                observer.disconnect();
+                resolve();
+            }, secs*1000); // 3 seconds of no changes
+        });
+
+        observer.observe(win.document.body, { childList: true, subtree: true });
+    });
+});
+});
+
+Cypress.Commands.add('test_booking_on_date', (src_date, remark)=>{
+    const [day, month, year] = src_date.split('.');
+    const date = `${year}-${month}-${day}`;
+
+    cy.login();
+    cy.visit('/admin');
+    cy.url().should('include', '/admin');
+    
+    cy.get('div.manage-bookings-container').find('button').should('exist').click();
+    cy.get('div.booking-button-wrapper.visible').should('exist').click()
+    cy.get('div#delete_booking_textfield_room').should('exist').click();
+    cy.contains(remark).should('exist').click();
+    cy.setStr('delete_booking_textfield_date', date)
+    cy.contains('p', 'Data not found').should('exist');
+    cy.contains('button', 'Search').should('exist').click();
+
+    cy.contains('p', 'Data not found').should('not.exist');
+  }
+);
+
+Cypress.Commands.add('setStr', (classname, str, f=null) => {
+  cy.get(`div#${classname}`).find('input').should('exist');
+  cy.get(`div#${classname}`).find('input').then(($input) => {
+      const input = $input[0];
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+      ).set;
+      nativeInputValueSetter.call(input, str);
+
+      // Trigger events.
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      //cy.get(`div#${classname}`).find('input').should('have.value', str);
+      //if (f)
+      //  f();
+
+      //cy.wrap(input).should('have.value', str);
+      cy.get(`div#${classname}`).find('input').should('have.value', str);
+  });
+});
+
+/*Cypress.Commands.add('setDate', (identifier, time, func=null) => {
+  cy.get(identifier).as('dateInput');
+
+  // Sicherstellen, dass es existiert
+  cy.get('@dateInput').should('exist');
+
+  // Wert setzen und Events auslösen
+  cy.get('@dateInput').then(($input) => {
+      const input = $input[0];
+
+      // Wert direkt über den nativen Setter setzen
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+      ).set;
+      nativeInputValueSetter.call(input, time);
+
+      // Input- und Change-Events auslösen
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      if (func===null) {
+        cy.wait(100);
+      }
+      else {
+        func();
+      }
+  })
+});*/
+
+Cypress.Commands.add('highlightMousePosition', () => {
+  cy.document().then((doc) => {
+    const mouseTracker = doc.createElement('div');
+    mouseTracker.setAttribute('id', 'mouse-tracker');
+    Object.assign(mouseTracker.style, {
+      position: 'absolute',
+      width: '10px',
+      height: '10px',
+      backgroundColor: 'red',
+      borderRadius: '50%',
+      zIndex: 9999,
+      pointerEvents: 'none',
+    });
+    doc.body.appendChild(mouseTracker);
+
+    doc.addEventListener('mousemove', (event) => {
+      mouseTracker.style.left = `${event.pageX}px`;
+      mouseTracker.style.top = `${event.pageY}px`;
+    });
+  });
+});
+Cypress.Commands.add('login', () => {
+    cy.visit('/');
+    cy.intercept('POST', '/users/login').as('loginRequest'); 
+    cy.get('[data-testid="email"]').should('exist').type('test@mail.com');
+    cy.get('[data-testid="password"]').should('exist').type('test');
+    cy.get('[data-testid="loginBtn"]').click();
+    cy.wait('@loginRequest').then((interception) => {
+      const response = interception.response;
+      expect(response === null).to.equal(false);
+      const statusCode = response.statusCode;
+      expect(statusCode).to.equal(200);
+      const body = response.body;
+      const accessToken = response.body.accessToken;
+      expect(accessToken === null).to.equal(false);
+
+      cy.get('[data-testid="loginErrorMsg"]').should('not.exist');
+      // Token im lokalen Speicher speichern
+      cy.window().then((window) => {
+        window.localStorage.setItem('headers', JSON.stringify({
+        'Authorization': 'Bearer ' +  String(accessToken),
+        'Content-Type': 'application/json',
+      }));
+      });
+    });
+});
+
+
+Cypress.Commands.add('deleteRoomByRoomRemark', (building, floor, remark) => {
+  cy.login();
+  cy.visit('/admin');
+  cy.url().should('include', '/admin');
+  cy.get('button.edit-rooms-button').should('exist').click();
+  cy.get('div.workstation-button-wrapper', {timeout: 10000}).should('exist');
+  cy.get('button.workstation-button').contains(/Delete Room|Zimmer Entfernen/).should('exist').click();
+  cy.get('div.image-container').should('exist');
+
+  // Select building.
+  cy.get('div[id="select-building"]').should('be.visible').click();
+  cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();
+  // Select floor.
+  cy.get('div[id="select-floor"]').should('be.visible').click();
+  cy.get(`li[data-value="${floor}"]`).should(('be.visible')).click();
+  // Find button with testid and click to delete.
+  cy.get(`svg[data-testid="icon_button_${remark}"`).should('exist').click();//.click({ multiple: true, force: true });
+});
+
+Cypress.Commands.add('deleteRoomByRoomRemark_ff', (building, floor, remark) => {
+  cy.deleteRoomByRoomRemark(building, floor, remark);
+  // Confirm fast forward deleting.
+  cy.get('button[id="delete_ff_btn_yes"]').should('exist').click();
+  // We shall be back at the admin page.
+  cy.url().should('include', '/admin');
+});
+
+Cypress.Commands.add('createRoom', (building, floor, remark) => {
+  cy.login();
+  cy.visit('/admin');
+  cy.url().should('include', '/admin');
+  cy.get('button.edit-rooms-button').should('exist').click();
+  cy.get('div.workstation-button-wrapper').should('be.visible');
+  cy.get('button.workstation-button').contains(/Add Room|Zimmer Hinzufügen/).should('exist').click();
+  cy.get('div.image-container').should('exist');
+  
+  cy.get('svg[style*="color: green"]').should('not.exist');
+  cy.get('div.image-container').should('exist').click();
+  cy.get('svg[style*="color: green"]').should('exist');
+  
+  // Select building.
+  cy.get('div[id="select-building"]').should('exist').click();
+  cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();
+  // Select floor.
+  cy.get('div[id="select-floor"]').should('be.visible').click();
+  cy.get(`li[data-value="${floor}"]`).should(('be.visible')).click();
+  // Select type
+  cy.get('div[data-testid="select_type"').should('exist').click();
+  cy.get('li[data-value="Normal"]').should('exist').click();
+  // Select status
+  cy.get('div[data-testid="select_status"').should('exist').click();
+  cy.get('li[data-value="enable"]').should('exist').click();
+  // Write remark
+  cy.get('input[id="textfield_remark"]').should('exist').type(remark);
+  // Submit
+  cy.get('button[id="room_submit_btn"]').should('exist').click();
+  
+  cy.url().should('include', '/admin');
+});
+
+Cypress.Commands.add('createDeskByRoomRemark', (building, floor, roomRemark, deskRemark) => {
+  cy.login();
+  cy.visit('/admin');
+  cy.get('button.edit-rooms-button').should('exist').click();
+  cy.get('button[id="workstation_button_add_workstation"').should('exist').click();
+  // Select building.
+  cy.get('div[id="select-building"]').should('exist').click();
+  cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();
+  // Select floor.
+  cy.get('div[id="select-floor"]').should('be.visible').click();
+  cy.get(`li[data-value="${floor}"]`).should(('be.visible')).click();
+  // Find button with testid and click to add room.
+  cy.get(`svg[data-testid="icon_button_${roomRemark}"`).should('exist').click();//.click({ multiple: true, force: true });
+  // Set equipment.
+  cy.get('div[id="select_equipment"').should('exist').click();
+  cy.get('li[data-value="with equipment"]').should('exist').click();
+  // Write remark
+  cy.get('input[id="textfield_desk_remark"]').should('exist').type(deskRemark);
+  // Submit
+  cy.get('button[id="desk_submit_btn"]').should('exist').click();
+
+  cy.url().should('include', '/admin');
+});
+
+Cypress.Commands.add('deleteDeskByDeskRemark', (building, floor, roomRemark, deskRemark) => {
+  cy.login();
+  cy.visit('/admin');
+  cy.get('button.edit-rooms-button').should('exist').click();
+  cy.get('button[id="workstation_button_delete_workstation"').should('exist').click();
+  
+  // Select building.
+  cy.get('div[id="select-building"]').should('exist').click();
+  cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();
+  // Select floor.
+  cy.get('div[id="select-floor"]').should('be.visible').click();
+  cy.get(`li[data-value="${floor}"]`).should(('be.visible')).click();
+  // Find button with testid and click.
+  cy.get(`svg[data-testid="icon_button_${roomRemark}"`).should('exist').click();//.click({ multiple: true, force: true });
+  // Click the selection field to choose the desk
+  cy.get('.textfield_desk_in_room').should('exist').click();
+  // Find the entry we like to delete. 
+  cy.get('div').contains(`${deskRemark}`).should('exist').click();
+  // Delete
+  cy.get('button[id="delete_workstation_button"').should('exist').click();
+});
+
+Cypress.Commands.add('deleteDeskByDeskRemark_ff', (building, floor, roomRemark, deskRemark) => {
+  cy.deleteDeskByDeskRemark(building, floor, roomRemark, deskRemark);
+  // Confirm fast forward deleting.
+  cy.get('button[id="delete_ff_btn_yes"]').should('exist').click();
+  // We shall be back at the admin page.
+  cy.url().should('include', '/admin');
+});
+
+Cypress.Commands.add('createBooking', (building, floor, roomRemark, deskRemark) => {
+  cy.login();
+  cy.visit('/floor');
+  cy.url().should('include', '/floor');
+
+  // Found the desired room
+  cy.get(`svg[data-testid="icon_button_${roomRemark}"`).should('exist').click();
+  // Select the desk
+  cy.get('.desk-description.clicked').should('not.exist');
+  cy.get('.desk-description').contains(deskRemark).should('exist').click();
+  cy.get('.desk-description.clicked').should('exist');
+  // Select time range.
+  cy.get('div.rbc-time-content').should('exist');
+  cy.get('div.rbc-events-container').should('have.value', '');
+  // 7-11 AM.
+  cy.selectTimeRange(3, 10);
+  // The selected time event is present as an event.
+  cy.get('div.rbc-events-container').should('not.be.empty', '');
+  // Confirm booking #1
+  cy.get('.submit-btn').should('exist').click()
+});

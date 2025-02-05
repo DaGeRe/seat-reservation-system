@@ -14,7 +14,14 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
+Cypress.Screenshot.defaults({ capture: 'fullPage' }); 
+Cypress.on('test:after:run', (test, runnable) => { if (test.state === 'failed') { 
+    let screenshotFileName = `${runnable.parent.title} ${test.title} (failed).png`; 
+    let imageUrl = `${Cypress.spec.name}/${screenshotFileName}`; 
+    let videUrl = `${Cypress.spec.name}.mp4`; 
+    addContext({test}, imageUrl); addContext({test}, videUrl); 
+} });
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

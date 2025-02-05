@@ -1,5 +1,5 @@
 # Stage 1: Base stage using a lightweight Docker CLI image
-FROM docker:24.0-cli AS docker-cli
+#FROM docker:24.0-cli AS docker-cli
 
 # Stage 2: Use an official Maven image to build the application
 FROM maven:3.8.4-openjdk-17 AS build
@@ -55,7 +55,7 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
 
 # Copy the Docker CLI utility for container-related operations
-COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
+#COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
 
 # Copy Maven and cached dependencies from the build stage
 COPY --from=build /usr/share/maven /usr/share/maven

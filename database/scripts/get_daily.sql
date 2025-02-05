@@ -1,0 +1,8 @@
+WITH RECURSIVE days AS (
+    SELECT CAST('2025-01-01' AS DATE) AS curr_Date
+    UNION ALL
+    SELECT DATE_ADD(curr_Date, INTERVAL 1 WEEK)
+    FROM days
+    WHERE DATE_ADD(curr_Date, INTERVAL 1 WEEK) <= CAST('2025-02-21' AS DATE)
+)
+SELECT curr_Date FROM days;

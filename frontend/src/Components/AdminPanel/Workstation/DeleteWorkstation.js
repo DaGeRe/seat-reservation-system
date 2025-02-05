@@ -8,7 +8,7 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf';
-import {optionToDeskId, deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
+import {deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
@@ -24,7 +24,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const { t } = useTranslation();
   const [allDesks, setAllDesks] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
-  const [selectedDesk, setSelectedDesk]= React.useState('');
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
@@ -130,7 +129,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
             <DeskSelector
               selectedRoom={selectedRoom}
               allDesks={allDesks}
-              selectedDesk={selectedDesk}
               //setSelectedDesk={setSelectedDesk}
               setSelectedDeskId={setSelectedDeskId}
               roomToOption={roomToOption}
@@ -142,8 +140,8 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
           </Grid2>
         </DialogContent>
       <DialogActions>
-        <Button onClick={()=>deleteWorkstation()}>&nbsp;{t("delete").toUpperCase()}</Button>
-        <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+        <Button id='delete_workstation_button' onClick={()=>deleteWorkstation()}>&nbsp;{t("delete").toUpperCase()}</Button>
+        <Button id='close_workstation_button' onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );

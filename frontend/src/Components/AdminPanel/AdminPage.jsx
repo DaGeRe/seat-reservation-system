@@ -134,57 +134,57 @@ const AdminPage = () => {
             <h1>{t("adminPanel")}</h1>
             <div className="admin-controls-container">
               <div className="user-management-container">
-                <button className="user-management-button" onClick={toggleEmployeeButtons}>
+                <button id='userManagement' className="user-management-button" onClick={toggleEmployeeButtons}>
                   {t("userManagement")}
                 </button>
                 <FaAddressBook className="logo" />
               </div>
               <div className="edit-rooms-container">
-                <button className="edit-rooms-button" onClick={toggleWorkstationButtons}>
+                <button id='roomManagement' className="edit-rooms-button" onClick={toggleWorkstationButtons}>
                 {t("roomManagement")}
                 </button>
                 <FaPlusMinus className="logo" />
               </div>
               <div className="manage-bookings-container">
-                <button className="manage-bookings-button" onClick={toggleBookingButtons}>
+                <button id='bookingManagement' className="manage-bookings-button" onClick={toggleBookingButtons}>
                 {t("bookingManagement")}
                 </button>
                 <FaBook className="logo" />
               </div>
             </div>
             <div className={`employee-button-wrapper ${showEmployeeButtons ? 'visible' : ''}`}>
-              <button className="employee-button" onClick={toggleAddEmployeeModal}>
+              <button id='addEmployee' className="employee-button" onClick={toggleAddEmployeeModal}>
                 {t("addEmployee")}
               </button>
-              <button className="employee-button" onClick={toggleDeleteEmployeeModal}>
+              <button  id='deleteEmployee' className="employee-button" onClick={toggleDeleteEmployeeModal}>
                 {t("deleteEmployee")}
               </button>
-              <button className="employee-button" onClick={toggleEditEmployeeModal}>
+              <button id='editEmployee' className="employee-button" onClick={toggleEditEmployeeModal}>
                 {t("editEmployee")}
               </button>
             </div>
             <div className={`workstation-button-wrapper ${showWorkstationButtons ? 'visible' : ''}`}>
-              <button className="workstation-button" onClick={toggleAddRoomModal}>
+              <button id='addRoom' className="workstation-button" onClick={toggleAddRoomModal}>
                 {t("addRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleDeleteRoomModal}>
+              <button id='deleteRoom' className="workstation-button" onClick={toggleDeleteRoomModal}>
                 {t("deleteRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleEditRoomModal}>
+              <button id='editRoom' className="workstation-button" onClick={toggleEditRoomModal}>
                 {t("editRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleAddWorkstationModal}>
+              <button id='addWorkstation' className="workstation-button" onClick={toggleAddWorkstationModal}>
                 {t("addWorkstation")}
               </button>
-              <button className="workstation-button" onClick={toggleDeleteWorkstationModal}>
+              <button id='deleteWorkstation' className="workstation-button" onClick={toggleDeleteWorkstationModal}>
                 {t("deleteWorkstation")}
               </button>
-              <button className="workstation-button" onClick={toggleEditWorkstationModal}>
+              <button id='editWorkstation' className="workstation-button" onClick={toggleEditWorkstationModal}>
                 {t("editWorkstation")}
               </button>
             </div>
             <div className={`booking-button-wrapper ${showBookingButtons ? 'visible' : ''}`}>
-              <button className="booking-button" onClick={toggleDeleteBookingsModal}>
+              <button id='deleteBooking' className="booking-button" onClick={toggleDeleteBookingsModal}>
                 {t("deleteBooking")}
               </button>
             {/*   <button className="booking-button" onClick={toggleEditBookingsModal}>

@@ -43,4 +43,5 @@ public class Series {
     private Time startTime;
     private Time endTime;
     private String frequency;
+    private int dayOfTheWeek;
 }

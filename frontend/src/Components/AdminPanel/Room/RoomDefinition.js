@@ -10,6 +10,7 @@ export default function RoomDefinition({t, type, setType, status_val, setStatus,
                 <Select
                     labelId='demo-simple-select-label'
                     id='demo-simple-select'
+                    data-testid='select_type'
                     value={type}
                     label={t('type')}
                     onChange={(e)=>setType(e.target.value)}
@@ -20,22 +21,23 @@ export default function RoomDefinition({t, type, setType, status_val, setStatus,
             </FormControl>
             <br></br> <br></br>
             <FormControl required={true} fullWidth>
-                <InputLabel id='demo-simple-select-label'>Status</InputLabel>
+                <InputLabel>Status</InputLabel>
                 <Select
-                labelId='demo-simple-select-label'
-                id='demo-simple-select'
-                value={status_val}
-                label={t('status')}
-                onChange={(e)=>setStatus(e.target.value)}
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    data-testid='select_status'
+                    value={status_val}
+                    label={t('status')}
+                    onChange={(e)=>setStatus(e.target.value)}
                 >
-                    <MenuItem value={'enable'}>{t('enable').toUpperCase()}</MenuItem>
-                    <MenuItem value={'disable'}>{t('disable').toUpperCase()}</MenuItem>
+                    <MenuItem data-testid='select_status_enable' value={'enable'}>{t('enable').toUpperCase()}</MenuItem>
+                    <MenuItem data-testid='select_status_disable' value={'disable'}>{t('disable').toUpperCase()}</MenuItem>
                 </Select>
             </FormControl>
             <br></br> <br></br>
             <FormControl required={true} size='small' fullWidth variant='standard'>
             <TextField
-                id='room-remark'
+                id='textfield_remark'
                 label={t('roomRemark')}
                 size='small'
                 type={'text'}

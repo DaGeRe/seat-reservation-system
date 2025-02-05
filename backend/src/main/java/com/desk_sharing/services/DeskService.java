@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.Series;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.repositories.DeskRepository;
+import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.repositories.BookingRepository;
 
 @Service
@@ -22,12 +25,18 @@ public class DeskService {
     @Autowired
     BookingRepository bookingRepository;
 
-    
     @Autowired
-    RoomService roomService;
+    SeriesRepository seriesRepository;
+
+    @Autowired
+    SeriesService seriesService;
+
+    @Autowired
+    RoomRepository roomRepository;
+
 
     public Desk saveDesk(DeskDTO deskDto) {
-    	Optional<Room> optional = roomService.getRoomById(deskDto.getRoomId());
+    	Optional<Room> optional = roomRepository.findById(deskDto.getRoomId());
     	if(optional.isPresent()) {
     		Desk desk = new Desk();
     		desk.setRoom(optional.get());
@@ -94,6 +103,13 @@ public class DeskService {
             for (Booking booking: bookingsPerDesk) {
                 bookingRepository.deleteById(booking.getId());
             }
+
+            // Delete series.
+            List<Series> seriesLst = seriesRepository.findByDeskId(id);
+            for (Series series: seriesLst) {
+                seriesService.deleteById(series.getId());
+            }
+            
             deskRepository.deleteById(id);
             return true;
         } catch (Exception e) {

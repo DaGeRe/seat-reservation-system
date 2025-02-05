@@ -4,6 +4,9 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: 'https://jus-srv-test30.justiz.sachsen.de:3001',
     setupNodeEvents(on, config) {
+      on('after:screenshot', (details) => {
+        console.log(`Screenshot taken: ${details.path}`);
+      });
       on('task', {
         log(message) {
           console.log(message);
@@ -20,8 +23,13 @@ module.exports = defineConfig({
         },
       });
     },
+    defaultCommandTimeout: 10000,
+    screenshot: {
+      capture: 'fullPage', // Ensures Cypress captures the full page
+    },
     specPattern: 'cypress/integration/**/*.cy.{js,jsx,ts,tsx}', // New pattern for test files
-    supportFile: false,
+    supportFile: 'cypress/support/index.js',
+    defaultCommandTimeout: 10000 
   },
-  video: false,
+  video: true,
 });

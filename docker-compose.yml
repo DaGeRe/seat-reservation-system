@@ -45,6 +45,7 @@ services:
       context: ${PROJECT_PATH}/backend
       dockerfile: Dockerfile
       pull: false
+      
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}

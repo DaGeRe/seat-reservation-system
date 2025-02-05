@@ -82,6 +82,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                       newValue);
               }}
               renderInput={(params) => (
+                  <div id='delete_booking_textfield_room'>
                   <TextField
                       {...params}
                       fullWidth
@@ -90,10 +91,12 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                       label={t("selectRoom")}
                       placeholder={t("selectRoom")}
                   />
+                  </div>
               )}
             />&nbsp;&nbsp;&nbsp;
            
             <FormControl required={true} size="small" fullWidth variant="standard">
+                            <div id='delete_booking_textfield_date'>
                             <TextField
                                 id="standard-adornment-reason"
                                 placeholder={t("date")}
@@ -103,6 +106,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
                                 value={date}
                                 onChange={(e)=>setDate(e.target.value)}
                             />
+                            </div>
                         </FormControl>&nbsp;&nbsp;&nbsp;
                         <Button variant='contained' color='success' onClick={searchBooking}>{t("search")}</Button>
                         </Stack>

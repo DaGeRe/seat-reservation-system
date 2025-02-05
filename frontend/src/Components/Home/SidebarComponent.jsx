@@ -5,20 +5,14 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { RiAdminFill } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaLock, FaCog, FaBookmark, FaEye, FaEyeSlash } from "react-icons/fa";
-import { GiOfficeChair } from 'react-icons/gi';
+import { FaLock, FaBookmark } from "react-icons/fa";
 import ChangePassword from "./ChangePassword";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from 'react-icons/ci';
 import { MdGTranslate } from 'react-icons/md';
-import { toast } from 'react-toastify';
-import { putRequest } from '../RequestFunctions/RequestFunctions';
+//import { toast } from 'react-toastify';
+//import { putRequest } from '../RequestFunctions/RequestFunctions';
 import FreeDesks from './FreeDesks/FreeDesks';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { FaCalendarAlt } from "react-icons/fa";
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
-import { Box, Stack, Typography } from '@mui/material';
-import Series from "../Series/Series";
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox } from 'react-icons/io';
 import { IoIosAlbums } from 'react-icons/io';
@@ -28,14 +22,14 @@ const SidebarComponent = () => {
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem("sidebarCollapsed") === "true"
   );
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
+  //const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [activeTab, setActiveTab] = useState("calendar");
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isFreeDesksModalOpen, setIsFreeDesksModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
-  const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
+  //const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
 
   useEffect(() => {
     // Extract the current pathname from the location
@@ -121,8 +115,8 @@ const SidebarComponent = () => {
     navigate("/", { replace: true }); // Redirect to login page
   };
 
-  const changeVisibility = async () => {
-/*     try {
+  /*const changeVisibility = async () => {
+     try {
       const response = await fetch(`/users/visibility/${localStorage.getItem("userId")}`, {
         method: "PUT"
       });
@@ -142,7 +136,7 @@ const SidebarComponent = () => {
       }
     } catch (error) {
         console.log("Error changing visibility");
-    }   */
+    }   
     putRequest(
       `/users/visibility/${localStorage.getItem("userId")}`,
       headers,
@@ -163,7 +157,7 @@ const SidebarComponent = () => {
       },
       () => {console.log(`Failed to put visibility for userId: ${localStorage.getItem("userId")}.`);}
     );
-  }
+  }*/
 
   return (
     <div data-testid='SidebarComponent'>

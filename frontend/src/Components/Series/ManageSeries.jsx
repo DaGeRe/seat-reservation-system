@@ -1,6 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import React, { useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import SidebarComponent from '../Home/SidebarComponent';
@@ -8,6 +6,7 @@ import Box from '@mui/material/Box';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import Button from '@mui/material/Button';
 import DeleteFf from '../DeleteFf';
+import {formatDate_yyyymmdd_to_ddmmyyyy} from '../formatDate.js'
 import {
   Table,
   TableBody,
@@ -33,6 +32,9 @@ const ManageSeries = () => {
     return i18n.language === 'de' ? 'Verwalten von Serienterminen' : 'Management of Series Bookings';
   }
 
+  /**
+   * Fetch the series for the logged in user.
+   */
   React.useEffect(() => {
     getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/series/${localStorage.getItem('email')}`, 
@@ -42,7 +44,7 @@ const ManageSeries = () => {
           console.log('Error fetching series in ManageSeries.jsx');
         }
     );
-  }, [currSeries]); 
+  }, [currSeries, headers]); 
 
   function deleteSeries(/*series*/) {
     const series = currSeries;
@@ -82,24 +84,23 @@ const ManageSeries = () => {
                       <TableCell>{t('startDate')}</TableCell>
                       <TableCell>{t('endDate')}</TableCell>
                       <TableCell>{t('startTime')}</TableCell>
+                      <TableCell>{t('endTime')}</TableCell>
                       <TableCell>{t('deskRemark')}</TableCell>
                       <TableCell>{t('roomRemark')}</TableCell>
                       <TableCell>{t('building')}</TableCell>
-                      <TableCell>{t('floor')}</TableCell>
                       <TableCell></TableCell>
                   </TableRow>
               </TableHead>
               <TableBody>
                 {serieses.map((series) => (
                   <TableRow key={series.id}>
-                    <TableCell>{series.startDate}</TableCell>
-                    <TableCell>{series.endDate}</TableCell>
-                    <TableCell>{series.startTime}</TableCell>
-                    <TableCell>{series.endTime}</TableCell>
+                    <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.startDate)}</TableCell>
+                    <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.endDate)}</TableCell>
+                    <TableCell>{series.rangeDTO.startTime}</TableCell>
+                    <TableCell>{series.rangeDTO.endTime}</TableCell>
                     <TableCell>{series.desk.remark}</TableCell>
                     <TableCell>{series.room.remark}</TableCell>
                     <TableCell>{series.room.building}</TableCell>
-                    <TableCell>{series.room.flooar}</TableCell>
                     <TableCell>
                         <Button variant='contained' onClick={(_)=>{
                           setCurrSeries(series);
@@ -113,7 +114,7 @@ const ManageSeries = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        : <div>{i18n.language === 'de' ? 'Für Sie wurden keine Serienterminen gefunden.' : 'For the current user was no series booking found.'}</div>}
+        : <div>{i18n.language === 'de' ? 'Für Sie wurden keine Serienterminen gefunden.' : 'For the current user no series booking was found.'}</div>}
       </>
     );
   };

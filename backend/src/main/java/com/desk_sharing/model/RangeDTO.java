@@ -1,8 +1,5 @@
 package com.desk_sharing.model;
 
-import java.sql.Date;
-import java.sql.Time;
-
 import lombok.Data;
 
 import lombok.AllArgsConstructor;
@@ -10,9 +7,10 @@ import lombok.AllArgsConstructor;
 @Data
 @AllArgsConstructor
 public class RangeDTO {
-    private String startDate;
-    private String endDate;
-    private String startTime;
-    private String endTime;
-    private String frequency;
+    private String startDate; // The start of the interval.
+    private String endDate; // The end of the interval.
+    private String startTime; // The start time of the booking.
+    private String endTime; // The end time of the booking.
+    private String frequency; // The interval. daily, weekly or monthly.
+    private int dayOfTheWeek; // The week day. 0 = monday, ..., 4 = friday
 }

@@ -14,7 +14,7 @@ export default function WorkStationDefinition({
                 <Select
                     size='small'
                     labelId="demo-simple-select-label"
-                    id='demo-simple-select'
+                    id='select_equipment'
                     value={equipment}
                     placeholder='Equipments'
                     label='Equipments'
@@ -27,7 +27,8 @@ export default function WorkStationDefinition({
             <br></br><br></br>
             <FormControl required={false} size='small' fullWidth variant='standard'>
                 <TextField
-                    id='standard-adornment-reason'
+                    id='textfield_desk_remark'
+                    data-testid='textfield_desk_remark'
                     label={t('deskRemark')}
                     size='small'
                     type={'string'}
