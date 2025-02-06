@@ -51,6 +51,9 @@ scripts/exec_db.sh
 scripts/test.sh
 scripts/copy_mytest.sh 
 frontend/node_modules
+
+# Backend
+backend/src/test/resources/dumps
 backend/logs_dev_backend/*
 backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNAPSHOT.pom
 backend/.m2/repository/com/desk_sharing/backend/maven-metadata-local.xml
