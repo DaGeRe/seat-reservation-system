@@ -13,6 +13,7 @@ import AddEmployee from './UserManagement/AddEmployee';
 import DeleteEmployee from './UserManagement/DeleteEmployee';
 import EditEmployee from './UserManagement/EditEmployee';
 import DeleteBookings from './Bookings/DeleteBookings';
+import OverviewBookings from './Bookings/OverviewBookings';
 import EditBookings from './Bookings/EditBookings';
 import { ColumnGraph } from "./ColumnGraph";
 import { HeatMap } from "./HeatMap";
@@ -46,6 +47,7 @@ const AdminPage = () => {
 
   const [isEditBookingsOpen, setIsEditBookingsOpen] = useState(false);
   const [isDeleteBookingsOpen, setIsDeleteBookingsOpen] = useState(false);
+  const [isOverviewBookingsOpen, setIsOverviewBookingsOpen] = useState(false);
 
   const floorFilter = (currentFloor) => {
     // const currentFloor = "Ground";
@@ -108,7 +110,7 @@ const AdminPage = () => {
   const toggleDeleteEmployeeModal = () => setIsDeleteEmployeeOpen(!isDeleteEmployeeOpen);
   const toggleEditBookingsModal = () => setIsEditBookingsOpen(!isEditBookingsOpen);
   const toggleDeleteBookingsModal = () => setIsDeleteBookingsOpen(!isDeleteBookingsOpen);
-
+  const toggleOverviewBookingsModal = () => setIsOverviewBookingsOpen(!isOverviewBookingsOpen)
 
 
   return (
@@ -186,6 +188,9 @@ const AdminPage = () => {
             <div className={`booking-button-wrapper ${showBookingButtons ? 'visible' : ''}`}>
               <button id='deleteBooking' className="booking-button" onClick={toggleDeleteBookingsModal}>
                 {t("deleteBooking")}
+              </button>
+              <button id='overviewBooking' className='booking-button' onClick={toggleOverviewBookingsModal}>
+                {t('overviewBooking')}
               </button>
             {/*   <button className="booking-button" onClick={toggleEditBookingsModal}>
                 {t("editBooking")}
@@ -384,6 +389,14 @@ const AdminPage = () => {
         </BootstrapDialogTitle>
         <DeleteBookings deleteBookingsModal={toggleDeleteBookingsModal} />
       </BootstrapEmployeeDialog>
+      
+      <BootstrapEmployeeDialog onClose={toggleOverviewBookingsModal} aria-labelledby='customized-dialog-title' open={isOverviewBookingsOpen}>
+        <BootstrapDialogTitle id='customized-dialog-title-overviewBooking' className='toolHeader' style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+          {t('overviewBooking').toUpperCase()}
+        </BootstrapDialogTitle>
+        <OverviewBookings overviewBookingsModal={toggleOverviewBookingsModal}/>
+      </BootstrapEmployeeDialog>
+      
     </div>
   );
 };

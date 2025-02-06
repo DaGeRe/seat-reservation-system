@@ -22,18 +22,6 @@ services:
       - backend
       - database
 
-#  cypress:
-#    build:
-#      context: ${PROJECT_PATH}/cypress
-#      pull: false
-#    
-#    networks:
-#      - ${NETWORK}
-#    depends_on:
-#      - frontend
-#      - backend
-#    entrypoint: ["npx", "cypress", "run"]
-
   backend:
     restart: unless-stopped
     privileged: true

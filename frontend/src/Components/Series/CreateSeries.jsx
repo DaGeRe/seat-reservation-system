@@ -8,7 +8,7 @@ import { postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from './CreateDatePicker';
 import CreateTimePicker from './CreateTimePicker';
 import { toast } from 'react-toastify';
-import {formatDate_yyyymmdd_to_ddmmyyyy} from '../formatDate.js';
+import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import { BAUTZNER_STR_19_C, GROUND, FIRST } from '../../constants';
 import {
     Table,

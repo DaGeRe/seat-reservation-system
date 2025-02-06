@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
-import {formatDate_yyyymmdd_to_ddmmyyyy} from '../formatDate.js';
+import { formatDate_yyyymmdd_to_ddmmyyyy } from "../misc/formatDate.js";
 
 const Booking = () => {
   const headers = useMemo(() => {

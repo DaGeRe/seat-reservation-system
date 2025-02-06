@@ -86,7 +86,7 @@ public class SeriesService {
     public List<Date> getDatesBetween(final RangeDTO rangeDTO) {
         final Date startDate = datestringToDate(rangeDTO.getStartDate());
         final Date endDate = datestringToDate(rangeDTO.getEndDate());
-        System.out.println("getDatesBetween: " + startDate + " | " + endDate + " #1");
+        //System.out.println("getDatesBetween: " + startDate + " | " + endDate + " #1");
         List<Date> dates = new ArrayList<>();
         if (rangeDTO.getFrequency().equals("daily")) {
             dates = seriesRepository.getDaily(startDate, endDate);
@@ -113,9 +113,9 @@ public class SeriesService {
                 dates = filteredDates;
             }
         }
-        System.out.println("getDatesBetween: " + startDate + " | " + endDate + " | " + rangeDTO.getFrequency()  + " | " + rangeDTO.getDayOfTheWeek() + " #2");
-        for (Date d: dates)
-            System.out.println("\t" + d);
+        //System.out.println("getDatesBetween: " + startDate + " | " + endDate + " | " + rangeDTO.getFrequency()  + " | " + rangeDTO.getDayOfTheWeek() + " #2");
+        /*for (Date d: dates)
+            System.out.println("\t" + d);*/
         return dates;
     }
 

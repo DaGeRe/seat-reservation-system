@@ -1,11 +1,17 @@
 package com.desk_sharing.controllers;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.sql.Date;
+import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +25,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.BookingDTO;
 import com.desk_sharing.model.BookingEditDTO;
+import com.desk_sharing.model.BookingProjectionDTO;
+import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
@@ -31,10 +38,12 @@ import com.desk_sharing.services.UserService;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
-   
 
     @Autowired
     BookingService bookingService;
+
+    @Autowired
+    BookingRepository bookingRepository;
 
     @Autowired
     UserService userService;
@@ -80,13 +89,83 @@ public class BookingController {
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
+    private List<BookingProjectionDTO> objectsToBookingProjectionDTOs(List<Object[]> objects) {
+        return objects.stream()
+        .map(row -> new BookingProjectionDTO(
+            (Long) row[0],
+            (Date) row[1],
+            (Time) row[2],
+            (Time) row[3],
+            (String) row[4],
+            (String) row[5],
+            (String) row[6],
+            (String) row[7],
+            (Long) row[8]
+        ))
+        .collect(Collectors.toList());
+    }
 
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        userService.logging("getAllBookings()");
-        List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    public ResponseEntity<List<BookingProjectionDTO>> getEveryBooking() {
+        userService.logging("getEveryBooking()");
+        try {
+            //List<BookingProjectionDTO> bookings = bookingRepository.getEveryBooking();
+            final List<BookingProjectionDTO> bookingProjectionDtos = objectsToBookingProjectionDTOs(bookingRepository.getEveryBooking());
+            return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return  new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+
     }
+
+        
+
+    @GetMapping("email/{email}")
+    public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForEmail(@PathVariable("email") String email) {
+        userService.logging("getEveryBookingForEmail()");
+        final List<BookingProjectionDTO> bookingProjectionDtos = objectsToBookingProjectionDTOs(
+            bookingRepository.getEveryBookingForEmail(
+                "%" + email + "%"
+            )
+        );
+        return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("singledate/{date}")
+    public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForDate(@PathVariable("date") String date) {
+        userService.logging("getEveryBookingForDate()");
+        final List<BookingProjectionDTO> bookingProjectionDtos = objectsToBookingProjectionDTOs(
+            bookingRepository.getEveryBookingForDate(
+                "%" + date + "%"
+            )
+        );
+        return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("deskRemark/{deskRemark}")
+    public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForDeskRemark(@PathVariable("deskRemark") String deskRemark) {
+        userService.logging("getEveryBookingForDeskRemark()");
+        final List<BookingProjectionDTO> bookingProjectionDtos = objectsToBookingProjectionDTOs(
+            bookingRepository.getEveryBookingForDeskRemark(
+                "%" + deskRemark + "%"
+            )
+        );
+        return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
+    }
+    @GetMapping("roomRemark/{roomRemark}")
+    public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForRoomRemark(@PathVariable("roomRemark") String roomRemark) {
+        userService.logging("getEveryBookingForRoomRemark()");
+        final List<BookingProjectionDTO> bookingProjectionDtos = objectsToBookingProjectionDTOs(
+            bookingRepository.getEveryBookingForRoomRemark(
+                "%" + roomRemark + "%"
+            )
+        );
+        return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
