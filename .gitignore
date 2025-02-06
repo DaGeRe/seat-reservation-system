@@ -33,9 +33,14 @@ build/
 .vscode/
 
 ### Misc ###
+
+lib/
+lib64
+out.json
+*.cfg
 /backend/target
 /.vscode
-/frontend/node_modules
+#/frontend/node_modules
 /.metadata/
 *.log
 *.tar.xz
@@ -65,3 +70,12 @@ frontend/tls/*
 tls*
 backend/tls/jus-srv-test30.justiz.sachsen.de.p12
 frontend/tls/jus-srv-test30.justiz.sachsen.de.crt
+
+# cypress
+cypress/screenshots/*
+cypress/core
+cypress/cypress/screenshots/*
+cypress/node_modules/
+cypress/package.json
+cypress/package-lock.json
+cypress/cypress/videos/

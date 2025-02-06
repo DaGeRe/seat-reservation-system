@@ -96,7 +96,6 @@ public class UserController {
             return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
         }
         UserEntity user = new UserEntity();
-        //user.setUsername(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -18,6 +17,7 @@ import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Series;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
 import com.desk_sharing.repositories.BookingRepository;
@@ -73,32 +73,64 @@ public class SeriesService {
     };
 
     /**
-     * Calculates every day between the startDate and the endDate that are stored
-     * in rangeDTO, inlcuding the start- and endDate.
-     * Based on the also in rangeDTO provided frequency the days betwen star- and endDate
-     * are calculated. Iff frequency == "daily" every day is taken. Iff frequency == "weekly"
-     * every seventh day is taken starting from startDate while the date is smaller than
-     * endDate. Iff frequency == "monthly" fourth week is taken with that has the same week day
-     * as the startDate until while the date is smaller than endDate.
-     * @param rangeDTO  The object that contains the frequency, the start- and endDate.
-     * @return  An list of dates between start- and endDate based on the frequency with both of
-     * them included.
+     * Calculates dates based on rangeDTO.
+     * There are three basic types:
+     * Daily: calculates every day between start and end date.
+     * Weekly: calculates every day of the week between start and end date, starting with the
+     * provided day of the week.
+     * Monthly: calculates every day of four weeks between start and end date, starting with the
+     * provided day of the week.
+     * @param rangeDTO  The range object that contains information about the the time period.
+     * @return  A list of dates depending on the provided rangeDTO.
      */
     public List<Date> getDatesBetween(final RangeDTO rangeDTO) {
         final Date startDate = datestringToDate(rangeDTO.getStartDate());
         final Date endDate = datestringToDate(rangeDTO.getEndDate());
-        
-        switch (rangeDTO.getFrequency()) {
-            case "daily":
-                return seriesRepository.getDaily(startDate, endDate);
-            case "weekly":
-                return seriesRepository.getWeekly(startDate, endDate);
-            case "monthly":
-                return seriesRepository.getMonthly(startDate, endDate);
-            default:
-                //System.err.println(rangeDTO.getFrequency() + " is not known in SeriesService.java.");
-                return new ArrayList<>();
+        //System.out.println("getDatesBetween: " + startDate + " | " + endDate + " #1");
+        List<Date> dates = new ArrayList<>();
+        if (rangeDTO.getFrequency().equals("daily")) {
+            dates = seriesRepository.getDaily(startDate, endDate);
         }
+        else {
+            dates = seriesRepository.findWeekdaysBetween(
+                startDate, 
+                endDate, 
+                rangeDTO.getDayOfTheWeek()
+            );
+            /**
+             * If frequency is twoweeks, threeweeks or monthly we
+             * set the offset of the weeks. So we get every second, third or fourth 
+             * date beginning with the start date.
+             */
+            if (!rangeDTO.getFrequency().equals("weekly")) {
+                final int weekOffset = 
+                    rangeDTO.getFrequency().equals("twoweeks") ? 2 : 
+                    rangeDTO.getFrequency().equals("threeweeks") ? 3 : 4;
+                final List<Date> filteredDates = new ArrayList<>();
+                for (int i = 0; i < dates.size(); i+=weekOffset) {
+                    filteredDates.add(dates.get(i));
+                }   
+                dates = filteredDates;
+            }
+        }
+        //System.out.println("getDatesBetween: " + startDate + " | " + endDate + " | " + rangeDTO.getFrequency()  + " | " + rangeDTO.getDayOfTheWeek() + " #2");
+        /*for (Date d: dates)
+            System.out.println("\t" + d);*/
+        return dates;
+    }
+
+    /**
+     * Calculates list of desks that are available at each date for the specified timerange.
+     * @param datesAndTimesDTO  Contains a list of dates and an start and endtime for each date.
+     * @return  A list of desks that are available at each date for the specified timerange.
+     */
+    public List<Desk> getDesksForDatesAndTimes(DatesAndTimesDTO datesAndTimesDTO) {
+        final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
+            datesAndTimesDTO.getDates(), 
+            timestringToTime(datesAndTimesDTO.getStartTime()),
+            timestringToTime(datesAndTimesDTO.getEndTime())
+        );
+        return desks;
     }
 
     /**
@@ -107,73 +139,65 @@ public class SeriesService {
      * @param rangeDTO  The object that contains the frequency, the start- and endtime and the start- and endDate.
      * @return  An of desks that havent an booking between an time range on specified dates.
      */
-    public List<Desk> getDesksForDates(RangeDTO rangeDTO) {
+    /*public List<Desk> getDesksForDates(RangeDTO rangeDTO) {
         final List<Date> datesBetween = getDatesBetween(rangeDTO);
+        if (datesBetween.isEmpty()) {
+            return new ArrayList<Desk>();
+        }
         final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
             datesBetween, 
             timestringToTime(rangeDTO.getStartTime()),
             timestringToTime(rangeDTO.getEndTime())
         );
         return desks;
-    }
+    }*/
 
-/*     public SeriesDTO createSeries(@RequestBody SeriesDTO seriesDTO) {
-
-        return null;
-    }  */
-    public SeriesDTO createSeries(@RequestBody SeriesDTO seriesDTO) {
+    public boolean createSeries(@RequestBody SeriesDTO seriesDTO) {
         UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
         if (userEntity == null) {
             System.err.println("user not found in createSeries");
-            return null;
+            return false;
         }
+
         Series newSeries = new Series(-1L, 
             userEntity, 
             seriesDTO.getRoom(), 
             seriesDTO.getDesk(), 
-            datestringToDate(seriesDTO.getStartDate()), 
-            datestringToDate(seriesDTO.getEndDate()), 
-            timestringToTime(seriesDTO.getStartTime()), 
-            timestringToTime(seriesDTO.getEndTime()), 
-            seriesDTO.getFrequency()
+            datestringToDate(seriesDTO.getRangeDTO().getStartDate()), 
+            datestringToDate(seriesDTO.getRangeDTO().getEndDate()), 
+            timestringToTime(seriesDTO.getRangeDTO().getStartTime()), 
+            timestringToTime(seriesDTO.getRangeDTO().getEndTime()), 
+            seriesDTO.getRangeDTO().getFrequency(),
+            seriesDTO.getRangeDTO().getDayOfTheWeek()
         );
+        
         // Save the series.
         final Series finalSeries = seriesRepository.save(newSeries);
         // Dates of bookings.
-        final List<Date> dates = getDatesBetween(
-            new RangeDTO(
-                "" + datestringToDate(seriesDTO.getStartDate()),
-                "" + datestringToDate(seriesDTO.getEndDate()),
-                "" + timestringToTime(seriesDTO.getStartTime()),
-                "" + timestringToTime(seriesDTO.getEndTime()),
-                seriesDTO.getFrequency()
-            )
-        );
+        final List<Date> dates = seriesDTO.getDates();
+
         final List<Booking> bookings = dates.stream().map(date -> {
             return new Booking(
                 userEntity,
                 seriesDTO.getRoom(),
                 seriesDTO.getDesk(),
                 date,
-                timestringToTime(seriesDTO.getStartTime()),
-                timestringToTime(seriesDTO.getEndTime()),
+                timestringToTime(seriesDTO.getRangeDTO().getStartTime()),
+                timestringToTime(seriesDTO.getRangeDTO().getEndTime()),
                 finalSeries
             );
         }).toList();
         bookingRepository.saveAll(bookings);
-
-        return new SeriesDTO(
+        /* */
+        /*return new SeriesDTO(
             finalSeries.getId(),
-            "" + finalSeries.getStartDate(), 
-            "" + finalSeries.getEndDate(), 
-            "" + finalSeries.getStartTime(), 
-            "" + finalSeries.getEndTime(), 
-            finalSeries.getFrequency(), 
+            seriesDTO.getRangeDTO(),
             userEntity,
             finalSeries.getRoom(), 
             finalSeries.getDesk(), 
             userEntity.getEmail(), 
-            bookings);
+            bookings);*/
+        return true;
     }
 
     /**
@@ -189,19 +213,22 @@ public class SeriesService {
         }
         final List<Series> serieses = seriesRepository.findByUserId(userEntity.getId());
         final List<SeriesDTO> seriesDTOs = new ArrayList<>();
+        
         for (Series series: serieses) {
             final SeriesDTO seriesDTO = new SeriesDTO(
                 series.getId(),
-                "" + series.getStartDate(),
-                "" + series.getEndDate(),
-                "" + series.getStartTime(),
-                "" + series.getEndTime(),
-                series.getFrequency(),
-                userEntity,
+                new RangeDTO(
+                    "" + series.getStartDate(), 
+                    "" + series.getEndDate(), 
+                    "" + series.getStartTime(),
+                    "" + series.getEndTime(),
+                    series.getFrequency(), 
+                    series.getDayOfTheWeek()
+                ),
+                new ArrayList<>(), //
                 series.getRoom(),
                 series.getDesk(),
-                userEntity.getEmail(),
-                null
+                userEntity.getEmail()
             );
             seriesDTOs.add(seriesDTO);
         }

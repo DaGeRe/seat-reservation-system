@@ -2,7 +2,6 @@ package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
-import com.desk_sharing.entities.Booking;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.BookingRepository;
@@ -22,6 +21,9 @@ public class RoomService {
 
     @Autowired
     BookingRepository bookingRepository;
+
+    @Autowired
+    DeskService deskService;
 
     public Room saveRoom(Room room) {
         if (room.getBuilding() == null) {
@@ -109,11 +111,12 @@ public class RoomService {
         try {
             List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
             for (Desk desk: desksPerRoom) {
-                List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
+                /*List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
                 for (Booking booking: bookingsPerDesk) {
                     bookingRepository.deleteById(booking.getId());
                 }
-                deskRepository.deleteById(desk.getId());
+                deskRepository.deleteById(desk.getId());*/
+                deskService.deleteDeskFf(desk.getId());
             }
             roomRepository.deleteById(id);
             return true;

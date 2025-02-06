@@ -14,6 +14,7 @@
     "freeDesks": "Freie Arbeitsplätze",
     "bookings": "Buchungen",
     "series": "Serienbuchung",
+    "seriesId": "Serien Id",
     "settings": "Einstellungen",
     "visibility": "Sichtbarkeit",
     "logout": "Abmeldung",
@@ -148,6 +149,7 @@
     
     "deleteBooking": "Buchung Entfernen",
     "editBooking": "Buchung Bearbeiten",
+    "overviewBooking": "Buchungsübersicht",
     "search": "Suchen",
     "roomID": "Tisch ID",
     "dataNotFound": "Daten nicht gefunden",
@@ -208,6 +210,12 @@
     ,"frequency":"Frequenz"
     ,"daily":"Täglich"
     ,"weekly":"Wöchentlich"
+    ,"twoweeks":"Alle zwei Wochen"
+    ,"threeweeks":"Alle drei Wochen"
     ,"monthly":"Monatlich"
+    ,"calculatedDates":"Berechnete Daten"
+    ,"timerangeIsNotValid":"Zeitspanne ist nicht valide."
+    ,"endDateBiggerThanStartDate":"Ende des Datumsintervalls darf nicht größer als Anfang sein."
+    ,"endTimeBiggerThanStartTime":"Ende des Zeitintervalls darf nicht größer als Anfang sein."
     ,"noDesksForRange":"Für die angegebene Zeitspanne konnte kein Arbeitsplatz gefunden werden."
 }

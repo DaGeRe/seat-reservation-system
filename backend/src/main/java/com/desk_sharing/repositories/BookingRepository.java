@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.desk_sharing.entities.Booking;
+import com.desk_sharing.model.BookingProjectionDTO;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -41,6 +42,56 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 	@Query(value="select * from bookings where day=:myDate", nativeQuery = true)
 	List<Booking> getBookingForDate(@Param("myDate") Date myDate);
+
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+		+ "from bookings " 
+		+ "left join series on bookings.series_id=series.series_id "
+		+ "join desks on bookings.desk_id=desks.desk_id "
+		+ "join rooms on bookings.room_id=rooms.room_id "
+		+ "join users on bookings.user_id=users.id", nativeQuery = true)
+	List<Object[]> getEveryBooking();
+
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+		+ "from bookings " 
+		+ "left join series on bookings.series_id=series.series_id "
+		+ "join desks on bookings.desk_id=desks.desk_id "
+		+ "join rooms on bookings.room_id=rooms.room_id "
+		+ "join users on bookings.user_id=users.id "
+		+ " where email like :email ", nativeQuery = true)
+	List<Object[]> getEveryBookingForEmail(@Param("email") String email);
+
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+		+ "from bookings " 
+		+ "left join series on bookings.series_id=series.series_id "
+		+ "join desks on bookings.desk_id=desks.desk_id "
+		+ "join rooms on bookings.room_id=rooms.room_id "
+		+ "join users on bookings.user_id=users.id "
+		+ "where day like :date ", nativeQuery = true)
+	List<Object[]> getEveryBookingForDate(@Param("date") String date);
+
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+		+ "from bookings " 
+		+ "left join series on bookings.series_id=series.series_id "
+		+ "join desks on bookings.desk_id=desks.desk_id "
+		+ "join rooms on bookings.room_id=rooms.room_id "
+		+ "join users on bookings.user_id=users.id "
+		+ "where desks.remark like :deskRemark ", nativeQuery = true)
+	List<Object[]> getEveryBookingForDeskRemark(@Param("deskRemark") String deskRemark);
+
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+		+ "from bookings " 
+		+ "left join series on bookings.series_id=series.series_id "
+		+ "join desks on bookings.desk_id=desks.desk_id "
+		+ "join rooms on bookings.room_id=rooms.room_id "
+		+ "join users on bookings.user_id=users.id "
+		+ "where rooms.remark like :RoomRemark ", nativeQuery = true)
+	List<Object[]> getEveryBookingForRoomRemark(@Param("RoomRemark") String RoomRemark);
+
+	/*@Query(value="select bookings.booking_id, booking_in_progress, lock_expiry_time, desk_id day, begin, end, bookings.series_id  " 
+	+ "from bookings " 
+	+ "left join series on bookings.series_id=series.series_id"
+	, nativeQuery = true)
+	List<Booking> getEveryBooking();*/
 
 	//select current_timestamp, bookings.* from bookings where (day = '2024-09-14') and (CURRENT_TIMESTAMP not between begin and end)  ;
 /* 	@Query(value="select * from bookings where day=:day ")

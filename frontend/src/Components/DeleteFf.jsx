@@ -23,8 +23,9 @@ export default function DeleteFf({open, onClose, onDelete, text}) {
             </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>{t('no')}</Button>
+                <Button id='delete_ff_btn_no' onClick={onClose}>{t('no')}</Button>
                 <Button 
+                    id='delete_ff_btn_yes'
                     onClick={() => { 
                             onDelete();
                             onClose();

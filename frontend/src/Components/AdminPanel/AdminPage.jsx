@@ -13,6 +13,7 @@ import AddEmployee from './UserManagement/AddEmployee';
 import DeleteEmployee from './UserManagement/DeleteEmployee';
 import EditEmployee from './UserManagement/EditEmployee';
 import DeleteBookings from './Bookings/DeleteBookings';
+import OverviewBookings from './Bookings/OverviewBookings';
 import EditBookings from './Bookings/EditBookings';
 import { ColumnGraph } from "./ColumnGraph";
 import { HeatMap } from "./HeatMap";
@@ -46,6 +47,7 @@ const AdminPage = () => {
 
   const [isEditBookingsOpen, setIsEditBookingsOpen] = useState(false);
   const [isDeleteBookingsOpen, setIsDeleteBookingsOpen] = useState(false);
+  const [isOverviewBookingsOpen, setIsOverviewBookingsOpen] = useState(false);
 
   const floorFilter = (currentFloor) => {
     // const currentFloor = "Ground";
@@ -108,7 +110,7 @@ const AdminPage = () => {
   const toggleDeleteEmployeeModal = () => setIsDeleteEmployeeOpen(!isDeleteEmployeeOpen);
   const toggleEditBookingsModal = () => setIsEditBookingsOpen(!isEditBookingsOpen);
   const toggleDeleteBookingsModal = () => setIsDeleteBookingsOpen(!isDeleteBookingsOpen);
-
+  const toggleOverviewBookingsModal = () => setIsOverviewBookingsOpen(!isOverviewBookingsOpen)
 
 
   return (
@@ -134,58 +136,61 @@ const AdminPage = () => {
             <h1>{t("adminPanel")}</h1>
             <div className="admin-controls-container">
               <div className="user-management-container">
-                <button className="user-management-button" onClick={toggleEmployeeButtons}>
+                <button id='userManagement' className="user-management-button" onClick={toggleEmployeeButtons}>
                   {t("userManagement")}
                 </button>
                 <FaAddressBook className="logo" />
               </div>
               <div className="edit-rooms-container">
-                <button className="edit-rooms-button" onClick={toggleWorkstationButtons}>
+                <button id='roomManagement' className="edit-rooms-button" onClick={toggleWorkstationButtons}>
                 {t("roomManagement")}
                 </button>
                 <FaPlusMinus className="logo" />
               </div>
               <div className="manage-bookings-container">
-                <button className="manage-bookings-button" onClick={toggleBookingButtons}>
+                <button id='bookingManagement' className="manage-bookings-button" onClick={toggleBookingButtons}>
                 {t("bookingManagement")}
                 </button>
                 <FaBook className="logo" />
               </div>
             </div>
             <div className={`employee-button-wrapper ${showEmployeeButtons ? 'visible' : ''}`}>
-              <button className="employee-button" onClick={toggleAddEmployeeModal}>
+              <button id='addEmployee' className="employee-button" onClick={toggleAddEmployeeModal}>
                 {t("addEmployee")}
               </button>
-              <button className="employee-button" onClick={toggleDeleteEmployeeModal}>
+              <button  id='deleteEmployee' className="employee-button" onClick={toggleDeleteEmployeeModal}>
                 {t("deleteEmployee")}
               </button>
-              <button className="employee-button" onClick={toggleEditEmployeeModal}>
+              <button id='editEmployee' className="employee-button" onClick={toggleEditEmployeeModal}>
                 {t("editEmployee")}
               </button>
             </div>
             <div className={`workstation-button-wrapper ${showWorkstationButtons ? 'visible' : ''}`}>
-              <button className="workstation-button" onClick={toggleAddRoomModal}>
+              <button id='addRoom' className="workstation-button" onClick={toggleAddRoomModal}>
                 {t("addRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleDeleteRoomModal}>
+              <button id='deleteRoom' className="workstation-button" onClick={toggleDeleteRoomModal}>
                 {t("deleteRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleEditRoomModal}>
+              <button id='editRoom' className="workstation-button" onClick={toggleEditRoomModal}>
                 {t("editRoom")}
               </button>
-              <button className="workstation-button" onClick={toggleAddWorkstationModal}>
+              <button id='addWorkstation' className="workstation-button" onClick={toggleAddWorkstationModal}>
                 {t("addWorkstation")}
               </button>
-              <button className="workstation-button" onClick={toggleDeleteWorkstationModal}>
+              <button id='deleteWorkstation' className="workstation-button" onClick={toggleDeleteWorkstationModal}>
                 {t("deleteWorkstation")}
               </button>
-              <button className="workstation-button" onClick={toggleEditWorkstationModal}>
+              <button id='editWorkstation' className="workstation-button" onClick={toggleEditWorkstationModal}>
                 {t("editWorkstation")}
               </button>
             </div>
             <div className={`booking-button-wrapper ${showBookingButtons ? 'visible' : ''}`}>
-              <button className="booking-button" onClick={toggleDeleteBookingsModal}>
+              <button id='deleteBooking' className="booking-button" onClick={toggleDeleteBookingsModal}>
                 {t("deleteBooking")}
+              </button>
+              <button id='overviewBooking' className='booking-button' onClick={toggleOverviewBookingsModal}>
+                {t('overviewBooking')}
               </button>
             {/*   <button className="booking-button" onClick={toggleEditBookingsModal}>
                 {t("editBooking")}
@@ -384,6 +389,14 @@ const AdminPage = () => {
         </BootstrapDialogTitle>
         <DeleteBookings deleteBookingsModal={toggleDeleteBookingsModal} />
       </BootstrapEmployeeDialog>
+      
+      <BootstrapEmployeeDialog onClose={toggleOverviewBookingsModal} aria-labelledby='customized-dialog-title' open={isOverviewBookingsOpen}>
+        <BootstrapDialogTitle id='customized-dialog-title-overviewBooking' className='toolHeader' style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
+          {t('overviewBooking').toUpperCase()}
+        </BootstrapDialogTitle>
+        <OverviewBookings overviewBookingsModal={toggleOverviewBookingsModal}/>
+      </BootstrapEmployeeDialog>
+      
     </div>
   );
 };

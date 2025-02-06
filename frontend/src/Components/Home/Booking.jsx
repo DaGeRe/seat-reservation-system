@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx'
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
+import { formatDate_yyyymmdd_to_ddmmyyyy } from "../misc/formatDate.js";
 
 const Booking = () => {
   const headers = useMemo(() => {
@@ -147,13 +148,7 @@ const Booking = () => {
     setEvent(newEvent);
   };
 
-  function formatDate(dateString) {
-    // Split the input date string into an array [YYYY, MM, DD]
-    const [year, month, day] = dateString.split('-');
-    
-    // Rearrange the array elements and join them with a hyphen
-    return `${day}-${month}-${year}`;
-  }
+
 
   const booking = async () => {
     if (!clickedDeskId || !event.start || !event.end) {
@@ -186,7 +181,7 @@ const Booking = () => {
       (data) => {
         confirmAlert({
           title: confirmAlertTitel(),
-          message: t("date") + " " + formatDate(day) + " " + t("from") + " " + start + " " + t("to") + " " + ending,
+          message: t("date") + " " + formatDate_yyyymmdd_to_ddmmyyyy(day) + " " + t("from") + " " + start + " " + t("to") + " " + ending,
           buttons: [
             {
               label: t('yes'),

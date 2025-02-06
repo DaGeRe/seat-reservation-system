@@ -1,6 +1,5 @@
 package com.desk_sharing.repositories;
 
-import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

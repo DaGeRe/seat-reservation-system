@@ -93,8 +93,8 @@ export default function AddWorkstation({ addWorkstationModal }) {
         </Grid2>
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>addWorkstation()}>&nbsp;{t("submit").toUpperCase()}</Button>
-        <Button onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
+        <Button id='desk_submit_btn' onClick={()=>addWorkstation()}>&nbsp;{t("submit").toUpperCase()}</Button>
+        <Button id='desk_close_btn' onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );

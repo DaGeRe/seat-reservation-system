@@ -49,6 +49,7 @@ export default function DeskSelector(
                     }}
                     renderInput={(params) => (
                         <TextField
+                        class='textfield_desk_in_room'
                         {...params}
                         variant='outlined'
                         size='small'

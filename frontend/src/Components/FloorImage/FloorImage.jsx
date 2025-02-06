@@ -33,7 +33,6 @@ export default function FloorImage(
         setCurrentRoom, 
         present_color = 'blue'
     }) {
-    const { t } = useTranslation();
     const [allRooms, setAllRooms] = React.useState([]);
     /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
@@ -111,19 +110,19 @@ export default function FloorImage(
         if (building === BAUTZNER_STR_19_A_B) {
             if (floor === GROUND)
                 floorImage = firstFloorImage;
-            if (floor == FIRST)
+            if (floor === FIRST)
                 floorImage = secondFloorImage;
             /**
              * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
              */
             else {
-                floor === GROUND
+                floorImage = firstFloorImage;
             }
         }
         if (building === BAUTZNER_STR_19_C) {
             if (floor === GROUND)
                 floorImage = firstFloorC;
-            if (floor == FIRST)
+            if (floor === FIRST)
                 floorImage = secondFloorC;
             if (floor === SECOND) {
                 floorImage = thirdFloorC;
@@ -172,7 +171,8 @@ export default function FloorImage(
                             .map((room, i) => (
                                 <div
                                     key={i}
-                                    className="image-icon"
+                                    className='image-icon'
+                                    
                                     style={{
                                         top: `${room.y}%`,
                                         left: `${room.x}%`
@@ -188,6 +188,7 @@ export default function FloorImage(
                                         <IconButton
                                             onMouseEnter={handleMouseEnter}
                                             onMouseLeave={handleMouseLeave}
+                                            
                                             onClick={() => setCurrentRoom && setCurrentRoom(room)}
                                         >
                                             <LaptopIcon
@@ -195,7 +196,8 @@ export default function FloorImage(
                                                     color: present_color, 
                                                     fontSize: '24px' 
                                                 }}
-                                                className="image-icon-old"
+                                                data-testid={`icon_button_${room.remark}`}
+                                                className='image-icon-old'
                                             />
                                         </IconButton>
                                     </HtmlTooltip>

@@ -7,6 +7,7 @@ import AdminPage from "./Components/AdminPanel/AdminPage"
 import MyBookings from "./Components/Home/MyBookings";
 import ManageSeries from './Components/Series/ManageSeries';
 import CreateSeries from './Components/Series/CreateSeries';
+import './i18n';
 import {
   BrowserRouter as Router,
   Routes,

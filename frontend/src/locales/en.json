@@ -16,6 +16,7 @@
     "freeDesks": "Free Desks",
     "bookings": "Bookings",
     "series": "Series Bookings",
+    "seriesId": "Series Id",
     "settings": "Settings",
     "visibility": "Visibility",
     "logout": "Logout",
@@ -149,6 +150,7 @@
     
     "deleteBooking": "Delete Booking",
     "editBooking": "Edit Booking",
+    "overviewBooking": "Overview of Bookings",
     "search": "Search",
     "roomID": "Room ID",
     "dataNotFound": "Data not found",
@@ -209,6 +211,10 @@
     ,"frequency":"Frequency"
     ,"daily":"Daily"
     ,"weekly":"Weekly"
+    ,"twoweeks":"Every two weeks"
+    ,"threeweeks":"Every three weeks"
     ,"monthly":"Monthly"
+    ,"calculatedDates":"Calculated Dates"
+    ,"timerangeIsNotValid":"Timerange is not valid."
     ,"noDesksForRange":"For the specified time range no desk is available."
 }
