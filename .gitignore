@@ -82,3 +82,7 @@ cypress/node_modules/
 cypress/package.json
 cypress/package-lock.json
 cypress/cypress/videos/
+
+# altdaten
+altdaten/*
+!altdaten/old_data_app.py

@@ -1,0 +1,4007 @@
+{
+    "d": {
+        "results": [
+            {
+                "__metadata": {
+                    "id": "21e6353b-105a-48f8-82ad-d4da49d481c3",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3863)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "663d4f7e-ac47-4652-bf39-c95ebeb3df02",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "8bef0106-d068-4a81-890d-477c1d8b26f4",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "202"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6dbfbc36-ad32-4f2d-9c4b-60c92c10bf25",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "202-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "263cfbaa-0503-44bd-99d5-7cdef3f2b222",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\h.ismail_lit"
+                },
+                "EventDate": "2025-01-22T00:00:00Z",
+                "EndDate": "2025-12-31T23:59:00Z",
+                "fRecurrence": true,
+                "RecurrenceData": "<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><daily dayFrequency=\"1\" /></repeat><windowEnd>2025-12-31T23:59:00Z</windowEnd></rule></recurrence>"
+            },
+            {
+                "__metadata": {
+                    "id": "e590fba6-1d13-46bc-bc6e-4b079643815b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3864)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8620b42d-75c4-4f95-ac3c-fd87bed236e8",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "3f7edd75-337f-417b-8b03-91baca50ffbc",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "ac585fe2-1f7c-4c63-ad1f-fc497350b426",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "6b1c5f88-df37-4138-a571-4bd4b7f4c956",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "7f920d3d-56ef-48e3-91dd-5b077536458d",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3865)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "c4055d95-f1f8-4536-a4e5-14743d0f3311",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f0eeb22f-7ee2-4443-969c-4d3e94515aee",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "d259a280-15a4-4b97-b062-9aad2a42ae72",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "c9ab0b2f-6666-4446-92f8-3e6b2d414030",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-03T00:00:00Z",
+                "EndDate": "2025-02-03T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "d9142722-03c6-4e62-825e-be7e95baa65b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3866)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "03dbae45-5915-45c5-b05b-1a7c3637fe3e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "0edeeeae-c711-4255-92c4-7848446ae6fd",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "eb42970c-d4b9-47f1-b02e-30ae88b9d746",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "9aaefd89-abe8-4e67-93b9-ca2f73d21f7d",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-04T00:00:00Z",
+                "EndDate": "2025-02-04T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "4741b3c8-8236-417f-979e-025926b671a8",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3867)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "c1351d7a-b447-4a6b-833e-138bbfef8b02",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "a72e840c-e5d4-4482-a4dd-c0fd1d2dc494",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6212af8f-d843-421a-b061-7b6a61451479",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3085f0a4-eea3-407f-b7b8-2d06569da3b1",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "25eea908-84d1-4f70-99c6-af850daf58e7",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3868)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "7306f993-de6e-451b-b9af-76181afcac92",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "65bc82c7-73ef-4318-b20e-7a68d1ccfebf",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "0f6fa974-2c32-481a-8994-bd145bb106ec",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "5d50da52-b18d-45b7-974e-fd6320972070",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-06T00:00:00Z",
+                "EndDate": "2025-02-06T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a889eaaa-e991-4459-ad5b-67c5eee7db47",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3869)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "fe204d85-f2ac-46ad-93de-4e313bc12532",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "884b75fb-ee63-49a6-9436-7ead8d7a498d",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "2a05da7d-7786-4cac-a3ed-9fb0d87aa5c6",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "48558077-ab84-4193-bcd4-6765b8bca204",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-07T00:00:00Z",
+                "EndDate": "2025-02-07T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "43b59e96-9104-471c-ba3e-def88b8bcd42",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3870)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a7cb4dee-3b2e-4227-8fc5-09096fe04041",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "60415a77-08ca-42da-b149-4a536106addd",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "615c50c5-831b-49eb-9e5c-4649b3d37ebf",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "5b9fdad1-4df6-4dc1-b191-e9e23fe67e70",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-10T00:00:00Z",
+                "EndDate": "2025-02-10T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "6c6e3188-a65b-4a37-915a-6011e7ca08eb",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3871)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a8dacd5f-f80d-4065-9f6c-03f902667c15",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "d86ae04d-1bb5-4972-9536-efba9cb30d98",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6692ffa3-a7fa-4103-a562-de3df476f792",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "d9710a57-70d2-4e44-ba34-85583d4cb9c7",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-11T00:00:00Z",
+                "EndDate": "2025-02-11T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "9b1fbba1-2281-4187-a6b7-21d2c8f7d25a",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3872)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "0b129b9c-ba66-46af-9e36-e941bb8b5319",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "fbe5501b-24db-4d82-a898-300ad80a6509",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "cf91b184-4123-4877-af36-59d4c6531cba",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "d5c138eb-6a11-4c9f-8ccf-ed5bcbea4d9b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-12T00:00:00Z",
+                "EndDate": "2025-02-12T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "d4388d9b-f34f-418d-acc8-d79e8546c16b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3873)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "d6e20fdd-7f7a-4a6e-acdb-cf6fb3684d59",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "a5a154ae-d0aa-4bbf-8875-282bf2912ca1",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "45a1daf4-0498-4c1c-b982-5563398cdde8",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "aa1a9ed2-9439-412f-a820-a6294600653c",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-14T00:00:00Z",
+                "EndDate": "2025-02-14T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a216fa9d-2a2a-4afc-962b-5f5b12c160a8",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3874)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "abb10770-d875-49cb-89e9-5a940a2c642e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "2b71f3d4-2986-474d-87f5-7ee5916e3caa",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "25e03298-ec12-4157-901a-0211f84e43d3",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "9b2d8244-4af7-4fbc-a320-ef3d372563bd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-17T00:00:00Z",
+                "EndDate": "2025-02-17T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "af3b2dff-31ef-40f8-91fc-b3fc5ea67cb1",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3875)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9ff41b21-59c6-47ff-8205-6e1edd529073",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "369803cd-5777-4ca5-b42c-c193899598e9",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "816a1a73-6cd5-4f88-9f68-db0abde23a49",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "58aa567a-91fd-423c-b0ab-ab06b56da7a2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-18T00:00:00Z",
+                "EndDate": "2025-02-18T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "22bbff00-77ba-4a14-ba53-904c073d07b4",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3876)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "ae887e4a-3398-44d4-9927-9f2537d2e5ea",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "1782a8ea-7ddb-4032-97fb-97eda16ef484",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6a131e6c-c855-4bdf-8132-dfcd7771033f",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "b0c84114-cd8a-42f2-9c04-08d54f207c35",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-19T00:00:00Z",
+                "EndDate": "2025-02-19T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "58dba9f4-2c34-4f2e-b3a6-b4d9344d1a53",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3877)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "af340e05-61a2-4119-b04e-7cabe1d87da0",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "12838cb4-1c2f-4f35-b55a-bfa91b0bd059",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "ee6af8e7-6fbc-4819-be84-4d3147fcee78",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "d5d309d7-c693-41d2-b734-8ea47cbdbd14",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-20T00:00:00Z",
+                "EndDate": "2025-02-20T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "da6c120b-4f47-4ee1-8c9f-6f612bdbe3fe",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3878)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "6d7bf862-75ea-48e4-a6a8-860f2dd6b83a",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b198ed25-3dd4-4c8a-873e-b619010d9278",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "b2770022-63f4-4c62-89f1-df5c304900c7",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3a5d1169-fcaa-4f81-9a46-29564dd1737f",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-21T00:00:00Z",
+                "EndDate": "2025-02-21T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "f0d76a29-8b89-40b2-831d-802b524ba33a",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3879)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "3990a99c-fc1c-4643-99e9-c50c1dc8ddb1",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "bb7e2e57-f53d-4858-8928-2d9ffaeb8211",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "660f1b55-be8b-4861-841c-6587beb67e8c",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "149748cd-8b78-4dbd-ab67-d0ee435bebd6",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-24T00:00:00Z",
+                "EndDate": "2025-02-24T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "161f6f7a-fcaf-49cb-b3e1-e505119df1a0",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3880)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "50077d36-4a04-480d-bef8-7dbc0557adbe",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "105c97a4-aeb9-42b2-873d-c65096453488",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "615b924c-3624-4c1f-8492-798dbcbcc824",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0a6badce-cd91-4dd9-9e0e-1a4d09f43edd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-25T00:00:00Z",
+                "EndDate": "2025-02-25T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "c5151306-cf90-4b6e-bc13-3f8e4e22f501",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3881)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "295ce6f5-211d-46cd-be27-752e6f944ba6",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "3fde4dff-05a1-4a3f-8a8f-1506f498ade2",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "7f3f13b8-82d6-437e-8ae2-6e08f125a863",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "cc9e78a8-6ce5-4420-ad06-76a5d08d98ea",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-26T00:00:00Z",
+                "EndDate": "2025-02-26T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "9a3693ec-d8bc-43cf-be88-4c78ce3ba982",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3882)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "3e88d3df-dbd3-4326-adfc-4476de0bb837",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "5c4b5e11-0594-402e-8c6c-90e539823a93",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3dc921c9-a53c-4555-a3ef-a6b2b9c5d25e",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0346301b-049f-4875-a248-67b1df356096",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-27T00:00:00Z",
+                "EndDate": "2025-02-27T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "90a50cd4-8d1c-4e78-81db-8bbe4efb382e",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3883)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "2344ddb7-9fdc-4714-8441-6011a60acd4a",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7683f5fe-1d72-4682-98ef-495a0d86e869",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "1a4422d6-4e12-47c1-929e-6f23adbd33cf",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-4"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "62cf441e-b78d-4455-a28e-ab316acb12c8",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\t.schneider_lit"
+                },
+                "EventDate": "2025-02-28T00:00:00Z",
+                "EndDate": "2025-02-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "3c22f9da-dca7-4846-9159-6e6f1a880aac",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3884)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a0815cd8-cc86-444d-8b4d-383f407bedee",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f606b337-9a22-424e-9912-2c2031889351",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "203"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "68ecb572-2a4e-4114-b7f7-26f1f0209d4a",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "203-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "baf58aef-1cdd-490a-adaf-051ed9b870b2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.hahn_lit"
+                },
+                "EventDate": "2025-01-22T00:00:00Z",
+                "EndDate": "2025-01-22T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "aa30edbe-6d51-474e-8d26-d727786d8fc4",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3885)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "4039f4da-ccad-4b44-b479-ca757b9a7a3c",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "9810395e-3bb8-48ea-8080-a2cfac8e509a",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "48f08919-cfb5-46e0-b481-1baf00ddd758",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-2 "
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "49642692-3d91-4f00-a7e4-f1b2a1ef9a4f",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.engel_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "4e2f41ed-c0de-45f5-a097-dab179464635",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3886)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9bb5695f-d89e-4cf9-8785-34c6cdcca71e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "aaac57de-75dc-42f2-b9cd-0c28bd168a08",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "150"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "56bc0309-df06-4c8a-9cd4-82d0a3e5a56d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "150-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "014bd9d7-5c16-4ca5-853a-efe62115b252",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\k.freudenberg_lit"
+                },
+                "EventDate": "2025-01-22T00:00:00Z",
+                "EndDate": "2025-01-22T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "ad7015fe-dc29-4e72-9a7a-e253d7a1a272",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3887)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a623e3f6-5231-45be-a0b3-60c0c114e253",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "310ad92e-a1dc-49be-b35b-f3a50d999603",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "033"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "50b7f791-c7a9-4fee-ab4c-503b78e6e75c",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "033-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "86da89df-ec19-41c8-a3d2-7795f5fe2729",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.wojtkowiak_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "f954fe34-d3d8-4890-96af-97cf2d7b48c4",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3888)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "74755a6d-2a02-4b51-934c-883c2e71caed",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "a5f09215-cb3b-4628-8a4c-8086ed3276ca",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "e7f36234-e975-429c-a009-a27b666a3a20",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "5f871925-d5a3-4864-9bc4-579bd9809a9d",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ruehl_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "1dddba10-700b-4aaf-94b7-a4b025d061eb",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3889)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "4f86f93e-097f-498c-8c21-220b5df401d6",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "749263cf-0b7f-4530-a082-f26c1bc15913",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "2c81166d-6971-4314-b6b8-3f6a1e58fe17",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-2"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "08258f15-e39c-4ee8-9dbd-0681df12051b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\v.schulze_veps"
+                },
+                "EventDate": "2025-02-12T00:00:00Z",
+                "EndDate": "2025-02-12T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "5168737e-ca88-40b7-a9f7-c3f7d3912b42",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3890)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "c288ebdd-c23b-4295-8b3e-5e689c10abde",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "9b07bc5a-91f1-418f-acd3-b1c77a043dc3",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "71afa018-aab5-4655-b2ca-f3b425091a0f",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0e675f5d-a365-48df-bb92-b56f2acc6e3f",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\s.kramer_veps"
+                },
+                "EventDate": "2025-02-12T00:00:00Z",
+                "EndDate": "2025-02-12T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "eb383133-1d2d-44d4-97fc-75c953a85d21",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3891)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9b6f048b-1fcf-447e-805b-b906fd979ccc",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f64145e1-44d7-4651-a9e0-efe697ba88e5",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "209"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "e9b61e72-ac20-4e44-9bc0-e52e85dc064c",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "209-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "9b5fdc6a-cc7f-4c0f-8a02-e7cd2d5598e9",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.neumann_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "163372b4-c947-4760-9726-54ada2735175",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3892)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a8ffe422-576f-4d18-bfdd-853b6e4b87bd",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "a03145d3-64d0-4e3c-8f9d-36a17a009541",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "2e428968-b3a2-4ae3-908c-891dea817b56",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "f6df3078-785f-4f7d-8a30-fefa57a8014b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-01-23T00:00:00Z",
+                "EndDate": "2025-01-23T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "c16909b0-d708-47d8-9f7e-4bb962e3859c",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3893)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9338e166-8ebd-48aa-aa8c-4e8638a0690f",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "45b1cdc3-8bfd-46cc-85e4-149f11889389",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "213"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6c132fac-c2ee-47ac-8c2d-6f0e3f132157",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "213-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "293bca6a-abe1-4a20-a174-bf9de0891625",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.eisermann_lit"
+                },
+                "EventDate": "2026-02-13T00:00:00Z",
+                "EndDate": "2026-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "e2f83641-f763-4303-85cc-560bf02527a2",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3894)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "2c730c87-bb05-4361-ac62-15c0af99998c",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "9e588637-f3fc-4eab-b968-2914d0e49af3",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "207"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "b6c71685-4edc-4f7e-9675-0bf237ebccbf",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "207-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "ceb9681e-08d1-4ac7-8541-d4db1df8ea61",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.krappidel_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "8fa19349-1f98-41a8-8a0e-5170da59696f",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3895)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "1467ee54-d68c-427e-89f2-bd9ed17fea85",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "9c411d0f-95f3-466d-9585-5054297ebcd4",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3e3ac3aa-d07d-4a7d-a898-019e4e37f4ba",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a8b14746-7294-4d4b-803d-bbde17aaa674",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ruehl_lit"
+                },
+                "EventDate": "2025-01-24T00:00:00Z",
+                "EndDate": "2025-01-24T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "6a015e94-ef6c-4f34-97d7-6ff3b9d19520",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3896)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "859527c6-0160-4296-9eef-9fe0402e9bde",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "159f5222-d66d-4139-8e37-8bace70b8e0f",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "529"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "04132b0e-75b2-46b1-b121-d0d1764d8d7b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "529-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "01e32d52-d7ad-463f-b07b-6fe9ca51e57c",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\e.seregi_lit"
+                },
+                "EventDate": "2025-01-22T00:00:00Z",
+                "EndDate": "2025-01-22T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "842bde79-07ff-4379-8e7e-9d3dc8e5ab5f",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3899)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9afcf1c9-93b5-4568-b11b-62a813910c02",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "eea6d860-bff5-40c9-acfc-865509d132a6",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "203"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "23783073-3484-41e3-885a-3e076f4ed477",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "203-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "39cdb9b2-1a2b-4df5-97ae-4eb43ced21ef",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.hahn_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "dce9a147-108d-4491-a3af-785fbdfa4569",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3900)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "0562f653-6aec-417a-b8a9-132133af18e7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "fe1a977b-0f62-49e7-869f-7f1e007e0324",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "206"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "1ac1e067-aaaf-4a9e-b953-8dda3db0c076",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "206-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a4e6eaf7-6520-4bff-8c01-4c6601da74dd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\s.lohse_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "ddcb9a6c-7376-4da8-b134-e890aa3a775a",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3901)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "802bcbfd-704e-48f0-b3c6-b0cf27083168",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "aef15019-8c1a-4eea-895a-5ffc1f7ff5da",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "0d436f08-728e-489f-a37d-7e64a5f56a9b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-2"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "bf668d64-dbf5-4992-9c85-255dbccc818b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\v.schulze_veps"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "8d40182f-1498-4b20-9ac7-d91da5b94788",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3902)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "12737599-1442-4fcb-b310-aa7b2bbbae52",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "4c90c3b3-d4f7-4799-ac0f-c601f16a7863",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "241536bb-4a1d-4a50-85d9-eabad5fbd724",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "6dc93671-659a-4b8b-90a8-ca4ac4e6f89d",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\d.lindner_veps"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "d1a93d1e-1976-4836-b7c4-28432513a621",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3903)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a260b0ee-9c81-4cf4-9fc6-3c0a4a1d2f7d",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7d730e06-a960-4444-a57b-ffe575b8aa11",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "027"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "a7806012-6b9a-47b7-98a1-86242662466d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "027-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0e22c477-e849-462d-8dfb-6378658869b1",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\k.schneider_lit"
+                },
+                "EventDate": "2025-01-27T00:00:00Z",
+                "EndDate": "2025-01-27T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "7e666156-b0b4-47d0-bab6-7672942fff8b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3904)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "de105729-f899-467f-afdb-8492e4d251dc",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "8b787a25-b683-4fde-9841-079871349f2e",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "033"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "91480f66-7244-46e5-80b9-378c85a9ee4f",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "033-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "29258bed-201e-487e-b903-c1f61c3b6bc0",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\m.pierschel_lit"
+                },
+                "EventDate": "2025-01-27T00:00:00Z",
+                "EndDate": "2025-01-27T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "68560b6a-3663-4cee-aee7-3a150aaf76f5",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3905)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "323e108d-c93b-4960-8096-7d7e51588c25",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "bba533a5-dd5a-426f-8ce2-078f95f37aac",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "150"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "1d5b91d7-cc29-4b73-aa69-9025967c6827",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "150-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "f26fea37-8e23-4afe-93b3-7732b87a1236",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\f.bartl_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "b5301022-83c1-4d4f-8203-009ec8c00669",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3906)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "dd178a60-cbfd-4392-b58a-b14e813b6545",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f5e48e10-e7fe-4b71-b358-79ba5901e75b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "9581fac0-553c-46f4-8865-dd0c23f7b026",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "5ae3b929-47ab-488d-8265-a698dcc23dc8",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\e.dietz_lit"
+                },
+                "EventDate": "2025-01-30T00:00:00Z",
+                "EndDate": "2025-01-30T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "0544c61b-f2f1-4092-bc16-53da6fd08143",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3907)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "da75a66d-5582-42de-b076-070cb275806c",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "daa0be43-80ae-400e-b735-4c07d54cd3b4",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "502"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "b41d0490-35b7-4b84-ab06-c92512479fc7",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "502-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "9bc2696a-9118-4995-8089-53c49a12aab3",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\m.brenner_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a727d907-336c-4dca-97c0-70d05a81fe1f",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3908)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "f64c684c-8fec-48ef-990f-cba47da7f916",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "709913be-4042-4ac0-845d-66af5eb073b9",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "44502cd6-8d67-4cc5-bd51-3807c38f704a",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3691894e-018d-49de-b0f7-fe45f8dc05d1",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ruehl_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "9c7214d5-b8be-4f5a-9c61-18f4491acc0b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3909)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "d2e3b2aa-c961-4d98-9830-bc6ca959d0d1",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "c26675a8-4030-42d0-b17c-f03289a5a06b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "209"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "f14b5abd-eb9d-479d-9577-1117ccefc188",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "209-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "37ba7d10-0893-489c-b957-dd1245bcc501",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\i.oehlmann_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "73c1fcee-714b-4230-823d-e1ce193b4f81",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3910)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "7191d8b4-b790-4673-89f3-0ba833b3498b",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7f28d874-d8aa-41ec-98e1-52129a06378a",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "251ceba3-0106-4cbd-a73b-dcd98f7a0855",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-2"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "28b16a47-8809-4063-b67f-135d64b89d43",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "eed4299c-748d-4eab-9444-d81cff2c4758",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3911)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "2812f2f3-cd3d-45c0-a554-e1765cb61c1f",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b2b2fc8d-83c1-44b2-b9ff-1ea75a96d09b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "7651b730-4b69-46d2-a9f6-5c82e0d4a510",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-2 "
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3fe5b8ce-c765-466d-bb31-7f2e5eb98fd2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-03-13T00:00:00Z",
+                "EndDate": "2025-03-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "63c6a898-1cf1-42c7-8323-7db2b013c12f",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3912)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "1f322e26-9a96-4952-8f79-bffe30523ff6",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "67239c23-1519-4b99-8db0-869ac69750cd",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "554"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "078419db-fc3b-4964-8a2a-2b00b69ba4b4",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "554-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "f2dd5d75-483d-4560-a019-91539ca76178",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\l.goerner_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "2afdfe87-d94f-40cd-b657-54f0ce1caf3a",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3913)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "ddda364c-091e-4615-bbdc-0dc1425a3f79",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b16f8ceb-2984-4397-b09d-7f29b5ecd856",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "529"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "5b3b796e-5e93-4da6-a665-aede9c4b472d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "529-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "4341d908-9c95-4eb1-a47a-9b0a10be1fa1",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\c.herzog_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "266cd1fe-c0fd-4251-8c11-5ee4ec9ac559",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3914)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "2d6935ca-3c86-4ad7-99a8-eb4d0dc1a7c0",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f1dfbbbe-e486-44c0-8240-b5a103a15f39",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "212"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6abccc4c-555b-4390-ad68-ae1debbbcec3",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "212-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "105d3994-dabf-456c-a2b1-7b0c55cf5210",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\s.manthey_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "f461599c-db53-462f-8aa8-da37d40f3495",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3915)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8eab23bc-f5eb-41b9-9032-cf391b3b4e5f",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "03b5c564-f31e-4584-874b-c2d5a90d9c5d",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "209"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "f92294f2-b579-41af-9d2e-a5419d83ad88",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "209-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0e2caf9d-b905-4496-bad6-dee751c90e51",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.neumann_lit"
+                },
+                "EventDate": "2025-02-04T00:00:00Z",
+                "EndDate": "2025-06-17T23:59:00Z",
+                "fRecurrence": true,
+                "RecurrenceData": "<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><weekly tu=\"TRUE\" weekFrequency=\"1\" /></repeat><windowEnd>2025-06-17T23:59:00Z</windowEnd></rule></recurrence>"
+            },
+            {
+                "__metadata": {
+                    "id": "9ec1fe51-e868-4c84-88af-1f2b5f4b1a79",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3916)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "ade823f6-64b4-46d5-bcbf-9a30170c8a19",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f2fe0f0c-24f7-4668-b060-a51c1aa8aac4",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "529"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "22ee23cf-abcd-4193-b33d-e8b9cf41ee03",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "529-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "cd246e8e-9bab-408f-85f6-5f2b654ec521",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\c.herzog_lit"
+                },
+                "EventDate": "2025-01-30T00:00:00Z",
+                "EndDate": "2025-01-30T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "3965835d-bcf1-437e-88e2-96510fc6d010",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3917)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "6eddca4a-c8f7-4185-bb0f-03997d92c7d0",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b7ed6c44-1527-431d-8804-5b8669b7e254",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "202"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "0dbf3882-6656-4cd3-9c24-b51d9fa37e21",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "202-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "066e72bd-f475-4f81-a7e3-944e49a0a1d4",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.schuetze_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "3fc925d4-15d9-41fe-92a0-6a96e630f7d7",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3918)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "b70e9111-7991-4589-aabb-1f426e801815",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "8a2acb85-0f14-4f46-b696-7b86896ef254",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "9be2627d-2cd3-4a86-b15c-17930b52865a",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "81fa35a0-c849-4111-98c3-8347feaeb1c9",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.engel_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "b1056ced-9af3-49ad-8fff-08c1a8697884",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3919)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "0a4df9af-7bc5-4f63-a521-f1c25e6a131d",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "eb4b9e2f-14eb-4f3b-9be3-3e59cecb2199",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3a0b7094-bcf8-407c-9e6b-b61408668cce",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "de2e2417-2d34-444e-8c86-520bddf7bb69",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.leuner_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "49744d54-34dd-41f1-9b71-a2a60f92b18c",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3920)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "7f1e84ae-c719-4a4a-9102-a48de1b6d020",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "0d4927df-c5dc-4020-81b6-0ce8b4c634b1",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "044"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "5bcd1d37-be99-4590-a9ba-78a64cb41630",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "044-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "ed80d569-652d-4c78-a47e-e6759e74dccc",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\f.moebius_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "4551ff89-4c1c-4e10-8fec-fa59fe21da95",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3921)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "e93a4894-b10a-4ebd-8a57-f58d7133c422",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "e15b8f13-0c26-4766-ae6a-91e614a88f71",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "211"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "534dc15b-afe2-481d-a208-ea74c024f169",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "211-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "bf929bfb-dd23-4c24-b1f6-6c5f27d39064",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.schuetze_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "b598cb6e-7059-46ac-b0b1-0466390529c9",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3922)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "c658a5d4-67fd-4b53-a939-a69b8cab6084",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "9312837b-6169-454a-bd40-5ec396dd7b47",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "554"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "2d82065d-11b9-47ab-a511-8d9039bed980",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "554-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "310bb06b-a421-48ff-9eaa-0d0eb80df2a6",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\l.goerner_lit"
+                },
+                "EventDate": "2025-01-30T00:00:00Z",
+                "EndDate": "2025-01-30T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a7506d94-60d6-45e9-a050-e56ac31ed156",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3923)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "e6937722-ad2a-484f-855d-714ef7585625",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "bc6f9c78-c346-41c4-a000-f91df3d780af",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "529"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "bad74c5d-9b4e-4827-a12b-d7d8b4d8b034",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "529-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "4beee1f7-3a83-4354-ab8d-9efe38b784ce",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\c.herzog_lit"
+                },
+                "EventDate": "2025-01-29T00:00:00Z",
+                "EndDate": "2025-01-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "5ee7599c-b96a-489c-b7af-3ff2bd01714e",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3924)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "5ee96a36-d7ee-4439-862d-8cb6b4d5a77b",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "004bc08a-1cf1-4db8-9000-3b367d92379d",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "201"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "527f9b47-320a-482d-bcf0-c0862f211b50",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "201-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "50ca32fa-3c9b-4256-82bb-93e4a6b3bb96",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\d.lehmann_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "6a8f59e5-2242-4289-83d1-e5d20e6a4a20",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3925)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "369cbd9f-e9e1-4e2d-997b-3893d543ed3e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "64df914a-1d72-4757-8cc4-403875750e57",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "9bcc4674-f055-4e2e-9820-a46b63c223f2",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "6d244292-ee4f-4150-b88a-848c728aca72",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-04-02T00:00:00Z",
+                "EndDate": "2025-04-02T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "b425fd72-2c67-4080-be03-db7c58be8fef",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3926)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9e8d7bc0-ad7f-40d9-815d-25df36ca9c50",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7b2ec4f2-e5d6-4116-b4c1-090d0dade26b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "9fab4a33-6958-483e-95e5-ccd062163a64",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "7baf7b2b-ac07-4e82-b85f-e123a77685c6",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-03-26T00:00:00Z",
+                "EndDate": "2025-03-26T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "1f05e8b1-3508-42ec-9003-06230aa209c5",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3928)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "e193bb01-e1f0-470a-865f-c47926c4915f",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f01e035f-452b-47c4-a3b9-915bc7a3ae2d",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "331c0b16-9163-4500-bd29-8d430c561f3b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "620c65f9-3d21-451b-b861-9ca741926fc5",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-03-05T00:00:00Z",
+                "EndDate": "2025-03-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "707f0e0b-3458-4b7c-8135-39890e26f521",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3929)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8518a979-23e4-4075-80e0-5dc8bd759234",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "ac3fa47b-6b04-467f-ac6e-eb9b20e0a278",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "c4c9e31a-4d47-45e0-b60e-c4a629bb9f48",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "c404ce10-b2f3-49fa-b5b7-bcf9ed671ce8",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-02-26T00:00:00Z",
+                "EndDate": "2025-02-26T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "3ce20110-97db-4b06-a7bf-95fb10743b45",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3931)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "68e62d75-0b57-4af8-b527-69660981184d",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7429210b-7d3c-4f2e-a708-b62ef3081b6c",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "1936190e-cb85-44d2-b54c-8a5afad41bb5",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "eae383be-f41c-4824-a3d2-d2080f430d5c",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-04-09T00:00:00Z",
+                "EndDate": "2025-04-09T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "6e48e881-d1cf-49f0-8fd8-f550c86a441b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3932)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "e093ffbe-40cb-45c9-a811-a2f48abf6d8a",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "69525c23-380d-4555-8e35-417e1b3cdfca",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "c84714b5-40a6-4d40-a1c7-d314d187b809",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "2013da16-a85f-4850-a1ae-26ae8723a6d2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-04-16T00:00:00Z",
+                "EndDate": "2025-04-16T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "be97eb22-0f05-49a8-a63c-a3d7f1cedcb4",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3933)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "f949ad72-ef09-40c3-a51c-45e80ac0ab71",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "53b4b11d-fbc4-4e4c-bf6a-c23925a20edf",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "82afc02c-5bc3-476c-8b5f-d38755586e62",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3f2d194d-df1b-40ab-b25c-c94aa2769bac",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-04-23T00:00:00Z",
+                "EndDate": "2025-04-23T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "4a89b316-7e39-4811-a8ab-379042670209",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3934)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "77cd58f3-d7eb-43a2-8697-0a2fe6dc3edb",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "0b111465-5b14-41b3-885f-79fbb058e2a0",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "302"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "28a60a7e-0832-47c0-a384-f31e5d08e32a",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "302-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "aaf6db4c-8ec1-4020-a96d-0146d4132cfd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\y.wachsmuth_lit"
+                },
+                "EventDate": "2025-04-29T00:00:00Z",
+                "EndDate": "2025-04-29T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "eb18aaa7-3dfd-4d14-8884-259ffea544f8",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3935)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "411168ce-e196-4067-93fb-a734a3569aa0",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "e1c53f11-96eb-47e5-9b02-d724f3d9f609",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "201"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "08dfceb7-fbcf-4ae8-9c74-e18d399faed6",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "201-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "974572a3-415f-4963-9eae-06e6f1123a52",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.geisler_lit"
+                },
+                "EventDate": "2025-01-31T00:00:00Z",
+                "EndDate": "2025-01-31T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a21c329d-4aa5-4373-a556-b0e2df3bb2ba",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3937)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8d5af00d-c9a1-44e5-8c6b-08e1b96b8cb8",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "22915766-5b20-481d-aff2-30c007a19bb9",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "e8830982-502a-4e0c-bf53-5a262f98e0d4",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "083757b4-f397-46e3-b819-e581ee238ebd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\e.dietz_lit"
+                },
+                "EventDate": "2025-02-07T00:00:00Z",
+                "EndDate": "2025-02-07T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "6eb7c7c9-1a3f-45d7-819f-4ca07cf7a3da",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3938)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "27a62250-6bd4-4a2f-9172-890e7c9cdf04",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "ff16c657-8391-47b4-9781-b10fb8f7edf6",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "211"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "ebbbacad-d789-40ab-b3cb-2ca6f330c9fa",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "211-2"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "9253bd6f-6a9a-45c0-9dbb-cef259ad7304",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ritter_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "da372586-d1a5-4d1e-9449-4af566011257",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3939)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "43a17058-eba4-48d0-9403-aa799aad17e7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "42e977fd-2c93-44e2-801f-c7074906db2c",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "211"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "e542229c-3337-4759-b450-1759710b93a2",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "211-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "5de53c3f-aac5-4498-a4a8-1c3f25c80939",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ritter_lit"
+                },
+                "EventDate": "2025-03-13T00:00:00Z",
+                "EndDate": "2025-03-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "467330aa-aad1-4103-8bfc-861bdcdb1677",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3940)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "305851fa-39e7-41a9-a12a-307d4b1243b5",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "3f017c00-2f69-427a-af9e-3f00e6ef5e54",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "211"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "5da50470-3419-4221-9dcf-8548ac3f41c8",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "211-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "3a1e9dad-a761-4327-b5e8-e9093629a2d2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ritter_lit"
+                },
+                "EventDate": "2025-04-10T00:00:00Z",
+                "EndDate": "2025-04-10T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "de032570-235d-4efb-a08f-47c4eae4769b",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3941)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "4d5becc9-62cc-49e6-a289-76c3ea63a480",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "dcb276ca-a794-40d7-aea6-e97c670977b1",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "211"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "07d0f81d-57d7-4511-bfe2-7c47e9736aa1",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "211-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "fa66256a-ff59-42c1-a8e0-a9af6b79eb3f",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ritter_lit"
+                },
+                "EventDate": "2025-05-08T00:00:00Z",
+                "EndDate": "2025-05-08T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "c945a46d-6753-4cff-a26f-db1707ad6807",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3942)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "0c0ebd0a-4b6b-4161-ae13-7f07f3d052d7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "53fe8e32-62e9-40d6-83d5-fa75f7291be0",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6e1659c9-a4d5-4408-ac68-c8fc27ee4266",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a0c1abbf-4e0e-4c1a-803a-9511ce2db344",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ruehl_lit"
+                },
+                "EventDate": "2025-02-06T00:00:00Z",
+                "EndDate": "2025-02-06T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "2d263a29-3da3-4d3a-979e-98ba9a295961",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3943)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "2ef9b6d4-b2c9-4351-accf-a32d3a5983f3",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 3. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b082710e-a1a6-46e4-9e7e-e4f93cad31ab",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "308"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "a29ec301-80af-4d99-b0e0-ade1a3f0a935",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "308-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "c20d1d1a-fdd7-46fd-9c9d-b267b614ac99",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\b.ruehl_lit"
+                },
+                "EventDate": "2025-02-03T00:00:00Z",
+                "EndDate": "2025-02-03T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "bd9d6172-8430-418a-af47-de1db953b42c",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3944)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "88a55765-eeae-4446-ab17-83427b56224e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "21a0bbbb-3a70-4f5d-a02d-4cfbe845a471",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "212"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "f5b73416-61fe-488d-ba0f-78cff055fd54",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "212-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "0d497143-650d-4d78-96e7-0f4cac286ec2",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\s.manthey_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "25189b91-1751-4dd2-bb3d-95a6e708fe4d",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3945)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "ebc4c616-5ec8-430a-bc4b-f19235fbc260",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f0c7938e-fa13-42ec-b1ce-77b702fee4fb",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "203"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "52dac2a2-0e55-4a19-848c-956adc884a11",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "203-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "371ecd2c-5597-4578-b71c-4f9f0d61b0d4",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.hahn_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "8bbc3ce9-3d60-4733-a2c0-8131df4d2efe",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3946)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8e7422ff-7f90-49d4-aa32-0850480598b6",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Chemnitz beim ArbG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f1d256d2-05a1-4a67-9bfd-6a61ddbdf3ca",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "203"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "ac834d5b-d58a-40c1-853c-25c297828508",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "203-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "f9a43ce0-34d5-4dd5-97bd-c44ff9ba0feb",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.hahn_lit"
+                },
+                "EventDate": "2025-02-12T00:00:00Z",
+                "EndDate": "2025-02-12T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "cd7954fb-eb70-43a1-a875-3817d84fbfae",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3947)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "cc0e931b-e9e4-465f-8f61-f5f1c3265c7a",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "05b211c4-aa32-4252-91ba-770ec5601e61",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "153"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "446a9f2c-8a6e-4d94-a0b5-12da8602a85e",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "153-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "6735773c-f225-4171-a6a0-82654ceb8d98",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\f.bartl_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "12c5f392-9375-4b0f-8295-e18798ff0ecd",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3948)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "6160fa17-362b-4a99-9a33-5f128a1d0dfc",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "5820fbb8-8b80-491b-908d-531fbc869e8a",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "033"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "9db2a796-9d75-4dbd-9b28-7133802ff454",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "033-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a98f55ae-6041-4379-8c9d-f0145edc2ddd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\r.wojtkowiak_lit"
+                },
+                "EventDate": "2025-02-04T00:00:00Z",
+                "EndDate": "2025-02-04T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "c467f64a-c7ca-4399-a633-c46420cb17a2",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3949)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8dc2abae-f45f-4aec-b7d7-7a02525b025e",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "b99334ba-6e18-46ce-8001-209407b0cc6f",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "44803762-8a13-45c2-9706-05f125c5a40b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-3"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a91b5413-6ec6-495f-a6b7-c00b4132fe3e",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\c.taennert_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "25373c4a-67ce-4c0d-b0f7-f1401b36ebfd",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3950)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9c29332d-525d-4210-8126-a59d43f88395",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "e977e61a-703b-43d9-9984-0caaf020c775",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "156"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "22954c5d-3047-4716-838d-e32937b6c687",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "156-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "95549682-5ea9-43cd-ab6b-8e7b57abcebf",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\k.langhammer_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a4ffac43-8ed8-4fab-a9da-627ead10badb",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3951)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "9add4c85-3db2-4bb4-99ad-07567c8073a4",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "69681115-7e4c-47dd-8d0a-e89eef7c0499",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "209"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "a8f9dbd0-e6a5-4c22-a231-6389ed7c3c2d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "209-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "bd396cad-8ad6-4963-90f7-0b471c8525ee",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\a.neumann_lit"
+                },
+                "EventDate": "2025-02-13T00:00:00Z",
+                "EndDate": "2025-02-13T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "5f7cc889-9c15-4da6-ad0a-f2d787dce7ef",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3952)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "aea50e6f-d896-4e0c-844d-e9ed864196c8",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "72dbf175-66a0-410c-ba2e-1966484f9dd5",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "128"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3fde3129-7419-4156-b1d5-aab50e0ca81d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "128-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "23118b24-3fb6-4ea4-ad45-79c0190c9d12",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\j.arndt_lit"
+                },
+                "EventDate": "2025-03-03T00:00:00Z",
+                "EndDate": "2025-07-31T23:59:00Z",
+                "fRecurrence": true,
+                "RecurrenceData": "<recurrence><rule><firstDayOfWeek>mo</firstDayOfWeek><repeat><daily dayFrequency=\"1\" /></repeat><windowEnd>2025-07-31T23:59:00Z</windowEnd></rule></recurrence>"
+            },
+            {
+                "__metadata": {
+                    "id": "2bfae848-5492-4167-b230-b667511ee1f8",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3953)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "75c2427b-9137-4cc1-81c9-04141c546120",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "5b826d01-f745-4c01-b8a2-4faf8dc96dcd",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "027"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3809663e-abda-4a77-9525-9dd905dcf850",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "027-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "263f00f6-5e67-48ec-8f44-54ac123070a6",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\k.schneider_lit"
+                },
+                "EventDate": "2025-01-28T00:00:00Z",
+                "EndDate": "2025-01-28T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "c7e01997-b310-4acd-8bb3-f639a01497e1",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3954)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "626697bf-54e9-4ccd-8ded-947de1ac7d15",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 1. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "0a9fa91d-5052-4f29-bae3-1bb4322b436d",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "152"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "4d762be8-0c68-4620-a017-ced626b770ac",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "152-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "4c8cdf51-8ae2-415c-8401-ece02db4e65d",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\e.dietz_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "51ff2a30-b2e4-4753-8b4a-d7c6df2a9306",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3955)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "25383c94-c91a-49db-a414-29ede1e17ef5",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "6d6c24d9-fb32-4a17-bfea-6fa7887bee0c",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "6e5b76a9-d41d-48f4-9b0b-d2e01bafae3b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "a1f91828-ad03-49d1-a696-cda1496ecf53",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-02-04T00:00:00Z",
+                "EndDate": "2025-02-04T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "ed3ab17f-f7ee-46e0-8bca-e60bd746a127",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3956)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a496245c-c6e6-4729-9deb-f579d1b3c3d1",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "c5d515c2-ea81-49ce-abe7-fe9b323c4d8e",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "192d91b3-7272-4db5-a1c8-d650e64a1cc6",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "1b74e645-ae7e-48ec-b30e-154199d3a993",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-02-06T00:00:00Z",
+                "EndDate": "2025-02-06T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "8dc8ccf2-65d1-4d79-9c69-53ff52c03607",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3957)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "31e7c4c8-6331-48dc-b834-cf9060c53fec",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "52376323-8f65-4f57-83a3-be65c200b872",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "c052dda5-b206-4930-a65d-687f2938b7c7",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "32507c65-3b8f-441d-ae59-390ebb76cfec",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-02-11T00:00:00Z",
+                "EndDate": "2025-02-11T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "892955c2-e0d1-4f67-952a-3d0e70904580",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3958)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "a5621367-de03-4d99-994f-a40259971ed7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "02116cfc-86ec-4977-967e-dfc131f3e91f",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "85df13b6-0b4d-45bc-ab07-83c9002635ba",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "57b51ac4-dbe0-46b6-9402-33f59114b37b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-03-11T00:00:00Z",
+                "EndDate": "2025-03-11T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "9ff373b1-aef2-4e77-aee6-aef704ec9ad1",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3959)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "6673043a-4a1c-4bf8-ac58-f461df42ed0f",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "23afbd50-b8e6-441f-bc44-24fa0d69129b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "c8ea8419-4b8e-4aaf-bc63-1f8384c4860d",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "71bdbe0d-6f07-4efc-94b4-763ad514768d",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-03-18T00:00:00Z",
+                "EndDate": "2025-03-18T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "2519dc01-99fa-44ae-9b96-768c1a1639cc",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3960)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "81deea70-78b6-46cd-9a83-f6a87c5638ac",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "7021f368-6af0-47cb-afcc-c87f39d928f5",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "f0a97581-ea48-4165-addc-8bc6dcfaa3f9",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "682e316a-5e91-4117-8b84-2ec88dbbd8a0",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-03-25T00:00:00Z",
+                "EndDate": "2025-03-25T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "a477dacd-43a6-4511-be88-f799a376a668",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3961)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "3f5003c6-23cc-427f-9817-c3e91430cde0",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "dcf86ad6-6166-47e3-8dbf-0e31f9617a14",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "90acf408-36fc-4ebb-a9e6-3923e6b74011",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "27cb0be8-aa6e-4e6f-9fb6-33a9d3740020",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-04-01T00:00:00Z",
+                "EndDate": "2025-04-01T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "087b739c-0c06-4f0b-a48e-d580970a90c6",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3962)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "8250a044-3719-4ff1-a133-a8a7a17d8cdb",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "5d92e6cd-1282-42f6-89b5-742f2425a15b",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "773c3b6d-7bbf-4544-94fd-ddc547c251bb",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "30bcea77-e32b-41bd-ac67-fb71d7c13707",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-03-20T00:00:00Z",
+                "EndDate": "2025-03-20T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "cd312245-b38c-491b-8c09-5d4ff6856e02",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3963)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "d3f73bb8-82b4-4c3d-b691-c6c51c486c37",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "e232724c-6478-45cb-861d-2401d1f885c5",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "73d4c6ee-67a8-436a-a548-be402303ef38",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "d7a19bcb-d322-47d1-b627-05cae62ca7bd",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-03-27T00:00:00Z",
+                "EndDate": "2025-03-27T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "0c638ddb-0efc-432e-94dc-95dbfee72a17",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3964)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "d17dd618-a27b-4426-98ca-e537d1444351",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "28abe87b-a7ec-4192-9ab3-ab7fa38fb439",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "210"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "ccb9341f-02de-4712-bbaf-5e175d193961",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "210-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "d172c3b5-d3cf-4109-a770-723ae9d497ba",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\p.gietzelt_lit"
+                },
+                "EventDate": "2025-04-03T00:00:00Z",
+                "EndDate": "2025-04-03T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "bc152545-54f8-4545-84ad-8aa226f367b5",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3965)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "f7f8be84-f2ac-4830-9fac-75d4478ba5e7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19c 2. OG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "f808aa19-2391-46d1-bb4f-13f2908bffb4",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "201"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "2a6101e4-2f1f-46d1-95af-c36fab16d36b",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "201-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "37bda2bb-5cdd-42ed-943b-393bef41969b",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\d.lehmann_lit"
+                },
+                "EventDate": "2025-02-07T00:00:00Z",
+                "EndDate": "2025-02-07T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "30e5aa4d-f168-43e2-a8f7-9e87abb95ef8",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3966)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "ebb1c9da-c7cb-4be6-80e4-ea5bc2feb7b7",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "Bautzner Str. 19 a/b EG"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "0d44d142-9e8d-4755-bf93-ca4a422e631e",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "033"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "3638b827-89b1-4367-ad1e-1cb804e53ed9",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "033-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "c89980ca-9123-45b8-8eba-ab5babb07cc5",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\m.beck_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            },
+            {
+                "__metadata": {
+                    "id": "1816e541-9d43-43c1-aeb1-9a0a479e46d2",
+                    "uri": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/Web/Lists(guid'f5e5059b-ba08-42aa-a7cd-05d505622c33')/Items(3967)",
+                    "etag": "\"1\"",
+                    "type": "SP.Data.Kalender_x0020_DeskSharingListItem"
+                },
+                "Standort": {
+                    "__metadata": {
+                        "id": "d238a176-ae83-4588-afb8-c6a522e63f67",
+                        "type": "SP.Data.StandortListItem"
+                    },
+                    "Title": "AS Leipzig"
+                },
+                "Raumnummer": {
+                    "__metadata": {
+                        "id": "996a5255-889a-484c-8e72-faceff64152f",
+                        "type": "SP.Data.RaumnummerListItem"
+                    },
+                    "Title": "529"
+                },
+                "Arbeitsplatz": {
+                    "__metadata": {
+                        "id": "f0212fd1-210b-4e69-a6e2-3283687d94a5",
+                        "type": "SP.Data.ArbeitsplatznummerListItem"
+                    },
+                    "Title": "529-1"
+                },
+                "Anmelder": {
+                    "__metadata": {
+                        "id": "91ed6b14-152e-4437-9e7d-ca4d2037c0b6",
+                        "type": "SP.Data.UserInfoItem"
+                    },
+                    "Name": "i:0#.w|justiz\\c.herzog_lit"
+                },
+                "EventDate": "2025-02-05T00:00:00Z",
+                "EndDate": "2025-02-05T23:59:00Z",
+                "fRecurrence": false,
+                "RecurrenceData": null
+            }
+        ],
+        "__next": "https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/web/lists/getbytitle('Kalender%20DeskSharing')/items?%24skiptoken=Paged%3dTRUE%26p_ID%3d3967&%24select=RecurrenceData%2cfRecurrence%2cEventDate%2cEndDate%2cAnmelder%2fName%2cArbeitsplatz%2fTitle%2cRaumnummer%2fTitle%2cStandort%2fTitle&%24expand=Anmelder%2cArbeitsplatz%2cRaumnummer%2cStandort"
+    }
+}
