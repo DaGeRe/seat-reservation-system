@@ -9,6 +9,7 @@ import getpass
 from requests_ntlm import HttpNtlmAuth
 import requests
 from dotenv import load_dotenv
+import re
 
 class App:
     def __init__(self,old_data_dir,users_json, output_dir,env_file):
@@ -48,6 +49,7 @@ class App:
     def extract_infos(self):
         unknown = ''
         single_bookings = ''
+        series_bookings = ''
         known_map = {}
         with open(self.users_json, 'r', encoding='utf-8') as file:
             users = json.load(file)
@@ -73,22 +75,43 @@ class App:
                             lastName = users[anmelder.upper()]['Surname']
                             email = users[anmelder.upper()]['EmailAddress']
                             if recurrence:
-                                pass
+                                # E.g. Alle 14 Tag(e) or Alle 1 Woche(n) am: Mittwoch
+                                if 'Alle ' in recurrence:
+                                    # E.g. Alle 1 Woche(n) am: Mittwoch
+                                    if 'am: ' in recurrence:
+                                        freq = recurrence.split('Alle ')[1].split(' Woche')[0]
+                                        weekday = recurrence.split('am: ')[1]
+                                        if weekday == 'Montag':
+                                            weekday = 0
+                                        if weekday == 'Dienstag':
+                                            weekday = 1
+                                        if weekday == 'Mittwoch':
+                                            weekday = 2
+                                        if weekday == 'Donnerstag':
+                                            weekday = 3
+                                        if weekday == 'Freitag':
+                                            weekday = 4
+                                        series_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}|{freq}|{weekday}|weekly\n'
+                                    # E.g. Alle 14 Tag(e)
+                                    else:
+                                        freq = recurrence.split('Alle ')[1].split(' Tag')[0]
+                                        series_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}|{freq}||daily\n'
+                                else:
+                                    freq = recurrence.split('weekFrequency="')[1].split('" /></repeat>')[0]
+        
+                                    weekday = recurrence.split('<recurrence><rule><firstDayOfWeek>')[1].split('</firstDayOfWeek>')[0]
+                                    if weekday == 'mo':
+                                        weekday = 0
+                                    if weekday == 'di':
+                                        weekday = 1
+                                    if weekday == 'mi':
+                                        weekday = 2
+                                    if weekday == 'do':
+                                        weekday = 3
+                                    if weekday == 'fr':
+                                        weekday = 4
+                                    series_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}|{freq}|{weekday}|weekly\n'
                             else:
-                                formatted_start = start.split('T')[1].split('Z')[0]
-                                formatted_end = end.split('T')[1].split('Z')[0]
-                                #single_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}\n'
-                                #single_bookings += f'''insert into bookings (begin,booking_in_progress,day,end,lock_expiry_time,desk_id,room_id,user_id,series_id) values(
-    #time('{formatted_start}'), 
-    #'', 
-    #date('{start.split('T')[0]}'), 
-    #time('{formatted_end}'), 
-    #NULL, 
-    #(select desk_id from desks where remark = '{arbeitsplatz}'),
-    #(select room_id from rooms where remark = 'Raum {raumnummer}'),
-    #(select id from users where email = '{email}'),
-    #NULL
-#);\n'''
                                 single_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}\n'
                         except:
                             # Anmelder is not known in users.json therefore not known to AD -> ignore
@@ -99,6 +122,8 @@ class App:
             text_file.write(unknown)
         with open(self.output_dir + 'single_bookings.txt', 'w') as text_file:
             text_file.write(single_bookings)
+        with open(self.output_dir + 'series_bookings.txt', 'w') as text_file:
+            text_file.write(series_bookings)
 
 
     def get_headers(self):
