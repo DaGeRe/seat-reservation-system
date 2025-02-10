@@ -12,9 +12,9 @@ import java.util.List;
 public interface DeskRepository extends JpaRepository<Desk, Long> {
     List<Desk> findByRoomId(Long roomId);
     @Query(value=""
-    + "select * from desks "
+    + "select * from desks where remark = :deskRemark "
     ,nativeQuery=true)
-    public List<Desk> foo();
+    public Desk findByDeskRemark(@Param("deskRemark") String deskRemarg);
 /*     @Query(value="select * from desks where room_id=:roomId", nativeQuery = true)
 	List<Desk> getBookingForDate(@Param("roomId") Long roomId); */
 

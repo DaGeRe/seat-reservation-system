@@ -17,7 +17,6 @@ WORKDIR /usr/src/app
 
 # Copy the Maven project files into the container
 COPY src src
-COPY run_test.sh .
 
 # Copy TLS certificates
 COPY tls src/main/resources/tls
@@ -74,10 +73,6 @@ ENV no_proxy=127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0
 # Add proxy environment variables for local/internal network proxies (if required)
 ENV http_proxy=http://proxy.justiz.sachsen.de:3128
 ENV https_proxy=https://proxy.justiz.sachsen.de:3128
-
-# Copy the entrypoint script (run tests and other tasks)
-COPY --from=build /usr/src/app/run_test.sh /usr/src/app/run_test.sh
-RUN chmod +x /usr/src/app/run_test.sh
 
 # Copy pre-loaded test data
 #COPY --from=build /usr/src/app/dumps /usr/src/app/src/test/resources

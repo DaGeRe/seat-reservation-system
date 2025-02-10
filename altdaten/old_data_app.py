@@ -78,17 +78,18 @@ class App:
                                 formatted_start = start.split('T')[1].split('Z')[0]
                                 formatted_end = end.split('T')[1].split('Z')[0]
                                 #single_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}\n'
-                                single_bookings += f'''insert into bookings (begin,booking_in_progress,day,end,lock_expiry_time,desk_id,room_id,user_id,series_id) values(
-    time('{formatted_start}'), 
-    '', 
-    date('{start.split('T')[0]}'), 
-    time('{formatted_end}'), 
-    NULL, 
-    (select desk_id from desks where remark = '{arbeitsplatz}'),
-    (select room_id from rooms where remark = 'Raum {raumnummer}'),
-    (select id from users where email = '{email}'),
-    NULL
-);\n'''
+                                #single_bookings += f'''insert into bookings (begin,booking_in_progress,day,end,lock_expiry_time,desk_id,room_id,user_id,series_id) values(
+    #time('{formatted_start}'), 
+    #'', 
+    #date('{start.split('T')[0]}'), 
+    #time('{formatted_end}'), 
+    #NULL, 
+    #(select desk_id from desks where remark = '{arbeitsplatz}'),
+    #(select room_id from rooms where remark = 'Raum {raumnummer}'),
+    #(select id from users where email = '{email}'),
+    #NULL
+#);\n'''
+                                single_bookings += f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}\n'
                         except:
                             # Anmelder is not known in users.json therefore not known to AD -> ignore
                             unknown += f'{anmelder}|{start}|{end}|{recurrence}\n'
@@ -100,34 +101,101 @@ class App:
             text_file.write(single_bookings)
 
     def execute_single_bookings(self):
-        pw = os.getenv('TEST_PW')
-        email =  os.getenv('TEST_MAIL')
         ip =  os.getenv('IP')
         backend_port =  os.getenv('BACKEND_PORT')
         base_url = f'https://{ip}:{backend_port}'
         login_url = f'{base_url}/users/login'
 
-        login_data = {
-            'email': email,
-            'password': pw
-        }
-        proxies = {
-            'http': 'http://proxy.justiz.sachsen.de:3128',
-            'https': 'http://proxy.justiz.sachsen.de:3128',
-        }
+        response = requests.post(
+            login_url, 
+            json={
+                'email': os.getenv('TEST_MAIL'),
+                'password': os.getenv('TEST_PW')
+            }, 
+            headers={
+                'Content-Type': 'application/json'
+            }, 
+            verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt'
+        )
 
-         # Ntlm authentication is importand!
-        auth = HttpNtlmAuth(email, pw)
-        #response = requests.get(url, auth=auth, headers={'Accept': 'application/json;odata=verbose'}, verify=False)
+        if response.status_code != 200:
+            print('login failed. test user exists?')
+            return
         
 
-        #response = requests.post(login_url, data=login_data, proxies=proxies)
-        response = requests.post(login_url, auth=auth, proxies=proxies)
-        if response.status_code == 200:
-            print(response)
-        else:
-            print('fail')
+        json_obj = response.json()
+        jwt = json_obj['accessToken']
+        bookings_url  = f'{base_url}/bookings/addBookingSimplified'
 
+        users_not_found = set()
+        room_not_found = set()
+        desk_not_found = set()
+        booking_already_there = []
+        booking_done = []
+
+        with open(self.output_dir + 'single_bookings.txt', 'r') as text_file:
+            for line in text_file:
+                line_arr = line.strip().split('|')
+                #f'{start}|{end}|{email}|{standort}|{raumnummer}|{arbeitsplatz}\n'
+                start = line_arr[0]
+                end = line_arr[1]
+                email = line_arr[2]
+                standort = line_arr[3]
+                raumnummer = 'Raum ' + line_arr[4]
+                arbeitsplatz = line_arr[5]
+                #print(start)
+                data = {
+                    'day': start.split('T')[0],
+                    'start': start.split('T')[1].split('Z')[0],
+                    'end': end.split('T')[1].split('Z')[0],
+                    'email': email,
+                    'building': standort,
+                    'roomRemark': raumnummer,
+                    'deskRemark': arbeitsplatz
+                }
+
+                # Headers with the Authorization field
+                headers = {
+                    "Authorization": f"Bearer {jwt}",
+                    "Content-Type": "application/json"  # or another appropriate content type
+                }
+
+                # Sending the POST request with headers
+                response = requests.post(bookings_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+                if response.status_code == 500:
+                    if 'User not found for ' in response.text:
+                        users_not_found.add(response.text.split('User not found for ')[1])
+                        continue
+                    if 'Desk not found for ' in response.text:
+                        desk_not_found.add(response.text.split('Desk not found for ')[1])
+                        continue
+                    if 'Room not found for ' in response.text:   
+                        room_not_found.add(response.text.split('Room not found for ')[1])
+                        continue
+                    if 'Booking already there ' in response.text:
+                        booking_already_there.append(response.text.split('Booking already there ')[1])
+                        continue
+                else:
+                    booking_done.append(response.text.split('Booking done ')[1])
+                    print(response.status_code, response.text)
+        print('fin1')
+        # Write all data to files.
+        with open(self.output_dir + 'single_bookings/users_not_found.txt', 'w') as f:
+            for item in users_not_found:
+                f.write(item + '\n')  
+        with open(self.output_dir + 'single_bookings/desks_not_found.txt', 'w') as f:
+            for item in desk_not_found:
+                f.write(item + '\n')  
+        with open(self.output_dir + 'single_bookings/rooms_not_found.txt', 'w') as f:
+            for item in room_not_found:
+                f.write(item + '\n')  
+        with open(self.output_dir + 'single_bookings/booking_already_there.txt', 'w') as f:
+            for item in booking_already_there:
+                f.write(item + '\n')      
+        with open(self.output_dir + 'single_bookings/bookings_done.txt', 'w') as f:
+            for item in booking_done:
+                f.write(item + '\n') 
+        print('fin2')
 if __name__ == '__main__':
     app = App('old_data', 
         'users.json', 
