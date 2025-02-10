@@ -100,7 +100,8 @@ class App:
         with open(self.output_dir + 'single_bookings.txt', 'w') as text_file:
             text_file.write(single_bookings)
 
-    def execute_single_bookings(self):
+
+    def get_headers(self):
         ip =  os.getenv('IP')
         backend_port =  os.getenv('BACKEND_PORT')
         base_url = f'https://{ip}:{backend_port}'
@@ -125,6 +126,26 @@ class App:
 
         json_obj = response.json()
         jwt = json_obj['accessToken']
+        # Headers with the Authorization field
+        headers = {
+            "Authorization": f"Bearer {jwt}",
+            "Content-Type": "application/json"  # or another appropriate content type
+        }
+
+        return headers
+
+    def execute_series_bookings(self):
+        ip =  os.getenv('IP')
+        backend_port =  os.getenv('BACKEND_PORT')
+        base_url = f'https://{ip}:{backend_port}'
+        headers = self.get_headers()
+
+    def execute_single_bookings(self):
+        ip =  os.getenv('IP')
+        backend_port =  os.getenv('BACKEND_PORT')
+        base_url = f'https://{ip}:{backend_port}'
+        headers = self.get_headers()
+
         bookings_url  = f'{base_url}/bookings/addBookingSimplified'
 
         users_not_found = set()
@@ -154,11 +175,7 @@ class App:
                     'deskRemark': arbeitsplatz
                 }
 
-                # Headers with the Authorization field
-                headers = {
-                    "Authorization": f"Bearer {jwt}",
-                    "Content-Type": "application/json"  # or another appropriate content type
-                }
+                
 
                 # Sending the POST request with headers
                 response = requests.post(bookings_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
@@ -207,15 +224,18 @@ if __name__ == '__main__':
             q - quit
             l - load .json from server
             e - extract informations
-            sb - execute single bookings
+            nb - execute normal bookings
+            sb - execute series bookings
         ''')
         key = input()
         if key == 'l':
             app.load_json_from_www()
         if key == 'e':
             app.extract_infos()
-        elif key == 'sb':
+        elif key == 'nb':
             app.execute_single_bookings()
+        elif key == 'sb':
+            app.execute_series_bookings()
         elif key == 'q':
             print('Bye')
             break
