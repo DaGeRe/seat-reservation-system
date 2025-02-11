@@ -164,6 +164,39 @@ class App:
         backend_port =  os.getenv('BACKEND_PORT')
         base_url = f'https://{ip}:{backend_port}'
         headers = self.get_headers()
+        dates_url  = f'{base_url}/series/dates'
+        series_url  = f'{base_url}/series'
+
+        no_dates_calculated = ''
+
+        with open(self.output_dir + 'series_bookings.txt', 'r') as text_file:
+            for line in text_file:
+                line_arr = line.strip().split('|')
+                start = line_arr[0]
+                end = line_arr[1]
+                email = line_arr[2]
+                standort = line_arr[3]
+                raumnummer = 'Raum ' + line_arr[4]
+                arbeitsplatz = line_arr[5]
+                weekday = line_arr[7]
+                frq = line_arr[8]
+                data = {
+                    'startDate': start, #start.split('T')[1].split('Z')[0],
+                    'endDate': end,#end.split('T')[1].split('Z')[0],
+                    'startTime': start.split('T')[1].split('Z')[0],
+                    'endTime': end.split('T')[1].split('Z')[0],
+                    'frequency': frq,
+                    'weekday': weekday
+                }
+                # Sending the POST request with headers
+                response = requests.post(dates_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+                if response.json() == []:
+                    no_dates_calculated += f'{start}|{end}|{start.split("T")[1].split("Z")[0]}|{end.split("T")[1].split("Z")[0]}|{line}\n'
+                else:
+                    print(len(response.json()))
+        
+        with open(self.output_dir + 'series_bookings/no_dates_calculated.txt', 'w') as f:
+            f.write(no_dates_calculated)
 
     def execute_single_bookings(self):
         ip =  os.getenv('IP')
@@ -189,7 +222,6 @@ class App:
                 standort = line_arr[3]
                 raumnummer = 'Raum ' + line_arr[4]
                 arbeitsplatz = line_arr[5]
-                #print(start)
                 data = {
                     'day': start.split('T')[0],
                     'start': start.split('T')[1].split('Z')[0],
@@ -199,9 +231,6 @@ class App:
                     'roomRemark': raumnummer,
                     'deskRemark': arbeitsplatz
                 }
-
-                
-
                 # Sending the POST request with headers
                 response = requests.post(bookings_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
                 if response.status_code == 500:
@@ -219,8 +248,7 @@ class App:
                         continue
                 else:
                     booking_done.append(response.text.split('Booking done ')[1])
-                    print(response.status_code, response.text)
-        print('fin1')
+
         # Write all data to files.
         with open(self.output_dir + 'single_bookings/users_not_found.txt', 'w') as f:
             for item in users_not_found:

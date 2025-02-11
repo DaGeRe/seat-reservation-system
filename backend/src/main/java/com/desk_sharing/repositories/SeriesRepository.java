@@ -50,7 +50,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
         @Param("endDate") Date endDate, 
         @Param("weekDay") int weekDay
     );
-
+    /*
     @Query(value = "SELECT DATE(DATE_ADD(:startDate, INTERVAL (n * 4) WEEK)) " +
     "FROM ( " + 
     "    SELECT (t * 10 + u) AS n " +
@@ -65,7 +65,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
         @Param("startDate") Date startDate, 
         @Param("endDate") Date endDate, 
         @Param("weekDay") int weekDay
-    );
+    );*/
 
     @Query(value="select * from series where user_id = :user_id ", nativeQuery = true)
     public List<Series> findByUserId(@Param("user_id") Integer user_id);
