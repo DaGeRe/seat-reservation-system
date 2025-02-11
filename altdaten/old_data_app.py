@@ -16,7 +16,7 @@ class App:
         self.old_data_dir = old_data_dir
         self.users_json = users_json
         self.output_dir = output_dir
-        self.url = 'https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/web/lists/getbytitle(\'Kalender%20DeskSharing\')/items?$select=RecurrenceData,fRecurrence,RecurrenceID,MasterSeriesItemID,EventType,Duration,EventDate,EndDate,Anmelder/Name,Arbeitsplatz/Title,Raumnummer/Title,Standort/Title&$expand=Anmelder,Arbeitsplatz,Raumnummer,Standort'
+        self.url = 'https://portal.justiz.sachsen.de/lit/litport/organisation/abt1/ds/_api/web/lists/getbytitle(\'Kalender%20DeskSharing\')/items?$select=ID,RecurrenceData,fRecurrence,RecurrenceID,MasterSeriesItemID,EventType,Duration,EventDate,EndDate,Anmelder/Name,Arbeitsplatz/Title,Raumnummer/Title,Standort/Title&$expand=Anmelder,Arbeitsplatz,Raumnummer,Standort'
         self.username = 'r.lehmann_lit'
         load_dotenv(env_file)
         pass 
@@ -61,7 +61,7 @@ class App:
                 for dataset in datasets:
                     anmelder = dataset['Anmelder']['Name'].split('i:0#.w|justiz\\')[1] #+ '@lit.justiz.sachsen.de'
                     obj = {
-                        'booking_id': dataset['__metadata']['id'],
+                        'ID': dataset['ID'],
                         'Standort': dataset['Standort']['Title'],
                         'Raumnummer': dataset['Raumnummer']['Title'],
                         'Arbeitsplatz': dataset['Arbeitsplatz']['Title'],
