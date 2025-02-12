@@ -34,7 +34,7 @@ const MyBookings = () => {
         (bookings) => {
           const calendarEvents = bookings.map((booking) => ({
             id: booking.id,
-            title: `${t('desk')} ${booking.desk.id}`,
+            title: `${t('desk')} ${booking.desk.remark}`,
             start: new Date(booking.day + 'T' + booking.begin),
             end: new Date(booking.day + 'T' + booking.end),
             desk: booking.desk
@@ -188,7 +188,7 @@ const MyBookings = () => {
           </div>
         </div>
       </div>
-       {showEditModal && (
+       {/*{showEditModal && (
         <Dialog open={showEditModal} onClose={() => setShowEditModal(false)}>
           <DialogTitle>{t("editBookingTime")}</DialogTitle>
           <DialogContent>
@@ -201,7 +201,7 @@ const MyBookings = () => {
             />
           </DialogContent>
         </Dialog>
-      )}
+      )}*/}
     </div>
   );
 };
