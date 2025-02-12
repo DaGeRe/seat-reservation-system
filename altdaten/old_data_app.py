@@ -367,6 +367,7 @@ if __name__ == '__main__':
             sb - execute series bookings
             ex - execute exceptions for series bookings
         ''')
+        
         key = input()
         if key == 'l':
             app.load_json_from_www()
