@@ -45,7 +45,6 @@ class App:
         else:
             print(f'Error: {response.status_code}')
 
-
     def extract_infos(self):
         with open(self.users_json, 'r', encoding='utf-8') as file:
             users = json.load(file)
@@ -112,7 +111,7 @@ class App:
         booking_done = []
 
         with open(self.output_dir + '/normal_bookings.json', 'r', encoding='utf-8') as file:
-            normal_bookings = json.load(file)  # `json.load()` wandelt die Datei zurück in eine Liste
+            normal_bookings = json.load(file)
         
         for normal_booking in normal_bookings:
             # Skip chemnitz, ...
@@ -189,6 +188,50 @@ class App:
 
         return headers
 
+    def execute_exceptions(self):
+        ip =  os.getenv('IP')
+        backend_port =  os.getenv('BACKEND_PORT')
+        base_url = f'https://{ip}:{backend_port}'
+        headers = self.get_headers()
+        booking_url  = f'{base_url}/bookings'
+
+        booking_not_found = []
+        misc_error = []
+        ok = []
+
+        with open(self.output_dir + '/series_bookings.json', 'r', encoding='utf-8') as f:
+            series_bookings = json.load(f)
+        
+        for series_booking in series_bookings:
+            if 'Bautzner' not in  series_booking['Standort']:
+                continue
+
+            # Not deleted or exception of a recurring event
+            if series_booking['EventType'] != 3 and series_booking['EventType'] != 4:
+                continue
+            
+
+            #url = f'{booking_url}/deleteByMailAndDateAndDeskRemark/{series_booking["email"]}/{series_booking["EventDate"]}/{series_booking["Arbeitsplatz"]}'
+            url = f'{booking_url}/deleteByMailAndDateAndDeskRemark/{series_booking["email"]}/{series_booking["EventDate"].split("T")[0]}/{series_booking["Arbeitsplatz"]}'
+            response = requests.post(url, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+            if response.status_code != 200:
+                print('not able to delete booking as exception.', url)
+                continue
+
+            if 'OK' == response.text:
+                ok.append(series_booking)
+            elif 'booking not found' == response.text:
+                booking_not_found.append(series_booking)
+            else:
+                misc_error.append(series_booking)
+
+        with open(self.output_dir + '/series_bookings_exception/ok.json', 'w', encoding='utf-8') as f:
+            json.dump(ok, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings_exception/booking_not_found.json', 'w', encoding='utf-8') as f:
+            json.dump(booking_not_found, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings_exception/misc.json', 'w', encoding='utf-8') as f:
+            json.dump(misc_error, f, indent=4, ensure_ascii=False)
+
     def execute_series_bookings(self):
         ip =  os.getenv('IP')
         backend_port =  os.getenv('BACKEND_PORT')
@@ -197,37 +240,118 @@ class App:
         dates_url  = f'{base_url}/series/dates'
         series_url  = f'{base_url}/series'
 
-        no_dates_calculated = ''
+        exceptions = []
+        deleted_instance_of_recurring_event = []
+        room_not_found = []
+        desk_not_found = []
+        not_able = []
+        ok = []
 
-        with open(self.output_dir + 'series_bookings.txt', 'r') as text_file:
-            for line in text_file:
-                line_arr = line.strip().split('|')
-                start = line_arr[0]
-                end = line_arr[1]
-                email = line_arr[2]
-                standort = line_arr[3]
-                raumnummer = 'Raum ' + line_arr[4]
-                arbeitsplatz = line_arr[5]
-                weekday = line_arr[7]
-                frq = line_arr[8]
-                data = {
-                    'startDate': start, #start.split('T')[1].split('Z')[0],
-                    'endDate': end,#end.split('T')[1].split('Z')[0],
-                    'startTime': start.split('T')[1].split('Z')[0],
-                    'endTime': end.split('T')[1].split('Z')[0],
-                    'frequency': frq,
-                    'weekday': weekday
-                }
-                # Sending the POST request with headers
-                response = requests.post(dates_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
-                if response.json() == []:
-                    no_dates_calculated += f'{start}|{end}|{start.split("T")[1].split("Z")[0]}|{end.split("T")[1].split("Z")[0]}|{line}\n'
+        with open(self.output_dir + '/series_bookings.json', 'r', encoding='utf-8') as f:
+            series_bookings = json.load(f)
+        
+        for series_booking in series_bookings:
+            if 'Bautzner' not in  series_booking['Standort']:
+                continue
+            # Recurrence exception
+            if series_booking['EventType'] == 4:
+                # handle later
+                pass
+            # Deleted instance of a recurring event
+            if  series_booking['EventType'] == 3:
+                #handle later
+                pass
+            # Recurring event
+            if series_booking['EventType'] == 1:
+                frequency = ''
+                dayOfTheWeek = ''
+                if 'weekly' in series_booking['RecurrenceData']:
+                    dayOfTheWeek = series_booking['RecurrenceData'].split('<weekly ')[1].split('="TRUE" ')[0]
+                    if dayOfTheWeek == 'mo':
+                        dayOfTheWeek = 0
+                    elif dayOfTheWeek == 'tu':
+                        dayOfTheWeek = 1
+                    elif dayOfTheWeek == 'we':
+                        dayOfTheWeek = 2
+                    elif dayOfTheWeek == 'th':
+                        dayOfTheWeek = 3
+                    elif dayOfTheWeek == 'fr':
+                        dayOfTheWeek = 4
+                    
+                    frequency = 'weekly'
+                    repeat = int(series_booking['RecurrenceData'].split('weekFrequency="')[1].split('" /></repeat>')[0])
+                    if repeat == 2:
+                        frequency = 'twoweeks'
+                    elif repeat == 3:
+                        frequency = 'threeweeks'
+                    elif repeat == 4:
+                        frequency = 'monthly'
+                elif 'daily' in series_booking['RecurrenceData']:
+                    repeat = series_booking['RecurrenceData'].split('dayFrequency="')[1].split('" /></repeat>')[0]
+                    frequency = 'daily'
+                    if repeat == 7:
+                        frequency = weekly
+                    elif repeat == 14:
+                        frequency = 'twoweeks'
+                    elif repeat == 21:
+                        frequency = 'threeweeks'
+                    elif repeat == 28:
+                        frequency = 'monthly'
                 else:
-                    print(len(response.json()))
+                    # Wether weekly nor daily.
+                    continue
+
+                data = {
+                    'startDate': series_booking['EventDate'],
+                    'endDate': series_booking['EndDate'],
+                    'startTime' : series_booking['EventDate'].split('T')[1].split('Z')[0],
+                    'endTime': series_booking['EndDate'].split('T')[1].split('Z')[0],
+                    'frequency': frequency,
+                    'dayOfTheWeek': dayOfTheWeek
+                }
+                response = requests.post(dates_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+                if response.status_code != 200:
+                    print('not able to fetch date.', data)
+                    continue
+                dates = response.json()
+                
+                data = {
+                    'deskRemark': series_booking['Arbeitsplatz'],
+                    'email':series_booking['email'],
+                    'rangeDTO': {
+                        'startDate': series_booking['EventDate'],
+                        'endDate': series_booking['EndDate'],
+                        'startTime' : series_booking['EventDate'].split('T')[1].split('Z')[0],
+                        'endTime': series_booking['EndDate'].split('T')[1].split('Z')[0],
+                        'frequency': frequency,
+                        'dayOfTheWeek': dayOfTheWeek
+                    },
+                    'dates': dates
+                }
+                url = f'{series_url}/createSeriesForDeskRemark'
+                response = requests.post(url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+                if response.status_code != 200:
+                    print('not able to create series.\n', url, '\n', data, '\n', response.status_code)
+                    continue
+                
+                if 'OK' == response.text:
+                    ok.append(series_booking)
+                elif 'cannot find desk' == response.text:
+                    desk_not_found.append(series_booking)
+                elif 'cannot find room' == response.text:
+                    room_not_found.append(series_booking)
+                elif 'cannot create series' == response.text:
+                    not_able.append(series_booking)
         
-        with open(self.output_dir + 'series_bookings/no_dates_calculated.txt', 'w') as f:
-            f.write(no_dates_calculated)
-        
+        with open(self.output_dir + '/series_bookings/desk_not_found.json', 'w', encoding='utf-8') as f:
+            json.dump(desk_not_found, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings/room_not_found.json', 'w', encoding='utf-8') as f:
+            json.dump(room_not_found, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings/not_able.json', 'w', encoding='utf-8') as f:
+            json.dump(not_able, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings/ok.json', 'w', encoding='utf-8') as f:
+            json.dump(ok, f, indent=4, ensure_ascii=False)
+
 if __name__ == '__main__':
     app = App('old_data', 
         'users.json', 
@@ -241,6 +365,7 @@ if __name__ == '__main__':
             e - extract informations
             nb - execute normal bookings
             sb - execute series bookings
+            ex - execute exceptions for series bookings
         ''')
         key = input()
         if key == 'l':
@@ -251,6 +376,8 @@ if __name__ == '__main__':
             app.execute_single_bookings()
         elif key == 'sb':
             app.execute_series_bookings()
+        elif key == 'ex':
+            app.execute_exceptions()
         elif key == 'q':
             print('Bye')
             break

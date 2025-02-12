@@ -4,13 +4,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desk_sharing.entities.Desk;
+import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
+import com.desk_sharing.model.SeriesDTOWithDeskRemark;
+import com.desk_sharing.repositories.DeskRepository;
+import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.services.SeriesService;
 import com.desk_sharing.services.UserService;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +35,9 @@ public class SeriesController {
     private SeriesService seriesService;
     
     @Autowired
+    private DeskRepository deskRepository;
+
+    @Autowired
     private UserService userService;
     
     @PostMapping("/desksForDatesAndTimes")
@@ -42,7 +51,6 @@ public class SeriesController {
     public ResponseEntity<List<Date>> getDatesForRange(@RequestBody RangeDTO rangeDTO) {
         userService.logging("getDatesForRange( " + rangeDTO + " )");
         final List<Date> dates = seriesService.getDatesBetween(rangeDTO);
-        System.out.println(dates.size());
     
         return new ResponseEntity<List<Date>>(dates, HttpStatus.OK);
     };
@@ -51,6 +59,37 @@ public class SeriesController {
     public ResponseEntity<Boolean> createSeries(@RequestBody SeriesDTO seriesDto) {
         userService.logging("createSeries( " + seriesDto + " )");
         return new ResponseEntity<Boolean>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/createSeriesForDeskRemark")
+    public ResponseEntity<String> createSeriesForDeskRemark(@RequestBody SeriesDTOWithDeskRemark seriesDTOWithDeskRemark) {
+        userService.logging("createSeriesForDeskRemark()");
+        final String deskRemark = seriesDTOWithDeskRemark.getDeskRemark();
+        final Desk desk = deskRepository.findByDeskRemark(deskRemark);
+        if (desk == null) {
+            return new ResponseEntity<String>("cannot find desk", HttpStatus.OK);
+        }
+        final Room room = desk.getRoom();
+        if (room == null) {
+            return new ResponseEntity<String>("cannot find room", HttpStatus.OK);
+        }
+        final SeriesDTO seriesDTO = new SeriesDTO(
+            0L, 
+            seriesDTOWithDeskRemark.getRangeDTO(), 
+            seriesDTOWithDeskRemark.getDates(), 
+            room, 
+            desk,
+            seriesDTOWithDeskRemark.getEmail()
+        );
+        final boolean ret = seriesService.createSeries(seriesDTO);
+        if (ret) {
+            return new ResponseEntity<String>("OK", HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<String>("cannot create series", HttpStatus.OK);
+        }
+        //return new ResponseEntity<Boolean>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+        
     }
     
     @GetMapping("/{email}")
@@ -64,8 +103,5 @@ public class SeriesController {
         userService.logging("deleteById( " + id + " )");
         final int returnValue = seriesService.deleteById(id);
         return new ResponseEntity<Integer>(returnValue, HttpStatus.OK);
-    }
-
-
-    
+    }    
 }

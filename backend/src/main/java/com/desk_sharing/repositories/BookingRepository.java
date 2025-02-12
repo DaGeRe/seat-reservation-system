@@ -86,6 +86,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 		+ "join users on bookings.user_id=users.id "
 		+ "where rooms.remark like :RoomRemark ", nativeQuery = true)
 	List<Object[]> getEveryBookingForRoomRemark(@Param("RoomRemark") String RoomRemark);
+	
+	@Query(value="select * from bookings " +
+	" where user_id = (select id from users where email=:email) " + 
+	" and desk_id = (select desk_id from desks where remark=:deskRemark) " +
+	" and day=:day",
+	nativeQuery = true)
+	List<Booking> foo(@Param("email") String email, @Param("deskRemark") String deskRemark, @Param("day") Date day);
 
 	/*@Query(value="select bookings.booking_id, booking_in_progress, lock_expiry_time, desk_id day, begin, end, bookings.series_id  " 
 	+ "from bookings " 

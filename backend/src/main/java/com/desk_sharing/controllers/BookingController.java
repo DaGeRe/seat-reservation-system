@@ -42,6 +42,8 @@ import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
 
+import lombok.val;
+
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -141,19 +143,7 @@ public class BookingController {
         } catch (RuntimeException e) {
             userService.logging("in addBookingSimplified( ): booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
             return ResponseEntity.status(500).body("Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-        }   
-
-        /*try {
-            Booking savedBooking = bookingService.createBooking(bookingData);
-            BookingDTO bookingDTO = convertToDTO(savedBooking);
-            return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
-        } catch (NumberFormatException | DateTimeParseException e) {
-            // Handle parsing errors
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e) {
-            // Handle missing room/desk errors
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }*/
+        }
     }
     
     @PutMapping("/confirm/{id}")
@@ -315,6 +305,28 @@ public class BookingController {
         userService.logging("getAllBookingsForDate( " + days.toString() + " )");
         return bookingService.getAllBookingsForDates(days);
     }
+
+    @PostMapping("/deleteByMailAndDateAndDeskRemark/{email}/{day}/{deskRemark}")
+    public ResponseEntity<String> deleteByMailAndDateAndDeskRemark(
+        @PathVariable("email") String email,
+        @PathVariable("day") String dayString,
+        @PathVariable("deskRemark") String deskRemark
+    ) {
+        final Date day = Date.valueOf(dayString);
+
+        final List<Booking> bookings = bookingRepository.foo(email,deskRemark,day);
+        if (bookings.size() == 0) {
+            return new ResponseEntity<String>("booking not found", HttpStatus.OK);
+        }
+        else if (bookings.size() == 1) {
+            bookingService.deleteBooking(bookings.get(0).getId());
+            return new ResponseEntity<String>("OK", HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<String>("misc error", HttpStatus.OK);
+        }
+    }
+
 /*     @GetMapping("/allbookingsfortoday")
     public Integer getAllBookingsToday() {
         return bookingService.getAllBookingsToday();
