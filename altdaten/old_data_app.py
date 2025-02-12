@@ -356,7 +356,7 @@ if __name__ == '__main__':
     app = App('old_data', 
         'users.json', 
         'output/', 
-        '/home/r/DeskSharingTool_Dev/.env'
+        '../.env'
     )
     while True:
         print('''
@@ -367,7 +367,7 @@ if __name__ == '__main__':
             sb - execute series bookings
             ex - execute exceptions for series bookings
         ''')
-        
+
         key = input()
         if key == 'l':
             app.load_json_from_www()
