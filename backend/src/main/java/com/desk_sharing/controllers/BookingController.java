@@ -31,6 +31,7 @@ import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.BookingDTO;
+import com.desk_sharing.model.BookingDTOEnhanced;
 import com.desk_sharing.model.BookingEditDTO;
 import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.repositories.BookingRepository;
@@ -104,7 +105,7 @@ public class BookingController {
      * Only used for import of old data.
      */
     @PostMapping("/addBookingSimplified")
-    public ResponseEntity<String> addBookingSimplified(@RequestBody Map<String, Object> bookingData) {
+    public ResponseEntity<BookingDTOEnhanced> addBookingSimplified(@RequestBody Map<String, Object> bookingData) {
         userService.logging("addBookingSimplified( "+bookingData.toString()+" )");
         final Date day = Date.valueOf(bookingData.get("day").toString());
         final Time begin = Time.valueOf(bookingData.get("start").toString());
@@ -116,17 +117,20 @@ public class BookingController {
         final UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
             userService.logging("in addBookingSimplified( ): cannot find user for email " + email);
-            return ResponseEntity.status(500).body("User not found for " + email);
+            //return ResponseEntity.status(500).body("User not found for " + email);
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "User not found for " + email), HttpStatus.BAD_REQUEST);
         }
         final Desk desk = deskRepository.findByDeskRemark(deskRemark);
         if (desk == null) {
             userService.logging("in addBookingSimplified( ): cannot find desk for remark " + deskRemark);
-            return ResponseEntity.status(500).body("Desk not found for " + deskRemark);
+            //return ResponseEntity.status(500).body("Desk not found for " + deskRemark);
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Desk not found for " + deskRemark), HttpStatus.BAD_REQUEST);
         }
         final Room room = roomRepository.findByRoomRemark(roomRemark);
         if (room == null) {
             userService.logging("in addBookingSimplified( ): cannot find room for remark " + roomRemark);
-            return ResponseEntity.status(500).body("Room not found for " + roomRemark);
+            //return ResponseEntity.status(500).body("Room not found for " + roomRemark);
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Room not found for " + roomRemark), HttpStatus.BAD_REQUEST);
         }
 
         final Map<String, Object> new_bookingData = new HashMap<>();
@@ -138,11 +142,14 @@ public class BookingController {
         new_bookingData.put("end", end);
 
         try {
-            bookingService.createBooking(new_bookingData);
-            return ResponseEntity.status(200).body("Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
+            Booking savedBooking = bookingService.createBooking(new_bookingData);
+            BookingDTO bookingDTO = convertToDTO(savedBooking);
+            //return ResponseEntity.status(200).body("Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
+            return new ResponseEntity<>(new BookingDTOEnhanced(bookingDTO, "Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end), HttpStatus.CREATED);
         } catch (RuntimeException e) {
             userService.logging("in addBookingSimplified( ): booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-            return ResponseEntity.status(500).body("Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
+            //return ResponseEntity.status(500).body("Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end), HttpStatus.BAD_REQUEST);
         }
     }
     

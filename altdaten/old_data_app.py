@@ -210,8 +210,7 @@ class App:
             if series_booking['EventType'] != 3 and series_booking['EventType'] != 4:
                 continue
             
-
-            #url = f'{booking_url}/deleteByMailAndDateAndDeskRemark/{series_booking["email"]}/{series_booking["EventDate"]}/{series_booking["Arbeitsplatz"]}'
+            
             url = f'{booking_url}/deleteByMailAndDateAndDeskRemark/{series_booking["email"]}/{series_booking["EventDate"].split("T")[0]}/{series_booking["Arbeitsplatz"]}'
             response = requests.post(url, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
             if response.status_code != 200:

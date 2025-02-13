@@ -48,7 +48,6 @@ public class BookingService {
     
     public Booking createBooking(Map<String, Object> bookingData) {
     	int user_id = Integer.parseInt(bookingData.get("user_id").toString());
-        //Long user_id = Long.parseLong(bookingData.get("user_id").toString());
         Long room_id = Long.parseLong(bookingData.get("room_id").toString());
         Long desk_id = Long.parseLong(bookingData.get("desk_id").toString());
         Date day = Date.valueOf(bookingData.get("day").toString());
@@ -66,7 +65,7 @@ public class BookingService {
         
         boolean anyLockedBooking = existingBookings.stream()
                 .anyMatch(booking -> booking.isBookingInProgress() && now.isBefore(booking.getLockExpiryTime()));
-
+        System.out.println("existingBookings.size(): " + existingBookings.size() + " | anyLockedBooking: " + anyLockedBooking);
         if (existingBookings.isEmpty() || !anyLockedBooking) {
         	Booking newBooking = new Booking(user, room, desk, day, begin, end);
             newBooking.setLockExpiryTime(LocalDateTime.now().plusMinutes(5));
