@@ -103,6 +103,7 @@ class App:
         base_url = f'https://{ip}:{backend_port}'
         headers = self.get_headers()
         bookings_url  = f'{base_url}/bookings/addBookingSimplified'
+        confirm_url = f'{base_url}/bookings/confirm'
 
         user_not_found = []
         desk_not_found = []
@@ -128,6 +129,7 @@ class App:
             }
             # Sending the POST request with headers
             response = requests.post(bookings_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
+            '''
             if response.status_code == 500:
                 if 'User not found for ' in response.text:
                     user_not_found.append(normal_booking)
@@ -142,6 +144,26 @@ class App:
                     booking_already_there.append(normal_booking)
                     continue
             else:
+                booking_done.append(normal_booking)
+            '''
+            resp_obj = response.json()
+            bookingDTO = resp_obj['bookingDTO']
+            msg = resp_obj['msg']
+            if 'User not found for ' in msg:
+                user_not_found.append(normal_booking)
+                continue
+            if 'Desk not found for ' in msg:
+                desk_not_found.append(normal_booking)
+                continue
+            if 'Room not found for ' in msg:   
+                room_not_found.append(normal_booking)
+                continue
+            if 'Booking already there ' in msg:
+                booking_already_there.append(normal_booking)
+                continue
+            if 'Booking done ' == msg:
+                url = f'{confirm_url}/{bookingDTO["id"]}'
+                response = requests.put(url, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
                 booking_done.append(normal_booking)
         
         with open(self.output_dir + '/normal_bookings/user_not_found.json', 'w', encoding='utf-8') as f:

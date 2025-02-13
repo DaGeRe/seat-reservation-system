@@ -1,8 +1,6 @@
 package com.desk_sharing.controllers;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.sql.Date;
 import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +39,6 @@ import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
-
-import lombok.val;
 
 @RestController
 @RequestMapping("/bookings")
@@ -145,11 +140,11 @@ public class BookingController {
             Booking savedBooking = bookingService.createBooking(new_bookingData);
             BookingDTO bookingDTO = convertToDTO(savedBooking);
             //return ResponseEntity.status(200).body("Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-            return new ResponseEntity<>(new BookingDTOEnhanced(bookingDTO, "Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end), HttpStatus.CREATED);
+            return new ResponseEntity<>(new BookingDTOEnhanced(bookingDTO, "Booking done "), HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            userService.logging("in addBookingSimplified( ): booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
+            userService.logging("in addBookingSimplified( ): booking already there ");
             //return ResponseEntity.status(500).body("Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there "), HttpStatus.BAD_REQUEST);
         }
     }
     

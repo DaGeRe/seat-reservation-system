@@ -65,7 +65,6 @@ public class BookingService {
         
         boolean anyLockedBooking = existingBookings.stream()
                 .anyMatch(booking -> booking.isBookingInProgress() && now.isBefore(booking.getLockExpiryTime()));
-        System.out.println("existingBookings.size(): " + existingBookings.size() + " | anyLockedBooking: " + anyLockedBooking);
         if (existingBookings.isEmpty() || !anyLockedBooking) {
         	Booking newBooking = new Booking(user, room, desk, day, begin, end);
             newBooking.setLockExpiryTime(LocalDateTime.now().plusMinutes(5));
