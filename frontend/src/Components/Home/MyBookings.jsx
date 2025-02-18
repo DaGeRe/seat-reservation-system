@@ -7,8 +7,6 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import "./HomeCalendar.scss";
 import "./MyBookings.css";
 import SidebarComponent from "./SidebarComponent";
-import EditBookingModal from "../AdminPanel/Bookings/EditBookingsModal";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import {getRequest, deleteRequest} from "../RequestFunctions/RequestFunctions";
 
 const MyBookings = () => {
@@ -22,7 +20,6 @@ const MyBookings = () => {
   const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
   // The current booking object (with id, room, desk) 
   const [theBookingEvent, setTheBookingEvent] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
   const userId = localStorage.getItem('userId');
   const localizer = momentLocalizer(moment);
 

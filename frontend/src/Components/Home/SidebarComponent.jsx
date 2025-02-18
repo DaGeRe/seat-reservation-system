@@ -10,11 +10,10 @@ import ChangePassword from "./ChangePassword";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from 'react-icons/ci';
 import { MdGTranslate } from 'react-icons/md';
-//import { toast } from 'react-toastify';
-//import { putRequest } from '../RequestFunctions/RequestFunctions';
 import FreeDesks from './FreeDesks/FreeDesks';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox } from 'react-icons/io';
+import { TbDeviceDesktopSearch } from "react-icons/tb";
 import { IoIosAlbums } from 'react-icons/io';
 
 const SidebarComponent = () => {
@@ -22,7 +21,6 @@ const SidebarComponent = () => {
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem("sidebarCollapsed") === "true"
   );
-  //const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [activeTab, setActiveTab] = useState("calendar");
   const location = useLocation();
   const navigate = useNavigate();
@@ -221,15 +219,20 @@ const SidebarComponent = () => {
           <Menu>
             <SubMenu icon={<IoIosAlbums />} label={t('series')}>
               <MenuItem icon={<IoIosCheckbox />} onClick={() => {
-                 //setActiveTab("manageseries");
                  navigate("/manageseries", { replace: true });
               }}>{t('manage')}</MenuItem>
               <MenuItem icon={<AiFillPlusCircle />} onClick={() => {
-                 //setActiveTab("createseries");
                  navigate("/createseries", { replace: true });
               }}>{t('create')}</MenuItem>
             </SubMenu> 
           </Menu>
+
+          {/*<MenuItem
+              icon = {<TbDeviceDesktopSearch />}
+              onClick={() => handleClick('freeDesks')}
+          >
+            {t('freeDesks')}
+          </MenuItem>*/}
 
           <MenuItem
             icon={<MdGTranslate />}
@@ -240,11 +243,6 @@ const SidebarComponent = () => {
 
         </Menu>
         <Menu>
-{/*           <SubMenu icon={<FaCog />} label={t("settings")}>
-            <MenuItem icon={visibility === "true" ? <FaEye /> : <FaEyeSlash />} onClick={() => handleClick("visibility")}>{t("visibility")}</MenuItem>
-            <MenuItem icon={<FaLock />} onClick={() => handleClick("changePassword")}>{t("password")}</MenuItem>
-            <MenuItem icon={<CiLogout />} onClick={() => handleClick("logout")}>{t("logout")}</MenuItem>
-          </SubMenu> */}
           <MenuItem icon={<FaLock />} onClick={() => handleClick('changePassword')}>{t('password')}</MenuItem>
           <MenuItem icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
         </Menu>
@@ -260,7 +258,6 @@ const SidebarComponent = () => {
       <FreeDesks
         isOpen={isFreeDesksModalOpen}
         onClose={handleCloseFreeDesksModal}
-        //onSubmit={handleChangePasswordSubmit}
       />
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal

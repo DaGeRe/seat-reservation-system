@@ -23,8 +23,8 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-import 'cypress-real-events/support';
-import '@4tw/cypress-drag-drop';
+//import 'cypress-real-events/support';
+//import '@4tw/cypress-drag-drop';
 
 
 Cypress.Commands.add('movePiece', (name, number, x, y) => {
@@ -288,7 +288,8 @@ Cypress.Commands.add('createDeskByRoomRemark', (building, floor, roomRemark, des
   cy.login();
   cy.visit('/admin');
   cy.get('button.edit-rooms-button').should('exist').click();
-  cy.get('button[id="workstation_button_add_workstation"').should('exist').click();
+  //cy.get('button[id="workstation_button_add_workstation"').should('exist').click();
+  cy.get('button#addWorkstation').click()
   // Select building.
   cy.get('div[id="select-building"]').should('exist').click();
   cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();
@@ -312,8 +313,8 @@ Cypress.Commands.add('deleteDeskByDeskRemark', (building, floor, roomRemark, des
   cy.login();
   cy.visit('/admin');
   cy.get('button.edit-rooms-button').should('exist').click();
-  cy.get('button[id="workstation_button_delete_workstation"').should('exist').click();
-  
+  //cy.get('button[id="workstation_button_delete_workstation"').should('exist').click();
+  cy.get('button[id="deleteWorkstation"]').click();
   // Select building.
   cy.get('div[id="select-building"]').should('exist').click();
   cy.get(`li[data-value="${building}"]`).should(('be.visible')).click();

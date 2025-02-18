@@ -12,7 +12,7 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
-import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
+import {getRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function OverviewBookings({ overviewBookingsModal }) {
   const headers = useMemo(() => {
@@ -26,9 +26,9 @@ export default function OverviewBookings({ overviewBookingsModal }) {
   const [filter, setFilter] = React.useState('');
   const [text, setText] = React.useState('');
 
-    const getBookings = useCallback(
-      async () => {
-        if (filter !== '' && text === '')
+  const getBookings = useCallback(
+    async () => {
+      if (filter !== '' && text === '')
           return;
         let filter_text = text;
         if (filter === '/singledate/') {
