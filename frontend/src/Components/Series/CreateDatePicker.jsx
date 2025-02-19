@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 
 const CreateDatePicker = ({date, setter, label}) => {
     return (
-        <FormControl required fullWidth>
+        <FormControl id='createDatePicker_formControl' required fullWidth>
             <DatePicker
                 selected={date}
                 onChange={setter}

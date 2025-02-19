@@ -58,7 +58,7 @@ export default function OverviewBookings({ overviewBookingsModal }) {
         <React.Fragment>
           <DialogContent>
             <div id='filter-settings' style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
-              <FormControl variant='outlined' fullWidth disabled={false}>
+              <FormControl id='overviewBookings_setFilter' variant='outlined' fullWidth disabled={false}>
                 <InputLabel>Filter</InputLabel>
                   <Select
                     value={filter}

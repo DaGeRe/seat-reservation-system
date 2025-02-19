@@ -29,7 +29,7 @@ const FloorSelector = ({
 
   return (
     <>
-      <FormControl required size='small' fullWidth>
+      <FormControl id='floorselector_setBuilding' required size='small' fullWidth>
         <InputLabel id='select-label-building'>{t('building')}</InputLabel>
         <Select
           labelId='select-label-building'
@@ -43,7 +43,7 @@ const FloorSelector = ({
         </Select>
       </FormControl>
       <br /><br />
-      <FormControl required size='small' fullWidth>
+      <FormControl id='floorselector_setFloor' required size='small' fullWidth>
         <InputLabel id='select-label-floor'>{t('floor')}</InputLabel>
         <Select
           labelId='select-label-floor'

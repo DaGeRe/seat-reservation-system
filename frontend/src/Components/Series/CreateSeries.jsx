@@ -196,7 +196,7 @@ const CreateSeries = () => {
                     data-testid='frequence_select'
                     id='frequence_select'
                 >
-                <FormControl required={true} fullWidth>
+                <FormControl id='createSeries_setFrequency' required={true} fullWidth>
                     <InputLabel id='demo-simple-select-label'>{t('frequency')}</InputLabel>
                     <Select
                         labelId='demo-simple-select-label'
@@ -219,7 +219,7 @@ const CreateSeries = () => {
                     data-testid='dayOfTheWeek_select'
                     id='dayOfTheWeek_select'
                 >
-                <FormControl disabled={frequency === 'daily'} required={true} fullWidth>
+                <FormControl id='createSeries_setDayOfTheWeek' disabled={frequency === 'daily'} required={true} fullWidth>
                     <InputLabel id='demo-simple-select-label'>{t('dayOfTheWeek')}</InputLabel>
                     <Select
                         value={dayOfTheWeek} 
@@ -238,7 +238,7 @@ const CreateSeries = () => {
                 </div>
                 <br/><br/>
                 <div id='dates_labels'>
-                    <FormControl disabled={true} fullWidth>
+                    <FormControl id='createSeries_calculateDates' disabled={true} fullWidth>
                         {dates.length > 0 ? (
                             <div
                                 data-testid='dates_label'

@@ -105,6 +105,8 @@ Cypress.Commands.add('mywait', (secs)=>{
 });
 });
 
+
+
 Cypress.Commands.add('test_booking_on_date', (src_date, remark)=>{
     const [day, month, year] = src_date.split('.');
     const date = `${year}-${month}-${day}`;
@@ -125,9 +127,9 @@ Cypress.Commands.add('test_booking_on_date', (src_date, remark)=>{
   }
 );
 
-Cypress.Commands.add('setStr', (classname, str, f=null) => {
-  cy.get(`div#${classname}`).find('input').should('exist');
-  cy.get(`div#${classname}`).find('input').then(($input) => {
+Cypress.Commands.add('setStr', (id, str) => {
+  cy.get(`div#${id}`).find('input').should('exist').then(()=>{
+  cy.get(`div#${id}`).find('input').then(($input) => {
       const input = $input[0];
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
@@ -138,12 +140,12 @@ Cypress.Commands.add('setStr', (classname, str, f=null) => {
       // Trigger events.
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
-      //cy.get(`div#${classname}`).find('input').should('have.value', str);
-      //if (f)
-      //  f();
 
       //cy.wrap(input).should('have.value', str);
-      cy.get(`div#${classname}`).find('input').should('have.value', str);
+      cy.get(`div#${id}`).find('input').should('have.value', str).then(()=>{
+        return cy.wrap('1');
+      });
+  });
   });
 });
 
@@ -219,6 +221,7 @@ Cypress.Commands.add('login', () => {
         'Authorization': 'Bearer ' +  String(accessToken),
         'Content-Type': 'application/json',
       }));
+      return cy.wrap('1');
       });
     });
 });
@@ -249,6 +252,67 @@ Cypress.Commands.add('deleteRoomByRoomRemark_ff', (building, floor, remark) => {
   cy.get('button[id="delete_ff_btn_yes"]').should('exist').click();
   // We shall be back at the admin page.
   cy.url().should('include', '/admin');
+});
+Cypress.Commands.add('addRoom', (building, floor, remark) => {
+  cy.login().then(()=>{
+    cy.visit('/admin').then(()=>{
+      cy.wait(1000).then(()=> {
+        cy.get('button#roomManagement').click().then(()=>{
+          cy.get('button#addRoom').click().then(()=>{
+            cy.setStr('floorselector_setBuilding', building).then(()=>{
+              cy.setStr('floorselector_setFloor', floor).then(()=>{
+                cy.setStr('roomDefinition_setType', 'Normal').then(()=>{
+                  cy.setStr('roomDefinition_setStatus', 'enable').then(()=>{
+                    cy.setStr('roomDefinition_setRemark', remark).then(()=>{  
+                      cy.get('div.image-container').click().then(()=>{
+                        cy.wait(1000).then(()=>{
+                          cy.get('button#room_submit_btn').click().then(()=>{
+                            return cy.wrap('1');
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });  
+});
+
+Cypress.Commands.add('rmRoom', (building, floor, remark)=>{
+  cy.login().then(()=>{
+    cy.visit('/admin').then(()=>{
+      cy.wait(1000).then(()=> {
+        cy.get('button#roomManagement').click().then(()=>{
+          cy.get('button#deleteRoom').click().then(()=>{
+            Cypress.Promise.all([
+              cy.setStr('floorselector_setBuilding', building),
+              cy.setStr('floorselector_setFloor', floor),
+            ]
+            ).then(()=>{
+              cy.wait(1000).then(()=>{
+                cy.get(`button#icon_button_${remark}`).click().then(()=>{ 
+                  cy.wait(1000).then(()=>{
+                    const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
+                    if (0 !== delete_ff_btn_yes.length) {
+                      cy.get('button#delete_ff_btn_yes').click().then(()=>{
+                        cy.screenshot('frngdf');
+                        return cy.wrap('1');
+                      });
+                    }
+                  });
+                });
+              });
+            });
+          });
+        })
+      });
+    });
+  }); 
 });
 
 Cypress.Commands.add('createRoom', (building, floor, remark) => {

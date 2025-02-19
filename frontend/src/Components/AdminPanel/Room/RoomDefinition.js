@@ -5,22 +5,22 @@ export default function RoomDefinition({t, type, setType, status_val, setStatus,
     return (
         <div>
             <br></br> <br></br>
-            <FormControl required={true} fullWidth>
+            <FormControl id='roomDefinition_setType' required={true} fullWidth>
                 <InputLabel id='demo-simple-select-label'>{t('type')}</InputLabel>
-                <Select
-                    labelId='demo-simple-select-label'
-                    id='demo-simple-select'
-                    data-testid='select_type'
-                    value={type}
-                    label={t('type')}
-                    onChange={(e)=>setType(e.target.value)}
-                >
-                    <MenuItem value={'Silence'}>{t('silence').toUpperCase()}</MenuItem>
-                    <MenuItem value={'Normal'}>{t('normal').toUpperCase()}</MenuItem>
-                </Select>
+                    <Select
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        data-testid='select_type'
+                        value={type}
+                        label={t('type')}
+                        onChange={(e)=>setType(e.target.value)}
+                    >
+                        <MenuItem value={'Silence'}>{t('silence').toUpperCase()}</MenuItem>
+                        <MenuItem value={'Normal'}>{t('normal').toUpperCase()}</MenuItem>
+                    </Select>
             </FormControl>
             <br></br> <br></br>
-            <FormControl required={true} fullWidth>
+            <FormControl id='roomDefinition_setStatus' required={true} fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
                     labelId='demo-simple-select-label'
@@ -35,7 +35,7 @@ export default function RoomDefinition({t, type, setType, status_val, setStatus,
                 </Select>
             </FormControl>
             <br></br> <br></br>
-            <FormControl required={true} size='small' fullWidth variant='standard'>
+            <FormControl id='roomDefinition_setRemark' required={true} size='small' fullWidth variant='standard'>
             <TextField
                 id='textfield_remark'
                 label={t('roomRemark')}

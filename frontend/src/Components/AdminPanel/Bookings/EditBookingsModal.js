@@ -54,7 +54,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
         <Grid container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl id='editBookingsModal_setStartTime' required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("begin")}
@@ -65,7 +65,7 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
               />
             </FormControl>
             <br></br><br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl id='editBookingsModal_setEndTime' required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("end")}

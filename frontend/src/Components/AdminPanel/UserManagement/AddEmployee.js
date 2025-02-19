@@ -60,7 +60,7 @@ export default function AddEmployee({ addEmployeeModal }) {
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             
             <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl id='addEmployee-setEmail' required={true} size="small" fullWidth variant="standard">
                             <TextField
                                 id="standard-adornment-reason-mail"
                                 label={t("email")}
@@ -71,7 +71,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                             />
                         </FormControl>
                         <br></br> <br></br>
-                        <FormControl required={true} size="small" fullWidth variant="standard">
+                        <FormControl id='addEmployee-setPassword' required={true} size="small" fullWidth variant="standard">
                             <TextField
                                 id="standard-adornment-reason-pw"
                                 label={t("password")}
@@ -82,7 +82,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                             />
                         </FormControl>
                         <br></br> <br></br>
-                        <FormControl required={true} size="small" fullWidth variant="standard">
+                        <FormControl id='addEmployee-setName' required={true} size="small" fullWidth variant="standard">
                             <TextField
                                 id="standard-adornment-reason-firstname"
                                 label={t("name")}
@@ -93,7 +93,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                             />
                         </FormControl>
                         <br></br> <br></br>
-                        <FormControl required={true} size="small" fullWidth variant="standard">
+                        <FormControl id='addEmployee-setSurname' required={true} size="small" fullWidth variant="standard">
                             <TextField
                                 id="standard-adornment-reason-surname"
                                 label={t("surname")}
@@ -104,7 +104,7 @@ export default function AddEmployee({ addEmployeeModal }) {
                             />
                         </FormControl>
                         <br></br> <br></br>
-                        <FormControl>
+                        <FormControl id='addEmployee-isAdmin'>
       <FormLabel id="demo-row-radio-buttons-group-label">{t("admin")}?</FormLabel>
       <RadioGroup
         row
@@ -119,7 +119,7 @@ export default function AddEmployee({ addEmployeeModal }) {
       </RadioGroup>
     </FormControl>
     <br></br>
-                        <FormControl>
+      <FormControl id='addEmployee-setVisibility'>
       <FormLabel id="demo-row-radio-buttons-group-label">{t("visibility")}</FormLabel>
       <RadioGroup
         row

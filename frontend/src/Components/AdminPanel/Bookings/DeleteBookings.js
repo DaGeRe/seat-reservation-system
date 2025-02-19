@@ -95,7 +95,7 @@ export default function DeleteBookings({ deleteBookingsModal }) {
               )}
             />&nbsp;&nbsp;&nbsp;
            
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl id='deleteBookings_setDate' required={true} size="small" fullWidth variant="standard">
                             <div id='delete_booking_textfield_date'>
                             <TextField
                                 id="standard-adornment-reason"

@@ -9,7 +9,7 @@ export default function WorkStationDefinition({
 
     return (
         <div>
-            <FormControl fullWidth size='small'>
+            <FormControl id='workstationDefinition_setEquipment' fullWidth size='small'>
                 <InputLabel id='demo-simple-select-label'>{t('equipment')}</InputLabel>
                 <Select
                     size='small'
@@ -25,7 +25,7 @@ export default function WorkStationDefinition({
                 </Select>
             </FormControl>
             <br></br><br></br>
-            <FormControl required={false} size='small' fullWidth variant='standard'>
+            <FormControl id='workStationDefinition_setRemark' required={false} size='small' fullWidth variant='standard'>
                 <TextField
                     id='textfield_desk_remark'
                     data-testid='textfield_desk_remark'

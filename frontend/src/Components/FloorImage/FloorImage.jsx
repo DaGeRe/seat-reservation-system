@@ -188,7 +188,7 @@ export default function FloorImage(
                                         <IconButton
                                             onMouseEnter={handleMouseEnter}
                                             onMouseLeave={handleMouseLeave}
-                                            
+                                            id={`icon_button_${room.remark}`}
                                             onClick={() => setCurrentRoom && setCurrentRoom(room)}
                                         >
                                             <LaptopIcon
@@ -196,7 +196,7 @@ export default function FloorImage(
                                                     color: present_color, 
                                                     fontSize: '24px' 
                                                 }}
-                                                data-testid={`icon_button_${room.remark}`}
+                                                id={`icon_${room.remark}`}
                                                 className='image-icon-old'
                                             />
                                         </IconButton>

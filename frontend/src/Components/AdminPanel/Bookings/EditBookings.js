@@ -106,7 +106,7 @@ export default function EditBookings({ editBookingsModal }) {
               )}
             />&nbsp;&nbsp;&nbsp;
           
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl id='editBookings_setDate' required={true} size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 placeholder={t("date")}

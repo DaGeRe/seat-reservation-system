@@ -61,7 +61,7 @@ export default function FilterEmployee({ setFilterFunction }) {
                 label={t('enableFilter')}
                 style={{ minWidth: '150px' }}
             />
-            <FormControl variant='outlined' fullWidth disabled={!isEnabled}>
+            <FormControl id='filterEmployee_handleFieldChange' variant='outlined' fullWidth disabled={!isEnabled}>
                 <InputLabel>{t('column')}</InputLabel>
                 <Select
                     value={field}
@@ -73,7 +73,7 @@ export default function FilterEmployee({ setFilterFunction }) {
                     <MenuItem value='email'>Email</MenuItem>
                 </Select>
             </FormControl>
-            <FormControl variant='outlined' fullWidth disabled={!isEnabled}>
+            <FormControl id='filterEmployee_handleConditionChange' variant='outlined' fullWidth disabled={!isEnabled}>
                 <InputLabel>{t('condition')}</InputLabel>
                 <Select
                     value={condition}

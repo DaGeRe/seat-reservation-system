@@ -75,7 +75,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
         <Grid container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl required={true} id='editEmployee-setEmail' size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("email")}
@@ -86,7 +86,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
               />
             </FormControl>
             <br></br> <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl required={true} id='editEmployeeModal-setName' size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("name")}
@@ -97,7 +97,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
               />
             </FormControl>
             <br></br> <br></br>
-            <FormControl required={true} size="small" fullWidth variant="standard">
+            <FormControl required={true} id='editEmployeeModal-setSurname' size="small" fullWidth variant="standard">
               <TextField
                 id="standard-adornment-reason"
                 label={t("surname")}
@@ -108,7 +108,7 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
               />
             </FormControl>
             <br></br> <br></br>
-            <FormControl>
+            <FormControl id='editEmployeeModal-setIsAdmin'>
               <FormLabel id="demo-row-radio-buttons-group-label">{t("admin")}</FormLabel>
                 <RadioGroup
                   row

@@ -2,7 +2,7 @@ import { FormControl, TextField } from '@mui/material';
 
 const CreateTimePicker = ({time, setter, label}) => {
     return (
-        <FormControl required fullWidth>
+        <FormControl id='createTimePicker_textField' required fullWidth>
         <TextField
             label={label}
             type="time"                   // Native HTML5 time picker
