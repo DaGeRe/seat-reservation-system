@@ -253,25 +253,24 @@ Cypress.Commands.add('deleteRoomByRoomRemark_ff', (building, floor, remark) => {
   // We shall be back at the admin page.
   cy.url().should('include', '/admin');
 });
+
 Cypress.Commands.add('addRoom', (building, floor, remark) => {
   cy.login().then(()=>{
     cy.visit('/admin').then(()=>{
       cy.wait(1000).then(()=> {
         cy.get('button#roomManagement').click().then(()=>{
           cy.get('button#addRoom').click().then(()=>{
-            cy.setStr('floorselector_setBuilding', building).then(()=>{
-              cy.setStr('floorselector_setFloor', floor).then(()=>{
-                cy.setStr('roomDefinition_setType', 'Normal').then(()=>{
-                  cy.setStr('roomDefinition_setStatus', 'enable').then(()=>{
-                    cy.setStr('roomDefinition_setRemark', remark).then(()=>{  
-                      cy.get('div.image-container').click().then(()=>{
-                        cy.wait(1000).then(()=>{
-                          cy.get('button#room_submit_btn').click().then(()=>{
-                            return cy.wrap('1');
-                          });
-                        });
-                      });
-                    });
+            Cypress.Promise.all([
+              cy.setStr('floorselector_setBuilding', building),
+              cy.setStr('floorselector_setFloor', floor),
+              cy.setStr('roomDefinition_setType', 'Normal'),
+              cy.setStr('roomDefinition_setStatus', 'enable'),
+              cy.setStr('roomDefinition_setRemark', remark)
+            ]).then(()=> {
+              cy.get('div.image-container').click().then(()=>{
+                cy.wait(1000).then(()=>{
+                  cy.get('button#room_submit_btn').click().then(()=>{
+                    return cy.wrap('1');
                   });
                 });
               });
