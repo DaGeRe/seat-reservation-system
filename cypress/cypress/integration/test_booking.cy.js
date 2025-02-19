@@ -7,9 +7,9 @@ describe('', ()=> {
     beforeEach(() => {
         cy.login().then(()=>{
         cy.visit('/floor').then(()=> {
-            cy.wait(3000).then(()=> {
+            cy.wait(1000).then(()=> {
                 const roomElement = Cypress.$(`button#icon_button_${roomRemark}`);
-                //cy.task('log', 'abcde ' + roomElement.length);
+                cy.task('log', 'abcde ' + roomElement.length);
                 if (0 !== roomElement.length) {
                     cy.rmDesk(building, floor, roomRemark, deskRemark).then(()=>{
                         cy.rmRoom(building, floor, roomRemark);
@@ -26,14 +26,19 @@ describe('', ()=> {
         });
     });
     it('simple booking', () => {
-        cy.login().then(()=>{
-            cy.visit('/floor').then(()=>{
-                cy.wait(1000).then(()=>{
-                    cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
-                        cy.screenshot('ll');
-                    })
-                })            
-            })
+        const start_timeslot = 3;
+        const end_timeslot = 10; 
+        cy.addBooking(building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot).then(()=>{
+            cy.countBookings(roomRemark).should('equal', 1);
+        });
+    });
+    it('two simple bookings', () => {
+        const start_timeslot = 3;
+        const end_timeslot = 10; 
+        cy.addBooking(building, floor, roomRemark, deskRemark, 3, 10).then(()=>{
+            cy.addBooking(building, floor, roomRemark, deskRemark, 12, 15).then(()=>{
+                cy.countBookings(roomRemark).should('equal', 2);
+            });
         });
     });
 });

@@ -67,22 +67,24 @@ Cypress.Commands.add('selectTimeRange', (startSlot, endSlot) => {
     const pos_x = base_rect_x + time_offset_x;
     const pos_y = base_rect_y + startSlot*timeslotgroup_height
 
-    //cy.task('log', `${startSlot}, ${startSlot*timeslotgroup_height}`);
     cy.get(basename).trigger('mousemove', { force: true, 
       pageX: pos_x, 
       pageY: pos_y
+    }).then(()=>{
+      cy.get(basename).trigger('mousedown', { which: 1, force: true }).then(()=>{
+        for (let i = 0; i < (endSlot-startSlot)*timeslotgroup_height; i++) {
+          cy.get('.rbc-time-content').trigger('mousemove', { force: true,
+            pageX: pos_x, 
+            pageY: pos_y + i, 
+          });
+          cy.wait(1);
+        }
+        cy.get(basename).trigger('mouseup', { which: 1, force: true })
+        .then(()=>{
+          return cy.wrap('1');
+        }); 
+      }) 
     });
-      
-    cy.get(basename).trigger('mousedown', { which: 1, force: true });
-      
-    for (let i = 0; i < (endSlot-startSlot)*timeslotgroup_height; i++) {
-      cy.get('.rbc-time-content').trigger('mousemove', { force: true,
-        pageX: pos_x, 
-        pageY: pos_y + i, 
-      });
-      cy.wait(1);
-    }
-    cy.get(basename).trigger('mouseup', { which: 1, force: true }); 
   });
 });
 
@@ -226,7 +228,7 @@ Cypress.Commands.add('login', () => {
     });
 });
 
-
+/*
 Cypress.Commands.add('deleteRoomByRoomRemark', (building, floor, remark) => {
   cy.login();
   cy.visit('/admin');
@@ -252,7 +254,7 @@ Cypress.Commands.add('deleteRoomByRoomRemark_ff', (building, floor, remark) => {
   cy.get('button[id="delete_ff_btn_yes"]').should('exist').click();
   // We shall be back at the admin page.
   cy.url().should('include', '/admin');
-});
+});*/
 
 Cypress.Commands.add('addDesk', (building, floor, roomRemark, deskRemark) => {
   cy.login().then(()=>{
@@ -306,12 +308,10 @@ Cypress.Commands.add('rmDesk', (building, floor, roomRemark, deskRemark) => {
                             const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
                             if (0 !== delete_ff_btn_yes.length) {
                               cy.get('button#delete_ff_btn_yes').click().then(()=>{
-                                cy.screenshot('3');
                                 return cy.wrap('1');
                               })
                             }
                             else {
-                              cy.screenshot('4');
                               return cy.wrap('1');
                             }
                           })
@@ -390,7 +390,7 @@ Cypress.Commands.add('rmRoom', (building, floor, remark)=>{
     });
   }); 
 });
-
+/*
 Cypress.Commands.add('createRoom', (building, floor, remark) => {
   cy.login();
   cy.visit('/admin');
@@ -422,8 +422,63 @@ Cypress.Commands.add('createRoom', (building, floor, remark) => {
   cy.get('button[id="room_submit_btn"]').should('exist').click();
   
   cy.url().should('include', '/admin');
+});*/
+
+Cypress.Commands.add('countBookings', (roomRemark) => {
+  cy.login().then(()=>{
+    cy.visit('/admin').then(()=>{
+      cy.wait(1000).then(()=>{
+        cy.get('button#bookingManagement').click().then(()=>{
+          cy.wait(1000).then(()=>{
+            cy.get('button#overviewBooking').click().then(()=>{
+              cy.wait(1000).then(()=>{
+                Cypress.Promise.all([
+                  cy.setStr('overviewBookings_setFilter','/roomRemark/'),
+                  cy.setStr('textfield_overviewbooking', roomRemark)
+                ]).then(()=>{
+                  cy.wait(1000).then(()=>{
+                    cy.get('table tr').then((rows) => {
+                      // -1 cause the head of the table also contains a row
+                      return cy.wrap(rows.length - 1);
+                    });
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
 });
 
+Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot) => {
+  cy.login().then(()=>{
+    cy.visit('/floor').then(()=>{
+      cy.wait(1000).then(()=>{
+        Cypress.Promise.all([
+          cy.setStr('floorselector_setBuilding', building),
+          cy.setStr('floorselector_setFloor', floor)
+        ]).then(()=>{
+          cy.wait(1000).then(()=>{
+            cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
+              cy.wait(1000).then(()=>{
+                cy.get('div').contains(`${deskRemark}`).click().then(()=>{
+                  cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
+                    cy.get('button.submit-btn').click().then(()=>{
+                      return cy.wrap('1');
+                    })
+                  })
+                })        
+              })                
+            })
+          })
+        })
+      }) // wait        
+    }) // visit
+  }) // login
+});
+/*
 Cypress.Commands.add('createDeskByRoomRemark', (building, floor, roomRemark, deskRemark) => {
   cy.login();
   cy.visit('/admin');
@@ -499,4 +554,4 @@ Cypress.Commands.add('createBooking', (building, floor, roomRemark, deskRemark) 
   cy.get('div.rbc-events-container').should('not.be.empty', '');
   // Confirm booking #1
   cy.get('.submit-btn').should('exist').click()
-});
+});*/

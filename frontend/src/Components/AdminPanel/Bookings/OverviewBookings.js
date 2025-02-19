@@ -77,15 +77,13 @@ export default function OverviewBookings({ overviewBookingsModal }) {
                       <MenuItem value='/roomRemark/'>{t('roomRemark')}</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField
-                  id='textfield_overviewbooking'
-                  variant='outlined'
-                  placeholder={t('enterText')}
-                  value={text}
-                  onChange={(event)=>{setText(event.target.value)}}
-                  fullWidth
-                  disabled={'' === filter}
-                />
+                <FormControl id='textfield_overviewbooking' variant='outlined' fullWidth disabled={'' === filter}>
+                  <TextField
+                    placeholder={t('enterText')}
+                    value={text}
+                    onChange={(event)=>{setText(event.target.value)}}
+                  />
+                </FormControl>
             </div>
             <TableContainer component={Paper} sx={{
               maxHeight: 1000, // Set max height
