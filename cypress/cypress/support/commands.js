@@ -254,6 +254,81 @@ Cypress.Commands.add('deleteRoomByRoomRemark_ff', (building, floor, remark) => {
   cy.url().should('include', '/admin');
 });
 
+Cypress.Commands.add('addDesk', (building, floor, roomRemark, deskRemark) => {
+  cy.login().then(()=>{
+    cy.visit('/admin').then(()=>{
+      cy.wait(1000).then(()=> {
+        cy.get('button#roomManagement').click().then(()=>{
+          cy.get('button#addWorkstation').click().then(()=>{
+            Cypress.Promise.all([
+              cy.setStr('floorselector_setBuilding', building),
+              cy.setStr('floorselector_setFloor', floor)
+            ]).then(()=>{
+              cy.wait(1000).then(()=>{
+                cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
+                  cy.wait(1000).then(()=>{
+                    Cypress.Promise.all([
+                      cy.setStr('workstationDefinition_setEquipment', 'with equipment'),
+                      cy.setStr('workStationDefinition_setRemark', deskRemark)
+                    ]).then(()=>{
+                      cy.get('button#desk_submit_btn').click().then(()=>{
+                        return cy.wrap('1');
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  });
+});
+
+Cypress.Commands.add('rmDesk', (building, floor, roomRemark, deskRemark) => {
+  cy.login().then(()=>{
+    cy.visit('/admin').then(()=>{
+      cy.wait(1000).then(()=> {
+        cy.get('button#roomManagement').click().then(()=>{
+          cy.get('button#deleteWorkstation').click().then(()=>{
+            Cypress.Promise.all([
+              cy.setStr('floorselector_setBuilding', building),
+              cy.setStr('floorselector_setFloor', floor)
+            ]).then(()=>{
+              cy.wait(1000).then(()=>{
+                cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
+                  cy.wait(1000).then(()=>{
+                    cy.get('div#textfield_desk_in_room').click().then(()=>{
+                      cy.get('div').contains(`${deskRemark}`).click().then(()=>{
+                        cy.get('button#delete_workstation_button').click().then(()=>{
+                          cy.wait(1000).then(()=>{
+                            const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
+                            if (0 !== delete_ff_btn_yes.length) {
+                              cy.get('button#delete_ff_btn_yes').click().then(()=>{
+                                cy.screenshot('3');
+                                return cy.wrap('1');
+                              })
+                            }
+                            else {
+                              cy.screenshot('4');
+                              return cy.wrap('1');
+                            }
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  });
+});
+
 Cypress.Commands.add('addRoom', (building, floor, remark) => {
   cy.login().then(()=>{
     cy.visit('/admin').then(()=>{
@@ -299,9 +374,11 @@ Cypress.Commands.add('rmRoom', (building, floor, remark)=>{
                     const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
                     if (0 !== delete_ff_btn_yes.length) {
                       cy.get('button#delete_ff_btn_yes').click().then(()=>{
-                        cy.screenshot('frngdf');
                         return cy.wrap('1');
-                      });
+                      })
+                    }
+                    else {
+                      return cy.wrap('1');
                     }
                   });
                 });

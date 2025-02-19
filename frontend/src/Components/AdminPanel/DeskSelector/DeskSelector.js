@@ -48,15 +48,16 @@ export default function DeskSelector(
                             setEquipment(currEquipment);
                     }}
                     renderInput={(params) => (
-                        <TextField
-                        class='textfield_desk_in_room'
-                        {...params}
-                        variant='outlined'
-                        size='small'
-                        disabled
-                        label={t('selectDesk')}
-                        placeholder={t('selectDesk')}
-                        />
+                        <div id='textfield_desk_in_room'>
+                            <TextField
+                                {...params}
+                                variant='outlined'
+                                size='small'
+                                disabled
+                                label={t('selectDesk')}
+                                placeholder={t('selectDesk')}
+                            />
+                        </div>
                     )}
                     />
                 </div>

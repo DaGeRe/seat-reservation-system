@@ -11,10 +11,14 @@ describe('', ()=> {
                 const roomElement = Cypress.$(`button#icon_button_${roomRemark}`);
                 //cy.task('log', 'abcde ' + roomElement.length);
                 if (0 !== roomElement.length) {
-                    cy.rmRoom(building, floor, roomRemark);
+                    cy.rmDesk(building, floor, roomRemark, deskRemark).then(()=>{
+                        cy.rmRoom(building, floor, roomRemark);
+                    });
                 }
                 cy.addRoom(building, floor, roomRemark).then(()=>{
-                    return cy.wrap('1');
+                    cy.addDesk(building, floor, roomRemark, deskRemark).then(()=>{
+                        return cy.wrap('1');
+                    });
                 });
                 
             });
