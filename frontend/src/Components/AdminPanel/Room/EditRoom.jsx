@@ -117,8 +117,8 @@ export default function EditRoom({ editRoomModal }) {
             </Box>
           </Grid2>
           <DialogActions>
-            <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
-            <Button onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
+            <Button id='room_close_btn' onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+            <Button id='room_submit_btn' onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
           </DialogActions>
         </DialogContent>
       </React.Fragment>

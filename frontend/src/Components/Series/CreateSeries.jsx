@@ -19,7 +19,6 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
-//import { GiConsoleController } from 'react-icons/gi';
 
 const CreateSeries = () => {
     const headers = useMemo(() => {
@@ -282,7 +281,7 @@ const CreateSeries = () => {
                                 <TableBody>
                                     {
                                         possibleDesks.map((possibleDesk) => (
-                                            <TableRow key={possibleDesk.id}>
+                                            <TableRow id={possibleDesk.remark + possibleDesk.id} key={possibleDesk.id}>
                                                 <TableCell>{possibleDesk.remark}</TableCell>
                                                 <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                                 <TableCell>{possibleDesk.room.remark}</TableCell>

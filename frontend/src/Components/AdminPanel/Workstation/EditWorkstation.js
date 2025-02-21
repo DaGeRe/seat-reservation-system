@@ -133,8 +133,8 @@ export default function EditWorkstation({ editWorkstationModal }) {
         </Grid2>
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>updateWorkstation()}>&nbsp;{t('update').toUpperCase()}</Button>
-        <Button onClick={handleCloseBtn}>&nbsp;{t('close').toUpperCase()}</Button>
+        <Button id='workstation_submit_btn' onClick={()=>updateWorkstation()}>&nbsp;{t('update').toUpperCase()}</Button>
+        <Button id='workstation_close_btn' onClick={handleCloseBtn}>&nbsp;{t('close').toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );
