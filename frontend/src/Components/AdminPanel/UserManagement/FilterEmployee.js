@@ -22,7 +22,8 @@ export default function FilterEmployee({ setFilterFunction }) {
                 if (condition === 'is_equal') {
                     return element[field] === text;
                 } else if (condition === 'contains') {
-                    return element[field].toUpperCase()?.includes(text.toUpperCase());
+                    if (element[field])
+                        return element[field].toUpperCase()?.includes(text.toUpperCase());
                 }
                 return false;
             } : 
@@ -54,6 +55,7 @@ export default function FilterEmployee({ setFilterFunction }) {
             <FormControlLabel
                 control={
                     <Checkbox
+                        id='checkbox_handleCheckboxChange'
                         checked={isEnabled}
                         onChange={handleCheckboxChange}
                     />
@@ -84,14 +86,13 @@ export default function FilterEmployee({ setFilterFunction }) {
                     <MenuItem value='is_equal'>{t('isEqual')}</MenuItem>
                 </Select>
             </FormControl>
-            <TextField
-                variant='outlined'
+            <FormControl id='filterEmployee_handleTextChange' variant='outlined' fullWidth disabled={!isEnabled}>
+            <TextField 
                 placeholder={t('enterText')}
                 value={text}
                 onChange={handleTextChange}
-                fullWidth
-                disabled={!isEnabled}
             />
+            </FormControl>
         </div>
     );
 }
