@@ -17,7 +17,7 @@ describe('', ()=> {
                     ]).then(()=>{
                         cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
                             cy.countBookings(roomRemark).should('equal', 62);
-                            cy.screenshot('a');
+                            //cy.screenshot('a');
                         })
                     })
                 })
@@ -39,7 +39,7 @@ describe('', ()=> {
                                 cy.wait(1000).then(()=>{
                                     cy.countBookings(roomRemark).should('equal', 9).then(()=>{
                                         cy.wait(1000).then(()=>{
-                                            cy.screenshot('b');
+                                            //cy.screenshot('b');
                                         })
                                     });
                                 })
@@ -65,7 +65,7 @@ describe('', ()=> {
                                 cy.wait(1000).then(()=>{
                                     cy.countBookings(roomRemark).should('equal', 3).then(()=>{
                                         cy.wait(1000).then(()=>{
-                                            cy.screenshot('c');
+                                            //cy.screenshot('c');
                                         })
                                     })
                                 })

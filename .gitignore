@@ -40,16 +40,10 @@ out.json
 *.cfg
 /backend/target
 /.vscode
-#/frontend/node_modules
 /.metadata/
 *.log
 *.tar.xz
-sql
 .env
-scripts/stop_containers.sh
-scripts/exec_db.sh
-scripts/test.sh
-scripts/copy_mytest.sh 
 frontend/node_modules
 
 # Backend

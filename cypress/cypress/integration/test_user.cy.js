@@ -53,7 +53,7 @@ describe('', ()=>{
                                                 cy.logout().then(()=>{
                                                     
                                                     cy.login(mail, pw1).then(()=>{
-                                                        cy.screenshot('mezz3');
+                                                        //cy.screenshot('mezz3');
                                                         cy.deleteUser(mail);
                                                     })
                                                 })
@@ -85,9 +85,16 @@ describe('', ()=>{
                                         cy.get('tr').find('button').click().then(()=>{
                                             cy.setStr('editEmployeeModal-setName', vorname2).then(()=>{
                                                 cy.get('button#editEmployeeModal_updateEmployee').click().then(()=>{
-                                                    //cy.logout().then(()=>{
-                                                        cy.screenshot('fbf');
-                                                    //});
+                                                    cy.get('button#editEmployee_handleClose').click().then(()=>{
+                                                        cy.logout().then(()=>{
+                                                            cy.login(mail, pw1).then(()=>{
+                                                                cy.contains('span',`Hello, ${vorname2}`).should('exist').then(()=>{
+                                                                    //cy.screenshot('fbf');
+                                                                    cy.deleteUser(mail);
+                                                                })
+                                                            });
+                                                        });
+                                                    });
                                                 })
                                             })
                                         })
