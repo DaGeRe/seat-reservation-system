@@ -90,9 +90,9 @@ public class SeriesController {
         // Check if there is allready an series.
         final List<Series> existingSeries = seriesRepository.getAllSeriesForPreventDuplicates(
             seriesDTOWithDeskRemark.getRangeDTO().getStartDate(),
-            /*seriesDTOWithDeskRemark.getRangeDTO().getEndDate(),
+            seriesDTOWithDeskRemark.getRangeDTO().getEndDate(),
             seriesDTOWithDeskRemark.getRangeDTO().getStartTime(),
-            seriesDTOWithDeskRemark.getRangeDTO().getEndTime(),*/
+            seriesDTOWithDeskRemark.getRangeDTO().getEndTime(),
             room.getId(),
             desk.getId(),
             seriesDTOWithDeskRemark.getEmail()
