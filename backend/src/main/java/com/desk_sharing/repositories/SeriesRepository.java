@@ -50,22 +50,41 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
         @Param("endDate") Date endDate, 
         @Param("weekDay") int weekDay
     );
-    /*
-    @Query(value = "SELECT DATE(DATE_ADD(:startDate, INTERVAL (n * 4) WEEK)) " +
-    "FROM ( " + 
-    "    SELECT (t * 10 + u) AS n " +
-    "    FROM " +
-    "        (SELECT 0 t UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t, " +
-    "        (SELECT 0 u UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) u " +
-    ") numbers " +
-    "WHERE DATE_ADD(:startDate, INTERVAL (n * 4) WEEK) <= :endDate " +
-    "AND WEEKDAY(DATE_ADD(:startDate, INTERVAL (n * 4) WEEK)) = :weekDay", 
-    nativeQuery = true)
-    List<java.sql.Date> findWeekdaysEveryFourWeeks(
-        @Param("startDate") Date startDate, 
-        @Param("endDate") Date endDate, 
-        @Param("weekDay") int weekDay
-    );*/
+
+    /**
+     * Returns an list of all series objects that have the startDate, endDate, startTime, endTime, roomId, deskId
+     * and that where created by an user with email.
+     * @param startDate The startDate of the series as a string. E.g.: 2024-09-11T00:00:00Z
+     * @param endDate   The endDate of the series as a string. E.g.: 2024-09-11T00:00:00Z
+     * @param startTime The startTime of the series as a string. E.g.: 00:00:00
+     * @param endTime   The startDate of the series as a string. E.g.: 00:00:00
+     * @param roomId    The roomId of the room where the series bookings take place.
+     * @param deskId    The deskId of the desk where the series bookings take place.
+     * @param email     The email of the user that created the series.
+     * @return  A list of all series objects that have the startDate, endDate, startTime, endTime, roomId, deskId
+     * and that where created by an user with email.
+     */
+    @Query(value="select * from series " +
+    " join users on users.id = series.user_id " +
+    " where " +
+    " start_date = DATE(STR_TO_DATE(:startDate, '%Y-%m-%dT%H:%i:%sZ')) and " +
+    " end_date = DATE(STR_TO_DATE(:endDate, '%Y-%m-%dT%H:%i:%sZ')) and " +
+    " start_time = :startTime and " +
+    " end_time = :endTime and " + 
+    " room_id = :roomId and " +
+    " desk_id = :deskId and " + 
+    " users.email = :email"
+
+    , nativeQuery = true)
+    List<Series> getAllSeriesForPreventDuplicates(
+    @Param("startDate") String startDate,
+    @Param("endDate") String endDate,
+    @Param("startTime") String startTime,
+    @Param("endTime") String endTime,
+    @Param("roomId") Long roomId,
+    @Param("deskId") Long deskId,
+    @Param("email") String email
+    );
 
     @Query(value="select * from series where user_id = :user_id ", nativeQuery = true)
     public List<Series> findByUserId(@Param("user_id") Integer user_id);

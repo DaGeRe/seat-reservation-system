@@ -249,6 +249,7 @@ class App:
         room_not_found = []
         desk_not_found = []
         not_able = []
+        already_there = []
         ok = []
 
         with open(self.output_dir + '/series_bookings.json', 'r', encoding='utf-8') as f:
@@ -346,6 +347,8 @@ class App:
                     room_not_found.append(series_booking)
                 elif 'cannot create series' == response.text:
                     not_able.append(series_booking)
+                elif 'series already there' == response.text:
+                    already_there.append(series_booking)
         
         with open(self.output_dir + '/series_bookings/desk_not_found.json', 'w', encoding='utf-8') as f:
             json.dump(desk_not_found, f, indent=4, ensure_ascii=False)
@@ -355,6 +358,8 @@ class App:
             json.dump(not_able, f, indent=4, ensure_ascii=False)
         with open(self.output_dir + '/series_bookings/ok.json', 'w', encoding='utf-8') as f:
             json.dump(ok, f, indent=4, ensure_ascii=False)
+        with open(self.output_dir + '/series_bookings/already_there.json', 'w', encoding='utf-8') as f:
+            json.dump(already_there, f, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':
     app = App('old_data', 
