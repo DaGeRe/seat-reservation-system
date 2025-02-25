@@ -6,6 +6,7 @@ describe('', ()=> {
     const deskRemark = 'test_remark_desk';
     const newDeskRemark = 'test_remark_desk' + 2;
     beforeEach(cy.buildUp.bind(null, building, floor, roomRemark, deskRemark));
+    afterEach(cy.tearDown.bind(null, building, floor, roomRemark));
     it('Change room properties', ()=>{
         cy.login().then(()=>{
             cy.visit('/admin').then(()=>{

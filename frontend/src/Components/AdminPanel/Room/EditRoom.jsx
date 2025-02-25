@@ -2,13 +2,12 @@ import {Grid2, Box} from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, { useMemo, useCallback } from 'react';
+import React, {useMemo} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import { putRequest } from '../../RequestFunctions/RequestFunctions';
-import { roomToOption } from '../Room/RoomAndOption'
-import FloorImage from '../../FloorImage/FloorImage.jsx'
-import FloorSelector from '../../FloorSelector.js';
+import { roomToOption } from '../Room/RoomAndOption';
+import FloorImage from '../../FloorImage/FloorImage.jsx';
 import RoomDefinition from './RoomDefinition.js';
 import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
@@ -21,7 +20,6 @@ export default function EditRoom({ editRoomModal }) {
   const { t } = useTranslation();
   const [floor, setFloor] = React.useState(GROUND);
   const [selectedRoom, setSelectedRoom] = React.useState('');
-  const [newFloor, setNewFloor] = React.useState('');
   const [newRoomType, setNewRoomType] = React.useState('');
   const [newRoomStatus, setNewRoomStatus] = React.useState('');
   const [newRoomRemark, setNewRoomRemark] = React.useState('');
@@ -33,7 +31,6 @@ export default function EditRoom({ editRoomModal }) {
 
   const deselectRoom = () => {
     setSelectedRoom(null);
-    setNewFloor('');
     setNewRoomType('');
     setNewRoomStatus('');
     setNewRoomRemark('');
@@ -82,7 +79,6 @@ export default function EditRoom({ editRoomModal }) {
                 headers={headers}
                 setCurrentRoom={(room) => {
                   setSelectedRoom(room);
-                  setNewFloor(room.floor);
                   setNewRoomType(room.type);
                   setNewRoomStatus(room.status);
                   setNewRoomRemark(room.remark);
@@ -92,12 +88,6 @@ export default function EditRoom({ editRoomModal }) {
                 selectedRoom && selectedRoom !== '' && (
                   <> 
                     <h2>{roomToOption(selectedRoom)}</h2>
-{/*                     <FloorSelector
-                      building={building}
-                      setBuilding={setBuilding}
-                      floor={newFloor}
-                      setFloor={setNewFloor}
-                    /> */}
                     <RoomDefinition 
                       t={t}
                       type={newRoomType}
@@ -107,10 +97,6 @@ export default function EditRoom({ editRoomModal }) {
                       remark={newRoomRemark}
                       setRemark={setNewRoomRemark}
                     />
-{/*                     <br></br> <br></br>
-                    <DialogActions>
-                     
-                    </DialogActions> */}
                   </>
                 )
               }
@@ -122,7 +108,6 @@ export default function EditRoom({ editRoomModal }) {
           </DialogActions>
         </DialogContent>
       </React.Fragment>
-      /* </div> */
     );
 
 }

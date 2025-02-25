@@ -9,7 +9,6 @@ import thirdFloorC from '../../images/bautzner_19_c_3.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
-import { useTranslation } from 'react-i18next';
 import FloorSelector from '../FloorSelector.js';
 import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C } from '../../constants.js';
 /**

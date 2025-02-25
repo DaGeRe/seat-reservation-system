@@ -13,7 +13,6 @@ import { MdGTranslate } from 'react-icons/md';
 import FreeDesks from './FreeDesks/FreeDesks';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox } from 'react-icons/io';
-import { TbDeviceDesktopSearch } from "react-icons/tb";
 import { IoIosAlbums } from 'react-icons/io';
 
 const SidebarComponent = () => {

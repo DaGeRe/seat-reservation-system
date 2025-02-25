@@ -6,7 +6,8 @@ describe('', ()=> {
     const startdate = '01.01.2025';
     const enddate = '03.03.2025';
     beforeEach(cy.buildUp.bind(null, building, floor, roomRemark, deskRemark));
-
+    afterEach(cy.tearDown.bind(null, building, floor, roomRemark));
+    
     it('Simple series creation', ()=>{
         cy.login().then(()=>{
             cy.visit('/createseries').then(()=>{

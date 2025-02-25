@@ -419,6 +419,22 @@ Cypress.Commands.add('buildUp', (building, floor, roomRemark, deskRemark)=>{
   })
 });
 
+Cypress.Commands.add('tearDown', (building, floor, roomRemark)=>{
+  cy.login().then(()=>{
+    cy.visit('/floor').then(()=> {
+      cy.wait(1000).then(()=> { // !
+        cy.rmAllRooms(building, floor, roomRemark).then(()=>{
+          //cy.addRoom(building, floor, roomRemark).then(()=>{
+            //cy.addDesk(building, floor, roomRemark, deskRemark).then(()=>{
+              return cy.wrap('1');
+            })
+          //})
+        //})
+      })
+    })
+  })
+});
+
 Cypress.Commands.add('rmRoom', (building, floor, remark)=>{
   cy.login().then(()=>{
     cy.visit('/admin').then(()=>{

@@ -9,12 +9,9 @@ describe('', ()=>{
     beforeEach(()=>{
         cy.getAmountOfUsersForMail(mail).then((ret)=>{
             if (ret > 0) {
-                cy.deleteUser(mail).then(()=>{  
-                    //cy.screenshot('abc' + ret);
-                })
+                cy.deleteUser(mail).then(()=>{})
             }
             cy.addUser(mail, pw1, vorname1, nachname)
-            
         })
     })
 

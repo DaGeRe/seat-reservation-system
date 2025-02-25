@@ -14,13 +14,9 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
-import { getRequest } from '../../RequestFunctions/RequestFunctions';
 
 const FreeDesks = ({ isOpen, onClose }) => {
-    const [date, setDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const { t, i18n } = useTranslation();
-    const {desks, setDesks} = useState([])
+    
     if (!isOpen) return null;
 
    /* const getBookings = useCallback(

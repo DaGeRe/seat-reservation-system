@@ -32,7 +32,7 @@ export default function FilterEmployee({ setFilterFunction }) {
         setFilterFunction(newFilterFunction);  // Always pass a function to setFilterFunction
     };
 
-    useEffect(handleFilterChange, [isEnabled, field, condition, text]);
+    useEffect(handleFilterChange, [setFilterFunction, isEnabled, field, condition, text]);
 
     const handleCheckboxChange = (event) => {
         setIsEnabled(event.target.checked);

@@ -3,11 +3,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, { useMemo, useCallback } from 'react';
+import React, {useMemo} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
-import {getRequest, postRequest} from '../../RequestFunctions/RequestFunctions';
+import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
@@ -20,7 +20,6 @@ export default function AddWorkstation({ addWorkstationModal }) {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
   }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
   const { t } = useTranslation();
-  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
   const [selectedRoom, setSelectedRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
