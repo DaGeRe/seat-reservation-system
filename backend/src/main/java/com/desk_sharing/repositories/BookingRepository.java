@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.desk_sharing.entities.Booking;
-import com.desk_sharing.model.BookingProjectionDTO;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {

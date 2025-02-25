@@ -129,23 +129,6 @@ class App:
             }
             # Sending the POST request with headers
             response = requests.post(bookings_url, json=data, headers=headers, verify=f'{os.getenv("PATH_TO_TLS")}/ca.crt')
-            '''
-            if response.status_code == 500:
-                if 'User not found for ' in response.text:
-                    user_not_found.append(normal_booking)
-                    continue
-                if 'Desk not found for ' in response.text:
-                    desk_not_found.append(normal_booking)
-                    continue
-                if 'Room not found for ' in response.text:   
-                    room_not_found.append(normal_booking)
-                    continue
-                if 'Booking already there ' in response.text:
-                    booking_already_there.append(normal_booking)
-                    continue
-            else:
-                booking_done.append(normal_booking)
-            '''
             resp_obj = response.json()
             bookingDTO = resp_obj['bookingDTO']
             msg = resp_obj['msg']

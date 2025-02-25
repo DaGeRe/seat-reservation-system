@@ -108,7 +108,7 @@ public class BookingController {
         final String email = bookingData.get("email").toString();
         final String deskRemark = bookingData.get("deskRemark").toString();
         final String roomRemark = bookingData.get("roomRemark").toString();
-        
+
         final UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
             userService.logging("in addBookingSimplified( ): cannot find user for email " + email);
@@ -126,6 +126,19 @@ public class BookingController {
             userService.logging("in addBookingSimplified( ): cannot find room for remark " + roomRemark);
             //return ResponseEntity.status(500).body("Room not found for " + roomRemark);
             return new ResponseEntity<>(new BookingDTOEnhanced(null, "Room not found for " + roomRemark), HttpStatus.BAD_REQUEST);
+        }
+
+        // Check if there is allready an booking.
+        final List<Booking> existingBookings = bookingRepository.getAllBookingsForPreventDuplicates(
+            room.getId(),
+            desk.getId(),
+            day,
+            begin,
+            end
+        );
+        if (existingBookings.size() > 0) {
+            userService.logging("in addBookingSimplified( ): booking already there ");
+            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there "), HttpStatus.BAD_REQUEST);
         }
 
         final Map<String, Object> new_bookingData = new HashMap<>();
