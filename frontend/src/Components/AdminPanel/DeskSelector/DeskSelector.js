@@ -54,7 +54,6 @@ export default function DeskSelector(
                                 variant='outlined'
                                 size='small'
                                 disabled
-                                //label={t('selectDesk')}
                                 placeholder={t('selectDesk')}
                             />
                         </div>
