@@ -142,8 +142,8 @@ export default function EditEmployeeModal({ editEmployeeModal, id, emailFromDb,
 
       </DialogContent>
       <DialogActions>
-        <Button onClick={()=>updateEmployee()}>&nbsp;{t("update").toUpperCase()}</Button>
-        <Button onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
+        <Button id='editEmployeeModal_updateEmployee' onClick={()=>updateEmployee()}>&nbsp;{t("update").toUpperCase()}</Button>
+        <Button id='editEmployeeModal_handleCloseBtn' onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );

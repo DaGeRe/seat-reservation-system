@@ -25,7 +25,7 @@ function EmployeeTable({ employees, onAction, action, t }) {
           </TableHead>
           <TableBody>
             {filteredEmployees.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow id={row.email} key={row.id}>
                 <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
                   {row.email}
                 </TableCell>
@@ -36,10 +36,10 @@ function EmployeeTable({ employees, onAction, action, t }) {
                   {row.surname}
                 </TableCell>
                 <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                  {row.admin ? t("true") : t("false")}
+                  {row.admin ? t('true') : t('false')}
                 </TableCell>
                 <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                  {row.visibility ? t("true") : t("false")}
+                  {row.visibility ? t('true') : t('false')}
                 </TableCell>
                 <TableCell sx={{textAlign: 'center', fontSize:14, width:'30%' }} component="th" scope="row">
                   <Button onClick={() => onAction(row.id)}>{action}</Button>

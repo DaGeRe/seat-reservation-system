@@ -9,7 +9,6 @@ describe('', ()=> {
     it('Change room properties', ()=>{
         cy.login().then(()=>{
             cy.visit('/admin').then(()=>{
-                //cy.wait(1000).then(()=> {
                 cy.url().should('contains', '/admin').then(()=> {
                     cy.get('button#roomManagement').click().then(()=>{
                         cy.get('button#editRoom').click().then(()=>{

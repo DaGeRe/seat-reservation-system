@@ -109,7 +109,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
         }}
       >
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div>
+          <div id='changePassword_prevPassword'>
             <label style={{ display: "block", marginBottom: "5px" }}>{t("previousPassword")}</label>
             <input type="password" name="prevPassword" value={formData.prevPassword} onChange={handleChange} required style={{
               width: "100%",
@@ -119,7 +119,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
               transition: "border-color 0.3s"
             }} />
           </div>
-          <div>
+          <div id='changePassword_newPassword'>
             <label style={{ display: "block", marginBottom: "5px" }}>{t("newPassword")}</label>
             <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} required style={{
               width: "100%",
@@ -129,7 +129,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
               transition: "border-color 0.3s"
             }} />
           </div>
-          <div>
+          <div id='changePassword_newPasswordAgain'>
             <label style={{ display: "block", marginBottom: "5px" }}>{t("newPasswordAgain")}</label>
             <input type="password" name="newPasswordAgain" value={formData.newPasswordAgain} onChange={handleChange} required style={{
               width: "100%",
@@ -140,7 +140,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
             }} />
           </div>
           {error && <p style={{ color: "red" }}>{error}</p>}
-          <button type="submit" style={{
+          <button id='changePassword_submit' type='submit' style={{
             padding: "10px 20px",
             borderRadius: "5px",
             border: "none",
@@ -149,7 +149,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
             cursor: "pointer",
             fontWeight: "bold",
             transition: "background-color 0.3s"
-          }}>{t("submit")}</button>
+          }}>{t('submit')}</button>
         </form>
       </div>
     </div>

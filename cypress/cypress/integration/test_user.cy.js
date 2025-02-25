@@ -1,0 +1,178 @@
+describe('', ()=>{
+    const pw1 = 'pw';
+    const pw2 = pw1+2;
+    const vorname1 = 'max';
+    const vorname2 = vorname1+1;
+    const nachname = 'mustermann';
+    const mail = 'foo@bar.com'
+
+    beforeEach(()=>{
+        cy.getAmountOfUsersForMail(mail).then((ret)=>{
+            if (ret > 0) {
+                cy.deleteUser(mail).then(()=>{  
+                    //cy.screenshot('abc' + ret);
+                })
+            }
+            cy.addUser(mail, pw1, vorname1, nachname)
+            
+        })
+    })
+
+    afterEach(()=>{
+        cy.getAmountOfUsersForMail(mail).then((ret)=>{
+            if (ret > 0) {
+                cy.deleteUser(mail);
+            }
+        });
+    });
+
+    it('test change password', ()=>{
+        cy.login(mail, pw1).then(()=>{
+            // No admin
+            cy.contains('span', 'Admin').should('not.exist').then(()=>{
+            // Change pw
+            cy.contains('span', 'Password').click().then(()=>{
+                Cypress.Promise.all([
+                    cy.setStr('changePassword_prevPassword', pw1),
+                    cy.setStr('changePassword_newPassword', pw2),
+                    cy.setStr('changePassword_newPasswordAgain', pw2)
+                ]).then(()=>{
+                    cy.get('button#changePassword_submit').click().then(()=>{
+                        cy.logout().then(()=>{
+                            cy.login(mail, pw2).then(()=>{
+                                // No admin
+                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                    // Rechange pw
+                                    cy.contains('span', 'Password').click().then(()=>{
+                                        Cypress.Promise.all([
+                                            cy.setStr('changePassword_prevPassword', pw2),
+                                            cy.setStr('changePassword_newPassword', pw1),
+                                            cy.setStr('changePassword_newPasswordAgain', pw1)
+                                        ]).then(()=>{
+                                            cy.get('button#changePassword_submit').click().then(()=>{
+                                                cy.logout().then(()=>{
+                                                    
+                                                    cy.login(mail, pw1).then(()=>{
+                                                        cy.screenshot('mezz3');
+                                                        cy.deleteUser(mail);
+                                                    })
+                                                })
+                                            })
+                                        });
+                                    })
+                                })
+                            })
+                        });
+                    })
+                })
+            })
+        })
+    })
+});
+    it('test change name', ()=>{
+        cy.login().then(()=>{
+            cy.visit('/admin').then(()=>{
+                cy.url().should('contains', '/admin').then(()=> {
+                    cy.get('button#userManagement').click().then(()=>{
+                        cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                            cy.get('button#editEmployee').click().then(()=>{
+                                cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+                                    Cypress.Promise.all([
+                                        cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                                        cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                                        cy.setStr('filterEmployee_handleTextChange', mail)
+                                    ]).then(()=>{
+                                        cy.get('tr').find('button').click().then(()=>{
+                                            cy.setStr('editEmployeeModal-setName', vorname2).then(()=>{
+                                                cy.get('button#editEmployeeModal_updateEmployee').click().then(()=>{
+                                                    //cy.logout().then(()=>{
+                                                        cy.screenshot('fbf');
+                                                    //});
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+
+        })
+    })
+    /*it('test new user adding/deleting', ()=>{
+            await add_user(mail, pw1, vorname1, nachname);
+            cy.visit('/admin').then(()=>{
+            cy.url().should('contains', '/admin').then(()=> {
+                cy.get('button#userManagement').click().then(()=>{
+                    cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                        cy.get('button#editEmployee').click().then(()=>{
+                            cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+                                Cypress.Promise.all([
+                                    cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                                    cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                                    cy.setStr('filterEmployee_handleTextChange', mail)
+                                ]).then(()=>{
+                                    cy.get('tr').find('button').click().then(()=>{
+                                        cy.setStr('editEmployeeModal-setName', vorname2).then(()=>{
+                                            cy.get('button#editEmployeeModal_updateEmployee').click().then(()=>{
+                                                // login and change pw
+                                                cy.login(mail, pw1).then(()=>{
+                                                    // No admin
+                                                    cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                        // Change pw
+                                                        cy.contains('span', 'Password').click().then(()=>{
+                                                            Cypress.Promise.all([
+                                                                cy.setStr('changePassword_prevPassword', pw1),
+                                                                cy.setStr('changePassword_newPassword', pw2),
+                                                                cy.setStr('changePassword_newPasswordAgain', pw2)
+                                                            ]).then(()=>{
+                                                                cy.get('button#changePassword_submit').click().then(()=>{
+                                                                    //cy.get('a#sidebar_logout').click().then(()=>{
+                                                                        cy.get('a#sidebar_logout').click().then(cy.wait(1000)).then(()=>{
+                                                                        cy.login(mail, pw2).then(()=>{
+                                                                            cy.get('a#sidebar_logout').click().then(()=>{
+                                                                                cy.login().then(()=>{
+                                                                                    cy.visit('/admin').then(()=>{
+                                                                                        cy.url().should('contains', '/admin').then(()=> {
+                                                                                            cy.get('button#userManagement').click().then(()=>{
+                                                                                                cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                                                                                                    cy.get('button#deleteEmployee').click().then(()=>{
+                                                                                                        cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+                                                                                                            Cypress.Promise.all([
+                                                                                                                cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                                                                                                                cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                                                                                                                cy.setStr('filterEmployee_handleTextChange', mail)
+                                                                                                            ]).then(()=>{
+                                                                                                                cy.get('tr').find('button').click().then(()=>{
+                                                                                                                    cy.screenshot('a');
+                                                                                                                })
+                                                                                                            })
+                                                                                                        })
+                                                                                                    })
+                                                                                                })
+                                                                                            })
+                                                                                        })
+                                                                                    })
+                                                                                });
+                                                                            });
+                                                                        });
+                                                                    });
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }));
+    });*/
+});

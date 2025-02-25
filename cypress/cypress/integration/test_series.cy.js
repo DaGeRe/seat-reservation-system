@@ -34,13 +34,17 @@ describe('', ()=> {
                         cy.setStr('frequence_select', 'weekly'),
                         cy.setStr('dayOfTheWeek_select', '2') //mi
                     ]).then(()=>{
-                        //cy.wait(1000).then(()=>{
+                        cy.wait(1000).then(()=>{
                             cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.countBookings(roomRemark).should('equal', 9).then(()=>{
-                                    cy.screenshot('b');
-                                });
+                                cy.wait(1000).then(()=>{
+                                    cy.countBookings(roomRemark).should('equal', 9).then(()=>{
+                                        cy.wait(1000).then(()=>{
+                                            cy.screenshot('b');
+                                        })
+                                    });
+                                })
                             })
-                        //})
+                        })
                     })
                 })
             })
@@ -56,13 +60,17 @@ describe('', ()=> {
                         cy.setStr('frequence_select', 'monthly'),
                         cy.setStr('dayOfTheWeek_select', '4') //fr
                     ]).then(()=>{
-                        //cy.wait(1000).then(()=>{
+                        cy.wait(1000).then(()=>{
                             cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.countBookings(roomRemark).should('equal', 3).then(()=>{
-                                    cy.screenshot('c');
-                                });
+                                cy.wait(1000).then(()=>{
+                                    cy.countBookings(roomRemark).should('equal', 3).then(()=>{
+                                        cy.wait(1000).then(()=>{
+                                            cy.screenshot('c');
+                                        })
+                                    })
+                                })
                             })
-                        //})
+                        })
                     })
                 })
             })

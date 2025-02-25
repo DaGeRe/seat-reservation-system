@@ -158,7 +158,7 @@ const SidebarComponent = () => {
   }*/
 
   return (
-    <div data-testid='SidebarComponent'>
+    <div>
       <Sidebar
         collapsed={collapsed}
         backgroundColor="#008444"
@@ -183,7 +183,7 @@ const SidebarComponent = () => {
           }}
         >
           <MenuItem
-            data-testid='SidebarComponent_Collapse'
+            id='sidebar_collapse'
             active={activeTab === "collapse"}
             icon={<BsList />}
             onClick={() => handleClick("collapse")}
@@ -192,7 +192,7 @@ const SidebarComponent = () => {
           </MenuItem>
           {localStorage.getItem("admin") === 'true' && (
             <MenuItem
-              data-testid='SidebarComponent_Collapse'
+              id='sidebar_admin'
               active={activeTab === "admin"}
               icon={<RiAdminFill />}
               onClick={() => handleClick("admin")}
@@ -201,6 +201,7 @@ const SidebarComponent = () => {
             </MenuItem>
           )}
           <MenuItem
+            id='sidebar_calendar'
             active={activeTab === "calendar"}
             icon={<IoCalendarNumberOutline />}
             onClick={() => handleClick("calendar")}
@@ -208,6 +209,7 @@ const SidebarComponent = () => {
             {t("calendar")}
           </MenuItem>
           <MenuItem
+            id='sidebar_bookings'
             active={activeTab === "bookings"}
             icon={<FaBookmark />}
             onClick={() => handleClick("bookings")}
@@ -218,10 +220,10 @@ const SidebarComponent = () => {
 
           <Menu>
             <SubMenu icon={<IoIosAlbums />} label={t('series')}>
-              <MenuItem icon={<IoIosCheckbox />} onClick={() => {
+              <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {
                  navigate("/manageseries", { replace: true });
               }}>{t('manage')}</MenuItem>
-              <MenuItem icon={<AiFillPlusCircle />} onClick={() => {
+              <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {
                  navigate("/createseries", { replace: true });
               }}>{t('create')}</MenuItem>
             </SubMenu> 
@@ -235,6 +237,7 @@ const SidebarComponent = () => {
           </MenuItem>*/}
 
           <MenuItem
+            id='sidebar_language'
             icon={<MdGTranslate />}
             onClick={() => handleClick("language")}
           >
@@ -243,8 +246,8 @@ const SidebarComponent = () => {
 
         </Menu>
         <Menu>
-          <MenuItem icon={<FaLock />} onClick={() => handleClick('changePassword')}>{t('password')}</MenuItem>
-          <MenuItem icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
+          <MenuItem id='sidebar_changePassword' icon={<FaLock />} onClick={() => handleClick('changePassword')}>{t('password')}</MenuItem>
+          <MenuItem id='sidebar_logout' icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
         </Menu>
       </Sidebar>
 

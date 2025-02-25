@@ -94,7 +94,7 @@ export default function EditEmployee({ editEmployeeModal }) {
 
       </DialogContent>
       <DialogActions>
-          <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+          <Button id='editEmployee_handleClose' onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
       </DialogActions>
 
       <BootstrapWorkstationDialog onClose={toggleEditEmployeeModal} aria-labelledby="customized-dialog-title" open={isEditEmployeeOpen}>

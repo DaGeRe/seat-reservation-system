@@ -95,7 +95,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
 
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
+                <Button id='deleteEmployee_handleClose' onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
             </DialogActions>
         </React.Fragment>
     );
