@@ -305,7 +305,6 @@ const CreateSeries = () => {
                         </TableContainer>
                         : <div>{t('noDesksForRange')}</div>)
                 }
-                
             </>
         );
     };
