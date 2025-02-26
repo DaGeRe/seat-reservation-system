@@ -44,7 +44,7 @@ out.json
 *.log
 *.tar.xz
 .env
-frontend/node_modules
+frontend/node_modules/**
 
 # Backend
 backend/src/test/resources/dumps/*
