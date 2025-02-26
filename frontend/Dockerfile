@@ -14,13 +14,12 @@ WORKDIR /usr/src/app
 COPY tls tls
 COPY public public
 COPY server server
-COPY node_modules node_modules
+#COPY node_modules node_modules
 
 
 
 COPY package.json .
 COPY package-lock.json .
-#COPY .babelrc .
 COPY src src
-
+RUN npm i
 CMD ["npm", "start"]
