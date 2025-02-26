@@ -14,6 +14,7 @@ services:
       - SSL_CRT_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.crt
       - SSL_KEY_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
       - PORT=${FRONTEND_PORT}
+      - GENERATE_SOURCEMAP=false # important to supress some warnings
     ports:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
     networks:
