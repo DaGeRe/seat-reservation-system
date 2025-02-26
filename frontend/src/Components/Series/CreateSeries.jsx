@@ -29,7 +29,7 @@ const CreateSeries = () => {
     const { t, i18n } = useTranslation();
     const [possibleDesks, setPossibleDesks] = useState([]);
     const [dates, setDates] = useState([]);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date()); 
     const [endDate, setEndDate] = useState(new Date());
     const [startTime, setStartTime] = useState('12:00:00');
     const [endTime, setEndTime] = useState('14:00:00');

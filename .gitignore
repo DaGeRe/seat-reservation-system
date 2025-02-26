@@ -44,7 +44,11 @@ out.json
 *.log
 *.tar.xz
 .env
+
+# Frontend
 frontend/node_modules/**
+frontend/server*
+frontend/package-lock.json
 
 # Backend
 backend/src/test/resources/dumps/*
