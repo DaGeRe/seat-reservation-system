@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import React, {useMemo} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
-import {roomToOption, optionToRoomId} from '../Room/RoomAndOption';
+import {roomToOption} from '../Room/RoomAndOption';
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';

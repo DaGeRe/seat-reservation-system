@@ -1,0 +1,84 @@
+{
+  "name": "deskshare",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/user-event": "latest",
+    "axios": "latest",
+    "css-loader": "latest",
+    "date-fns": "latest",
+    "i18next": "latest",
+    "is-online": "latest",
+    "moment": "latest",
+    "node": "^22.13.0",
+    "nth-check": "latest",
+    "postcss": "latest",
+    "postcss-loader": "latest",
+    "react-big-calendar": "^1.18.0",
+    "react-confirm-alert": "latest",
+    "react-datepicker": "latest",
+    "react-google-charts": "latest",
+    "react-i18next": "latest",
+    "react-icons": "latest",
+    "react-pro-sidebar": "latest",
+    "react-router-dom": "latest",
+    "react-scripts": "latest",
+    "react-toastify": "latest",
+    "react-toggle": "latest",
+    "sass-loader": "latest",
+    "web-vitals": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_NO_WARNINGS=1 NODE_ENV=test jest",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.2.0",
+    "babel-jest": "^29.7.0",
+    "cypress": "^14.1.0",
+    "eslint": "latest",
+    "eslint-config-react-app": "^7.0.1",
+    "identity-obj-proxy": "latest",
+    "jest": "^29.7.0",
+    "jest-environment-node": "latest",
+    "jest-fetch-mock": "^3.0.3",
+    "nodemon": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-test-renderer": "latest",
+    "rimraf": "latest",
+    "sass": "latest",
+    "svgo": "latest",
+    "whatwg-fetch": "^3.6.20"
+  }
+}

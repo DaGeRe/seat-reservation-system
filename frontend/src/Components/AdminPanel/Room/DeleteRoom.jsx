@@ -1,9 +1,9 @@
-import {FormControl, Grid2, Box, InputLabel,  MenuItem, Select } from '@mui/material';
+import {Grid2, Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DeleteFf from '../../DeleteFf';
-import React, { useMemo, useCallback } from 'react';
+import React, {useMemo} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';

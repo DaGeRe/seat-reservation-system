@@ -10,7 +10,6 @@ import ChangePassword from "./ChangePassword";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from 'react-icons/ci';
 import { MdGTranslate } from 'react-icons/md';
-import FreeDesks from './FreeDesks/FreeDesks';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox } from 'react-icons/io';
 import { IoIosAlbums } from 'react-icons/io';
@@ -24,10 +23,8 @@ const SidebarComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
-  const [isFreeDesksModalOpen, setIsFreeDesksModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
-  //const [visibility, setVisibility] = useState(localStorage.getItem("visibility"));
-
+  
   useEffect(() => {
     // Extract the current pathname from the location
     const path = location.pathname;
@@ -46,10 +43,6 @@ const SidebarComponent = () => {
       case "collapse":
         setCollapsed(!collapsed);
         localStorage.setItem("sidebarCollapsed", !collapsed);
-        break;
-
-      case 'freeDesks':
-        setIsFreeDesksModalOpen(true);
         break;
 
       case "calendar":
@@ -92,10 +85,6 @@ const SidebarComponent = () => {
 
   const handleCloseChangePasswordModal = () => {
     setIsChangePasswordModalOpen(false);
-  };
-
-  const handleCloseFreeDesksModal = () => {
-    setIsFreeDesksModalOpen(false);
   };
 
   const handleCloseLogoutConfirmationModal = () => {
@@ -228,13 +217,6 @@ const SidebarComponent = () => {
             </SubMenu> 
           </Menu>
 
-          {/*<MenuItem
-              icon = {<TbDeviceDesktopSearch />}
-              onClick={() => handleClick('freeDesks')}
-          >
-            {t('freeDesks')}
-          </MenuItem>*/}
-
           <MenuItem
             id='sidebar_language'
             icon={<MdGTranslate />}
@@ -257,10 +239,6 @@ const SidebarComponent = () => {
         onSubmit={handleChangePasswordSubmit}
       />
 
-      <FreeDesks
-        isOpen={isFreeDesksModalOpen}
-        onClose={handleCloseFreeDesksModal}
-      />
       {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
         isOpen={isLogoutConfirmationOpen}

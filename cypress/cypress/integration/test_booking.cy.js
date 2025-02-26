@@ -13,8 +13,6 @@ describe('', ()=> {
         });
     });
     it('two simple bookings', () => {
-        const start_timeslot = 3;
-        const end_timeslot = 10; 
         cy.addBooking(building, floor, roomRemark, deskRemark, 3, 10).then(()=>{
             cy.addBooking(building, floor, roomRemark, deskRemark, 12, 15).then(()=>{
                 cy.countBookings(roomRemark).should('equal', 2);

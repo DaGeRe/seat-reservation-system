@@ -1,5 +1,8 @@
 import { FormControl, TextField} from '@mui/material';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import de from "date-fns/locale/de"; // the locale you want
+registerLocale('de', de); // register it with the name you want
 
 const CreateDatePicker = ({date, setter, label}) => {
     return (
@@ -21,6 +24,8 @@ const CreateDatePicker = ({date, setter, label}) => {
                     />
                 }
             />
+
+            
         </FormControl>
     );
 };

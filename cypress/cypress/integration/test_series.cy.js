@@ -17,8 +17,9 @@ describe('', ()=> {
                         cy.setStr('endDate', enddate),
                     ]).then(()=>{
                         cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                            cy.countBookings(roomRemark).should('equal', 62);
-                            //cy.screenshot('a');
+                            cy.wait(2000).then(()=>{
+                                cy.countBookings(roomRemark).should('equal', 62);
+                            })
                         })
                     })
                 })
