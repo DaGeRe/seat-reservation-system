@@ -1,13 +1,13 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from "moment";
-import { useTranslation } from "react-i18next";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import "./HomeCalendar.scss";
-import "./MyBookings.css";
-import SidebarComponent from "./SidebarComponent";
-import {getRequest, deleteRequest} from "../RequestFunctions/RequestFunctions";
+import { useTranslation } from 'react-i18next';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import './MyBookings.css';
+import SidebarComponent from './SidebarComponent';
+import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 
 const MyBookings = () => {
   const headers = useMemo(() => {

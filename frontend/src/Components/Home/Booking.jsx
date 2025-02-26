@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "./HomeCalendar.scss";
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 import "./Booking.css";
 import SidebarComponent from "./SidebarComponent"
 import { useTranslation } from "react-i18next";

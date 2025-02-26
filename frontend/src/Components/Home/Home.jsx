@@ -4,7 +4,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/de";
 import "./Home.css";
-import "./HomeCalendar.scss";
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 import SidebarComponent from "./SidebarComponent";
 import { useTranslation } from "react-i18next";
 import { postRequest } from '../RequestFunctions/RequestFunctions';
