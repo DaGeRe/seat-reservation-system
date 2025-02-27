@@ -5,7 +5,7 @@ import './index.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+//import reportWebVitals from './reportWebVitals';
 import i18n from './i18n';
 
 const root = createRoot(document.getElementById('root'));
@@ -26,4 +26,4 @@ root.render(
 */
 );
 
-reportWebVitals();
+//reportWebVitals();

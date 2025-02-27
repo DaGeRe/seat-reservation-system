@@ -9,9 +9,9 @@ import { useTranslation } from "react-i18next";
 import {isOptionEqualToValue_Desk} from './DeskAndOption'
 import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
-import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
-import DeskSelector from '../DeskSelector/DeskSelector.js';
+import FloorImage from '../../FloorImage/FloorImage.jsx';
+import InfoModal from '../../InfoModal/InfoModal.jsx';
+import DeskSelector from '../../DeskSelector.js';
 import WorkStationDefinition from './WorkStationDefinition.js';
 import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
@@ -68,17 +68,6 @@ export default function EditWorkstation({ editWorkstationModal }) {
       toast.error(t('deskUpdateFailed'));
     }
   };
-
-/*   const onSelectDesk = (selectedDeskStr) => {
-    setSelectedDesk(selectedDeskStr);
-    const deskId = optionToDeskId(selectedDeskStr);
-    const deskData = allDesks.find(e => e.id.toString()===deskId);
-    if(deskData){
-      setEquipment(deskData.equipment ? deskData.equipment : '');
-      setRemark(deskData.remark ? deskData.remark : '');
-    }
-    setSelectedDeskId(deskId);
-  }; */
 
   const onFloorChange = (floor) => {
     setFloor(floor);

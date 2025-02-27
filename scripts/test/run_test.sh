@@ -1,5 +1,3 @@
-# exampe: scripts/run_test.sh cypress/integration/test_series.cy.js 
-
 # Check if an argument is passed
 if [ -z "$1" ]; then
   # No argument provided, default command

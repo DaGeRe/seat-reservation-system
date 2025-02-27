@@ -477,18 +477,20 @@ Cypress.Commands.add('countBookings', (roomRemark) => {
     cy.visit('/admin').then(()=>{
         cy.url().should('contains', '/admin').then(()=> {
         cy.get('button#bookingManagement').click().then(()=>{
-          cy.wait(1000).then(()=>{
+          cy.wait(2000).then(()=>{
             cy.get('button#overviewBooking').click().then(()=>{
-              cy.wait(1000).then(()=>{
+              cy.wait(2000).then(()=>{
                 Cypress.Promise.all([
                   cy.setStr('overviewBookings_setFilter','/roomRemark/'),
                   cy.setStr('textfield_overviewbooking', roomRemark)
                 ]).then(()=>{
-                  cy.wait(1000).then(()=>{
+                  cy.wait(3000).then(()=>{
                     cy.get('table tr').then((rows) => {
+                      cy.wait(3000).then(()=>{
                       // -1 cause the head of the table also contains a row
-                      return cy.wrap(rows.length - 1);
-                    });
+                        return cy.wrap(rows.length - 1);
+                      });
+                    })
                   })
                 })
               })

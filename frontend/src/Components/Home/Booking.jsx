@@ -9,7 +9,7 @@ import SidebarComponent from "./SidebarComponent"
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import InfoModal from '../InfoModal/InfoModal.jsx'
+import InfoModal from '../InfoModal/InfoModal.jsx';
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
 import { formatDate_yyyymmdd_to_ddmmyyyy } from "../misc/formatDate.js";
@@ -257,7 +257,6 @@ const Booking = () => {
                   >
                     <p className='item-name'>{desk.remark}</p>
                     <p className='item-name'>{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</p>
-                    {/* <p className="item-taken">{t("available")}</p> */}
                   </div>
                 </div>
               ))) : (

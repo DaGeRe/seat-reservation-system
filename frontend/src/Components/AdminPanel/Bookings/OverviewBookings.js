@@ -125,45 +125,5 @@ export default function OverviewBookings({ overviewBookingsModal }) {
           </DialogContent>
         </React.Fragment>
       </>
-        /*<React.Fragment>
-            <TableContainer component={Paper} style={{ maxHeight: '400px', overflow: 'auto' }}>
-            <Table stickyHeader sx={{ minWidth: 450, marginTop: 1, maxHeight:'400px' }}>
-              <TableHead sx={{backgroundColor: 'green', color:'white'}}>
-                <TableRow>
-                  <TableCell sx={{backgroundColor: 'green', textAlign: 'center', fontSize:15, color:'white'}}>{t("email")}</TableCell>
-                  <TableCell sx={{backgroundColor: 'green', textAlign: 'center', fontSize:15, color:'white' }}>{t("startTime")}</TableCell>
-                  <TableCell sx={{backgroundColor: 'green', textAlign: 'center', fontSize:15, color:'white' }}>{t("endTime")}</TableCell>
-                  <TableCell sx={{backgroundColor: 'green', textAlign: 'center', fontSize:15, color:'white' }}>{t("date")}</TableCell>
-
-                  <TableCell sx={{backgroundColor: 'green', textAlign: 'center', fontSize:15, color:'white' }} colSpan={2}>{t("action")}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredEmployees.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                      {row.email}
-                    </TableCell>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                      {row.name}
-                    </TableCell>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                      {row.surname}
-                    </TableCell>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                      {row.admin ? t("true") : t("false")}
-                    </TableCell>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, fontWeight:400 }} >
-                      {row.visibility ? t("true") : t("false")}
-                    </TableCell>
-                    <TableCell sx={{textAlign: 'center', fontSize:14, width:'30%' }} component="th" scope="row">
-                      <Button onClick={() => onAction(row.id)}>{action}</Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </React.Fragment>*/
     );
 }

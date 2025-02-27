@@ -8,11 +8,11 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf';
-import {deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption'
+import {deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
-import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
-import DeskSelector from '../DeskSelector/DeskSelector.js';
+import FloorImage from '../../FloorImage/FloorImage.jsx';
+import InfoModal from '../../InfoModal/InfoModal.jsx';
+import DeskSelector from '../../DeskSelector.js';
 import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
