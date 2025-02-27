@@ -8,4 +8,4 @@ fi
 dumpfile="$1"
 database="mydatabase"
 . .env
-cat backend/src/test/resources/dumps/$dumpfile | docker exec -i $DATABASE_CONTAINER mariadb -p${PW_DB}  $database
+cat dumps/$dumpfile | docker exec -i $DATABASE_CONTAINER mariadb -p${PW_DB}  $database

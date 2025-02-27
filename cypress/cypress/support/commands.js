@@ -216,60 +216,6 @@ Cypress.Commands.add('getAmountOfUsersForMail', (mail) => {
   });
 });
 
-/*Cypress.Commands.add('login_back', () => {
-  cy.visit('/');
-  cy.intercept('POST', '/users/login').as('loginRequest'); 
-  cy.get('[data-testid="email"]').should('exist').type('test@mail.com');
-  cy.get('[data-testid="password"]').should('exist').type('test');
-  cy.get('[data-testid="loginBtn"]').click();
-  cy.wait('@loginRequest').then((interception) => {
-    const response = interception.response;
-    expect(response === null).to.equal(false);
-    const statusCode = response.statusCode;
-    expect(statusCode).to.equal(200);
-    const body = response.body;
-    const accessToken = response.body.accessToken;
-    expect(accessToken === null).to.equal(false);
-
-    cy.get('[data-testid="loginErrorMsg"]').should('not.exist');
-    // Token im lokalen Speicher speichern
-    cy.window().then((window) => {
-      window.localStorage.setItem('headers', JSON.stringify({
-      'Authorization': 'Bearer ' +  String(accessToken),
-      'Content-Type': 'application/json',
-      }));
-      return cy.wrap('1');
-    });
-  });
-});
-
-Cypress.Commands.add('login_back', () => {
-    cy.visit('/');
-    cy.intercept('POST', '/users/login').as('loginRequest'); 
-    cy.get('[data-testid="email"]').should('exist').type('test@mail.com');
-    cy.get('[data-testid="password"]').should('exist').type('test');
-    cy.get('[data-testid="loginBtn"]').click();
-    cy.wait('@loginRequest').then((interception) => {
-      const response = interception.response;
-      expect(response === null).to.equal(false);
-      const statusCode = response.statusCode;
-      expect(statusCode).to.equal(200);
-      const body = response.body;
-      const accessToken = response.body.accessToken;
-      expect(accessToken === null).to.equal(false);
-
-      cy.get('[data-testid="loginErrorMsg"]').should('not.exist');
-      // Token im lokalen Speicher speichern
-      cy.window().then((window) => {
-        window.localStorage.setItem('headers', JSON.stringify({
-        'Authorization': 'Bearer ' +  String(accessToken),
-        'Content-Type': 'application/json',
-      }));
-      return cy.wrap('1');
-      });
-    });
-});*/
-
 Cypress.Commands.add('rmAllRooms', (building, floor, roomRemark)=>{
   cy.login().then(()=>{
     cy.visit('/admin').then(()=>{
@@ -428,12 +374,8 @@ Cypress.Commands.add('tearDown', (building, floor, roomRemark)=>{
     cy.visit('/floor').then(()=> {
       cy.wait(1000).then(()=> { // !
         cy.rmAllRooms(building, floor, roomRemark).then(()=>{
-          //cy.addRoom(building, floor, roomRemark).then(()=>{
-            //cy.addDesk(building, floor, roomRemark, deskRemark).then(()=>{
-              return cy.wrap('1');
-            })
-          //})
-        //})
+          return cy.wrap('1');
+        })
       })
     })
   })

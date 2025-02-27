@@ -30,7 +30,7 @@ COPY settings.xml /root/.m2/
 COPY .m2 /root/.m2/
 
 # Copy the test data dumps
-COPY src/test/resources/dumps dumps
+#COPY src/test/resources/dumps dumps
 
 # Build the Maven project in offline mode (skip tests). Before: mvn clean install and copy ~/.m2 to backend/.m2
 RUN mvn clean package -DskipTests -o 
@@ -53,9 +53,6 @@ WORKDIR /usr/src/app
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
 
-# Copy the Docker CLI utility for container-related operations
-#COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
-
 # Copy Maven and cached dependencies from the build stage
 COPY --from=build /usr/share/maven /usr/share/maven
 COPY --from=build /root/.m2 /root/.m2
@@ -75,8 +72,6 @@ ENV http_proxy=http://proxy.justiz.sachsen.de:3128
 ENV https_proxy=https://proxy.justiz.sachsen.de:3128
 
 # Copy pre-loaded test data
-#COPY --from=build /usr/src/app/dumps /usr/src/app/src/test/resources
-#COPY --from=build /usr/src/app/dumps /usr/src/app/src/main/resources
-COPY --from=build /usr/src/app/dumps dumps
+#COPY --from=build /usr/src/app/dumps dumps
 # Disable external access in runtime with JVM options
 CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

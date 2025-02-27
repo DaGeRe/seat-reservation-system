@@ -8,7 +8,7 @@ describe('', ()=> {
     beforeEach(cy.buildUp.bind(null, building, floor, roomRemark, deskRemark));
     afterEach(cy.tearDown.bind(null, building, floor, roomRemark));
     
-    /*it('Simple series creation', ()=>{
+    it('Simple series creation', ()=>{
         cy.login().then(()=>{
             cy.visit('/createseries').then(()=>{
                 cy.get('h1').should('exist').then(()=> {
@@ -25,7 +25,7 @@ describe('', ()=> {
                 })
             })
         });
-    });*/
+    });
     it('simple weekly series creation for wednesday', ()=>{
         const should = 9;
         cy.login().then(()=>{
@@ -39,17 +39,8 @@ describe('', ()=> {
                     ]).then(()=>{
                         cy.wait(5000).then(()=>{
                             cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.wait(2000).then(()=>{
-                                    /*const bookings = cy.countBookings(roomRemark);
-                                    bookings.then(e=>{
-                                        if (e!=should) {
-                                            cy.screenshot('fail_series_wednesday_'+e);
-                                        }
-                                        cy.task('log', 'wednesday ' + e);
-                                        bookings.should('equal', should).then(()=>{});
-                                    })*/  
-                                    //bookings.should('equal', should).then(()=>{}); 
-                                    //cy.countBookings(roomRemark).should('equal', should); 
+                                cy.wait(3000).then(()=>{
+                                    cy.screenshot('a');
                                     cy.countBookings(roomRemark).then((cnt)=>{
                                         if (cnt!=should) {
                                             cy.screenshot('fail_series_wednesday_'+cnt);
@@ -77,23 +68,14 @@ describe('', ()=> {
                     ]).then(()=>{
                         cy.wait(5000).then(()=>{
                             cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.wait(2000).then(()=>{
-                                    /*const bookings = cy.countBookings(roomRemark);
-                                    bookings.then(e=>{
-                                        if (e!=should) {
-                                            cy.screenshot('fail_series_friday_'+e);
-                                        }
-                                        cy.task('log', 'friday ' + e);
-                                        bookings.should('equal', should).then(()=>{});
-                                    });*/
-                                    //bookings.should('equal', should).then(()=>{});
+                                cy.screenshot('b');
+                                cy.wait(3000).then(()=>{
                                     cy.countBookings(roomRemark).then((cnt)=>{
                                         if (cnt!=should) {
                                             cy.screenshot('fail_series_friday_'+cnt);
                                         }
                                         cy.wrap(cnt).should('equal', should);
                                     })
-                                    
                                 })
                             })
                         })

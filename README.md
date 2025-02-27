@@ -54,6 +54,19 @@ To run the tests, you can run: `npm run test`
 
 The three subprojects (frontend, backend and database) are separately developed as docker containers. They are deployed via docker compose. To do so run the script scripts/build_and_run.sh. 
 
+### .env
+
+The .env file is located in the project root. It contains som variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
+Some variables are sensitiv, so the .env is not controlled by version control. Since the .env is crucial for the app the developer needs to take care of creating and maintaining this file.
+The most important variables are the following:
+| Name  | Example | Explanation      |
+|-------|------|-----------|
+| FRONTEND_PORT  | 3001   | The port of the frontend container |
+| BACKEND_PORT   | 8082   | The port of the backend container   |
+| DATABASE_PORT  | 3307   | The port of the database container   |
+| PROJECT_PATH  | /home/foo/DeskSharingTool   | The absolute path to the project |
+| PATH_TO_TLS | /home/foo/tls |The absolute path to the tls certs |
+
 ## Test
 
 It is aimed to achieve an good test coverage by implementing an e2e test with cypress.  Some test cases included are: 
