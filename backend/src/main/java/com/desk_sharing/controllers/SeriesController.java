@@ -6,19 +6,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.Series;
-import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
 import com.desk_sharing.model.SeriesDTOWithDeskRemark;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.SeriesRepository;
-import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.services.SeriesService;
 import com.desk_sharing.services.UserService;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
