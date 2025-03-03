@@ -69,6 +69,7 @@ const CreateSeries = () => {
             setDates([]);
             return;
         }
+        //console.log('React.useEffect 1');
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series/dates`, 
             headers,
@@ -85,6 +86,7 @@ const CreateSeries = () => {
                 dayOfTheWeek: dayOfTheWeek
             })
         );
+        //console.log('React.useEffect 2');
         }, [headers, t, startDate, endDate, startTime, endTime, frequency, dayOfTheWeek, repaint]); 
 
     /**

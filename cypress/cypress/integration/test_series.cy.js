@@ -9,16 +9,21 @@ describe('', ()=> {
     afterEach(cy.tearDown.bind(null, building, floor, roomRemark));
     
     it('Simple series creation', ()=>{
+        const should = 62;
         cy.login().then(()=>{
             cy.visit('/createseries').then(()=>{
-                cy.get('h1').should('exist').then(()=> {
-                    Cypress.Promise.all([
-                        cy.setStr('startDate', startdate),
-                        cy.setStr('endDate', enddate),
-                    ]).then(()=>{
-                        cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                            cy.wait(2000).then(()=>{
-                                cy.countBookings(roomRemark).should('equal', 62);
+                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                    cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
+                        Cypress.Promise.all([
+                            cy.setStr('startDate', startdate),
+                            cy.setStr('endDate', enddate),
+                        ]).then(()=>{
+                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
+                                    //cy.wait(2000).then(()=>{
+                                        cy.countBookings(roomRemark).should('equal', 62);
+                                    //})
+                                })
                             })
                         })
                     })
@@ -26,29 +31,41 @@ describe('', ()=> {
             })
         });
     });
+
+
     it('simple weekly series creation for wednesday', ()=>{
         const should = 9;
+        const dates = ['2025-01-01', '2025-01-08', '2025-01-15', '2025-01-22', '2025-01-29', '2025-02-05', '2025-02-12', '2025-02-19', '2025-02-26'];
+        cy.intercept('POST', '/series/dates*').as('searchRequest');
         cy.login().then(()=>{
             cy.visit('/createseries').then(()=>{
-                cy.get('h1').should('exist').then(()=> {
-                    Cypress.Promise.all([
-                        cy.setStr('startDate', startdate),
-                        cy.setStr('endDate', enddate),
-                        cy.setStr('frequence_select', 'weekly'),
-                        cy.setStr('dayOfTheWeek_select', '2') //mi
-                    ]).then(()=>{
-                        cy.wait(5000).then(()=>{
-                            cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.wait(3000).then(()=>{
-                                    cy.screenshot('a');
-                                    cy.countBookings(roomRemark).then((cnt)=>{
-                                        if (cnt!=should) {
-                                            cy.screenshot('fail_series_wednesday_'+cnt);
-                                        }
-                                        cy.wrap(cnt).should('equal', should);
-                                    })                          
-                                })
-                            })
+                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                    cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
+                        Cypress.Promise.all([
+                            cy.setStr('startDate', startdate),
+                            cy.setStr('endDate', enddate),
+                            cy.setStr('frequence_select', 'weekly'),
+                            cy.setStr('dayOfTheWeek_select', '2'), //mi
+                            cy.setStr('startTime', '08:00:00'),
+                            cy.setStr('endTime', '11:00:00')
+                        ]).then(()=>{
+                            cy.get('@searchRequest.all').should('have.length', 6).then((interceptions) => {
+                                cy.wrap(interceptions[interceptions.length - 1].response.body)
+                                  .should('deep.equal', dates)
+                                  .then(() => {
+                                    cy.get('div#dates_label').find('span', { timeout: 20000 })
+                                        .should('have.length.greaterThan', 0)
+                                        .then(() => {
+                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                            cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
+                                                cy.countBookings(roomRemark).then((cnt)=>{
+                                                    cy.wrap(cnt).should('equal', should);
+                                                })
+                                            })
+                                        })
+                                    });
+                                });
+                            });
                         })
                     })
                 })
@@ -57,27 +74,45 @@ describe('', ()=> {
     });
     it('simple monthly series creation for friday', ()=>{
         const should = 3;
+        const dates = [
+            '2025-01-03',
+            '2025-01-31',
+            '2025-02-28',
+        ];
+       
         cy.login().then(()=>{
             cy.visit('/createseries').then(()=>{
-                cy.get('h1').should('exist').then(()=> {
-                    Cypress.Promise.all([
-                        cy.setStr('startDate', startdate),
-                        cy.setStr('endDate', enddate),
-                        cy.setStr('frequence_select', 'monthly'),
-                        cy.setStr('dayOfTheWeek_select', '4') //fr
-                    ]).then(()=>{
-                        cy.wait(5000).then(()=>{
-                            cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                cy.screenshot('b');
-                                cy.wait(3000).then(()=>{
-                                    cy.countBookings(roomRemark).then((cnt)=>{
-                                        if (cnt!=should) {
-                                            cy.screenshot('fail_series_friday_'+cnt);
-                                        }
-                                        cy.wrap(cnt).should('equal', should);
-                                    })
-                                })
-                            })
+                cy.intercept('POST', '/series/dates*').as('searchRequest');
+                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                    cy.get('div#dates_label').should('exist').then(()=> {
+                        Cypress.Promise.all([
+                            cy.setStr('startDate', startdate),
+                            cy.setStr('endDate', enddate),
+                            cy.setStr('frequence_select', 'monthly'),
+                            cy.setStr('dayOfTheWeek_select', '4'), //fr
+                            cy.setStr('startTime', '15:30:00'),
+                            cy.setStr('endTime', '18:00:00'),
+                        ]).then(()=>{
+                            cy.get('@searchRequest.all', { timeout: 10000 }).should('have.length', 4).then((interceptions) => {
+                                //cy.task('log', interceptions[interceptions.length - 1]);
+                                cy.wrap(interceptions[interceptions.length - 1].response.body)
+                                    .should('deep.equal', dates)
+                                    .then(() => {
+                                    cy.get('div#dates_label').find('span', { timeout: 20000 })
+                                        .should('have.length.greaterThan', 0)
+                                        .then(() => {
+                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                            cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
+                                                cy.countBookings(roomRemark).then((cnt)=>{
+                                                    cy.wrap(cnt).should('equal', should);
+                                                })
+                                            })
+                                            })
+                                        });
+        
+                                });
+                            });
+                        //})})})})})
                         })
                     })
                 })

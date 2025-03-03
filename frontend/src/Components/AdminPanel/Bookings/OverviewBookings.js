@@ -85,6 +85,9 @@ export default function OverviewBookings({ overviewBookingsModal }) {
                   />
                 </FormControl>
             </div>
+            <div>
+                 <label>{t('bookingsSum') + ': ' + bookings.length}</label>   
+            </div>
             <TableContainer component={Paper} sx={{
               maxHeight: 1000, // Set max height
               overflowY: 'auto', // Enable vertical scroll

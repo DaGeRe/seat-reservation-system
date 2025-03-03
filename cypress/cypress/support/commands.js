@@ -38,23 +38,25 @@ Cypress.Commands.add('selectTimeRange', (startSlot, endSlot) => {
 
 Cypress.Commands.add('setStr', (id, str) => {
   cy.get(`div#${id}`).find('input').should('exist').then(()=>{
-  cy.get(`div#${id}`).find('input').then(($input) => {
-      const input = $input[0];
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype,
-          'value'
-      ).set;
-      nativeInputValueSetter.call(input, str);
+    cy.get(`div#${id}`).find('input')
+    .then(($input) => {
+        const input = $input[0];
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,
+            'value'
+        ).set;
+        nativeInputValueSetter.call(input, str);
 
-      // Trigger events.
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+        // Trigger events.
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
 
-      //cy.wrap(input).should('have.value', str);
-      cy.get(`div#${id}`).find('input').should('have.value', str).then(()=>{
-        return cy.wrap('1');
-      });
-  });
+        //cy.wrap(input).should('have.value', str);
+        cy.get(`div#${id}`).find('input').should('have.value', str)
+        .then(()=>{
+          return cy.wrap('1');
+        });
+    });
   });
 });
 
@@ -141,7 +143,7 @@ Cypress.Commands.add('addUser', (mail, pw, vorname, nachname)=>{
                                 cy.setStr('addEmployee-setSurname', nachname)
                             ]).then(()=>{
                                 cy.contains('button', /SUBMIT/).click().then(()=>{
-                                  cy.screenshot('a').then(()=>{
+                                  cy.wait(1000)./*cy.screenshot('a').*/then(()=>{
                                     cy.wait(1000).then(()=>{  
                                       cy.logout().then(()=>{
                                             return cy.wrap('1');

@@ -44,6 +44,8 @@ out.json
 *.log
 *.tar.xz
 .env
+*.png
+*.mp4
 
 # Frontend
 frontend/node_modules/**

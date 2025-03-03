@@ -22,7 +22,6 @@ describe('', ()=> {
     it('try to make two bookings, but they are overlapping', ()=> {
         cy.addBooking(building, floor, roomRemark, deskRemark, 3, 15).then(()=>{
             cy.addBooking(building, floor, roomRemark, deskRemark, 14, 22).then(()=>{
-                cy.screenshot('1')
                 cy.countBookings(roomRemark).should('equal', 1);
             });
         });
