@@ -45,6 +45,7 @@ out.json
 *.tar.xz
 .env
 *.png
+!frontend/src/images/*.png
 *.mp4
 
 # Frontend
