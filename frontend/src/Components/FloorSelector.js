@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../constants';
+import { ZWICKAU, LEIPZIG, CHEMNITZ, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../constants';
 
 const FloorSelector = ({
   building,
@@ -24,6 +24,15 @@ const FloorSelector = ({
         <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor_19c').toUpperCase()}</MenuItem>
       ];
     }
+    else if (building_name === ZWICKAU) {
+
+    }
+    else if (building_name === LEIPZIG) {
+
+    }    
+    else if (building_name === CHEMNITZ) {
+
+    }
     return [];
   }
 
@@ -36,10 +45,17 @@ const FloorSelector = ({
           id='select-building'
           value={building}
           label={t('building')}
-          onChange={(e) => setBuilding(e.target.value)}
+          onChange={(e) => {
+            setBuilding(e.target.value);
+            // Make the ground floor as default within an building change.
+            setFloor(GROUND);
+          }}
         >
           <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B.toUpperCase()}</MenuItem>
           <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C.toUpperCase()}</MenuItem>
+          <MenuItem value={ZWICKAU}>{ZWICKAU.toUpperCase()}</MenuItem>
+          <MenuItem value={LEIPZIG}>{LEIPZIG.toUpperCase()}</MenuItem>
+          <MenuItem value={LEIPZIG}>{LEIPZIG.toUpperCase()}</MenuItem>
         </Select>
       </FormControl>
       <br /><br />

@@ -1,11 +1,11 @@
 import './FloorImage.css';
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
 import { styled } from '@mui/material/styles';
-import firstFloorImage from '../../images/firstfloor.png';
-import secondFloorImage from '../../images/secondfloor.png';
-import firstFloorC from '../../images/bautzner_19_c_1.png';
-import secondFloorC from '../../images/bautzner_19_c_2.png';
-import thirdFloorC from '../../images/bautzner_19_c_3.png';
+import firstFloorImage from '../Assets/firstfloor.png';
+import secondFloorImage from '../Assets/secondfloor.png';
+import firstFloorC from '../Assets/bautzner_19_c_1.png';
+import secondFloorC from '../Assets/bautzner_19_c_2.png';
+import thirdFloorC from '../Assets/bautzner_19_c_3.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
@@ -97,8 +97,6 @@ export default function FloorImage(
           [`& .${tooltipClasses.tooltip}`]: {
             backgroundColor: '#f5f5f9',
             color: 'rgba(0, 0, 0, 0.87)',
-/*             backgroundColor: '#000000',
-            color: 'green', */
             maxWidth: 220,
             fontSize: theme.typography.pxToRem(12),
             border: '1px solid #dadde9',
@@ -113,10 +111,10 @@ export default function FloorImage(
                 floorImage = secondFloorImage;
             /**
              * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
-             */
-            else {
+            
+            /*else {
                 floorImage = firstFloorImage;
-            }
+            }*/
         }
         if (building === BAUTZNER_STR_19_C) {
             if (floor === GROUND)
@@ -138,9 +136,9 @@ export default function FloorImage(
                 <br></br> <br></br>
                 {floorImage && (
                     
-                    <div className="image-container" onMouseDown={handleMouseClick}>
+                    <div className='image-container' onMouseDown={handleMouseClick}>
                         {/* Floor Image */}
-                        <img src={floorImage} alt="floorImage" className="floor-image" />
+                        <img src={floorImage} alt='floorImage' className='floor-image' />
         
                         {/* Conditional render for specific coordinates */}
                         {x !== 0.0 && y !== 0.0 && (
