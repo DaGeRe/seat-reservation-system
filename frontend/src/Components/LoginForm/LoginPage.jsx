@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./LoginPage.css";
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
-import flagImage from "../../images/flag.png";
+import flagImage from "../Assets/flag.png";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
