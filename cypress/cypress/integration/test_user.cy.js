@@ -7,72 +7,88 @@ describe('', ()=>{
     const mail = 'foo@bar.com'
 
     beforeEach(()=>{
-        //cy.task('log', 'beforeEach 1');
         cy.getAmountOfUsersForMail(mail).then((ret)=>{
-            //cy.task('log', 'beforeEach 1.1');
             if (ret > 0) {
                 cy.deleteUser(mail).then(()=>{})
             }
-            //cy.task('log', 'beforeEach 2');
-            cy.addUser(mail, pw1, vorname1, nachname)
-            //cy.task('log', 'beforeEach 3');
+            cy.addUser(mail, pw1, vorname1, nachname).then(()=>{return;});
         })
     })
-
-    afterEach(()=>{
-        cy.getAmountOfUsersForMail(mail).then((ret)=>{
-            //cy.task('log', 'ret ' + ret);
-            if (ret > 0) {
-                cy.deleteUser(mail);
-            }
+    
+    it('test register with same mail', ()=>{
+        cy.login().then(()=>{
+            cy.visit('/admin').then(()=>{
+                cy.url().should('contains', '/admin').then(()=> {
+                    cy.get('button#userManagement').click().then(()=>{
+                        cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                            cy.get('button#addEmployee').click().then(()=>{
+                                cy.get('h2#customized-dialog-title').should('be.visible').then(()=>{
+                                    Cypress.Promise.all([
+                                        cy.setStr('addEmployee-setEmail', mail),
+                                        cy.setStr('addEmployee-setPassword', pw1),
+                                        cy.setStr('addEmployee-setName', vorname1),
+                                        cy.setStr('addEmployee-setSurname', nachname)
+                                    ]).then(()=>{
+                                        cy.contains('button', /SUBMIT/).click().then(()=>{
+                                            cy.screenshot('m');
+                                                cy.get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
+                                                return cy.wrap('1');
+                                            })
+                                        });
+                                    });;
+                                });
+                            });
+                        });
+                    });
+                });
+            });
         });
-    });
-
+    })
     it('test change password', ()=>{
         cy.login(mail, pw1).then(()=>{
             // No admin
             cy.contains('span', 'Admin').should('not.exist').then(()=>{
-            // Change pw
-            cy.contains('span', 'Password').click().then(()=>{
-                Cypress.Promise.all([
-                    cy.setStr('changePassword_prevPassword', pw1),
-                    cy.setStr('changePassword_newPassword', pw2),
-                    cy.setStr('changePassword_newPasswordAgain', pw2)
-                ]).then(()=>{
-                    cy.get('button#changePassword_submit').click().then(()=>{
-                        cy.logout().then(()=>{
-                            cy.login(mail, pw2).then(()=>{
-                                // No admin
-                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                    // Rechange pw
-                                    cy.contains('span', 'Password').click().then(()=>{
-                                        Cypress.Promise.all([
-                                            cy.setStr('changePassword_prevPassword', pw2),
-                                            cy.setStr('changePassword_newPassword', pw1),
-                                            cy.setStr('changePassword_newPasswordAgain', pw1)
-                                        ]).then(()=>{
-                                            cy.get('button#changePassword_submit').click().then(()=>{
-                                                cy.logout().then(()=>{
-                                                    
-                                                    cy.login(mail, pw1).then(()=>{
-                                                        // No admin
-                                                        cy.contains('span', 'Admin').should('not.exist').then(()=>{});
-                                                        //cy.screenshot('mezz3');
-                                                        //cy.deleteUser(mail);
+                // Change pw
+                cy.contains('span', 'Password').click().then(()=>{
+                    Cypress.Promise.all([
+                        cy.setStr('changePassword_prevPassword', pw1),
+                        cy.setStr('changePassword_newPassword', pw2),
+                        cy.setStr('changePassword_newPasswordAgain', pw2)
+                    ]).then(()=>{
+                        cy.get('button#changePassword_submit').click().then(()=>{
+                            cy.logout().then(()=>{
+                                cy.login(mail, pw2).then(()=>{
+                                    // No admin
+                                    cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                        // Rechange pw
+                                        cy.contains('span', 'Password').click().then(()=>{
+                                            Cypress.Promise.all([
+                                                cy.setStr('changePassword_prevPassword', pw2),
+                                                cy.setStr('changePassword_newPassword', pw1),
+                                                cy.setStr('changePassword_newPasswordAgain', pw1)
+                                            ]).then(()=>{
+                                                cy.get('button#changePassword_submit').click().then(()=>{
+                                                    cy.logout().then(()=>{                    
+                                                        cy.login(mail, pw1).then(()=>{
+                                                            // No admin
+                                                            cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                                cy.logout().then(()=>{});
+                                                            });
+                                                        })
                                                     })
                                                 })
-                                            })
-                                        });
+                                            });
+                                        })
                                     })
                                 })
-                            })
-                        });
-                    })
+                            });
+                        })
+                    }) 
                 })
             })
-        })
-    })
-});
+        });
+    });
+
 it('test change name', ()=>{
     cy.login().then(()=>{
         cy.visit('/admin').then(()=>{
@@ -96,7 +112,14 @@ it('test change name', ()=>{
                                                                 //cy.screenshot('fbf');
                                                                 //cy.deleteUser(mail);
                                                                 // No admin
-                                                                cy.contains('span', 'Admin').should('not.exist').then(()=>{});
+                                                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                                    /*cy.getAmountOfUsersForMail(mail).then((ret)=>{
+                                                                        if (ret > 0) {
+                                                                            cy.deleteUser(mail).then((r)=>{cy.task('log', r);});
+                                                                        }
+                                                                    });*/
+                                                                    cy.logout().then(()=>{});
+                                                                });
                                                             })
                                                         });
                                                     });
@@ -111,8 +134,7 @@ it('test change name', ()=>{
                 })
             })
         })
-
     })
 })
-    
+
 });

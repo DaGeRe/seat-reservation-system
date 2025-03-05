@@ -93,7 +93,7 @@ describe('', ()=> {
                             cy.setStr('startTime', '15:30:00'),
                             cy.setStr('endTime', '18:00:00'),
                         ]).then(()=>{
-                            cy.get('@searchRequest.all', { timeout: 10000 }).should('have.length', 4).then((interceptions) => {
+                            cy.get('@searchRequest.all', { timeout: 10000 }).should('have.length', 5).then((interceptions) => {
                                 //cy.task('log', interceptions[interceptions.length - 1]);
                                 cy.wrap(interceptions[interceptions.length - 1].response.body)
                                     .should('deep.equal', dates)

@@ -143,12 +143,8 @@ Cypress.Commands.add('addUser', (mail, pw, vorname, nachname)=>{
                                 cy.setStr('addEmployee-setSurname', nachname)
                             ]).then(()=>{
                                 cy.contains('button', /SUBMIT/).click().then(()=>{
-                                  cy.wait(1000)./*cy.screenshot('a').*/then(()=>{
-                                    cy.wait(1000).then(()=>{  
-                                      cy.logout().then(()=>{
-                                            return cy.wrap('1');
-                                        });
-                                    })
+                                  cy.get('.Toastify__toast').should('be.visible').contains('User created successfully').then(()=>{
+                                    return cy.wrap('1');
                                   })
                                 });
                             });;
@@ -165,23 +161,25 @@ Cypress.Commands.add('deleteUser', (mail)=>{
   cy.login().then(()=>{
     cy.visit('/admin').then(()=>{
       cy.url().should('contains', '/admin').then(()=> {
-          cy.get('button#userManagement').click().then(()=>{
-              cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
-                  cy.get('button#deleteEmployee').click().then(()=>{
-                      cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
-                          Cypress.Promise.all([
-                              cy.setStr('filterEmployee_handleFieldChange', 'email'),
-                              cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
-                              cy.setStr('filterEmployee_handleTextChange', mail)
-                          ]).then(()=>{
-                              cy.get('tr').find('button').click().then(()=>{       
-                                  return cy.wrap('1');
-                              })
+        cy.get('button#userManagement').click().then(()=>{
+            cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                cy.get('button#deleteEmployee').click().then(()=>{
+                    cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+                        Cypress.Promise.all([
+                            cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                            cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                            cy.setStr('filterEmployee_handleTextChange', mail)
+                        ]).then(()=>{
+                          cy.get('tr').find('button').click().then(()=>{   
+                            cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
+                              return cy.wrap('1');
+                            })
                           })
-                      })
-                  })
-              })
-          })
+                        })
+                    })
+                })
+            })
+        })
       })
     })
   });
