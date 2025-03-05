@@ -6,11 +6,14 @@ import secondFloorImage from '../Assets/secondfloor.png';
 import firstFloorC from '../Assets/bautzner_19_c_1.png';
 import secondFloorC from '../Assets/bautzner_19_c_2.png';
 import thirdFloorC from '../Assets/bautzner_19_c_3.png';
+import firstFloorZwickau from '../Assets/Grundriss_AS-Zwickau.png';
+import firstFloorChemnitz from '../Assets/Belegungsplan_AS_ C_2OG.png';
+import firstFloorLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import FloorSelector from '../FloorSelector.js';
-import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C } from '../../constants.js';
+import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG } from '../../constants.js';
 /**
  * @param floor The current floor. (either First or Ground)
  * @param headers The headers including the jwt.
@@ -109,14 +112,8 @@ export default function FloorImage(
                 floorImage = firstFloorImage;
             if (floor === FIRST)
                 floorImage = secondFloorImage;
-            /**
-             * Fallback if one comes from building_bautzner_c. And the thirdFloor is selected.
-            
-            /*else {
-                floorImage = firstFloorImage;
-            }*/
         }
-        if (building === BAUTZNER_STR_19_C) {
+        else if (building === BAUTZNER_STR_19_C) {
             if (floor === GROUND)
                 floorImage = firstFloorC;
             if (floor === FIRST)
@@ -125,6 +122,19 @@ export default function FloorImage(
                 floorImage = thirdFloorC;
             }
         }
+        else if (building === ZWICKAU) {
+            if (floor === GROUND)
+                floorImage = firstFloorZwickau;
+        }
+        else if (building === CHEMNITZ) {
+            if (floor === GROUND)
+                floorImage = firstFloorChemnitz;
+        }
+        else if (building === LEIPZIG) {
+            if (floor === GROUND)
+                floorImage = firstFloorLeipzig;
+        }
+
         return (
             <>
                 <FloorSelector
@@ -132,56 +142,58 @@ export default function FloorImage(
                     setFloor={setFloor}
                     building={building}
                     setBuilding={setBuilding}
-                    />
+                />
                 <br></br> <br></br>
                 {floorImage && (
                     
                     <div className='image-container' onMouseDown={handleMouseClick}>
                         {/* Floor Image */}
-                        <img src={floorImage} alt='floorImage' className='floor-image' />
-        
-                        {/* Conditional render for specific coordinates */}
-                        {x !== 0.0 && y !== 0.0 && (
-                            <div
-                                className="image-icon"
-                                style={{
-                                    top: `${y}%`,
-                                    left: `${x}%`
-                                }}
-                            >
-                                <IconButton>
-                                    <LaptopIcon 
-                                        style={{ 
-                                            color: new_color, 
-                                            fontSize: '24px' 
-                                        }}
-                                        className="image-icon-new"
-                                    />
-                                </IconButton>
-                            </div>
-                        )}
-        
-                        {/* Render icons for all rooms matching the current floor */}
-                        {
-                            allRooms
-                            .filter(room => room.floor === floor && room.building === building)
-                            .map((room, i) => (
+                        <img src={floorImage} alt='floorImage' className='floor-image' 
+                            style={{ maxWidth: '100%', maxHeight: '600px' }} 
+                        />
+
+                            {/* Conditional render for specific coordinates */}
+                            {x !== 0.0 && y !== 0.0 && (
                                 <div
-                                    key={i}
-                                    className='image-icon'
-                                    
+                                    className="image-icon"
                                     style={{
-                                        top: `${room.y}%`,
-                                        left: `${room.x}%`
+                                        top: `${y}%`,
+                                        left: `${x}%`
                                     }}
                                 >
-                                    <HtmlTooltip
-                                        title={
-                                            <React.Fragment>
-                                                <em>{room.remark}</em>
-                                            </React.Fragment>
-                                        }
+                                    <IconButton>
+                                        <LaptopIcon 
+                                            style={{ 
+                                                color: new_color, 
+                                                fontSize: '24px' 
+                                            }}
+                                            className='image-icon-new'
+                                        />
+                                    </IconButton>
+                                </div>
+                            )}
+        
+                            {/* Render icons for all rooms matching the current floor */}
+                            {
+                                allRooms
+                                .filter(room => room.floor === floor && room.building === building)
+                                .map((room, i) => (
+                                    <div
+                                        key={i}
+                                        className='image-icon'
+                                        
+                                        style={{
+                                            top: `${room.y}%`,
+                                            left: `${room.x}%`
+                                        }}
                                     >
+                                        <HtmlTooltip
+                                            title={
+                                                <React.Fragment>
+                                                    <em>{room.remark}</em>
+                                                </React.Fragment>
+                                            }
+                                        >
                                         <IconButton
                                             onMouseEnter={handleMouseEnter}
                                             onMouseLeave={handleMouseLeave}

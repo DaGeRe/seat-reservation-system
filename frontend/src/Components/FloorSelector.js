@@ -10,28 +10,33 @@ const FloorSelector = ({
   setFloor
 }) => {
   const { t } = useTranslation();
-
+  // An array of all building names with only one floor. We keep the names so we can skip the floor selection.
+  const buildings_with_one_floor = [ZWICKAU, LEIPZIG, CHEMNITZ];
+  
+  /**
+   * 
+   * @param {*} building_name The name of the building. E.g.: Bautzner Str. 19a/b, Bautzner Str. 19c, Chemnitz, ...
+   * @returns Return an array of floors depending on the selected building.
+   */
   function createFloorsPerBuilding(building_name) {
-    if (building_name === BAUTZNER_STR_19_A_B) {
-      return [
-        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === BAUTZNER_STR_19_C) {
-      return [
-        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor_19c').toUpperCase()}</MenuItem>,
-        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor_19c').toUpperCase()}</MenuItem>,
-        <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor_19c').toUpperCase()}</MenuItem>
-      ];
+    // Floor decision not needed if only one floor is present.
+    if (buildings_with_one_floor.includes(building_name)) {
+      //setFloor(GROUND);
+      return [<MenuItem key='groundFloor' value={GROUND}></MenuItem>];
     }
-    else if (building_name === ZWICKAU) {
-
-    }
-    else if (building_name === LEIPZIG) {
-
-    }    
-    else if (building_name === CHEMNITZ) {
-
+    else {
+      if (building_name === BAUTZNER_STR_19_A_B) {
+        return [
+          <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
+          <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
+        ];
+      } else if (building_name === BAUTZNER_STR_19_C) {
+        return [
+          <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor_19c').toUpperCase()}</MenuItem>,
+          <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor_19c').toUpperCase()}</MenuItem>,
+          <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor_19c').toUpperCase()}</MenuItem>
+        ];
+      }
     }
     return [];
   }
@@ -47,19 +52,23 @@ const FloorSelector = ({
           label={t('building')}
           onChange={(e) => {
             setBuilding(e.target.value);
-            // Make the ground floor as default within an building change.
-            setFloor(GROUND);
           }}
         >
           <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B.toUpperCase()}</MenuItem>
           <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C.toUpperCase()}</MenuItem>
           <MenuItem value={ZWICKAU}>{ZWICKAU.toUpperCase()}</MenuItem>
-          <MenuItem value={LEIPZIG}>{LEIPZIG.toUpperCase()}</MenuItem>
+          <MenuItem value={CHEMNITZ}>{CHEMNITZ.toUpperCase()}</MenuItem>
           <MenuItem value={LEIPZIG}>{LEIPZIG.toUpperCase()}</MenuItem>
         </Select>
       </FormControl>
       <br /><br />
-      <FormControl id='floorselector_setFloor' required size='small' fullWidth>
+      <FormControl 
+        id='floorselector_setFloor' 
+        required 
+        size='small' 
+        fullWidth
+        disabled={buildings_with_one_floor.includes(building)} // If the selected building only has one floor we disable the floor selection
+      >
         <InputLabel id='select-label-floor'>{t('floor')}</InputLabel>
         <Select
           labelId='select-label-floor'
