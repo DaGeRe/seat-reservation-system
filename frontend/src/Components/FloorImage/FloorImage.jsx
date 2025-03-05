@@ -6,14 +6,15 @@ import secondFloorImage from '../Assets/secondfloor.png';
 import firstFloorC from '../Assets/bautzner_19_c_1.png';
 import secondFloorC from '../Assets/bautzner_19_c_2.png';
 import thirdFloorC from '../Assets/bautzner_19_c_3.png';
-import firstFloorZwickau from '../Assets/Grundriss_AS-Zwickau.png';
-import firstFloorChemnitz from '../Assets/Belegungsplan_AS_ C_2OG.png';
-import firstFloorLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
+import atticZwickau from '../Assets/Grundriss_AS-Zwickau.png';
+import firstAtticBautzen from '../Assets/bautzen_grundriss.png';
+import atticChemnitz from '../Assets/Belegungsplan_AS_ C_2OG.png';
+import secondAtticLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import FloorSelector from '../FloorSelector.js';
-import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG } from '../../constants.js';
+import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG, SECOND_ATTIC, ATTIC, FIRST_ATTIC, BAUTZEN } from '../../constants.js';
 /**
  * @param floor The current floor. (either First or Ground)
  * @param headers The headers including the jwt.
@@ -40,13 +41,11 @@ export default function FloorImage(
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
-    //const present_color = 'blue';
     const new_color = 'green';
     
     const getAllActiveRooms = useCallback(
         async () => {
             getRequest(
-                //`${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
                 `${process.env.REACT_APP_BACKEND_URL}/rooms`,
                 headers,
                 setAllRooms,
@@ -97,14 +96,14 @@ export default function FloorImage(
     const HtmlTooltip = styled(({ className, ...props }) => (
         <Tooltip {...props} classes={{ popper: className }} />
         ))(({ theme }) => ({
-          [`& .${tooltipClasses.tooltip}`]: {
+        [`& .${tooltipClasses.tooltip}`]: {
             backgroundColor: '#f5f5f9',
             color: 'rgba(0, 0, 0, 0.87)',
             maxWidth: 220,
             fontSize: theme.typography.pxToRem(12),
             border: '1px solid #dadde9',
-          },
-      }));
+        },
+    }));
 
         var floorImage = null;
         if (building === BAUTZNER_STR_19_A_B) {
@@ -123,16 +122,20 @@ export default function FloorImage(
             }
         }
         else if (building === ZWICKAU) {
-            if (floor === GROUND)
-                floorImage = firstFloorZwickau;
+            if (floor === ATTIC)
+                floorImage = atticZwickau;
         }
         else if (building === CHEMNITZ) {
-            if (floor === GROUND)
-                floorImage = firstFloorChemnitz;
+            if (floor === ATTIC)
+                floorImage = atticChemnitz;
         }
         else if (building === LEIPZIG) {
-            if (floor === GROUND)
-                floorImage = firstFloorLeipzig;
+            if (floor === SECOND_ATTIC)
+                floorImage = secondAtticLeipzig;
+        }
+        else if (building === BAUTZEN) {
+            if (floor === FIRST_ATTIC)
+                floorImage = firstAtticBautzen;
         }
 
         return (
