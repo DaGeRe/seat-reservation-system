@@ -81,7 +81,6 @@ const FloorSelector = ({
         required 
         size='small' 
         fullWidth
-        //disabled={buildings_with_one_floor.includes(building)} // If the selected building only has one floor we disable the floor selection
       >
         <InputLabel id='select-label-floor'>{t('floor')}</InputLabel>
         <Select
