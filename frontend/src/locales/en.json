@@ -1,4 +1,5 @@
 {
+    "any": "Any",
     "login": "Login",
     "forgotPassword": "Forgot Password",
     "invalidEmail": "Invalid email",
@@ -220,5 +221,5 @@
     ,"monthly":"Monthly"
     ,"calculatedDates":"Calculated Dates"
     ,"timerangeIsNotValid":"Timerange is not valid."
-    ,"noDesksForRange":"For the specified time range no desk is available."
+    ,"noDesksForRange":"For the specified time range and building no desk is available."
 }

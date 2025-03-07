@@ -13,6 +13,7 @@ import { MdGTranslate } from 'react-icons/md';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox } from 'react-icons/io';
 import { IoIosAlbums } from 'react-icons/io';
+import LaptopIcon from '@mui/icons-material/Laptop';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -58,6 +59,11 @@ const SidebarComponent = () => {
       case "bookings":
         setActiveTab("bookings");
         navigate("/mybookings", { replace: true });
+        break;
+
+      case 'freeDesks':
+        setActiveTab('freeDesks');
+        navigate("/freeDesks", { replace: true });
         break;
 
       case "language":
@@ -204,6 +210,15 @@ const SidebarComponent = () => {
           >
 
             {t("bookings")}
+          </MenuItem>
+
+          <MenuItem
+            id='sidebar_freeDesks'
+            active={activeTab === 'freeDesks'}
+            icon={<LaptopIcon />}
+            onClick={() => handleClick('freeDesks')}
+          >
+            {t('freeDesks')}
           </MenuItem>
 
           <Menu>

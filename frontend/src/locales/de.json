@@ -1,4 +1,5 @@
 {
+    "any": "Jedes",
     "login": "Anmeldung",
     "forgotPassword": "Passwort Vergessen",
     "invalidEmail": "Ungültige E-Mail Adresse",
@@ -221,5 +222,5 @@
     ,"timerangeIsNotValid":"Zeitspanne ist nicht valide."
     ,"endDateBiggerThanStartDate":"Ende des Datumsintervalls darf nicht größer als Anfang sein."
     ,"endTimeBiggerThanStartTime":"Ende des Zeitintervalls darf nicht größer als Anfang sein."
-    ,"noDesksForRange":"Für die angegebene Zeitspanne konnte kein Arbeitsplatz gefunden werden."
+    ,"noDesksForRange":"Für die angegebene Zeitspanne/Gebäude konnte kein Arbeitsplatz gefunden werden."
 }

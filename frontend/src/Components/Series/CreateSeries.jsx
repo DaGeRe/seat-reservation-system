@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { FormControl,Select, MenuItem, InputLabel } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Box, FormControl,Select, MenuItem, InputLabel, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SidebarComponent from '../Home/SidebarComponent';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
-import CreateDatePicker from './CreateDatePicker';
-import CreateTimePicker from './CreateTimePicker';
+import CreateDatePicker from '../misc/CreateDatePicker';
+import CreateTimePicker from '../misc/CreateTimePicker';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
-import { BAUTZNER_STR_19_C, GROUND, FIRST } from '../../constants';
+import { FloorTableCell } from '../misc/FloorTableCell';
 import {
     Table,
     TableBody,
@@ -19,6 +17,7 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
+import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
 
 const CreateSeries = () => {
     const headers = useMemo(() => {
@@ -27,6 +26,7 @@ const CreateSeries = () => {
     return storedHeaders ? JSON.parse(storedHeaders) : {};
     }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
     const { t, i18n } = useTranslation();
+    const [selectedBuilding, setSelectedBuilding] = useState(t('any'));
     const [possibleDesks, setPossibleDesks] = useState([]);
     const [dates, setDates] = useState([]);
     const [startDate, setStartDate] = useState(new Date()); 
@@ -69,7 +69,6 @@ const CreateSeries = () => {
             setDates([]);
             return;
         }
-        //console.log('React.useEffect 1');
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series/dates`, 
             headers,
@@ -86,7 +85,6 @@ const CreateSeries = () => {
                 dayOfTheWeek: dayOfTheWeek
             })
         );
-        //console.log('React.useEffect 2');
         }, [headers, t, startDate, endDate, startTime, endTime, frequency, dayOfTheWeek, repaint]); 
 
     /**
@@ -97,7 +95,14 @@ const CreateSeries = () => {
             postRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/series/desksForDatesAndTimes`, 
                 headers,
-                setPossibleDesks,
+                (unfiltered_possible_desks)=>{
+                    if (selectedBuilding === t('any')) {
+                        setPossibleDesks(unfiltered_possible_desks);
+                    }
+                    else {
+                        setPossibleDesks(unfiltered_possible_desks.filter(desk => desk.room.building === selectedBuilding));
+                    }
+                },
                 () => {
                 console.log('Error fetching desks in CreateSeries');
                 },
@@ -109,7 +114,7 @@ const CreateSeries = () => {
         } else {
             setPossibleDesks([]);
         }
-    }, [dates, headers, endTime, startTime, ]);
+    }, [dates, headers, endTime, startTime, selectedBuilding, t]);
 
     /**
      * Create an series object on the backend side.
@@ -151,12 +156,12 @@ const CreateSeries = () => {
                     data-testid='startDate'
                     id='startDate'
                 >
-                <CreateDatePicker
-                    
-                    date={startDate}
-                    setter={setStartDate}
-                    label={t('startDate')}
-                />
+                    <CreateDatePicker
+                        
+                        date={startDate}
+                        setter={setStartDate}
+                        label={t('startDate')}
+                    />
                 </div>
                 <br/><br/>
                 <div
@@ -196,22 +201,43 @@ const CreateSeries = () => {
                 <div
                     data-testid='frequence_select'
                     id='frequence_select'
-                >
-                <FormControl id='createSeries_setFrequency' required={true} fullWidth>
-                    <InputLabel id='demo-simple-select-label'>{t('frequency')}</InputLabel>
+                >                
+                    <FormControl id='createSeries_setFrequency' required={true} fullWidth>
+                        <InputLabel id='demo-simple-select-label'>{t('frequency')}</InputLabel>
+                        <Select
+                            labelId='demo-simple-select-label'
+                            value={frequency} 
+                            label={t('frequency')}
+                            onChange={(e)=>{
+                                setFrequency(e.target.value);
+                            }}
+                        >
+                            <MenuItem value='daily'>{t('daily')}</MenuItem>
+                            <MenuItem value='weekly'>{t('weekly')}</MenuItem>
+                            <MenuItem value='twoweeks'>{t('twoweeks')}</MenuItem>
+                            <MenuItem value='threeweeks'>{t('threeweeks')}</MenuItem>
+                            <MenuItem value='monthly'>{t('monthly')}</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+                <br/><br/>
+                <div id='div_createSeries_selectBuilding'>
+                <FormControl id='createSeries_selectBuilding' required={true} fullWidth>
+                    <InputLabel id='demo-simple-select-label'>{t('building')}</InputLabel>
                     <Select
-                        labelId='demo-simple-select-label'
-                        value={frequency} 
-                        label={t('frequency')}
+                        value={selectedBuilding} 
+                        label={t('Building')}
                         onChange={(e)=>{
-                            setFrequency(e.target.value);
+                            setSelectedBuilding(e.target.value);
                         }}
                     >
-                        <MenuItem value='daily'>{t('daily')}</MenuItem>
-                        <MenuItem value='weekly'>{t('weekly')}</MenuItem>
-                        <MenuItem value='twoweeks'>{t('twoweeks')}</MenuItem>
-                        <MenuItem value='threeweeks'>{t('threeweeks')}</MenuItem>
-                        <MenuItem value='monthly'>{t('monthly')}</MenuItem>
+                        <MenuItem value={t('any')}>{t('any')}</MenuItem>
+                        <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B}</MenuItem>
+                        <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C}</MenuItem>
+                        <MenuItem value={ZWICKAU}>{ZWICKAU}</MenuItem>
+                        <MenuItem value={CHEMNITZ}>{CHEMNITZ}</MenuItem>
+                        <MenuItem value={LEIPZIG}>{LEIPZIG}</MenuItem>
+                        <MenuItem value={BAUTZEN}>{BAUTZEN}</MenuItem>
                     </Select>
                 </FormControl>
                 </div>
@@ -288,11 +314,7 @@ const CreateSeries = () => {
                                                 <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                                 <TableCell>{possibleDesk.room.remark}</TableCell>
                                                 <TableCell>{possibleDesk.room.building}</TableCell>
-                                                <TableCell>{
-                                                    possibleDesk.room.building === BAUTZNER_STR_19_C ?
-                                                    (possibleDesk.room.floor === GROUND ? t('groundFloor_19c') : possibleDesk.room.floor === FIRST ? t('firstFloor_19c') : t('thirdFloor_19c') )
-                                                    : possibleDesk.room.floor === GROUND ? t('groundFloor') : possibleDesk.room.floor === FIRST ? t('firstFloor') : t('thirdFloor')
-                                                }</TableCell>
+                                                <FloorTableCell building={possibleDesk.room.building} floor={possibleDesk.room.floor} />
                                                 <TableCell>
                                                     <Button id={`sbmt_btn_${possibleDesk.remark}`} variant='contained' onClick={(_)=>{
                                                         addSeries(possibleDesk);}}>
