@@ -8,13 +8,14 @@ import secondFloorC from '../Assets/bautzner_19_c_2.png';
 import thirdFloorC from '../Assets/bautzner_19_c_3.png';
 import atticZwickau from '../Assets/Grundriss_AS-Zwickau.png';
 import firstAtticBautzen from '../Assets/bautzen_grundriss.png';
-import atticChemnitz from '../Assets/Belegungsplan_AS_ C_2OG.png';
+import secondAtticChmenitz from '../Assets/Belegungsplan AS_C_2_OG_01.png';
+import fourthAtticChmenitz from '../Assets/Belegungsplan AS_C_4_OG_01.png';
 import secondAtticLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import FloorSelector from '../FloorSelector.js';
-import { GROUND, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG, SECOND_ATTIC, ATTIC, FIRST_ATTIC, BAUTZEN } from '../../constants.js';
+import { GROUND, FOURTH_ATTIC, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG, SECOND_ATTIC, ATTIC, FIRST_ATTIC, BAUTZEN } from '../../constants.js';
 /**
  * @param floor The current floor. (either First or Ground)
  * @param headers The headers including the jwt.
@@ -109,15 +110,15 @@ export default function FloorImage(
         if (building === BAUTZNER_STR_19_A_B) {
             if (floor === GROUND)
                 floorImage = firstFloorImage;
-            if (floor === FIRST)
+            else if (floor === FIRST)
                 floorImage = secondFloorImage;
         }
         else if (building === BAUTZNER_STR_19_C) {
             if (floor === GROUND)
                 floorImage = firstFloorC;
-            if (floor === FIRST)
+            else if (floor === FIRST)
                 floorImage = secondFloorC;
-            if (floor === SECOND) {
+            else if (floor === SECOND) {
                 floorImage = thirdFloorC;
             }
         }
@@ -126,8 +127,12 @@ export default function FloorImage(
                 floorImage = atticZwickau;
         }
         else if (building === CHEMNITZ) {
-            if (floor === ATTIC)
-                floorImage = atticChemnitz;
+            if (floor === SECOND_ATTIC) {
+                floorImage = secondAtticChmenitz;
+            }
+            else if (floor === FOURTH_ATTIC) {
+                floorImage = fourthAtticChmenitz;
+            }
         }
         else if (building === LEIPZIG) {
             if (floor === SECOND_ATTIC)

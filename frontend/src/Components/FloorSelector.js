@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { FIRST_ATTIC, SECOND_ATTIC, ATTIC, BAUTZEN, ZWICKAU, LEIPZIG, CHEMNITZ, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../constants';
+import { FIRST_ATTIC, FOURTH_ATTIC, SECOND_ATTIC, ATTIC, BAUTZEN, ZWICKAU, LEIPZIG, CHEMNITZ, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../constants';
 
 const FloorSelector = ({
   building,
@@ -32,16 +32,21 @@ const FloorSelector = ({
     } else if (building_name === BAUTZEN) {
       return [
         <MenuItem key='first_attic' value={FIRST_ATTIC}>{t('first_attic').toUpperCase()}</MenuItem>
-      ]
+      ];
     } else if (building_name === LEIPZIG) {
       return [
         <MenuItem key='second_attic' value={SECOND_ATTIC}>{t('second_attic').toUpperCase()}</MenuItem>
-      ]
-    } else if (building_name === CHEMNITZ || building_name === ZWICKAU) {
+      ];
+    } else if (building_name === ZWICKAU) {
       return [
         <MenuItem key='attic' value={ATTIC}>{t('attic').toUpperCase()}</MenuItem>
-      ]
-    } 
+      ];
+    } else if (building_name === CHEMNITZ) {
+      return [
+        <MenuItem key='second_attic' value={SECOND_ATTIC}>{t('second_attic').toUpperCase()}</MenuItem>,
+        <MenuItem key='fourth_attic' value={FOURTH_ATTIC}>{t('fourth_attic').toUpperCase()}</MenuItem>
+      ];
+    }
     return [];
   }
 
@@ -61,9 +66,9 @@ const FloorSelector = ({
               setFloor(GROUND);
             else if (e.target.value === BAUTZEN)
               setFloor(FIRST_ATTIC);
-            else if (e.target.value === CHEMNITZ || e.target.value === ZWICKAU)
+            else if (e.target.value === ZWICKAU)
               setFloor(ATTIC);
-            else if (e.target.value === LEIPZIG)
+            else if (e.target.value === LEIPZIG || e.target.value === CHEMNITZ)
               setFloor(SECOND_ATTIC);
           }}
         >
