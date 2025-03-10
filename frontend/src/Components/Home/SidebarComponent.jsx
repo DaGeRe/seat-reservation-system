@@ -221,14 +221,14 @@ const SidebarComponent = () => {
             {t('bookings')}
           </MenuItem>
 
-          <MenuItem
+          {/*<MenuItem
             id='sidebar_freeDesks'
             active={activeTab === 'freeDesks'}
             icon={<LaptopIcon />}
             onClick={() => handleClick('freeDesks')}
           >
             {t('freeDesks')}
-          </MenuItem>
+          </MenuItem>*/}
 
  
             <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
