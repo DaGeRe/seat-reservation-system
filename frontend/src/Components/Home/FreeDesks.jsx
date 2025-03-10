@@ -1,40 +1,30 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, { useMemo, useState } from 'react';
 import moment from "moment";
 import { useTranslation } from 'react-i18next';
-import { confirmAlert } from 'react-confirm-alert';
-import { Box,FormControl,Select, MenuItem, InputLabel, Button } from '@mui/material';
+
+import { Box,FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import SidebarComponent from './SidebarComponent';
 import { toast } from 'react-toastify';
-import { FloorTableCell } from '../misc/FloorTableCell';
-import {getRequest, deleteRequest, postRequest} from '../RequestFunctions/RequestFunctions';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-} from '@mui/material';
+import {postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import {DeskTable} from '../misc/DesksTable';
 import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
-
-
+import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
+import bookingPostRequest from '../misc/bookingPostRequest';
 const FreeDesks = () => {
     const headers = useMemo(() => {
         const storedHeaders = sessionStorage.getItem('headers');
         return storedHeaders ? JSON.parse(storedHeaders) : {};
     }, []);
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [selectedBuilding, setSelectedBuilding] = useState(t('any'));
     const [possibleDesks, setPossibleDesks] = useState([]);
     const [bookingDate, setBookingDate] = useState(new Date()); 
     const defaultStartTime = bookingDate.toLocaleTimeString();
-
+    const [repaint, setRepaint] = useState(false)
     // Default endTime is 2 hours ahead.
     const bookingEndDate = new Date(bookingDate);
     bookingEndDate.setHours(bookingEndDate.getHours() + 2);
@@ -71,9 +61,9 @@ const FreeDesks = () => {
                 startTime: startTime,
                 endTime: endTime
             }));
-    }, [bookingDate, selectedBuilding, t, headers, endTime, startTime]);
+    }, [bookingDate, selectedBuilding, t, headers, endTime, startTime, repaint]);
+    
     function addBooking(selectedDesk) {
-        
         const bookingData = {
             user_id: localStorage.getItem('userId'),
             room_id: selectedDesk.room.id,
@@ -82,15 +72,53 @@ const FreeDesks = () => {
             begin: startTime,
             end: endTime
         };
-        postRequest(
+        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers, t, (_)=>{setRepaint(!repaint);})
+        /*postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/bookings`,
             headers,
             (data) => {
                 console.log(data);
+                confirmAlert({
+                    title: t('desk') + " " + selectedDesk.remark,
+                    message: t('date') + " " + formatDate_yyyymmdd_to_ddmmyyyy(bookingData.day) + " " + t("from") + " " + bookingData.begin + " " + t("to") + " " + bookingData.end,
+                    buttons: [
+                        {
+                            label: t('yes'),
+                            onClick: async () => {
+                                putRequest(
+                                    `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
+                                    headers,
+                                    (dat) => {
+                                        // Be sure to change an depedency of React.useEffect(..) to force an repaint.
+                                        // This is needed because we want to remove desks that are not longer available.
+                                        setRepaint(!repaint);
+                                        toast.success(t('booked'));
+                                        //navigate('/home', { state: { booking }, replace: true });
+                                    },
+                                    () => {console.log('Failed to confirm booking in FreeDesks.jsx');}
+                                );
+                            }
+                        },
+                        {
+                            label: t('no'),
+                            onClick: async () => {
+                                deleteRequest(
+                                    `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`,
+                                    headers,
+                                    (_) => {},
+                                    () => {console.log('Failed to delete bookings in FreeDesks.jsx.');}
+                                )
+                                },
+                            },
+                        ],
+                        
+                    })
+
             },
             () => {console.log('Failed to post booking in Booking.jsx.');},
             JSON.stringify(bookingData)
         );
+        */
     };
     function CreateContent() {
         return (
@@ -149,44 +177,7 @@ const FreeDesks = () => {
                 <br/><br/>
                 </div>
                 {
-                    (possibleDesks && possibleDesks.length > 0 ?
-                        <TableContainer component={Paper} sx={{
-                            maxHeight: 400, // Set max height
-                            overflowY: 'auto', // Enable vertical scroll
-                        }}>
-                            <Table stickyHeader id='room_table'>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>{t('deskRemark')}</TableCell>
-                                        <TableCell>{t('equipment')}</TableCell>
-                                        <TableCell>{t('roomRemark')}</TableCell>
-                                        <TableCell>{t('building')}</TableCell>
-                                        <TableCell>{t('floor')}</TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {
-                                        possibleDesks.map((possibleDesk) => (
-                                            <TableRow id={'freeDesks_'+possibleDesk.remark + possibleDesk.id} key={possibleDesk.id}>
-                                                <TableCell>{possibleDesk.remark}</TableCell>
-                                                <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
-                                                <TableCell>{possibleDesk.room.remark}</TableCell>
-                                                <TableCell>{possibleDesk.room.building}</TableCell>
-                                                <FloorTableCell building={possibleDesk.room.building} floor={possibleDesk.room.floor} />
-                                                <TableCell>
-                                                    <Button id={`sbmt_btn_${possibleDesk.remark}`} variant='contained' onClick={(_)=>{
-                                                        addBooking(possibleDesk);}}>
-                                                        {t('submit')}
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        : <div>{t('noDesksForRange')}</div>)
+                    (possibleDesks && possibleDesks.length > 0 ? <DeskTable name={'freeDesks'} desks={possibleDesks} submit_function={addBooking} /> : <div>{t('noDesksForRange')}</div>)
                 }
             </>
         );

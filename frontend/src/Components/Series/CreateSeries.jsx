@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, FormControl,Select, MenuItem, InputLabel, Button } from '@mui/material';
+import { Box, FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SidebarComponent from '../Home/SidebarComponent';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
@@ -7,16 +7,7 @@ import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
-import { FloorTableCell } from '../misc/FloorTableCell';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-} from '@mui/material';
+import {DeskTable} from '../misc/DesksTable';
 import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
 
 const CreateSeries = () => {
@@ -287,47 +278,7 @@ const CreateSeries = () => {
                 </div>
                 <br/><br/>
                 {
-                    dates && dates.length > 0 && (possibleDesks && possibleDesks.length > 0 ?
-                        <TableContainer component={Paper} sx={{
-                            maxHeight: 400, // Set max height
-                            overflowY: 'auto', // Enable vertical scroll
-                        }}>
-                            <Table stickyHeader
-                                id='room_table'
-                                data-testid='room_table'
-                            >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>{t('deskRemark')}</TableCell>
-                                        <TableCell>{t('equipment')}</TableCell>
-                                        <TableCell>{t('roomRemark')}</TableCell>
-                                        <TableCell>{t('building')}</TableCell>
-                                        <TableCell>{t('floor')}</TableCell>
-                                        <TableCell></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {
-                                        possibleDesks.map((possibleDesk) => (
-                                            <TableRow id={possibleDesk.remark + possibleDesk.id} key={possibleDesk.id}>
-                                                <TableCell>{possibleDesk.remark}</TableCell>
-                                                <TableCell>{possibleDesk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
-                                                <TableCell>{possibleDesk.room.remark}</TableCell>
-                                                <TableCell>{possibleDesk.room.building}</TableCell>
-                                                <FloorTableCell building={possibleDesk.room.building} floor={possibleDesk.room.floor} />
-                                                <TableCell>
-                                                    <Button id={`sbmt_btn_${possibleDesk.remark}`} variant='contained' onClick={(_)=>{
-                                                        addSeries(possibleDesk);}}>
-                                                        {t('submit')}
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        : <div>{t('noDesksForRange')}</div>)
+                    dates && dates.length > 0 && (possibleDesks && possibleDesks.length > 0 ? <DeskTable name={'createSeries'} desks={possibleDesks} submit_function={addSeries}/> : <div>{t('noDesksForRange')}</div>)
                 }
             </>
         );

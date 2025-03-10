@@ -18,26 +18,43 @@ import LaptopIcon from '@mui/icons-material/Laptop';
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(
-    localStorage.getItem("sidebarCollapsed") === "true"
+    localStorage.getItem('sidebarCollapsed') === 'true'
   );
-  const [activeTab, setActiveTab] = useState("calendar");
+  const [seriesSubMenuOpen, setSeriesSubMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('');//useState('calendar');
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   
+  /*useEffect(()=>{
+    console.log('activeTab', activeTab)
+  }, [activeTab]);*/
   useEffect(() => {
-    // Extract the current pathname from the location
-    const path = location.pathname;
-    // Determine the active tab based on the current pathname
-    if (path.startsWith("/admin")) {
-      setActiveTab("admin");
-    } else if (path.startsWith("/mybookings")) {
-      setActiveTab("bookings");
-    } else {
-      setActiveTab("calendar");
+    console.log(seriesSubMenuOpen);
+    if (location.pathname === '/admin') {
+      setActiveTab('admin');
+      setSeriesSubMenuOpen(false);
     }
-  }, [location.pathname]);
+    if (location.pathname === '/home') {
+      setActiveTab('calendar');
+      setSeriesSubMenuOpen(false);
+    }
+    if (location.pathname === '/mybookings') {
+      setActiveTab('bookings');
+      setSeriesSubMenuOpen(false);
+      
+    }
+    if (location.pathname === '/manageseries' || location.pathname === '/createseries') {
+      setActiveTab('series');
+      setSeriesSubMenuOpen(true);
+    }
+    if (location.pathname === '/freeDesks') {
+      setActiveTab('freeDesks');
+      setSeriesSubMenuOpen(false);
+    }
+
+  }, [location.pathname, activeTab]);
 
   const handleClick = (name) => {
     switch (name) {
@@ -46,23 +63,19 @@ const SidebarComponent = () => {
         localStorage.setItem("sidebarCollapsed", !collapsed);
         break;
 
-      case "calendar":
-        setActiveTab("calendar");
+      case 'calendar':
         navigate("/home", { replace: true });
         break;
 
       case "admin":
-        setActiveTab("admin");
         navigate("/admin", { replace: true });
         break;
 
       case "bookings":
-        setActiveTab("bookings");
-        navigate("/mybookings", { replace: true });
+        navigate('/mybookings', { replace: true });
         break;
 
       case 'freeDesks':
-        setActiveTab('freeDesks');
         navigate("/freeDesks", { replace: true });
         break;
 
@@ -79,10 +92,6 @@ const SidebarComponent = () => {
       case "logout":
         setIsLogoutConfirmationOpen(true);
         break;
-
-/*       case "visibility":
-        changeVisibility();
-        break; */
 
       default:
         break;
@@ -204,12 +213,12 @@ const SidebarComponent = () => {
           </MenuItem>
           <MenuItem
             id='sidebar_bookings'
-            active={activeTab === "bookings"}
+            active={activeTab === 'bookings'}
             icon={<FaBookmark />}
-            onClick={() => handleClick("bookings")}
+            onClick={() => handleClick('bookings')}
           >
 
-            {t("bookings")}
+            {t('bookings')}
           </MenuItem>
 
           <MenuItem
@@ -221,16 +230,16 @@ const SidebarComponent = () => {
             {t('freeDesks')}
           </MenuItem>
 
-          <Menu>
-            <SubMenu icon={<IoIosAlbums />} label={t('series')}>
-              <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {
-                 navigate("/manageseries", { replace: true });
-              }}>{t('manage')}</MenuItem>
-              <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {
-                 navigate("/createseries", { replace: true });
-              }}>{t('create')}</MenuItem>
+ 
+            <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
+              <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {navigate('/manageseries', { replace: true });}}>
+                {t('manage')}
+              </MenuItem>
+              <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {navigate('/createseries', { replace: true });}}>
+                {t('create')}
+              </MenuItem>
             </SubMenu> 
-          </Menu>
+ 
 
           <MenuItem
             id='sidebar_language'

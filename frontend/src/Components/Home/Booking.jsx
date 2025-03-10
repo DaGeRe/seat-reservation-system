@@ -13,7 +13,7 @@ import InfoModal from '../InfoModal/InfoModal.jsx';
 import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
 import { formatDate_yyyymmdd_to_ddmmyyyy } from "../misc/formatDate.js";
-
+import bookingPostRequest from '../misc/bookingPostRequest.js';
 const Booking = () => {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -32,6 +32,7 @@ const Booking = () => {
   const [event, setEvent] = useState({});
   const [clickedDeskNumberInRoom, setClickedDeskNumberInRoom] = useState(null);
   const [clickedDeskId, setClickedDeskId] = useState(null);
+  const [clickedDeskRemark, setClickedDeskRemark] = useState('');
   const helpText = t('helpCreateBooking');
 
   const fetchDesks = useCallback(
@@ -171,17 +172,14 @@ const Booking = () => {
       end: ending
     };
 
-    const confirmAlertTitel = () => {
-      return t('desk') + " " + clickedDeskNumberInRoom + " in " + t('room') + " " + room.remark;
-    }
-
-    postRequest(
+    bookingPostRequest('Booking.jsx', bookingData, clickedDeskRemark, headers, t, (booking)=>{navigate('/home', { state: { booking }, replace: true });})
+    /*postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings`,
       headers,
       (data) => {
         confirmAlert({
-          title: confirmAlertTitel(),
-          message: t("date") + " " + formatDate_yyyymmdd_to_ddmmyyyy(day) + " " + t("from") + " " + start + " " + t("to") + " " + ending,
+          title: t('desk') + " " + clickedDeskNumberInRoom + " in " + t('room') + " " + room.remark,
+          message: t('date') + " " + formatDate_yyyymmdd_to_ddmmyyyy(day) + ' '  + t('from') + ' ' + start + " " + t("to") + " " + ending,
           buttons: [
             {
               label: t('yes'),
@@ -190,7 +188,7 @@ const Booking = () => {
                   `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
                   headers,
                   (dat) => {
-                    toast.success(t("booked"));
+                    toast.success(t('booked'));
     
                     const booking = {
                       id: dat.id,
@@ -221,7 +219,7 @@ const Booking = () => {
       },
       () => {console.log('Failed to post booking in Booking.jsx.');},
       JSON.stringify(bookingData)
-    )
+    )*/
   };
 
   function getHeadline() {
@@ -253,6 +251,7 @@ const Booking = () => {
                       () => {
                         setClickedDeskId(desk.id);
                         setClickedDeskNumberInRoom(desk.deskNumberInRoom);
+                        setClickedDeskRemark(desk.remark)
                       }}
                   >
                     <p className='item-name'>{desk.remark}</p>
