@@ -27,11 +27,7 @@ const SidebarComponent = () => {
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   
-  /*useEffect(()=>{
-    console.log('activeTab', activeTab)
-  }, [activeTab]);*/
   useEffect(() => {
-    console.log(seriesSubMenuOpen);
     if (location.pathname === '/admin') {
       setActiveTab('admin');
       setSeriesSubMenuOpen(false);
