@@ -1,2 +1,9 @@
 target
 logs_dev_backend
+*.sh
+mvnw.cmd
+mvnw
+.dockerignore
+wrapper
+.m2
+.mvn/wrapper
