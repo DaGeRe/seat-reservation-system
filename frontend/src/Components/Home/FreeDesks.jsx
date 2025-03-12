@@ -9,10 +9,10 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import SidebarComponent from './SidebarComponent';
 import { toast } from 'react-toastify';
-import {postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import {postRequest/*, putRequest, deleteRequest*/} from '../RequestFunctions/RequestFunctions';
 import {DeskTable} from '../misc/DesksTable';
 import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
-import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
+//import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import bookingPostRequest from '../misc/bookingPostRequest';
 const FreeDesks = () => {
     const headers = useMemo(() => {
@@ -38,7 +38,7 @@ const FreeDesks = () => {
      */
     React.useEffect(() => {
         if (startTime > endTime) {
-            toast.error(t('endTimeBiggerThanStartTime'));
+            toast.error(t('startTimeBiggerThanStartTime'));
             setPossibleDesks([]);
             return;
         }
@@ -155,7 +155,7 @@ const FreeDesks = () => {
                     />
                     </div>
                 <br/><br/>
-                <div id='div_freeDesks_selectBuilding'>
+                <div>
                     <FormControl id='freeDesks_selectBuilding' required={true} fullWidth>
                     <InputLabel id='demo-simple-select-label'>{t('building')}</InputLabel>
                     <Select

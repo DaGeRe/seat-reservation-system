@@ -30,7 +30,6 @@ describe('', ()=>{
                                         cy.setStr('addEmployee-setSurname', nachname)
                                     ]).then(()=>{
                                         cy.contains('button', /SUBMIT/).click().then(()=>{
-                                            cy.screenshot('m');
                                                 cy.get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
                                                 return cy.wrap('1');
                                             })
@@ -56,31 +55,33 @@ describe('', ()=>{
                         cy.setStr('changePassword_newPasswordAgain', pw2)
                     ]).then(()=>{
                         cy.get('button#changePassword_submit').click().then(()=>{
-                            cy.logout().then(()=>{
-                                cy.login(mail, pw2).then(()=>{
-                                    // No admin
-                                    cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                        // Rechange pw
-                                        cy.contains('span', 'Password').click().then(()=>{
-                                            Cypress.Promise.all([
-                                                cy.setStr('changePassword_prevPassword', pw2),
-                                                cy.setStr('changePassword_newPassword', pw1),
-                                                cy.setStr('changePassword_newPasswordAgain', pw1)
-                                            ]).then(()=>{
-                                                cy.get('button#changePassword_submit').click().then(()=>{
-                                                    cy.logout().then(()=>{                    
-                                                        cy.login(mail, pw1).then(()=>{
-                                                            // No admin
-                                                            cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                                                cy.logout().then(()=>{});
-                                                            });
+                            cy.get('.Toastify__toast').should('be.visible').contains('Password changed successfully').then(()=>{ //cy.screenshot('c');
+                                cy.logout().then(()=>{
+                                    cy.login(mail, pw2).then(()=>{
+                                        // No admin
+                                        cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                            // Rechange pw
+                                            cy.contains('span', 'Password').click().then(()=>{
+                                                Cypress.Promise.all([
+                                                    cy.setStr('changePassword_prevPassword', pw2),
+                                                    cy.setStr('changePassword_newPassword', pw1),
+                                                    cy.setStr('changePassword_newPasswordAgain', pw1)
+                                                ]).then(()=>{
+                                                    cy.get('button#changePassword_submit').click().then(()=>{
+                                                        cy.logout().then(()=>{                    
+                                                            cy.login(mail, pw1).then(()=>{
+                                                                // No admin
+                                                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                                    cy.logout().then(()=>{});
+                                                                });
+                                                            })
                                                         })
                                                     })
-                                                })
-                                            });
+                                                });
+                                            })
                                         })
                                     })
-                                })
+                                });
                             });
                         })
                     }) 
@@ -105,22 +106,21 @@ it('test change name', ()=>{
                                     cy.get('tr').find('button').click().then(()=>{
                                         cy.setStr('editEmployeeModal-setName', vorname2).then(()=>{
                                             cy.get('button#editEmployeeModal_updateEmployee').click().then(()=>{
-                                                cy.get('button#editEmployee_handleClose').click().then(()=>{
-                                                    cy.logout().then(()=>{
-                                                        cy.login(mail, pw1).then(()=>{
-                                                            cy.contains('span',`Hello, ${vorname2}`).should('exist').then(()=>{
-                                                                //cy.screenshot('fbf');
-                                                                //cy.deleteUser(mail);
-                                                                // No admin
-                                                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                                                    /*cy.getAmountOfUsersForMail(mail).then((ret)=>{
-                                                                        if (ret > 0) {
-                                                                            cy.deleteUser(mail).then((r)=>{cy.task('log', r);});
-                                                                        }
-                                                                    });*/
-                                                                    cy.logout().then(()=>{});
-                                                                });
-                                                            })
+                                                cy.get('.Toastify__toast').should('be.visible').contains('User updated successfully').then(()=>{
+                                                    cy.get('button#editEmployee_handleClose').click().then(()=>{
+                                                        cy.logout().then(()=>{
+                                                            cy.login(mail, pw1).then(()=>{
+                                                                cy.contains('span',`Hello, ${vorname2}`).should('exist').then(()=>{
+                                                                    cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                                        /*cy.getAmountOfUsersForMail(mail).then((ret)=>{
+                                                                            if (ret > 0) {
+                                                                                cy.deleteUser(mail).then((r)=>{cy.task('log', r);});
+                                                                            }
+                                                                        });*/
+                                                                        cy.logout().then(()=>{});
+                                                                    });
+                                                                })
+                                                            });
                                                         });
                                                     });
                                                 });

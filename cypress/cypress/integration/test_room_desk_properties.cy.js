@@ -25,8 +25,10 @@ describe('', ()=> {
                                             cy.setStr('roomDefinition_setRemark', newRoomRemark)
                                         ]).then(()=>{
                                             cy.get('button#room_submit_btn').click().then(()=>{
-                                                cy.rmRoom(building, floor, newRoomRemark).then(()=>{
-                                                    return cy.wrap('1');
+                                                cy.get('.Toastify__toast').should('be.visible').contains('Room was changed successfully').then(()=>{
+                                                    cy.rmRoom(building, floor, newRoomRemark).then(()=>{
+                                                        return cy.wrap('1');
+                                                    });
                                                 });
                                             })                                            
                                         })
@@ -58,9 +60,11 @@ describe('', ()=> {
                                                 cy.setStr('workStationDefinition_setRemark', newDeskRemark)
                                             ]).then(()=>{
                                                 cy.get('button#workstation_submit_btn').click().then(()=>{
-                                                    cy.rmDesk(building, floor, roomRemark, newDeskRemark).then(()=>{
-                                                        return cy.wrap('1');
-                                                    });
+                                                    cy.get('.Toastify__toast').should('be.visible').contains('Desk updated successfully').then(()=>{
+                                                        cy.rmDesk(building, floor, roomRemark, newDeskRemark).then(()=>{
+                                                            return cy.wrap('1');
+                                                        });
+                                                    })
                                                 })                                                
                                             })
                                         })

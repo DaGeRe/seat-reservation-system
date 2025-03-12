@@ -42,7 +42,7 @@ export default function EditRoom({ editRoomModal }) {
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${selectedRoom.id}`,
         headers,
         (_) => {
-          toast.success(t('roomType'));
+          toast.success(t('roomChangedSuccessfully'));
         },
         () => {console.log('Failed to handle room type change in EditRoom.jsx');},
           JSON.stringify({

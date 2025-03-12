@@ -9,7 +9,6 @@
     "email": "Email",
     "password": "Passwort",
 
-    "profile": "Profil",
     "admin": "Admin",
     "calendar": "Kalender",
     "freeDesks": "Freie Arbeitsplätze",
@@ -108,7 +107,7 @@
     "roomCreated": "Raum wurde erstellt",
     "roomDeleted": "Raum wurde gelöscht",
     "roomCreationFailed": "Raum konnte nicht erstellt werden",
-    "roomType": "Art des Zimmers erfolgreich aktualisiert",
+    "roomChangedSuccessfully": "Raum wurde erfolgreich geändert",
     "userCreated": "Nutzer wurde erfolgreich erstellt",
     "userCreationFailed": "Nutzer konnte nicht erstellt werden",
     "userUpdated": "Nutzer wurde erfolgreich geändert",
@@ -221,7 +220,7 @@
     ,"monthly":"Monatlich"
     ,"calculatedDates":"Berechnete Daten"
     ,"timerangeIsNotValid":"Zeitspanne ist nicht valide."
-    ,"endDateBiggerThanStartDate":"Ende des Datumsintervalls darf nicht größer als Anfang sein."
-    ,"endTimeBiggerThanStartTime":"Ende des Zeitintervalls darf nicht größer als Anfang sein."
+    ,"startDateBiggerThanStartDate":"Start des Datumsintervalls darf nicht größer als Ende sein."
+    ,"startTimeBiggerThanStartTime":"Start des Zeitintervalls darf nicht größer als Ende sein."
     ,"noDesksForRange":"Für die angegebene Zeitspanne/Gebäude konnte kein Arbeitsplatz gefunden werden."
 }

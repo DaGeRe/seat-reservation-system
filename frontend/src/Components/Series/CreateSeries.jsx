@@ -51,12 +51,12 @@ const CreateSeries = () => {
      */
     React.useEffect(() => {
         if (startDate > endDate) {
-            toast.error(t('endDateBiggerThanStartDate'));
+            toast.error(t('startDateBiggerThanStartDate'));
             setDates([]);
             return;
         }
         if (startTime > endTime) {
-            toast.error(t('endTimeBiggerThanStartTime'));
+            toast.error(t('startTimeBiggerThanStartTime'));
             setDates([]);
             return;
         }

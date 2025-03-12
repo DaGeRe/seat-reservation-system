@@ -9,9 +9,6 @@
     "email": "Email",
     "password": "Password",
 
-
-
-    "profile": "Profile",
     "admin": "Admin",
     "calendar": "Calendar",
     "freeDesks": "Free Desks",
@@ -109,7 +106,7 @@
     "roomCreated": "Room was created successfully",
     "roomDeleted": "Room was deleted successfully",
     "roomCreationFailed": "Room was not created",
-    "roomType": "Room type changed successfully",
+    "roomChangedSuccessfully": "Room was changed successfully",
     "userCreated": "User created successfully",
     "userCreationFailed": "User was not",
     "userUpdated": "User updated successfully",
@@ -222,5 +219,7 @@
     ,"monthly":"Monthly"
     ,"calculatedDates":"Calculated Dates"
     ,"timerangeIsNotValid":"Timerange is not valid."
+    ,"startDateBiggerThanStartDate":"Start date must not be greater than the end date."
+    ,"startTimeBiggerThanStartTime":"Start time must not be greater than the end time."
     ,"noDesksForRange":"For the specified time range and building no desk is available."
 }

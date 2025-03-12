@@ -443,7 +443,7 @@ Cypress.Commands.add('countBookings', (roomRemark) => {
     })
   })
 });
-Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot) => {
+Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot, check_for_success=false) => {
   cy.login().then(()=>{
     cy.visit('/floor').then(()=>{
         cy.url().should('contains', '/floor').then(()=> {
@@ -457,7 +457,16 @@ Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, sta
                 cy.get('div').contains(`${deskRemark}`).click().then(()=>{
                   cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
                     cy.get('button.submit-btn').click().then(()=>{
-                      return cy.wrap('1');
+                      if (!check_for_success) {
+                        return cy.wrap('1');
+                      }
+                      else {
+                        cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
+                          cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
+                            return cy.wrap('1');
+                          });
+                        });
+                      }    
                     })
                   })
                 })        

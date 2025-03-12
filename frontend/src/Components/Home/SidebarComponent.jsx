@@ -20,7 +20,7 @@ const SidebarComponent = () => {
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem('sidebarCollapsed') === 'true'
   );
-  const [seriesSubMenuOpen, setSeriesSubMenuOpen] = useState(false);
+  //const [seriesSubMenuOpen, setSeriesSubMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('');//useState('calendar');
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,24 +30,24 @@ const SidebarComponent = () => {
   useEffect(() => {
     if (location.pathname === '/admin') {
       setActiveTab('admin');
-      setSeriesSubMenuOpen(false);
+      //setSeriesSubMenuOpen(false);
     }
     if (location.pathname === '/home') {
       setActiveTab('calendar');
-      setSeriesSubMenuOpen(false);
+      //setSeriesSubMenuOpen(false);
     }
     if (location.pathname === '/mybookings') {
       setActiveTab('bookings');
-      setSeriesSubMenuOpen(false);
+      //setSeriesSubMenuOpen(false);
       
     }
     if (location.pathname === '/manageseries' || location.pathname === '/createseries') {
       setActiveTab('series');
-      setSeriesSubMenuOpen(true);
+      //setSeriesSubMenuOpen(true);
     }
     if (location.pathname === '/freeDesks') {
       setActiveTab('freeDesks');
-      setSeriesSubMenuOpen(false);
+      //setSeriesSubMenuOpen(false);
     }
 
   }, [location.pathname, activeTab]);
@@ -217,14 +217,14 @@ const SidebarComponent = () => {
             {t('bookings')}
           </MenuItem>
 
-          {/*<MenuItem
+          <MenuItem
             id='sidebar_freeDesks'
             active={activeTab === 'freeDesks'}
             icon={<LaptopIcon />}
             onClick={() => handleClick('freeDesks')}
           >
             {t('freeDesks')}
-          </MenuItem>*/}
+          </MenuItem>
 
  
             <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>

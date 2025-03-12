@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -10,9 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InfoModal from '../InfoModal/InfoModal.jsx';
-import {getRequest, postRequest, putRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import {getRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
-import { formatDate_yyyymmdd_to_ddmmyyyy } from "../misc/formatDate.js";
 import bookingPostRequest from '../misc/bookingPostRequest.js';
 const Booking = () => {
   const headers = useMemo(() => {
@@ -30,7 +28,7 @@ const Booking = () => {
   const [deskEvents, setDeskEvents] = useState([]);
   const [events, setEvents] = useState([]);
   const [event, setEvent] = useState({});
-  const [clickedDeskNumberInRoom, setClickedDeskNumberInRoom] = useState(null);
+  //const [clickedDeskNumberInRoom, setClickedDeskNumberInRoom] = useState(null);
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const [clickedDeskRemark, setClickedDeskRemark] = useState('');
   const helpText = t('helpCreateBooking');
@@ -250,7 +248,7 @@ const Booking = () => {
                     onClick={
                       () => {
                         setClickedDeskId(desk.id);
-                        setClickedDeskNumberInRoom(desk.deskNumberInRoom);
+                        //setClickedDeskNumberInRoom(desk.deskNumberInRoom);
                         setClickedDeskRemark(desk.remark)
                       }}
                   >

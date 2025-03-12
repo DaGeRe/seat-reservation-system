@@ -1,4 +1,4 @@
-import { BAUTZEN, CHEMNITZ, GROUND, ZWICKAU, FIRST, LEIPZIG, BAUTZNER_STR_19_C } from '../../constants';
+import { BAUTZEN, CHEMNITZ, FOURTH_ATTIC, GROUND, ZWICKAU, FIRST, LEIPZIG, BAUTZNER_STR_19_C, SECOND_ATTIC } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import {
@@ -27,8 +27,16 @@ const DeskTable = ({name, desks, submit_function}) =>{
                     floorName = t('thirdFloor_19c');
                 }
             }
-            else if (building === ZWICKAU || building === CHEMNITZ) {
+            else if (building === ZWICKAU) {
                 floorName = t('attic');
+            }
+            else if (building === CHEMNITZ) {
+                if (floor === SECOND_ATTIC) {
+                    floorName = t('second_attic');
+                }
+                else if (floor === FOURTH_ATTIC) {
+                    floorName = t('fourth_attic');
+                }
             }
             else if (building === BAUTZEN) {
         
@@ -70,7 +78,7 @@ const DeskTable = ({name, desks, submit_function}) =>{
                 <TableBody>
                     {
                         desks.map((desk) => (
-                            <TableRow id={name+'_'+desk.remark + desk.id} key={desk.id}>
+                            <TableRow id={name+'_'+desk.remark} key={desk.id}>
                                 <TableCell>{desk.remark}</TableCell>
                                 <TableCell>{desk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                 <TableCell>{desk.room.remark}</TableCell>

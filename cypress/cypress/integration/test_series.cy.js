@@ -20,7 +20,9 @@ describe('', ()=> {
                         ]).then(()=>{
                             cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                 cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
+                                    cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
                                         cy.countBookings(roomRemark).should('equal', 62);
+                                    });
                                 })
                             })
                         })
@@ -51,8 +53,10 @@ describe('', ()=> {
                                 .then(() => {
                                     cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                     cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                        cy.countBookings(roomRemark).then((cnt)=>{
-                                            cy.wrap(cnt).should('equal', should);
+                                        cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                            cy.countBookings(roomRemark).then((cnt)=>{
+                                                cy.wrap(cnt).should('equal', should);
+                                            })
                                         })
                                     })
                                 })
@@ -85,8 +89,10 @@ describe('', ()=> {
                             cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
                                 cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                     cy.get(`tr[id*="${deskRemark}"`).find('button').click().then(()=>{
-                                        cy.countBookings(roomRemark).then((cnt)=>{
-                                            cy.wrap(cnt).should('equal', should);
+                                        cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                            cy.countBookings(roomRemark).then((cnt)=>{
+                                                cy.wrap(cnt).should('equal', should);
+                                            })
                                         })
                                     })
                                 })

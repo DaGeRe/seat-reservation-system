@@ -2,7 +2,6 @@ import { formatDate_yyyymmdd_to_ddmmyyyy } from './formatDate';
 import { postRequest, putRequest, deleteRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
-import { useTranslation } from 'react-i18next';
 function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBookingFunction) {
     postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
@@ -28,7 +27,6 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
                                         end: new Date(`${dat.day}T${dat.end}`)
                                     }
                                     postBookingFunction(booking);
-                                    //navigate('/home', { state: { booking }, replace: true });
                                 },
                                 () => {console.log(`Failed to confirm booking in ${name}`);}
                             );
