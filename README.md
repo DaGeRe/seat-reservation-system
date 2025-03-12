@@ -53,6 +53,7 @@ To run the tests, you can run: `npm run test`
 ## Developing
 
 The three subprojects (frontend, backend and database) are separately developed as docker containers. They are deployed via docker compose. To do so run the script scripts/build_and_run.sh. 
+Additionaly an fourth project, namely cypress, is used to perform end to end tests.
 
 ### SSL
 To provide an secure communication between the softwarecomponents tls used.
@@ -65,7 +66,6 @@ actually happens with the desired server. The client certificate has an .crt ext
 and must be unencrypted.
 
 ### .env
-
 The .env file is located in the project root. It contains som variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
 Some variables are sensitiv, so the .env is not controlled by version control. Since the .env is crucial for the app the developer needs to take care of creating and maintaining this file.
 The most important variables are the following:

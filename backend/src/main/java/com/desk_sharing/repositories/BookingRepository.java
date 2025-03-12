@@ -91,52 +91,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	" and desk_id = (select desk_id from desks where remark=:deskRemark) " +
 	" and day=:day",
 	nativeQuery = true)
-	List<Booking> foo(@Param("email") String email, @Param("deskRemark") String deskRemark, @Param("day") Date day);
-
-	/*@Query(value="select bookings.booking_id, booking_in_progress, lock_expiry_time, desk_id day, begin, end, bookings.series_id  " 
-	+ "from bookings " 
-	+ "left join series on bookings.series_id=series.series_id"
-	, nativeQuery = true)
-	List<Booking> getEveryBooking();*/
-
-	//select current_timestamp, bookings.* from bookings where (day = '2024-09-14') and (CURRENT_TIMESTAMP not between begin and end)  ;
-/* 	@Query(value="select * from bookings where day=:day ")
-	List<Booking> getAllCurrentBookingsNow(
-		@Param("day") Date day, 
-		@Param("startTime") Time startTime,
-		@Param("endTime") Time endTime
-	); */
-/* 	@Query(value="select * from bookings where DATE(day)=DATE(CURRENT_TIMESTAMP)")
-	List<Booking> getAllBookingsToday();  */
-
-/* 	@Query(value="select * from bookings where room_id=:roomId;", nativeQuery = true)
-	List<Booking> getBookingsByRoomId(@Param("roomId") Long roomId); */
-
-	@Modifying
-	@Query(value="delete from bookings where room_id=:roomId", nativeQuery = true)
-	void deleteBookingsByRoomId(@Param("roomId") Long roomId);
-
-	@Modifying
-	@Query(value="delete from bookings where desk_id=:deskId", nativeQuery = true)
-	void deleteBookingsByDeskId(@Param("deskId") Long roomId);
-
-	@Modifying
-	@Query(value="delete from bookings where user_id=:userId", nativeQuery = true)
-	void deleteBookingsByUserId(@Param("userId") int userId);
+	List<Booking> selectBookingsByUserDeskAndDay(@Param("email") String email, @Param("deskRemark") String deskRemark, @Param("day") Date day);
 
 	@Modifying
 	@Query(value="delete from bookings where series_id=:seriesId" , nativeQuery = true)
 	void deleteBookingsBySeriesId(@Param("seriesId") long seriesId);
-
-	@Query(value="select * from bookings where room_id=:roomId;", nativeQuery = true)
-	List<Booking> getBookingsByRoomId(@Param("roomId") Long roomId);
 
 	@Query(value="select * from bookings where desk_id=:deskId", nativeQuery = true)
 	List<Booking> getBookingsByDeskId(@Param("deskId") Long roomId);
 
 	@Query(value="select * from bookings where user_id=:userId", nativeQuery = true)
 	List<Booking> getBookingsByUserId(@Param("userId") int roomId);
-
-/* 	@Query(value="select * from bookings where user_id=:userId", nativeQuery = true)
-	List<Booking> getBookingsByUserId(@Param("userId") int roomId); */
 }

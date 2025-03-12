@@ -69,7 +69,6 @@ services:
       - ${DATABASE_PORT}:3306
     volumes:
       - ${VOLUME}:/var/lib/mysql
-      - ${DB_LOGS}:/var/log/mysql/
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "localhost"]
       interval: 10s
@@ -82,10 +81,7 @@ networks:
   mynetwork:
     driver: bridge
 
+# Where the database is saved.
 volumes:
   mariadb_data_dev:
   mariadb_data:
-  logs_dev:
-  logs:
-  logs_dev_backend:
-  logs_backend:

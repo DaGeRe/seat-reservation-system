@@ -7,7 +7,6 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
         headers,
         (data) => {
-            console.log(data);
             confirmAlert({
                 title: t('desk') + " " + deskRemark,
                 message: t('date') + " " + formatDate_yyyymmdd_to_ddmmyyyy(bookingData.day) + " " + t("from") + " " + bookingData.begin + " " + t("to") + " " + bookingData.end,

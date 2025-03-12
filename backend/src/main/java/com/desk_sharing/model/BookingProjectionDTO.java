@@ -9,7 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class BookingProjectionDTO {
-    //select day, begin, end, email, desks.remark, rooms.remark, bookings.series_id 
     private Long booking_id;
     private Date day;
     private Time begin;
@@ -19,8 +18,4 @@ public class BookingProjectionDTO {
     private String roomRemark;
     private String building;
     private Long seriesId;
-
-    /*public BookingProjectionDTO(Date day, Time begin, Time end, String email, String deskRemark, String roomRemark, Long seriesId) {
-        
-    }*/
 }

@@ -111,11 +111,6 @@ public class RoomService {
         try {
             List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
             for (Desk desk: desksPerRoom) {
-                /*List<Booking> bookingsPerDesk = bookingRepository.getBookingsByDeskId(desk.getId());
-                for (Booking booking: bookingsPerDesk) {
-                    bookingRepository.deleteById(booking.getId());
-                }
-                deskRepository.deleteById(desk.getId());*/
                 deskService.deleteDeskFf(desk.getId());
             }
             roomRepository.deleteById(id);

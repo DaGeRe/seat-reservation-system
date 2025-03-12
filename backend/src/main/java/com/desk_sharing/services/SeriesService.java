@@ -129,25 +129,6 @@ public class SeriesService {
         return desks;
     }
 
-    /**
-     * Get all desks that have no bookings between an specified time range on days that are defined
-     * between an start- and endDate. Depending on the frequency the particular dates are calculated.
-     * @param rangeDTO  The object that contains the frequency, the start- and endtime and the start- and endDate.
-     * @return  An of desks that havent an booking between an time range on specified dates.
-     */
-    /*public List<Desk> getDesksForDates(RangeDTO rangeDTO) {
-        final List<Date> datesBetween = getDatesBetween(rangeDTO);
-        if (datesBetween.isEmpty()) {
-            return new ArrayList<Desk>();
-        }
-        final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
-            datesBetween, 
-            timestringToTime(rangeDTO.getStartTime()),
-            timestringToTime(rangeDTO.getEndTime())
-        );
-        return desks;
-    }*/
-
     public boolean createSeries(@RequestBody SeriesDTO seriesDTO) {
         UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
         if (userEntity == null) {
@@ -184,15 +165,6 @@ public class SeriesService {
             );
         }).toList();
         bookingRepository.saveAll(bookings);
-        /* */
-        /*return new SeriesDTO(
-            finalSeries.getId(),
-            seriesDTO.getRangeDTO(),
-            userEntity,
-            finalSeries.getRoom(), 
-            finalSeries.getDesk(), 
-            userEntity.getEmail(), 
-            bookings);*/
         return true;
     }
 

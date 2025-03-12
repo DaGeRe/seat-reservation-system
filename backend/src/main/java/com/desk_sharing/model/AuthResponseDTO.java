@@ -6,7 +6,6 @@ import lombok.Data;
 public class AuthResponseDTO {
     private String accessToken;
     private String tokenType = "Bearer ";
-    private String foo = "";
     private String email = "";
     private int id = -1;
     private String name = "";

@@ -329,7 +329,7 @@ public class BookingController {
     ) {
         final Date day = Date.valueOf(dayString);
 
-        final List<Booking> bookings = bookingRepository.foo(email,deskRemark,day);
+        final List<Booking> bookings = bookingRepository.selectBookingsByUserDeskAndDay(email,deskRemark,day);
         if (bookings.size() == 0) {
             return new ResponseEntity<String>("booking not found", HttpStatus.OK);
         }
@@ -341,14 +341,4 @@ public class BookingController {
             return new ResponseEntity<String>("misc error", HttpStatus.OK);
         }
     }
-
-/*     @GetMapping("/allbookingsfortoday")
-    public Integer getAllBookingsToday() {
-        return bookingService.getAllBookingsToday();
-    } */
-        
-/*     @GetMapping("/allbookingsfordate/{date}")
-    public List<Booking> getAllBookingsForDate(@PathVariable("date") Date date) {
-        return bookingService.getAllBookingsForDate(date);
-    } */
 }
