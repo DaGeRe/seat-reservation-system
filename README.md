@@ -54,6 +54,16 @@ To run the tests, you can run: `npm run test`
 
 The three subprojects (frontend, backend and database) are separately developed as docker containers. They are deployed via docker compose. To do so run the script scripts/build_and_run.sh. 
 
+### SSL
+To provide an secure communication between the softwarecomponents tls used.
+The backend (=spring app) has an server certificate. Part of the server certificate is an
+encrypted private key. This key is used to authenticate the backend to the frontend and to
+exchange an session key which encrypt the direct communication.
+The server certificate has the format .p12 and also includes the public key next to the private key and some meta informations like common name.
+Since the server certificate is self signed by an in house authority, the frontend (=react app) needs the public key of the backend. With this the client knows that the communication
+actually happens with the desired server. The client certificate has an .crt extension
+and must be unencrypted.
+
 ### .env
 
 The .env file is located in the project root. It contains som variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
