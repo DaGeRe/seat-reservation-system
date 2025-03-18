@@ -47,7 +47,7 @@
         </dependency>
 
         <!-- Testcontainers Core dependency -->
-        <dependency>
+        <!--dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>${testcontainers.version}</version>
@@ -58,23 +58,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
         <!-- Testcontainers JUnit 5 integration -->
-        <dependency>
+        <!--dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
 
         <!-- Specific Testcontainers module for MariaDB -->
-        <dependency>
+        <!--dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mariadb</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
 
         <!-- MariaDB JDBC driver (keep only one version) -->
         <dependency>

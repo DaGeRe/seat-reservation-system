@@ -2,4 +2,10 @@
 . ./.env
 container=${DATABASE_CONTAINER}
 echo "Connect to ${container}"
-docker exec -it ${container} db.sh
+#docker exec -it ${container} db.sh
+if [ -z "$1" ]; then
+    docker exec -it ${container} mariadb -p${PW_DB} mydatabase
+    #docker exec -it ${container} mariadb -p${PW_DB} mydatabase $1
+else 
+    docker exec -i ${container} mariadb -p${PW_DB} mydatabase < scripts/db/$1
+fi

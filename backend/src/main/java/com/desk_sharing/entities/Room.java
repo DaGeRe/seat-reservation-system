@@ -22,6 +22,11 @@ public class Room {
     @Column(name = "building", nullable = true)
     private String building;
 
+    
+    @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.REMOVE })
+    @JoinColumn(name = "floor_id", nullable = true)
+    private Floor floorObj;
+
     @Column(name = "x", nullable = false)
     private int x;
 

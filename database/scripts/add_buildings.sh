@@ -1,0 +1,1 @@
+mariadb -p${PW_DB} < add_roles.sql

@@ -444,7 +444,7 @@ Cypress.Commands.add('countBookings', (roomRemark) => {
   })
 });
 Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot, check_for_success=false) => {
-  cy.login().then(()=>{
+  //cy.login().then(()=>{
     cy.visit('/floor').then(()=>{
         cy.url().should('contains', '/floor').then(()=> {
         Cypress.Promise.all([
@@ -476,5 +476,5 @@ Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, sta
         })
       }) // wait        
     }) // visit
-  }) // login
+  //}) // login
 });
