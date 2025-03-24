@@ -8,6 +8,10 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
+/**
+ * This class bundles necessary properties of a booking.
+ * It is needed to enable an overview on every booking based on attributes (e.g.: the email address or the room remark).
+ */
 public class BookingProjectionDTO {
     private Long booking_id;
     private Date day;
