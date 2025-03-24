@@ -1,23 +1,23 @@
 import './FloorImage.css';
 import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
 import { styled } from '@mui/material/styles';
-import firstFloorImage from '../Assets/firstfloor.png';
-import secondFloorImage from '../Assets/secondfloor.png';
-import firstFloorC from '../Assets/bautzner_19_c_1.png';
-import secondFloorC from '../Assets/bautzner_19_c_2.png';
-import thirdFloorC from '../Assets/bautzner_19_c_3.png';
-import atticZwickau from '../Assets/Grundriss_AS-Zwickau.png';
-import firstAtticBautzen from '../Assets/Außenstelle Bautzen/1. Dachgeschoss.png';
-import secondAtticChmenitz from '../Assets/Belegungsplan AS_C_2_OG_01.png';
-import fourthAtticChmenitz from '../Assets/Belegungsplan AS_C_4_OG_01.png';
-import secondAtticLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
+import bautzner_ab_ground_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19a/Erdgeschoss.png';
+import bautzner_ab_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19a/1. Obergeschoss.png';
+import bautzner_c_first_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/1. Obergeschoss.png';
+import bautzner_c_second_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/2. Obergeschoss.png';
+import bautzner_c_third_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/3. Obergeschoss.png';
+import zwickau_attic_img from '../Assets/Außenstelle Zwickau/Dachgeschoss.png';
+import bautzen_first_attic_img from '../Assets/Außenstelle Bautzen/1. Dachgeschoss.png';
+import chemnitz_second_attic_img from '../Assets/Außenstelle Chemnitz/2. Dachgeschoss.png';
+import chemnitz_fourth_attic_img from '../Assets/Außenstelle Chemnitz/4. Dachgeschoss.png';
+import leipzig_second_attic_img from '../Assets/Außenstelle Leipzig/2. Dachgeschoss.png';
 import React, {useEffect, useCallback } from 'react';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import FloorSelector from '../FloorSelector.js';
 import { GROUND, FOURTH_ATTIC, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG, SECOND_ATTIC, ATTIC, FIRST_ATTIC, BAUTZEN } from '../../constants.js';
 /**
- * @param floor The current floor. (either First or Ground)
+ * @param floor The current floor.
  * @param headers The headers including the jwt.
  * @param clickedXPosition The x coordinate clicked on the map.
  * @param clickedYPosition The y coordinate clicked on the map.
@@ -109,38 +109,38 @@ export default function FloorImage(
         var floorImage = null;
         if (building === BAUTZNER_STR_19_A_B) {
             if (floor === GROUND)
-                floorImage = firstFloorImage;
+                floorImage = bautzner_ab_ground_floor_img;
             else if (floor === FIRST)
-                floorImage = secondFloorImage;
+                floorImage = bautzner_ab_upper_floor_img;
         }
         else if (building === BAUTZNER_STR_19_C) {
             if (floor === GROUND)
-                floorImage = firstFloorC;
+                floorImage = bautzner_c_first_upper_floor_img;
             else if (floor === FIRST)
-                floorImage = secondFloorC;
+                floorImage = bautzner_c_second_upper_floor_img;
             else if (floor === SECOND) {
-                floorImage = thirdFloorC;
+                floorImage = bautzner_c_third_upper_floor_img;
             }
         }
         else if (building === ZWICKAU) {
             if (floor === ATTIC)
-                floorImage = atticZwickau;
+                floorImage = zwickau_attic_img;
         }
         else if (building === CHEMNITZ) {
             if (floor === SECOND_ATTIC) {
-                floorImage = secondAtticChmenitz;
+                floorImage = chemnitz_second_attic_img;
             }
             else if (floor === FOURTH_ATTIC) {
-                floorImage = fourthAtticChmenitz;
+                floorImage = chemnitz_fourth_attic_img;
             }
         }
         else if (building === LEIPZIG) {
             if (floor === SECOND_ATTIC)
-                floorImage = secondAtticLeipzig;
+                floorImage = leipzig_second_attic_img;
         }
         else if (building === BAUTZEN) {
             if (floor === FIRST_ATTIC)
-                floorImage = firstAtticBautzen;
+                floorImage = bautzen_first_attic_img;
         }
 
         return (
