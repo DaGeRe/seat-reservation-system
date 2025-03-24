@@ -42,6 +42,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	@Query(value="select * from bookings where day=:myDate", nativeQuery = true)
 	List<Booking> getBookingForDate(@Param("myDate") Date myDate);
 
+	
 	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "

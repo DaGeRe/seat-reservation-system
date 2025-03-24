@@ -22,4 +22,18 @@ public class BookingProjectionDTO {
     private String roomRemark;
     private String building;
     private Long seriesId;
+
+    public BookingProjectionDTO(final Object[] object) {
+        this(
+            (Long) object[0],
+            (Date) object[1],
+            (Time) object[2],
+            (Time) object[3],
+            (String) object[4],
+            (String) object[5],
+            (String) object[6],
+            (String) object[7],
+            (Long) object[8]
+        );
+    }
 }
