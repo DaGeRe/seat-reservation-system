@@ -5,8 +5,10 @@ import java.sql.Time;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookingDTO {
     private Long id;
     private int userId;
@@ -15,7 +17,7 @@ public class BookingDTO {
     private Date day;
     private Time begin;
     private Time end;
-    
+
 
     
 
