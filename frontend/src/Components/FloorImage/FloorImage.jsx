@@ -7,7 +7,7 @@ import firstFloorC from '../Assets/bautzner_19_c_1.png';
 import secondFloorC from '../Assets/bautzner_19_c_2.png';
 import thirdFloorC from '../Assets/bautzner_19_c_3.png';
 import atticZwickau from '../Assets/Grundriss_AS-Zwickau.png';
-import firstAtticBautzen from '../Assets/bautzen_grundriss.png';
+import firstAtticBautzen from '../Assets/Außenstelle Bautzen/1. Dachgeschoss.png';
 import secondAtticChmenitz from '../Assets/Belegungsplan AS_C_2_OG_01.png';
 import fourthAtticChmenitz from '../Assets/Belegungsplan AS_C_4_OG_01.png';
 import secondAtticLeipzig from '../Assets/Belegungsplan_AS_Leipzig.png';
