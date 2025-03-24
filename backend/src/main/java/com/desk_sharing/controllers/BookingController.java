@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.Booking;
-import com.desk_sharing.entities.Desk;
-import com.desk_sharing.entities.Room;
-import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.BookingDTO;
-import com.desk_sharing.model.BookingDTOEnhanced;
 import com.desk_sharing.model.BookingEditDTO;
 import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.repositories.BookingRepository;
-import com.desk_sharing.repositories.DeskRepository;
-import com.desk_sharing.repositories.RoomRepository;
-import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
@@ -58,15 +50,6 @@ public class BookingController {
 
     @Autowired
     DeskService deskService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private DeskRepository deskRepository;
 
     private BookingDTO convertToDTO(Booking booking) {
         BookingDTO dto = new BookingDTO();
@@ -93,71 +76,6 @@ public class BookingController {
         } catch (IllegalArgumentException e) {
             // Handle missing room/desk errors
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    /**
-     * Only used for import of old data.
-     */
-    @PostMapping("/addBookingSimplified")
-    public ResponseEntity<BookingDTOEnhanced> addBookingSimplified(@RequestBody Map<String, Object> bookingData) {
-        userService.logging("addBookingSimplified( "+bookingData.toString()+" )");
-        final Date day = Date.valueOf(bookingData.get("day").toString());
-        final Time begin = Time.valueOf(bookingData.get("start").toString());
-        final Time end = Time.valueOf(bookingData.get("end").toString());
-        final String email = bookingData.get("email").toString();
-        final String deskRemark = bookingData.get("deskRemark").toString();
-        final String roomRemark = bookingData.get("roomRemark").toString();
-
-        final UserEntity userEntity = userRepository.findByEmail(email);
-        if (userEntity == null) {
-            userService.logging("in addBookingSimplified( ): cannot find user for email " + email);
-            //return ResponseEntity.status(500).body("User not found for " + email);
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "User not found for " + email), HttpStatus.BAD_REQUEST);
-        }
-        final Desk desk = deskRepository.findByDeskRemark(deskRemark);
-        if (desk == null) {
-            userService.logging("in addBookingSimplified( ): cannot find desk for remark " + deskRemark);
-            //return ResponseEntity.status(500).body("Desk not found for " + deskRemark);
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Desk not found for " + deskRemark), HttpStatus.BAD_REQUEST);
-        }
-        final Room room = roomRepository.findByRoomRemark(roomRemark);
-        if (room == null) {
-            userService.logging("in addBookingSimplified( ): cannot find room for remark " + roomRemark);
-            //return ResponseEntity.status(500).body("Room not found for " + roomRemark);
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Room not found for " + roomRemark), HttpStatus.BAD_REQUEST);
-        }
-
-        // Check if there is allready an booking.
-        final List<Booking> existingBookings = bookingRepository.getAllBookingsForPreventDuplicates(
-            room.getId(),
-            desk.getId(),
-            day,
-            begin,
-            end
-        );
-        if (existingBookings.size() > 0) {
-            userService.logging("in addBookingSimplified( ): booking already there ");
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there "), HttpStatus.BAD_REQUEST);
-        }
-
-        final Map<String, Object> new_bookingData = new HashMap<>();
-        new_bookingData.put("user_id", userEntity.getId());
-        new_bookingData.put("room_id", room.getId());
-        new_bookingData.put("desk_id", desk.getId());
-        new_bookingData.put("day", day);
-        new_bookingData.put("begin", begin);
-        new_bookingData.put("end", end);
-
-        try {
-            Booking savedBooking = bookingService.createBooking(new_bookingData);
-            BookingDTO bookingDTO = convertToDTO(savedBooking);
-            //return ResponseEntity.status(200).body("Booking done " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-            return new ResponseEntity<>(new BookingDTOEnhanced(bookingDTO, "Booking done "), HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            userService.logging("in addBookingSimplified( ): booking already there ");
-            //return ResponseEntity.status(500).body("Booking already there " + email + " | " + deskRemark + " | " + roomRemark + " | " + day + " | " + begin + " | " + end);
-            return new ResponseEntity<>(new BookingDTOEnhanced(null, "Booking already there "), HttpStatus.BAD_REQUEST);
         }
     }
     
