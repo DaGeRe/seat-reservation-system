@@ -2,7 +2,6 @@ package com.desk_sharing.model;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.List;
 
 import com.desk_sharing.entities.Booking;
 

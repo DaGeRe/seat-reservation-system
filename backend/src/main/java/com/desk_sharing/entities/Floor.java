@@ -25,4 +25,15 @@ public class Floor {
     @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.REMOVE })
     @JoinColumn(name = "building_id", nullable = false)
     private Building building;
+    
+    /**
+     * The default order the floors are shown.
+     */
+    @Column(name = "ordering", nullable = false)
+    private Integer ordering;
+    /**
+     * Some text for additionally remarks.
+     */
+    @Column(name = "remark", nullable = true)
+    private String remark;
 }

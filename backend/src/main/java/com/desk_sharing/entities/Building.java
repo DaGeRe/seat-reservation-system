@@ -24,4 +24,20 @@ public class Building {
 
     @Column(name = "address", nullable = true)
     private String address;
+
+    /**
+     * True if this building is used for desksharing.
+     */
+    @Column(name = "used", nullable = false)
+    private Boolean used;
+    /**
+     * The default order the buildings are shown.
+     */
+    @Column(name = "ordering", nullable = false)
+    private Integer ordering;
+    /**
+     * Some text for additionally remarks.
+     */
+    @Column(name = "remark", nullable = true)
+    private String remark;
 }
