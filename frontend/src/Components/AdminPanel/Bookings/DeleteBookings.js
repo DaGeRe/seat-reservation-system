@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
-import {roomToOption, optionToRoomId} from './RoomAndOption';
+import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function DeleteBookings({ deleteBookingsModal }) {
