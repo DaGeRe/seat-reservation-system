@@ -12,6 +12,7 @@ import InfoModal from '../InfoModal/InfoModal.jsx';
 import {getRequest} from '../RequestFunctions/RequestFunctions';
 import GenericBackButton from "../GenericBackButton.js";
 import bookingPostRequest from '../misc/bookingPostRequest.js';
+
 const Booking = () => {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
@@ -72,63 +73,26 @@ const Booking = () => {
   }, [i18n.language]);
 
   const loadBookings = useCallback(
-    /*async () => {
+    async () => {
       getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
         headers,
-        (bookingData) => {
+        (bookingsForDeskDTOs) => {
           // Parse the booking data and add events to tempArray
-          const bookingEvents = bookingData.map((booking) => ({
-            start: new Date(booking.day + 'T' + booking.begin),
-            end: new Date(booking.day + 'T' + booking.end),
-            title: booking.user.id.toString() === localStorage.getItem('userId')
+          const bookingEvents = bookingsForDeskDTOs.map((bookingsForDeskDTO) => ({
+            start: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.begin),
+            end: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.end),
+            title: bookingsForDeskDTO.user_id.toString() === localStorage.getItem('userId')
               ? ''
-              : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
-            id: 0,
+              : (bookingsForDeskDTO.visibility ? (bookingsForDeskDTO.name + ' ' + bookingsForDeskDTO.surname)  : t('anonymous')),
+            id: bookingsForDeskDTO.booking_id,
           }));
           setDeskEvents(bookingEvents);
-          setEvents(bookingEvents);       
+          setEvents(bookingEvents);
         },
         () => {console.log('Failed to fetch desks in Booking.jsx');}
       );
-    },
-    [clickedDeskId, t,  headers]
-  );*/
-  async () => {
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
-      headers,
-      (bookingsForDeskDTOs) => {
-        console.log('foo', bookingsForDeskDTOs[1].user_id, localStorage.getItem('userId'));
-        // Parse the booking data and add events to tempArray
-        const bookingEvents = bookingsForDeskDTOs.map((bookingsForDeskDTO) => ({
-          start: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.begin),
-          end: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.end),
-          title: bookingsForDeskDTO.user_id.toString() === localStorage.getItem('userId')
-            ? ''
-            : (bookingsForDeskDTO.visibility ? (bookingsForDeskDTO.name + ' ' + bookingsForDeskDTO.surname)  : t('anonymous')),
-          id: bookingsForDeskDTO.booking_id,
-        }));
-        setDeskEvents(bookingEvents);
-        setEvents(bookingEvents);
-
-        /*const bookingEvents = bookingData.map((booking) => ({
-          start: new Date(booking.day + 'T' + booking.begin),
-          end: new Date(booking.day + 'T' + booking.end),
-          title: booking.user.id.toString() === localStorage.getItem('userId')
-            ? ''
-            : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
-          id: 0,
-        }));
-        setDeskEvents(bookingEvents);
-        setEvents(bookingEvents);*/     
-        
-        console.log('bar', bookingsForDeskDTOs);
-      },
-      () => {console.log('Failed to fetch desks in Booking.jsx');}
-    );
-  },
-  [clickedDeskId, t,  headers]
+    }, [clickedDeskId, t,  headers]
 );
 
   useEffect(() => {

@@ -179,13 +179,8 @@ public class BookingController {
     @GetMapping("/bookingsForDesk/{id}")
     public ResponseEntity<List<BookingsForDeskDTO>> getBookingsForDesk(@PathVariable("id") Long desk_id) {
         userService.logging("getBookingsForDesk( " + desk_id  +" )");
-        try{
         final List<BookingsForDeskDTO> bookingsForDeskDTOs = bookingRepository.getBookingsForDesk(desk_id).stream().map(BookingsForDeskDTO::new).toList();
         return new ResponseEntity<>(bookingsForDeskDTOs, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @GetMapping("/date/{id}")
