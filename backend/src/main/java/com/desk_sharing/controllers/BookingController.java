@@ -24,6 +24,7 @@ import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.BookingDTO;
 import com.desk_sharing.model.BookingEditDTO;
 import com.desk_sharing.model.BookingProjectionDTO;
+import com.desk_sharing.model.BookingsForDeskDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.DeskService;
@@ -162,11 +163,29 @@ public class BookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
+    @Deprecated
     @GetMapping("/desk/{id}")
     public ResponseEntity<List<Booking>> getDeskBookings(@PathVariable("id") Long desk_id) {
         userService.logging("getDeskBookings( " + desk_id  +" )");
         List<Booking> bookings = bookingService.findByDeskId(desk_id);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
+    /**
+     * Get all bookings for an desk identified by id.
+     * @param desk_id   The id of the desk in question.
+     * @return  All bookings for an desk identified by id.
+     */
+    @GetMapping("/bookingsForDesk/{id}")
+    public ResponseEntity<List<BookingsForDeskDTO>> getBookingsForDesk(@PathVariable("id") Long desk_id) {
+        userService.logging("getBookingsForDesk( " + desk_id  +" )");
+        try{
+        final List<BookingsForDeskDTO> bookingsForDeskDTOs = bookingRepository.getBookingsForDesk(desk_id).stream().map(BookingsForDeskDTO::new).toList();
+        return new ResponseEntity<>(bookingsForDeskDTOs, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping("/date/{id}")

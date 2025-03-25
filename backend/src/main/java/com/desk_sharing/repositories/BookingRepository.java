@@ -20,6 +20,30 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByDeskIdAndDay(Long deskId, Date day);
 	List<Booking> findByRoomIdAndDay(Long roomId, Date day); 
 	
+	/**
+     * Get all bookings for an desk identified by id.
+	 * This is needed /desks if an user want to commit a booking. All other bookings
+ 	 * for this desk on the date are shown to prevent overlapping.
+ 
+     * @param desk_id   The id of the desk in question.
+     * @return  All bookings for an desk identified by id.
+     */
+/*	@Query(value = "select booking_id, day, begin, end, id, name, surname, visibility "
+		+ "from bookings " 
+		+ "join desks using(desk_id) "
+		+ "join users on bookings.user_id=users.id "
+		+ "where desk_id=:desk_id "
+		,nativeQuery = true)
+	public List<Object[]> getBookingsForDesk(@Param("desk_id") Long desk_id);
+	*/
+	@Query(value = "select booking_id, day, begin, end, id, name, surname, visibility "
+	+ "from bookings " 
+	+ "join desks on bookings.desk_id = desks.desk_id "
+	+ "join users on bookings.user_id=users.id "
+	+ "where bookings.desk_id=:desk_id "
+	,nativeQuery = true)
+public List<Object[]> getBookingsForDesk(@Param("desk_id") Long desk_id);
+
 	@Query(value = "SELECT * FROM bookings WHERE booking_id != :id AND room_id = :roomId AND desk_id=:deskId AND day=:day AND "
 			+ "((:startTime BETWEEN begin AND end) OR (:endTime BETWEEN begin AND end) OR "
 			+ "(begin >= :startTime AND begin < :endTime) OR (end > :startTime AND end <= :endTime))"

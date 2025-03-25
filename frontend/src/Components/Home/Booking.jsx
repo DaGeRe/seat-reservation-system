@@ -72,7 +72,7 @@ const Booking = () => {
   }, [i18n.language]);
 
   const loadBookings = useCallback(
-    async () => {
+    /*async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/desk/${clickedDeskId}`,
         headers,
@@ -93,7 +93,43 @@ const Booking = () => {
       );
     },
     [clickedDeskId, t,  headers]
-  );
+  );*/
+  async () => {
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
+      headers,
+      (bookingsForDeskDTOs) => {
+        console.log('foo', bookingsForDeskDTOs[1].user_id, localStorage.getItem('userId'));
+        // Parse the booking data and add events to tempArray
+        const bookingEvents = bookingsForDeskDTOs.map((bookingsForDeskDTO) => ({
+          start: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.begin),
+          end: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.end),
+          title: bookingsForDeskDTO.user_id.toString() === localStorage.getItem('userId')
+            ? ''
+            : (bookingsForDeskDTO.visibility ? (bookingsForDeskDTO.name + ' ' + bookingsForDeskDTO.surname)  : t('anonymous')),
+          id: bookingsForDeskDTO.booking_id,
+        }));
+        setDeskEvents(bookingEvents);
+        setEvents(bookingEvents);
+
+        /*const bookingEvents = bookingData.map((booking) => ({
+          start: new Date(booking.day + 'T' + booking.begin),
+          end: new Date(booking.day + 'T' + booking.end),
+          title: booking.user.id.toString() === localStorage.getItem('userId')
+            ? ''
+            : (booking.user.visibility ? (booking.user.name + ' ' + booking.user.surname)  : t('anonymous')),
+          id: 0,
+        }));
+        setDeskEvents(bookingEvents);
+        setEvents(bookingEvents);*/     
+        
+        console.log('bar', bookingsForDeskDTOs);
+      },
+      () => {console.log('Failed to fetch desks in Booking.jsx');}
+    );
+  },
+  [clickedDeskId, t,  headers]
+);
 
   useEffect(() => {
     desks.forEach(desk => {
