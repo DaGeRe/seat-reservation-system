@@ -85,11 +85,15 @@ public class BookingController {
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
+    /**
+     * Get every booking.
+     * This method is used in /admin to find all bookings.
+     * @return  Every booking.
+     */
     @GetMapping
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBooking() {
         userService.logging("getEveryBooking()");
         try {
-            //List<BookingProjectionDTO> bookings = bookingRepository.getEveryBooking();
             final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository.getEveryBooking().stream().map(BookingProjectionDTO::new).toList();//objectsToBookingProjectionDTOs(bookingRepository.getEveryBooking());
             return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
         }
@@ -100,6 +104,12 @@ public class BookingController {
 
     }
 
+    /**
+     * Return all bookings that are done by the user identified by email.
+     * This method is used in /admin to find all bookings done by an user.  
+     * @param email   The email address of the user.
+     * @return  All bookings that are done by the user identified by email.
+     */
     @GetMapping("email/{email}")
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForEmail(@PathVariable("email") String email) {
         userService.logging("getEveryBookingForEmail()");
@@ -107,6 +117,12 @@ public class BookingController {
         return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
     }
 
+    /**
+     * Return all bookings for an particular date provided as string.
+     * This method is used in /admin to find all bookings for an particular date..  
+     * @param date   The date as string.
+     * @return  All bookings for an date..
+     */
     @GetMapping("singledate/{date}")
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForDate(@PathVariable("date") String date) {
         userService.logging("getEveryBookingForDate()");
@@ -114,12 +130,25 @@ public class BookingController {
         return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
     }
 
+    /**
+     * Return all bookings for the desk identified by deskRemark.
+     * This method is used in /admin to find all bookings for the desk with deskRemark.  
+     * @param deskRemark    The remark of the desk in question.
+     * @return  All bookings of the desk identified by deskRemark.
+     */
     @GetMapping("deskRemark/{deskRemark}")
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForDeskRemark(@PathVariable("deskRemark") String deskRemark) {
         userService.logging("getEveryBookingForDeskRemark()");
         final List<BookingProjectionDTO> bookingProjectionDtos =  bookingRepository.getEveryBookingForDeskRemark("%" + deskRemark + "%").stream().map(BookingProjectionDTO::new).toList();
         return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
     }
+
+    /**
+     * Return all bookings in the room identified by roomRemark
+     * This method is used in /admin to find all bookings in a room with roomRemark.  
+     * @param roomRemark    The remark for the room in question.
+     * @return  All bookings in the room identified by roomRemark.
+     */
     @GetMapping("roomRemark/{roomRemark}")
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForRoomRemark(@PathVariable("roomRemark") String roomRemark) {
         userService.logging("getEveryBookingForRoomRemark()");
@@ -204,12 +233,6 @@ public class BookingController {
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
-    @PostMapping("/days")
-    public Dictionary<Date, Integer> getBookingsForDays(@RequestBody List<Date> days) {
-        userService.logging("getBookingsForDays( " + days.toString() + " )");
-        return bookingService.getAvailableDays(days);
-    }
-    
     @PostMapping("/getAllBookingsForDate")
     public Dictionary<Date, Integer> getAllBookingsForDate(@RequestBody List<Date> days) {       
         userService.logging("getAllBookingsForDate( " + days.toString() + " )");
