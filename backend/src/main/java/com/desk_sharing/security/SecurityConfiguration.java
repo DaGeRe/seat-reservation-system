@@ -46,10 +46,15 @@ public class SecurityConfiguration {
         return source;
     }
 
+    /**
+     * Specify the hierachy of roles.
+     * Here we have two roles. 
+     * ROLE_ADMIN also includes ROLE_USER while ROLE_ADMIN as more privileges.
+     * @return  The desired role hierachy.
+     */
     @Bean
     public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
-        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        final RoleHierarchyImpl hierarchy = RoleHierarchyImpl.fromHierarchy("ROLE_ADMIN > ROLE_USER");
         return hierarchy;
     }
 
