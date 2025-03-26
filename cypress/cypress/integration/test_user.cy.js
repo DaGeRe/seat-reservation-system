@@ -7,12 +7,14 @@ describe('', ()=>{
     const mail = 'foo@bar.com'
 
     beforeEach(()=>{
-        cy.getAmountOfUsersForMail(mail).then((ret)=>{
-            if (ret > 0) {
-                cy.deleteUser(mail).then(()=>{})
-            }
-            cy.addUser(mail, pw1, vorname1, nachname).then(()=>{return;});
-        })
+        cy.login().then(()=>{
+            cy.getAmountOfUsersForMail(mail).then((ret)=>{
+                if (ret > 0) {
+                    cy.deleteUser(mail).then(()=>{})
+                }
+                cy.addUser(mail, pw1, vorname1, nachname).then(()=>{return;});
+            })
+        });
     })
     
     it('test register with same mail', ()=>{
