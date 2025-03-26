@@ -7,10 +7,9 @@ import com.desk_sharing.entities.Booking;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class BookingDTO {
     private Long id;
     private int userId;

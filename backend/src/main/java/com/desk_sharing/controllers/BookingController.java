@@ -50,24 +50,12 @@ public class BookingController {
     @Autowired
     DeskService deskService;
 
-    private BookingDTO convertToDTO(Booking booking) {
-        BookingDTO dto = new BookingDTO();
-        dto.setId(booking.getId());
-        dto.setUserId(booking.getUser().getId());
-        dto.setRoomId(booking.getRoom().getId());
-        dto.setDeskId(booking.getDesk().getId());
-        dto.setDay(booking.getDay());
-        dto.setBegin(booking.getBegin());
-        dto.setEnd(booking.getEnd());
-        return dto;
-    }
-
     @PostMapping
     public ResponseEntity<BookingDTO> addBooking(@RequestBody Map<String, Object> bookingData) {
         userService.logging("addBooking( "+bookingData.toString()+" )");
         try {
-            Booking savedBooking = bookingService.createBooking(bookingData);
-            BookingDTO bookingDTO = convertToDTO(savedBooking);
+            final Booking savedBooking = bookingService.createBooking(bookingData);
+            final BookingDTO bookingDTO = new BookingDTO(savedBooking);
             return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
         } catch (NumberFormatException | DateTimeParseException e) {
             // Handle parsing errors
