@@ -74,7 +74,6 @@ const AdminPage = () => {
   const toggleDeleteBookingsModal = () => setIsDeleteBookingsOpen(!isDeleteBookingsOpen);
   const toggleOverviewBookingsModal = () => setIsOverviewBookingsOpen(!isOverviewBookingsOpen)
 
-
   return (
     <div className="adminhome-page">
       <SidebarComponent />
