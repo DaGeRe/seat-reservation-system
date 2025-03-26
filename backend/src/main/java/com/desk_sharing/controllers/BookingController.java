@@ -209,30 +209,10 @@ public class BookingController {
         userService.logging("getBookingsForDays( " + days.toString() + " )");
         return bookingService.getAvailableDays(days);
     }
+    
     @PostMapping("/getAllBookingsForDate")
     public Dictionary<Date, Integer> getAllBookingsForDate(@RequestBody List<Date> days) {       
         userService.logging("getAllBookingsForDate( " + days.toString() + " )");
         return bookingService.getAllBookingsForDates(days);
-    }
-
-    @PostMapping("/deleteByMailAndDateAndDeskRemark/{email}/{day}/{deskRemark}")
-    public ResponseEntity<String> deleteByMailAndDateAndDeskRemark(
-        @PathVariable("email") String email,
-        @PathVariable("day") String dayString,
-        @PathVariable("deskRemark") String deskRemark
-    ) {
-        final Date day = Date.valueOf(dayString);
-
-        final List<Booking> bookings = bookingRepository.selectBookingsByUserDeskAndDay(email,deskRemark,day);
-        if (bookings.size() == 0) {
-            return new ResponseEntity<String>("booking not found", HttpStatus.OK);
-        }
-        else if (bookings.size() == 1) {
-            bookingService.deleteBooking(bookings.get(0).getId());
-            return new ResponseEntity<String>("OK", HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<String>("misc error", HttpStatus.OK);
-        }
     }
 }
