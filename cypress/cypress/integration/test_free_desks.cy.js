@@ -51,16 +51,9 @@ describe('', ()=> {
                         cy.setStr('freeDesks_endTime', end),
                         cy.setStr('freeDesks_selectBuilding', building)
                     ]).then(()=>{
-                        //cy.wait(5000).then(()=>{
-                            cy.screenshot('0');
                         cy.get(`tr#freeDesks_${deskRemark}`).should('exist').find('button').click().then(()=>{
                             cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
-                                
-                                cy.screenshot('1');
-                                //cy.wait(3000).then(()=>{
-                                //    cy.screenshot('2');
                                 cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
-                                    //cy.screenshot('3');
                                     Cypress.Promise.all([
                                         cy.setStr('freeDesks_bookingDate', day),
                                         
