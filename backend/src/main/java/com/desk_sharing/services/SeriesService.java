@@ -62,7 +62,9 @@ public class SeriesService {
      * @param timestring    The timestring (e.g.: "11:30").
      * @return  The java.sql.Time (e.g.: 11:30:00.000000) transfered from timestring.
      */
-    private Time timestringToTime(final String timestring) {
+    private Time timestringToTime(String timestring) {
+        // In case of timestring="12:17:22 PM", we cut off the last three chars
+        timestring = timestring.contains("PM") || timestring.contains("AM") ? timestring.substring(0, timestring.length() - 3) : timestring;
         try { 
             final String formattedTimeString = timestring + ":00";
             return Time.valueOf(formattedTimeString);
