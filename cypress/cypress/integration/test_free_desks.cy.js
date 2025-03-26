@@ -53,6 +53,7 @@ describe('', ()=> {
                     ]).then(()=>{
                         cy.get(`tr#freeDesks_${deskRemark}`).should('exist').find('button').click().then(()=>{
                             cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
+                                cy.wait(500); // !
                                 cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
                                     Cypress.Promise.all([
                                         cy.setStr('freeDesks_bookingDate', day),

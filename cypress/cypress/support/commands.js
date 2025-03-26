@@ -1,6 +1,5 @@
 Cypress.Commands.add('selectTimeRange', (startSlot, endSlot) => {
   const basename = '.rbc-time-content';
-  const timeslotgroupname = 'div.rbc-time-slot';
 
   cy.get(basename).then(($el_base) => {
     const base_rect = $el_base[0].getBoundingClientRect();
