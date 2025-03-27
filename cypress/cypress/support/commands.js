@@ -104,23 +104,12 @@ Cypress.Commands.add('login', (mail='test@mail.com', pw='test') => {
           expect(response === null).to.equal(false);
           const statusCode = response.statusCode;
           expect(statusCode).to.equal(200);
-          const body = response.body;
+          //const body = response.body;
           const accessToken = response.body.accessToken;
           expect(accessToken === null).to.equal(false);
           cy.get('[data-testid="loginErrorMsg"]').should('not.exist').then(()=>{
             return cy.wrap('1');
           });
-          /*
-          cy.get('[data-testid="loginErrorMsg"]').should('not.exist');
-          // Token im lokalen Speicher speichern
-          cy.window().then((window) => {
-            window.localStorage.setItem('headers', JSON.stringify({
-            'Authorization': 'Bearer ' +  String(accessToken),
-            'Content-Type': 'application/json',
-            }));
-            return cy.wrap('1');
-          });
-          */
         });
       });
     }); 
@@ -128,148 +117,137 @@ Cypress.Commands.add('login', (mail='test@mail.com', pw='test') => {
 });
 
 Cypress.Commands.add('addUser', (mail, pw, vorname, nachname)=>{
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-        cy.url().should('contains', '/admin').then(()=> {
-            cy.get('button#userManagement').click().then(()=>{
-                cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
-                    cy.get('button#addEmployee').click().then(()=>{
-                        cy.get('h2#customized-dialog-title').should('be.visible').then(()=>{
-                            Cypress.Promise.all([
-                                cy.setStr('addEmployee-setEmail', mail),
-                                cy.setStr('addEmployee-setPassword', pw),
-                                cy.setStr('addEmployee-setName', vorname),
-                                cy.setStr('addEmployee-setSurname', nachname)
-                            ]).then(()=>{
-                                cy.contains('button', /SUBMIT/).click().then(()=>{
-                                  cy.get('.Toastify__toast').should('be.visible').contains('User created successfully').then(()=>{
-                                    return cy.wrap('1');
-                                  })
-                                });
-                            });;
-                        });
-                    });
-                });
-            });
-        });
-    });
-  //});
+  cy.visit('/admin').then(()=>{
+      cy.url().should('contains', '/admin').then(()=> {
+          cy.get('button#userManagement').click().then(()=>{
+              cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+                  cy.get('button#addEmployee').click().then(()=>{
+                      cy.get('h2#customized-dialog-title').should('be.visible').then(()=>{
+                          Cypress.Promise.all([
+                              cy.setStr('addEmployee-setEmail', mail),
+                              cy.setStr('addEmployee-setPassword', pw),
+                              cy.setStr('addEmployee-setName', vorname),
+                              cy.setStr('addEmployee-setSurname', nachname)
+                          ]).then(()=>{
+                              cy.contains('button', /SUBMIT/).click().then(()=>{
+                                cy.get('.Toastify__toast').should('be.visible').contains('User created successfully').then(()=>{
+                                  return cy.wrap('1');
+                                })
+                              });
+                          });;
+                      });
+                  });
+              });
+          });
+      });
+  });
 });
 
 Cypress.Commands.add('deleteUser', (mail)=>{
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#userManagement').click().then(()=>{
-            cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
-                cy.get('button#deleteEmployee').click().then(()=>{
-                    cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
-                        Cypress.Promise.all([
-                            cy.setStr('filterEmployee_handleFieldChange', 'email'),
-                            cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
-                            cy.setStr('filterEmployee_handleTextChange', mail)
-                        ]).then(()=>{
-                          cy.get('tr').find('button').click().then(()=>{   
-                            cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
-                              return cy.wrap('1');
-                            })
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#userManagement').click().then(()=>{
+          cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+              cy.get('button#deleteEmployee').click().then(()=>{
+                  cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+                      Cypress.Promise.all([
+                          cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                          cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                          cy.setStr('filterEmployee_handleTextChange', mail)
+                      ]).then(()=>{
+                        cy.get('tr').find('button').click().then(()=>{   
+                          cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
+                            return cy.wrap('1');
                           })
                         })
-                    })
-                })
-            })
-        })
+                      })
+                  })
+              })
+          })
       })
     })
-  //});
+  })
 });
 
 Cypress.Commands.add('getAmountOfUsersForMail', (mail) => {
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#userManagement').click().then(()=>{
-          cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
-            cy.get('button#deleteEmployee').click().then(()=>{
-              cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
-                Cypress.Promise.all([
-                  cy.setStr('filterEmployee_handleFieldChange', 'email'),
-                  cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
-                  cy.setStr('filterEmployee_handleTextChange', mail)
-                ]).then(()=>{
-                  cy.wait(1000).then(()=>{
-                    const length = Cypress.$(`tr`).length - 1;
-                    cy.get('button#deleteEmployee_handleClose').click().then(()=>{
-                      cy.logout().then(()=>{
-                        return cy.wrap(length);
-                      });
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#userManagement').click().then(()=>{
+        cy.get('div.employee-button-wrapper').should('be.visible').then(()=>{
+          cy.get('button#deleteEmployee').click().then(()=>{
+            cy.get('input#checkbox_handleCheckboxChange').click().then(()=>{
+              Cypress.Promise.all([
+                cy.setStr('filterEmployee_handleFieldChange', 'email'),
+                cy.setStr('filterEmployee_handleConditionChange', 'is_equal'),
+                cy.setStr('filterEmployee_handleTextChange', mail)
+              ]).then(()=>{
+                cy.wait(1000).then(()=>{
+                  const length = Cypress.$(`tr`).length - 1;
+                  cy.get('button#deleteEmployee_handleClose').click().then(()=>{
+                    cy.logout().then(()=>{
+                      return cy.wrap(length);
                     });
                   });
-                })
+                });
               })
             })
           })
         })
-      })   
-    })
-  //});
+      })
+    })   
+  })
 });
 
 Cypress.Commands.add('rmAllRooms', (building, floor, roomRemark)=>{
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#roomManagement').click().then(()=>{
-          cy.get('button#deleteRoom').click().then(()=>{
-            Cypress.Promise.all([
-              cy.setStr('floorselector_setBuilding', building),
-              cy.setStr('floorselector_setFloor', floor),
-            ]
-            ).then(()=>{
-              cy.wait(1000).then(()=>{
-                Cypress.$(`button#icon_button_${roomRemark}`).each((_, el)=>{
-                  cy.wrap(el).click().then(()=>{
-                    cy.wait(1000).then(()=>{
-                      const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
-                      if (0 !== delete_ff_btn_yes.length) {
-                        cy.get('button#delete_ff_btn_yes').click().then(()=>{
-                        })
-                      }
-                      
-                    })
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#roomManagement').click().then(()=>{
+        cy.get('button#deleteRoom').click().then(()=>{
+          Cypress.Promise.all([
+            cy.setStr('floorselector_setBuilding', building),
+            cy.setStr('floorselector_setFloor', floor),
+          ]
+          ).then(()=>{
+            cy.wait(1000).then(()=>{
+              Cypress.$(`button#icon_button_${roomRemark}`).each((_, el)=>{
+                cy.wrap(el).click().then(()=>{
+                  cy.wait(1000).then(()=>{
+                    const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
+                    if (0 !== delete_ff_btn_yes.length) {
+                      cy.get('button#delete_ff_btn_yes').click().then(()=>{
+                      })
+                    }
+                    
                   })
                 })
-                return cy.wrap('1');
               })
+              return cy.wrap('1');
             })
           })
         })
       })
     })
-  //})
+  })
 });
 
 Cypress.Commands.add('addDesk', (building, floor, roomRemark, deskRemark) => {
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      //cy.wait(1000).then(()=> {
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#roomManagement').click().then(()=>{
-          cy.get('button#addWorkstation').click().then(()=>{
-            Cypress.Promise.all([
-              cy.setStr('floorselector_setBuilding', building),
-              cy.setStr('floorselector_setFloor', floor)
-            ]).then(()=>{
-              cy.wait(1000).then(()=>{
-                cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
-                  cy.wait(1000).then(()=>{
-                    Cypress.Promise.all([
-                      cy.setStr('workstationDefinition_setEquipment', 'with equipment'),
-                      cy.setStr('workStationDefinition_setRemark', deskRemark)
-                    ]).then(()=>{
-                      cy.get('button#desk_submit_btn').click().then(()=>{
-                        return cy.wrap('1');
-                      })
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#roomManagement').click().then(()=>{
+        cy.get('button#addWorkstation').click().then(()=>{
+          Cypress.Promise.all([
+            cy.setStr('floorselector_setBuilding', building),
+            cy.setStr('floorselector_setFloor', floor)
+          ]).then(()=>{
+            cy.wait(1000).then(()=>{
+              cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
+                cy.wait(1000).then(()=>{
+                  Cypress.Promise.all([
+                    cy.setStr('workstationDefinition_setEquipment', 'with equipment'),
+                    cy.setStr('workStationDefinition_setRemark', deskRemark)
+                  ]).then(()=>{
+                    cy.get('button#desk_submit_btn').click().then(()=>{
+                      return cy.wrap('1');
                     })
                   })
                 })
@@ -279,38 +257,35 @@ Cypress.Commands.add('addDesk', (building, floor, roomRemark, deskRemark) => {
         })
       })
     })
-  //});
+  })
 });
 
 Cypress.Commands.add('rmDesk', (building, floor, roomRemark, deskRemark) => {
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      //cy.wait(1000).then(()=> {
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#roomManagement').click().then(()=>{
-          cy.get('button#deleteWorkstation').click().then(()=>{
-            Cypress.Promise.all([
-              cy.setStr('floorselector_setBuilding', building),
-              cy.setStr('floorselector_setFloor', floor)
-            ]).then(()=>{
-              cy.wait(1000).then(()=>{
-                cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
-                  cy.wait(1000).then(()=>{
-                    //cy.screenshot('a');
-                    cy.get('div#textfield_desk_in_room').click().then(()=>{
-                      cy.get('div').contains(`${deskRemark}`).click().then(()=>{
-                        cy.get('button#delete_workstation_button').click().then(()=>{
-                          cy.wait(1000).then(()=>{
-                            const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
-                            if (0 !== delete_ff_btn_yes.length) {
-                              cy.get('button#delete_ff_btn_yes').click().then(()=>{
-                                return cy.wrap('1');
-                              })
-                            }
-                            else {
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#roomManagement').click().then(()=>{
+        cy.get('button#deleteWorkstation').click().then(()=>{
+          Cypress.Promise.all([
+            cy.setStr('floorselector_setBuilding', building),
+            cy.setStr('floorselector_setFloor', floor)
+          ]).then(()=>{
+            cy.wait(1000).then(()=>{
+              cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
+                cy.wait(1000).then(()=>{
+                  //cy.screenshot('a');
+                  cy.get('div#textfield_desk_in_room').click().then(()=>{
+                    cy.get('div').contains(`${deskRemark}`).click().then(()=>{
+                      cy.get('button#delete_workstation_button').click().then(()=>{
+                        cy.wait(1000).then(()=>{
+                          const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
+                          if (0 !== delete_ff_btn_yes.length) {
+                            cy.get('button#delete_ff_btn_yes').click().then(()=>{
                               return cy.wrap('1');
-                            }
-                          })
+                            })
+                          }
+                          else {
+                            return cy.wrap('1');
+                          }
                         })
                       })
                     })
@@ -322,27 +297,25 @@ Cypress.Commands.add('rmDesk', (building, floor, roomRemark, deskRemark) => {
         })
       })
     })
-  //});
+  })
 });
 
 Cypress.Commands.add('addRoom', (building, floor, remark) => {
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      cy.url().should('contains','/admin').then(()=> {
-        cy.get('button#roomManagement').click().then(()=>{
-          cy.get('button#addRoom').click().then(()=>{
-            Cypress.Promise.all([
-              cy.setStr('floorselector_setBuilding', building),
-              cy.setStr('floorselector_setFloor', floor),
-              cy.setStr('roomDefinition_setType', 'Normal'),
-              cy.setStr('roomDefinition_setStatus', 'enable'),
-              cy.setStr('roomDefinition_setRemark', remark)
-            ]).then(()=> {
-              cy.get('div.image-container').click().then(()=>{
-                cy.wait(1000).then(()=>{
-                  cy.get('button#room_submit_btn').click().then(()=>{
-                    return cy.wrap('1');
-                  });
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains','/admin').then(()=> {
+      cy.get('button#roomManagement').click().then(()=>{
+        cy.get('button#addRoom').click().then(()=>{
+          Cypress.Promise.all([
+            cy.setStr('floorselector_setBuilding', building),
+            cy.setStr('floorselector_setFloor', floor),
+            cy.setStr('roomDefinition_setType', 'Normal'),
+            cy.setStr('roomDefinition_setStatus', 'enable'),
+            cy.setStr('roomDefinition_setRemark', remark)
+          ]).then(()=> {
+            cy.get('div.image-container').click().then(()=>{
+              cy.wait(1000).then(()=>{
+                cy.get('button#room_submit_btn').click().then(()=>{
+                  return cy.wrap('1');
                 });
               });
             });
@@ -350,7 +323,7 @@ Cypress.Commands.add('addRoom', (building, floor, remark) => {
         });
       });
     });
-  //});  
+  });
 });
 
 Cypress.Commands.add('buildUp', (building, floor, roomRemark, deskRemark)=>{
@@ -382,57 +355,53 @@ Cypress.Commands.add('tearDown', (building, floor, roomRemark)=>{
 });
 
 Cypress.Commands.add('rmRoom', (building, floor, remark)=>{
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-      cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#roomManagement').click().then(()=>{
-          cy.get('button#deleteRoom').click().then(()=>{
-            Cypress.Promise.all([
-              cy.setStr('floorselector_setBuilding', building),
-              cy.setStr('floorselector_setFloor', floor),
-            ]
-            ).then(()=>{
-              cy.wait(1000).then(()=>{
-                cy.get(`button#icon_button_${remark}`).click().then(()=>{ 
-                  cy.wait(1000).then(()=>{
-                    const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
-                    if (0 !== delete_ff_btn_yes.length) {
-                      cy.get('button#delete_ff_btn_yes').click().then(()=>{
-                        return cy.wrap('1');
-                      })
-                    }
-                    else {
+  cy.visit('/admin').then(()=>{
+    cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#roomManagement').click().then(()=>{
+        cy.get('button#deleteRoom').click().then(()=>{
+          Cypress.Promise.all([
+            cy.setStr('floorselector_setBuilding', building),
+            cy.setStr('floorselector_setFloor', floor),
+          ]
+          ).then(()=>{
+            cy.wait(1000).then(()=>{
+              cy.get(`button#icon_button_${remark}`).click().then(()=>{ 
+                cy.wait(1000).then(()=>{
+                  const delete_ff_btn_yes = Cypress.$('button#delete_ff_btn_yes');
+                  if (0 !== delete_ff_btn_yes.length) {
+                    cy.get('button#delete_ff_btn_yes').click().then(()=>{
                       return cy.wrap('1');
-                    }
-                  });
+                    })
+                  }
+                  else {
+                    return cy.wrap('1');
+                  }
                 });
               });
             });
           });
-        })
-      });
+        });
+      })
     });
-  //}); 
+  });
 });
 Cypress.Commands.add('countBookings', (roomRemark) => {
-  //cy.login().then(()=>{
-    cy.visit('/admin').then(()=>{
-        cy.url().should('contains', '/admin').then(()=> {
-        cy.get('button#bookingManagement').click().then(()=>{
-          cy.wait(2000).then(()=>{
-            cy.get('button#overviewBooking').click().then(()=>{
-              cy.wait(2000).then(()=>{
-                Cypress.Promise.all([
-                  cy.setStr('overviewBookings_setFilter','/roomRemark/'),
-                  cy.setStr('textfield_overviewbooking', roomRemark)
-                ]).then(()=>{
-                  cy.wait(3000).then(()=>{
-                    cy.get('table tr').then((rows) => {
-                      cy.wait(3000).then(()=>{
+  cy.visit('/admin').then(()=>{
+      cy.url().should('contains', '/admin').then(()=> {
+      cy.get('button#bookingManagement').click().then(()=>{
+        cy.wait(2000).then(()=>{
+          cy.get('button#overviewBooking').click().then(()=>{
+            cy.wait(2000).then(()=>{
+              Cypress.Promise.all([
+                cy.setStr('overviewBookings_setFilter','/roomRemark/'),
+                cy.setStr('textfield_overviewbooking', roomRemark)
+              ]).then(()=>{
+                cy.wait(3000).then(()=>{
+                  cy.get('table tr').then((rows) => {
+                    cy.wait(3000).then(()=>{
                       // -1 cause the head of the table also contains a row
-                        return cy.wrap(rows.length - 1);
-                      });
-                    })
+                      return cy.wrap(rows.length - 1);
+                    });
                   })
                 })
               })
@@ -441,40 +410,36 @@ Cypress.Commands.add('countBookings', (roomRemark) => {
         })
       })
     })
-  //})
+  })
 });
 Cypress.Commands.add('addBooking', (building, floor, roomRemark, deskRemark, start_timeslot, end_timeslot, check_for_success=false) => {
-  //cy.login().then(()=>{
-    cy.visit('/floor').then(()=>{
-        cy.url().should('contains', '/floor').then(()=> {
-        Cypress.Promise.all([
-          cy.setStr('floorselector_setBuilding', building),
-          cy.setStr('floorselector_setFloor', floor)
-        ]).then(()=>{
-          //cy.wait(1000).then(()=>{
-            cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
-              //cy.wait(1000).then(()=>{
-                cy.get('div').contains(`${deskRemark}`).click().then(()=>{
-                  cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
-                    cy.get('button.submit-btn').click().then(()=>{
-                      if (!check_for_success) {
-                        return cy.wrap('1');
-                      }
-                      else {
-                        cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
-                          cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
-                            return cy.wrap('1');
-                          });
+  cy.visit('/floor').then(()=>{
+      cy.url().should('contains', '/floor').then(()=> {
+      Cypress.Promise.all([
+        cy.setStr('floorselector_setBuilding', building),
+        cy.setStr('floorselector_setFloor', floor)
+      ]).then(()=>{
+          cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
+              cy.get('div').contains(`${deskRemark}`).click().then(()=>{
+                cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
+                  cy.get('button.submit-btn').click().then(()=>{
+                    if (!check_for_success) {
+                      return cy.wrap('1');
+                    }
+                    else {
+                      cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
+                        cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
+                          return cy.wrap('1');
                         });
-                      }    
-                    })
+                      });
+                    }    
                   })
-                })        
-              //})                
-            })
-          //})
-        })
-      }) // wait        
-    }) // visit
-  //}) // login
+                })
+              })        
+            //})                
+          })
+        //})
+      })
+    }) // wait        
+  }) // visit
 });
