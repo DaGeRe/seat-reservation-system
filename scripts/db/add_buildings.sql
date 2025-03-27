@@ -46,10 +46,10 @@ update rooms set floor_id=(select floor_id from floors where name = 'Erdgeschoss
 update rooms set floor_id=(select floor_id from floors where name = '1. Obergeschoss' and building_id = (select building_id from buildings where name = 'Hauptstelle Dresden,  Bautzner Str.19a/b' limit 1) limit 1) where remark in ('Raum 145','Raum 117','Raum 119','Raum 121','Raum 128','Raum 134','Raum 133') and building = 'Bautzner Str. 19a/b';
 
 -- Update rooms for 'Dachgeschoss' in 'Außenstelle Zwickau'
-update rooms set floor_id=(select floor_id from floors where name = 'Dachgeschoss' and building_id = (select building_id from buildings where name = 'Außenstelle Zwickau' limit 1) limit 1) where remark = '' and building = 'Zwickau';
+update rooms set floor_id=(select floor_id from floors where name = 'Dachgeschoss' and building_id = (select building_id from buildings where name = 'Außenstelle Zwickau' limit 1) limit 1) where remark in ('440', '441', '442', '402', '403') and building = 'Zwickau';
 
 -- Update rooms for '2. Dachgeschoss' in 'Außenstelle Chemnitz'
-update rooms set floor_id=(select floor_id from floors where name = '2. Dachgeschoss' and building_id = (select building_id from buildings where name = 'Außenstelle Chemnitz' limit 1) limit 1) where remark in ('203', '206', '208', '212') and building = 'Chemnitz';
+update rooms set floor_id=(select floor_id from floors where name = '2. Dachgeschoss' and building_id = (select building_id from buildings where name = 'Außenstelle Chemnitz' limit 1) limit 1) where remark in ('203', '205', '206', '208', '212') and building = 'Chemnitz';
 
 -- Update rooms for '4. Dachgeschoss' in 'Außenstelle Chemnitz'
 update rooms set floor_id=(select floor_id from floors where name = '4. Dachgeschoss' and building_id = (select building_id from buildings where name = 'Außenstelle Chemnitz' limit 1) limit 1) where remark in ('410', '409') and building = 'Chemnitz';
