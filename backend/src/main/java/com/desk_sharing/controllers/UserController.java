@@ -19,6 +19,7 @@ import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.services.UserService;
 import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.AuthResponseDTO;
+import com.desk_sharing.model.DefaultBuildingAndFloorDTO;
 import com.desk_sharing.model.LoginDto;
 import com.desk_sharing.entities.Role;
 import com.desk_sharing.security.JWTGenerator;
@@ -55,6 +56,11 @@ public class UserController {
         userService.logging("getAllUsers()");
         return userService.getAllUsers();
     }
+
+    /*@GetMapping("getDefaultBuildingAndFloorForUserId")
+    public ResponseEntity<DefaultBuildingAndFloorDTO> getDefaultBuildingAndFloorForUserId(@PathVariable("id") int id) {
+
+    }*/
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
