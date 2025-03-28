@@ -157,23 +157,23 @@ const FreeDesks = () => {
                 <br/><br/>
                 <div>
                     <FormControl id='freeDesks_selectBuilding' required={true} fullWidth>
-                    <InputLabel id='demo-simple-select-label'>{t('building')}</InputLabel>
-                    <Select
-                        value={selectedBuilding} 
-                        label={t('Building')}
-                        onChange={(e)=>{
-                            setSelectedBuilding(e.target.value);
-                        }}
-                    >
-                        <MenuItem value={t('any')}>{t('any')}</MenuItem>
-                        <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B}</MenuItem>
-                        <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C}</MenuItem>
-                        <MenuItem value={ZWICKAU}>{ZWICKAU}</MenuItem>
-                        <MenuItem value={CHEMNITZ}>{CHEMNITZ}</MenuItem>
-                        <MenuItem value={LEIPZIG}>{LEIPZIG}</MenuItem>
-                        <MenuItem value={BAUTZEN}>{BAUTZEN}</MenuItem>
-                    </Select>
-                </FormControl>
+                        <InputLabel id='demo-simple-select-label'>{t('building')}</InputLabel>
+                        <Select
+                            value={selectedBuilding} 
+                            label={t('Building')}
+                            onChange={(e)=>{
+                                setSelectedBuilding(e.target.value);
+                            }}
+                        >
+                            <MenuItem value={t('any')}>{t('any')}</MenuItem>
+                            <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B}</MenuItem>
+                            <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C}</MenuItem>
+                            <MenuItem value={ZWICKAU}>{ZWICKAU}</MenuItem>
+                            <MenuItem value={CHEMNITZ}>{CHEMNITZ}</MenuItem>
+                            <MenuItem value={LEIPZIG}>{LEIPZIG}</MenuItem>
+                            <MenuItem value={BAUTZEN}>{BAUTZEN}</MenuItem>
+                        </Select>
+                    </FormControl>
                 <br/><br/>
                 </div>
                 {

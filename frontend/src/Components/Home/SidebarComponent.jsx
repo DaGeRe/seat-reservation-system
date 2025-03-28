@@ -11,9 +11,9 @@ import LogoutConfirmationModal from "./LogoutConfirmationModal";
 import { CiLogout } from 'react-icons/ci';
 import { MdGTranslate } from 'react-icons/md';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import { IoIosCheckbox } from 'react-icons/io';
-import { IoIosAlbums } from 'react-icons/io';
+import { IoIosCheckbox, IoIosSettings, IoIosAlbums } from 'react-icons/io';
 import LaptopIcon from '@mui/icons-material/Laptop';
+import Settings from "./Settings";
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -25,6 +25,7 @@ const SidebarComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   
   useEffect(() => {
@@ -85,6 +86,10 @@ const SidebarComponent = () => {
         setIsChangePasswordModalOpen(true);
         break;
 
+      case 'settings':
+        setIsSettingsModalOpen(true);
+        break;
+
       case "logout":
         setIsLogoutConfirmationOpen(true);
         break;
@@ -98,6 +103,10 @@ const SidebarComponent = () => {
     setIsChangePasswordModalOpen(false);
   };
 
+  const handleCloseSettingsModal = () => {
+    setIsSettingsModalOpen(false);
+  };
+
   const handleCloseLogoutConfirmationModal = () => {
     setIsLogoutConfirmationOpen(false);
   };
@@ -107,6 +116,11 @@ const SidebarComponent = () => {
     setIsChangePasswordModalOpen(false);
   };
   
+  const handleSettingsSubmit = (event) => {
+    event.preventDefault();
+    setIsSettingsModalOpen(false);
+  };
+
   const handleLogoutConfirmed = () => {
     localStorage.removeItem("userId"); // Clear the user's session
     navigate("/", { replace: true }); // Redirect to login page
@@ -245,21 +259,30 @@ const SidebarComponent = () => {
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
 
-        </Menu>
-        <Menu>
+        {/*</Menu>
+        <Menu>*/}
+
+          <MenuItem id='sidebar_settings' icon={<IoIosSettings/>} onClick={
+            () => handleClick('settings')}
+          >{t('settings')}</MenuItem>
+          
+            
           <MenuItem id='sidebar_changePassword' icon={<FaLock />} onClick={() => handleClick('changePassword')}>{t('password')}</MenuItem>
           <MenuItem id='sidebar_logout' icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
         </Menu>
       </Sidebar>
 
-      {/* Change Password Modal */}
+      <Settings
+        isOpen={isSettingsModalOpen}
+        onClose={handleCloseSettingsModal}
+      />
+
       <ChangePassword
         isOpen={isChangePasswordModalOpen}
         onClose={handleCloseChangePasswordModal}
         onSubmit={handleChangePasswordSubmit}
       />
 
-      {/* Logout Confirmation Modal */}
       <LogoutConfirmationModal
         isOpen={isLogoutConfirmationOpen}
         onClose={handleCloseLogoutConfirmationModal}

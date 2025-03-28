@@ -6,7 +6,7 @@ import { putRequest } from '../RequestFunctions/RequestFunctions';
 const ChangePassword = ({ isOpen, onClose }) => {
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const { t } = useTranslation();
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem('userId');
   const [formData, setFormData] = useState({
     prevPassword: "",
     newPassword: "",
