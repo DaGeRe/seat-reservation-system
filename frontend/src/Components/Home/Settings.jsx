@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { FormControl, InputLabel, Select, MenuItem , Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import { useTranslation } from "react-i18next";
 import { getRequest } from "../RequestFunctions/RequestFunctions";
+import { toast } from 'react-toastify';
 
 /**
  * This component allows the user to set its default building and default floor.
@@ -22,9 +23,28 @@ const Settings = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
 
     /**
+     * Fetch all default building and floor for current user.
+     */
+    React.useEffect(() => {
+      getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${localStorage.getItem('userId')}`, 
+          headers,
+          ((floor)=>{            
+            setDefaultBuilding(floor.building)
+            setDefaultFloor(floor);
+          }),
+          () => {
+              console.log('Error fetching default building and floor in Settings.jsx');
+          },
+      );
+    },[headers, isOpen, setDefaultFloor]);
+
+
+    /**
      * Fetch all buildings to select the default building.
      */
     React.useEffect(() => {
+      if (defaultFloor === '' || defaultBuilding === '')
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/buildings/all`, 
             headers,
@@ -33,7 +53,7 @@ const Settings = ({ isOpen, onClose }) => {
                 console.log('Error fetching buildings in Settings.jsx');
             },
         );
-    },[headers, setBuildings]);
+    },[headers, setBuildings, defaultBuilding, defaultFloor]);
 
     /**
      * Fetch all floors for the default building to set as default floor.
@@ -41,40 +61,57 @@ const Settings = ({ isOpen, onClose }) => {
     React.useEffect(() => {
       if (!defaultBuilding)
         return;
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/floors/getAllFloorsForBuildingId/${Number(defaultBuilding.building_id)}`, 
-        headers,
-        setFloors,
-        () => {
-            console.log('Error fetching floors in Settings.jsx');
-        },
-      );
-    },[headers, defaultBuilding, setFloors]);
+      if (defaultFloor === '' || defaultBuilding === '')
+        console.log(2);
+        getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/floors/getAllFloorsForBuildingId/${Number(defaultBuilding.building_id)}`, 
+          headers,
+          setFloors,
+          () => {
+              console.log('Error fetching floors in Settings.jsx');
+          },
+        );
+    },[headers, defaultBuilding, defaultFloor, setFloors]);
 
     /**
      * Sends the default building and floor to database.
      */
     function saveDefaults() {
-      console.log(defaultBuilding.name, defaultFloor.name);
+      getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/users/setDefaulFloorForUserId/${localStorage.getItem('userId')}/${defaultFloor.floor_id}`, 
+        headers,
+        (ret => {
+          if (ret === true) {
+            toast.success(t('settingsUpdated'));
+            onClose()
+          } else {
+            toast.error(t('settingsUpdatedFail'));
+          }
+        }),
+        () => {
+          console.log('Failing to put defaults in Settings.jsx.');
+        }
+      );
     };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>{t('settings')}</DialogTitle>
       <DialogContent>
+        <br/>
         <FormControl id='settings_setBuilding' required size='small' fullWidth>
             <InputLabel>{t('building')}</InputLabel>
             <Select
                 id='settings_select-building'
-                value={defaultBuilding}
+                value={defaultBuilding?.building_id || ''}
                 label={t('building')}
                 onChange={(e) => {
                     setDefaultFloor('');
-                    setDefaultBuilding(e.target.value);
+                    setDefaultBuilding(buildings.find(b => b.building_id === e.target.value) || '');
                 }}
             >
                 {buildings.map(e => {
-                    return <MenuItem key={e.building_id} value={e}>{e.name}</MenuItem>;
+                    return <MenuItem id={`settings_building_${e.building_id}`} key={e.building_id} value={e.building_id}>{e.name}</MenuItem>;
                 })}
             </Select>
         </FormControl>
@@ -83,23 +120,23 @@ const Settings = ({ isOpen, onClose }) => {
             <InputLabel>{t('floor')}</InputLabel>
             <Select
                 id='settings_select-floor'
-                value={defaultFloor}
+                value={defaultFloor?.floor_id || ''}
                 label={t('floor')}
                 onChange={(e) => {
-                    setDefaultFloor(e.target.value);
+                  setDefaultFloor(floors.find(f => f.floor_id === e.target.value) || '');
                 }}
             >
                 {floors.map(e => {
-                    return <MenuItem key={e.floor_id} value={e}>{e.name}</MenuItem>;
+                    return <MenuItem id={`settings_floor_${e.floor_id}`} key={e.floor_id} value={e.floor_id}>{e.name}</MenuItem>;
                 })}
             </Select>
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button id='logoutConfirmationModal_onClose'  onClick={onClose} color='primary'>
+        <Button id='logoutConfirmationModal_onClose' onClick={onClose} color='primary'>
           {t('cancel')}
         </Button>
-        <Button id='logoutConfirmationModal_onConfirm' onClick={saveDefaults} color='primary' autoFocus>
+        <Button id='logoutConfirmationModal_onConfirm' disabled={defaultBuilding === '' || defaultFloor === ''} onClick={saveDefaults} color='primary' autoFocus>
           {t('submit')}
         </Button>
       </DialogActions>

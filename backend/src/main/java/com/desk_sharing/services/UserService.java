@@ -14,9 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.BookingRepository;
+import com.desk_sharing.repositories.FloorRepository;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.model.FloorDTO;
 import com.desk_sharing.controllers.BookingController;
 import com.desk_sharing.entities.Booking;
+import com.desk_sharing.entities.Floor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,8 @@ public class UserService  {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private FloorRepository floorRepository;
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -62,6 +66,31 @@ public class UserService  {
         return userRepository.findByEmail(email);
     }
 
+    /**
+     * Set the default floor for the user identified by id.
+     * @param id    The user id.
+     * @param floor_id  The id of the new default floor.
+     * @return  True if everything works.
+     */
+    public boolean setDefaulFloorForUserId(final int id, final Long floor_id) {
+        final UserEntity user = userRepository.getReferenceById(id);
+        final Floor managedFloor = floorRepository.findById(floor_id)
+        .orElseThrow(() -> new EntityNotFoundException("Floor with id: " + floor_id + " not found"));
+        if (managedFloor == null) 
+            return false;
+        user.setDefault_floor(managedFloor);
+        userRepository.save(user);
+        return true;
+    }
+
+    public Floor getDefaultFloorForUserId(final int id) {
+        final FloorDTO floorDTO = userRepository.getDefaultFloorForUserId(id).stream().map(FloorDTO::new).toList().get(0);
+        final Floor managedFloor = floorRepository.findById(floorDTO.getFloor_id())
+            .orElseThrow(() -> new EntityNotFoundException("Floor with id: " + floorDTO.getFloor_id() + " not found"));
+        if (managedFloor == null) 
+            return null;
+        return managedFloor;
+    }
     public int changeVisibility(int id) {
         try {
             UserEntity user = userRepository.getReferenceById(id);

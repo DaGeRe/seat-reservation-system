@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.services.UserService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.AuthResponseDTO;
-import com.desk_sharing.model.DefaultBuildingAndFloorDTO;
 import com.desk_sharing.model.LoginDto;
+import com.desk_sharing.entities.Floor;
 import com.desk_sharing.entities.Role;
 import com.desk_sharing.security.JWTGenerator;
 import com.desk_sharing.repositories.UserRepository;
@@ -31,6 +34,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Collections;
 
 @RestController
@@ -57,10 +61,34 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    /*@GetMapping("getDefaultBuildingAndFloorForUserId")
-    public ResponseEntity<DefaultBuildingAndFloorDTO> getDefaultBuildingAndFloorForUserId(@PathVariable("id") int id) {
+    @GetMapping("getDefaultFloorForUserId/{id}")
+    public ResponseEntity<Floor> getDefaultFloorForUserId(@PathVariable("id") int id) {
+        userService.logging("getDefaultFloorForUserId( " + id + " )");
+        try {
+            final Floor floor = userService.getDefaultFloorForUserId(id);
+            return new ResponseEntity<>(floor, HttpStatus.OK);
+        } catch (IndexOutOfBoundsException e) {
+            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) ERROR:  IndexOutOfBoundsException");
+            e.printStackTrace();
+            return new ResponseEntity<>(new Floor(), HttpStatus.CONFLICT);
+        } catch (EntityNotFoundException e) {
+            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) ERROR:  EntityNotFoundException");
+            e.printStackTrace();
+            return new ResponseEntity<>(new Floor(), HttpStatus.NOT_FOUND);
+        }
+    }
 
-    }*/
+    @GetMapping("setDefaulFloorForUserId/{id}/{floor_id}")
+    public boolean setDefaulFloorForUserId(@PathVariable("id") int id, @PathVariable("floor_id") Long floor_id) {
+        userService.logging("setDefaulFloorForUserId( " + id + ", " + floor_id + " )");
+        try {
+            return userService.setDefaulFloorForUserId(id, floor_id);
+        }
+        catch (EntityNotFoundException e) {
+            userService.logging(e.getMessage());
+            return false;
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {

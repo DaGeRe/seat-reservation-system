@@ -1,14 +1,14 @@
 package com.desk_sharing.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 @Table(name = "floors")
 public class Floor {
     @Id
@@ -36,4 +36,19 @@ public class Floor {
      */
     @Column(name = "remark", nullable = true)
     private String remark;
+
+    /*public Floor(Object[] obj) {
+        this()
+
+
+
+        this(
+            (Long)obj[0],
+            (String)obj[1],
+            (String)obj[2],
+            (Building)obj[3],
+            (Integer)obj[4],
+            (String)obj[5]
+        );
+    }*/
 }

@@ -115,11 +115,6 @@ const SidebarComponent = () => {
     event.preventDefault();
     setIsChangePasswordModalOpen(false);
   };
-  
-  const handleSettingsSubmit = (event) => {
-    event.preventDefault();
-    setIsSettingsModalOpen(false);
-  };
 
   const handleLogoutConfirmed = () => {
     localStorage.removeItem("userId"); // Clear the user's session

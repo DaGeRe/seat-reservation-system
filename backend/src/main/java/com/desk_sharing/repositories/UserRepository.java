@@ -1,5 +1,7 @@
 package com.desk_sharing.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +12,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findByEmail(String email);
     boolean existsByEmail(String email);
 
-    @Query(value="select  from buildings where building_id = :building_id and used=True ", nativeQuery=true)
-    public Object[] getDefaultBuildingAndFloorForUserId(@Param("building_id") Integer id);
+    @Query(value="select floors.* from users join floors on default_floor_id=floor_id where id=:id", nativeQuery=true)
+    public List<Object[]> getDefaultFloorForUserId(@Param("id") Integer id);
+
 }

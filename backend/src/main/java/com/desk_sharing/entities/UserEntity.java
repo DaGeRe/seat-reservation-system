@@ -23,10 +23,9 @@ public class UserEntity {
     private String surname;
     private boolean visibility;
     private boolean admin;
-    @Column(name = "default_building_id", nullable = true)
-    public Long default_building_id;
-    @Column(name = "default_floor_id", nullable = true)
-    public Long default_floor_id;
+    @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.REMOVE })
+    @JoinColumn(name = "default_floor_id", nullable = true)
+    private Floor default_floor;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
