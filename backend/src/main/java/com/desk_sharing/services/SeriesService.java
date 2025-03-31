@@ -131,6 +131,22 @@ public class SeriesService {
         return desks;
     }
 
+    /**
+     * Calculates list of desks that are available at each date for the specified timerange and which belongs to the building identified by building_id.
+     * @param building_id The id of the building in question.
+     * @param datesAndTimesDTO  Contains a list of dates and an start and endtime for each date.
+     * @return  A list of desks that are available at each date for the specified timerange for the specified building.
+     */
+    public List<Desk> desksForBuildingAndDatesAndTimes(Long building_id, DatesAndTimesDTO datesAndTimesDTO) {
+        final List<Desk> desks = deskRepository.desksForBuildingAndDatesAndTimes(
+            building_id,
+            datesAndTimesDTO.getDates(), 
+            timestringToTime(datesAndTimesDTO.getStartTime()),
+            timestringToTime(datesAndTimesDTO.getEndTime())
+        );
+        return desks;
+    }
+
     public boolean createSeries(@RequestBody SeriesDTO seriesDTO) {
         UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
         if (userEntity == null) {

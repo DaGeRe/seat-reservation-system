@@ -10,10 +10,10 @@ import i18n from './i18n';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  /*
-  We like to avoid some warnings with some packages.
-  <React.StrictMode>
-  */
+  
+  //We like to avoid some warnings with some packages.
+  //<React.StrictMode>
+  
     <I18nextProvider i18n={i18n}>
       <App />
       <ToastContainer 
@@ -21,9 +21,9 @@ root.render(
         autoClose={2000}
       />
     </I18nextProvider>
-/*
-</React.StrictMode>
-*/
+
+//</React.StrictMode>
+
 );
 
 //reportWebVitals();

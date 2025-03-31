@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, {useMemo} from 'react';
+import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {roomToOption} from '../Room/RoomAndOption';
@@ -11,21 +11,14 @@ import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function AddWorkstation({ addWorkstationModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [selectedRoom, setSelectedRoom]= React.useState('');
+  //const [room, setRoom] = React.useState('');
+  const [room, setRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
-  // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState(GROUND);
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
 
   const helpText = t('helpAddWorkstation');
 
@@ -34,11 +27,11 @@ export default function AddWorkstation({ addWorkstationModal }) {
   };
 
   async function addWorkstation(){
-    if(!selectedRoom){
+    if(!room){
       toast.error(t('selectRoomError'));
       return false;
     }
-    const roomId = selectedRoom.id;
+    const roomId = room.id;
     
     if(!roomId || !equipment ){
       toast.error('Field cannot be blank!');
@@ -46,7 +39,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
     }
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/desks`,
-      headers,
+      headers.current,
       (_) => {
         toast.success(t('deskCreated'));
         addWorkstationModal();
@@ -60,6 +53,16 @@ export default function AddWorkstation({ addWorkstationModal }) {
     );
   }
 
+  /**
+   * Set the floor on which we want to create an new room with x- and y-coords.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (!data || data.room === '' /*|| data.room.id === room.id*/) 
+      return;
+    setRoom(data.room);
+  };
+
   return (
     <React.Fragment>
       <InfoModal text={helpText}/>
@@ -67,17 +70,13 @@ export default function AddWorkstation({ addWorkstationModal }) {
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FloorImage 
-              floor={floor}
-              setFloor={setFloor}
-              building={building}
-              setBuilding={setBuilding}
-              headers={headers}
-              setCurrentRoom={setSelectedRoom}
+              sendDataToParent={handleChildData}
+              click_freely={false}
             />
           {
-            selectedRoom && (
+            room && (
               <div>
-                <h2>{roomToOption(selectedRoom)}</h2>
+                <h2>{roomToOption(room)}</h2>
                 <WorkStationDefinition
                   t={t}
                   equipment={equipment}

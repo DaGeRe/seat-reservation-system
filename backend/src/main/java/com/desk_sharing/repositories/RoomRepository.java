@@ -14,4 +14,10 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     + "select * from rooms where remark = :roomRemark "
     ,nativeQuery=true)
     public Room findByRoomRemark(@Param("roomRemark") String roomRemark);
+
+
+	@Query(value=""
+    + "select * from rooms where floor_id = :floor_id "
+    ,nativeQuery=true)
+    public List<Room> getAllRoomsByFloorId(@Param("floor_id") long floor_id);
 }

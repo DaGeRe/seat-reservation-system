@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, {useMemo} from 'react';
+import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {isOptionEqualToValue_Desk} from './DeskAndOption'
@@ -13,24 +13,15 @@ import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function EditWorkstation({ editWorkstationModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [allDesks, setAllDesks] = React.useState([]);
-  const [selectedRoom, setSelectedRoom]= React.useState('');
+  const [room, setRoom]= React.useState('');
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
-  const [selectedDesk, setSelectedDesk]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
-  // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState(GROUND);
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
   const helpText = t('helpEditWorkstation');
  
   const handleCloseBtn = () => {
@@ -40,7 +31,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
   async function getDeskByRoomId(roomId){
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-      headers,
+      headers.current,
       setAllDesks,
       () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
       headers
@@ -51,7 +42,7 @@ export default function EditWorkstation({ editWorkstationModal }) {
     if (selectedDeskId && equipment && remark) {
       putRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/updateDesk`,
-        headers,
+        headers.current,
         (_) => {
           toast.success(t('deskUpdate'));
           editWorkstationModal();
@@ -69,14 +60,16 @@ export default function EditWorkstation({ editWorkstationModal }) {
     }
   };
 
-  const onFloorChange = (floor) => {
-    setFloor(floor);
-    setSelectedRoom(null);
-    setAllDesks(null);
-    setEquipment('');
-    setRemark('');
-    setSelectedDesk('');
-  }
+  /**
+   * Set the floor on which we want to create an new room with x- and y-coords.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (!data || data.room === '' || data.room.id === room.id) 
+      return;
+    setRoom(data.room);
+    getDeskByRoomId(data.room.id);
+  };
 
   return (
     <React.Fragment>
@@ -85,20 +78,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
         <Grid2 container>
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FloorImage 
-              floor={floor}
-              setFloor={onFloorChange}
-              building={building}
-              setBuilding={setBuilding}
-              headers={headers}
-              setCurrentRoom={(room) => {
-                setSelectedRoom(room);
-                getDeskByRoomId(room.id);
-              }}
+              sendDataToParent={handleChildData}
+              click_freely={false}
             />
             <DeskSelector
-              selectedRoom={selectedRoom}
+              selectedRoom={room}
               allDesks={allDesks}
-              selectedDesk={selectedDesk}
               roomToOption={roomToOption}
               setSelectedDeskId={setSelectedDeskId}
               setEquipment={setEquipment}

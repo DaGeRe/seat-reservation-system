@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import moment from "moment";
+import { useRef, useEffect, useState } from 'react';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-
 import { Box,FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
@@ -9,22 +8,20 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import SidebarComponent from './SidebarComponent';
 import { toast } from 'react-toastify';
-import {postRequest/*, putRequest, deleteRequest*/} from '../RequestFunctions/RequestFunctions';
+import {postRequest, getRequest} from '../RequestFunctions/RequestFunctions';
 import {DeskTable} from '../misc/DesksTable';
-import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
-//import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import bookingPostRequest from '../misc/bookingPostRequest';
+
 const FreeDesks = () => {
-    const headers = useMemo(() => {
-        const storedHeaders = sessionStorage.getItem('headers');
-        return storedHeaders ? JSON.parse(storedHeaders) : {};
-    }, []);
+    const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
     const { t } = useTranslation();
-    const [selectedBuilding, setSelectedBuilding] = useState(t('any'));
+    const valueForAllBuildings = useRef('0');
+    const [selectedBuilding, setSelectedBuilding] = useState(valueForAllBuildings.current);
     const [possibleDesks, setPossibleDesks] = useState([]);
     const [bookingDate, setBookingDate] = useState(new Date()); 
     const defaultStartTime = bookingDate.toLocaleTimeString();
     const [repaint, setRepaint] = useState(false)
+    const [buildings, setBuildings] = useState([]);
     // Default endTime is 2 hours ahead.
     const bookingEndDate = new Date(bookingDate);
     bookingEndDate.setHours(bookingEndDate.getHours() + 2);
@@ -34,25 +31,51 @@ const FreeDesks = () => {
     const [endTime, setEndTime] = useState(defaultEndTime);
 
     /**
+     * Fetch all buildings and if an default building is found 
+     * set it as the selected building.
+     */
+    useEffect(()=>{
+        getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/buildings/all`,
+            headers.current,
+            buildings=>{
+                setBuildings(buildings);
+                setSelectedBuilding(valueForAllBuildings.current);
+                const userId = localStorage.getItem('userId');
+                if (!userId) return;
+                getRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+                    headers.current,
+                    received_defaultFloor => {
+                        if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
+                            setSelectedBuilding(received_defaultFloor.building.building_id);
+                        }
+                    },
+                    () => {
+                    console.log('Error fetching default building and floor in FloorSelector.js');
+                    }
+                );
+            },
+            () => {console.log('Error fetching buildings in fetchBuildings.js');}
+        );
+    }, []);
+
+    /**
      * Fetch all available desks for date and times.
      */
-    React.useEffect(() => {
+    useEffect(() => {
         if (startTime > endTime) {
             toast.error(t('startTimeBiggerThanStartTime'));
             setPossibleDesks([]);
             return;
         }
+        const url = selectedBuilding === valueForAllBuildings.current ? 
+        `${process.env.REACT_APP_BACKEND_URL}/series/desksForDatesAndTimes` : 
+        `${process.env.REACT_APP_BACKEND_URL}/series/desksForBuildingAndDatesAndTimes/${selectedBuilding}`
         postRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/series/desksForDatesAndTimes`, 
-            headers,
-            (unfiltered_possible_desks)=>{
-                if (selectedBuilding === t('any')) {
-                    setPossibleDesks(unfiltered_possible_desks);
-                }
-                else {
-                    setPossibleDesks(unfiltered_possible_desks.filter(desk => desk.room.building === selectedBuilding));
-                }
-            },
+            url, 
+            headers.current,
+            setPossibleDesks,
             () => {
                 console.log('Error fetching desks in CreateSeries');
             },
@@ -61,7 +84,7 @@ const FreeDesks = () => {
                 startTime: startTime,
                 endTime: endTime
             }));
-    }, [bookingDate, selectedBuilding, t, headers, endTime, startTime, repaint]);
+    }, [bookingDate, selectedBuilding, t, endTime, startTime, repaint]);
     
     function addBooking(selectedDesk) {
         const bookingData = {
@@ -72,53 +95,7 @@ const FreeDesks = () => {
             begin: startTime,
             end: endTime
         };
-        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers, t, (_)=>{setRepaint(!repaint);})
-        /*postRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/bookings`,
-            headers,
-            (data) => {
-                console.log(data);
-                confirmAlert({
-                    title: t('desk') + " " + selectedDesk.remark,
-                    message: t('date') + " " + formatDate_yyyymmdd_to_ddmmyyyy(bookingData.day) + " " + t("from") + " " + bookingData.begin + " " + t("to") + " " + bookingData.end,
-                    buttons: [
-                        {
-                            label: t('yes'),
-                            onClick: async () => {
-                                putRequest(
-                                    `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
-                                    headers,
-                                    (dat) => {
-                                        // Be sure to change an depedency of React.useEffect(..) to force an repaint.
-                                        // This is needed because we want to remove desks that are not longer available.
-                                        setRepaint(!repaint);
-                                        toast.success(t('booked'));
-                                        //navigate('/home', { state: { booking }, replace: true });
-                                    },
-                                    () => {console.log('Failed to confirm booking in FreeDesks.jsx');}
-                                );
-                            }
-                        },
-                        {
-                            label: t('no'),
-                            onClick: async () => {
-                                deleteRequest(
-                                    `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}`,
-                                    headers,
-                                    (_) => {},
-                                    () => {console.log('Failed to delete bookings in FreeDesks.jsx.');}
-                                )
-                                },
-                            },
-                        ],
-                        
-                    })
-
-            },
-            () => {console.log('Failed to post booking in Booking.jsx.');},
-            JSON.stringify(bookingData)
-        );
-        */
+        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers.current, t, (_)=>{setRepaint(!repaint);})
     };
     function CreateContent() {
         return (
@@ -155,7 +132,6 @@ const FreeDesks = () => {
                     />
                     </div>
                 <br/><br/>
-                <div>
                     <FormControl id='freeDesks_selectBuilding' required={true} fullWidth>
                         <InputLabel id='demo-simple-select-label'>{t('building')}</InputLabel>
                         <Select
@@ -165,17 +141,19 @@ const FreeDesks = () => {
                                 setSelectedBuilding(e.target.value);
                             }}
                         >
-                            <MenuItem value={t('any')}>{t('any')}</MenuItem>
-                            <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B}</MenuItem>
-                            <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C}</MenuItem>
-                            <MenuItem value={ZWICKAU}>{ZWICKAU}</MenuItem>
-                            <MenuItem value={CHEMNITZ}>{CHEMNITZ}</MenuItem>
-                            <MenuItem value={LEIPZIG}>{LEIPZIG}</MenuItem>
-                            <MenuItem value={BAUTZEN}>{BAUTZEN}</MenuItem>
+                            {
+                                [
+                                    <MenuItem id={`createSeries_building_all`} key={valueForAllBuildings.current} value={valueForAllBuildings.current}>{t('any')}</MenuItem>,
+                                    ...buildings.map(e => (
+                                    <MenuItem id={`createSeries_building_${e.building_id}`} key={e.building_id} value={e.building_id}>
+                                        {e.name}
+                                    </MenuItem>
+                                    ))
+                                ]
+                            }
                         </Select>
                     </FormControl>
                 <br/><br/>
-                </div>
                 {
                     (possibleDesks && possibleDesks.length > 0 ? <DeskTable name={'freeDesks'} desks={possibleDesks} submit_function={addBooking} /> : <div>{t('noDesksForRange')}</div>)
                 }

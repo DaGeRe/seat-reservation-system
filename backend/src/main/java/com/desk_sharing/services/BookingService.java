@@ -186,10 +186,8 @@ public class BookingService {
 	}
     public Dictionary<Date, Integer> getAllBookingsForDates(List<Date> days) {
         Dictionary<Date, Integer> slots= new Hashtable<>();
-        //List<Room> rooms = roomRepository.findAllByStatus("enable");
         // Every day of a month
         for (Date day : days) {
-            //System.out.println("getAvailableDays: " + day);
             slots.put(day, getAllBookingsForDate(day).size());
             // Ever enabled room
             
@@ -201,7 +199,6 @@ public class BookingService {
         List<Room> rooms = roomRepository.findAllByStatus("enable");
         // Every day of a month
         for (Date day : days) {
-            //System.out.println("getAvailableDays: " + day);
             slots.put(day, 0);
             // Ever enabled room
             for (Room room : rooms) {

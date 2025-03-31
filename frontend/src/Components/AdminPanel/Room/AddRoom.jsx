@@ -5,27 +5,21 @@ import DialogContent from '@mui/material/DialogContent';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
 import './AddRoom.css'; 
-import React, { useMemo } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import RoomDefinition from '../Room/RoomDefinition.js';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function AddRoom({ addRoomModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [floor, setFloor] = React.useState(GROUND);
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
-  const [status, setStatus] = React.useState('');
-  const [type, setType] = React.useState('');
-  const [x, setX] = React.useState(0.0);
-  const [y, setY] = React.useState(0.0);
-  const [remark, setRemark] = React.useState('');
+  const [floor, setFloor] = useState('');
+  const [status, setStatus] = useState('');
+  const [type, setType] = useState('');
+  const [x, setX] = useState(0.0);
+  const [y, setY] = useState(0.0);
+  const [remark, setRemark] = useState('');
   const helpText = t('helpAddRoom');
 
   async function addRoom() {
@@ -39,20 +33,20 @@ export default function AddRoom({ addRoomModal }) {
     }
     postRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
-      headers,
+      headers.current,
       (_) => {
         toast.success(t('roomCreated'));
         addRoomModal();
       },
       () => {console.log('Failed to create room in AddRoom.jsx.')},
       JSON.stringify({
-        'floor': floor,
-        'status': status,
         'type': type,
+        'floor_id': floor.floor_id,      
         'x': x,
         'y': y,
+        'status': status,
         'remark': remark,
-        'building':building
+
       })
     );
   }
@@ -60,20 +54,31 @@ export default function AddRoom({ addRoomModal }) {
         addRoomModal();
     }
 
+    /**
+     * Set the floor on which we want to create an new room with x- and y-coords.
+     * @param {*} data Object with properties floor, room, x, y. 
+     */
+    const handleChildData = (data) => {
+      if (data.floor) {
+        setFloor(data.floor);
+      }
+      /*if (data.currentRoom) {
+
+      }*/
+      if (data.x && data.y) {
+        setX(data.x);
+        setY(data.y);
+      }
+  };
+
     return (
-      <React.Fragment>
+      <Fragment>
           <InfoModal text={helpText}/>
           <DialogContent>
               <Grid2 container >
                 <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                  <FloorImage 
-                    floor={floor}
-                    setFloor={setFloor}
-                    building={building}
-                    setBuilding={setBuilding}
-                    headers={headers}
-                    clickedXPosition={setX}
-                    clickedYPosition={setY}
+                  <FloorImage
+                    sendDataToParent={handleChildData}
                   />
                   <RoomDefinition 
                     t={t}
@@ -92,6 +97,6 @@ export default function AddRoom({ addRoomModal }) {
                 </Box>
               </Grid2>
             </DialogContent>
-      </React.Fragment>
+      </Fragment>
     );
 }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./LoginPage.css";
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
-import flagImage from "../Assets/flag.png";
+//import flagImage from "../Assets/flag.png";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
@@ -27,7 +27,6 @@ const LoginPage = () => {
       return;
     }
     try {
-      // https://jus-srv-test30.justiz.sachsen.de:8082/users/login
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -63,7 +62,7 @@ const LoginPage = () => {
 
   return (
     <div className="wrapper">
-      <img src={flagImage} alt="Flag" className="flag-image" />
+      <img src={'/Assets/flag.png'} alt="Flag" className="flag-image" />
       <form>
         <h1>{t("login")}</h1>
         <div className="input-box">

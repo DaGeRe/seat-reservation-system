@@ -4,7 +4,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { roomToOption} from '../Room/RoomAndOption';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import React, { useMemo } from 'react';
+import React, { useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf';
@@ -13,22 +13,15 @@ import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function DeleteWorkstation({ deleteWorkstationModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [allDesks, setAllDesks] = React.useState([]);
-  const [selectedRoom, setSelectedRoom]= React.useState('');
+  const [room, setRoom]= React.useState('');
   const [selectedDeskId, setSelectedDeskId]= React.useState('');
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
-  const [floor, setFloor] = React.useState(GROUND);
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
   const helpText = t('helpDeleteWorkstation');
   
   const handleClose = () => {
@@ -39,7 +32,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     if(roomId) {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-        headers,
+        headers.current,
         setAllDesks,
         () => {console.log(`Failed to fetch all desks for roomid ${roomId} in DeleteWorkstation.js`);},
       );
@@ -54,7 +47,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
     if(selectedDeskId){
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
-        headers,
+        headers.current,
         (data) => {
           if (data !== 0) {
             setOpenFfDialog(true);
@@ -68,68 +61,41 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
       );
     }
   }
-
- /*  async function deleteWorkstation(){
-    if(selectedDeskId){
-      deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/${selectedDeskId}`,
-        headers,
-        (data) => {
-          if (data !== 0) {
-            setOpenFfDialog(true);
-          }
-          else {
-            toast.success(t('deskDelete'));
-            deleteWorkstationModal();
-          }
-        },
-        () => {console.log('Failed to delete workstation in DeleteWorkstation.js');}
-      );
-    }
-  } */
 
   async function deleteWorkstationFf(){
-    deleteWorkstation('ff/')
-/*     if(selectedDeskId){
-      deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/ff/${selectedDeskId}`,
-        headers,
-        (_) => {
-          toast.success(t('deskDelete'));
-          deleteWorkstationModal();
-        },
-        () => {console.log('Failed to delete workstation fast forward in DeleteWorkstation.js.');}
-      )
-    } */
+    deleteWorkstation('ff/');
   }
+
+  /**
+   * Set the floor on which we want to create an new room with x- and y-coords.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (!data || data.room === '') 
+      return;
+    setRoom(data.room);
+    getDeskByRoomId(data.room.id);
+  };
 
   return (
     <React.Fragment>
       <InfoModal text={helpText}/>
       <DeleteFf 
-          open={openFfDialog}
-          onClose={handleClose}
-          onDelete={deleteWorkstationFf}
-          text={t('fFDeleteWorkStation')}
-        />
+        open={openFfDialog}
+        onClose={handleClose}
+        onDelete={deleteWorkstationFf}
+        text={t('fFDeleteWorkStation')}
+      />
       <DialogContent>
         <Grid2 container >
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FloorImage 
-              floor={floor}
-              setFloor={setFloor}
-              building={building}
-              setBuilding={setBuilding}
-              headers={headers}
-              setCurrentRoom={(room) => {
-                setSelectedRoom(room);
-                getDeskByRoomId(room.id);
-              }}
+              sendDataToParent={handleChildData}
+              click_freely={false}
             />
             <DeskSelector
-              selectedRoom={selectedRoom}
+              selectedRoom={room}
               allDesks={allDesks}
-              //setSelectedDesk={setSelectedDesk}
               setSelectedDeskId={setSelectedDeskId}
               roomToOption={roomToOption}
               deskToOption={deskToOption}

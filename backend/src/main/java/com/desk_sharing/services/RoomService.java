@@ -2,7 +2,9 @@ package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
+import com.desk_sharing.repositories.FloorRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +25,29 @@ public class RoomService {
     BookingRepository bookingRepository;
 
     @Autowired
+    private FloorRepository floorRepository;
+
+    @Autowired
     DeskService deskService;
 
-    public Room saveRoom(Room room) {
-        if (room.getBuilding() == null) {
-            room.setBuilding("Bautzner Str. 19a/b");
-        }
-        return roomRepository.save(room);
+    public Room saveRoom(RoomDTO roomDTO) {
+        final Room newRoom = new Room();
+        newRoom.setType(roomDTO.getType());
+        newRoom.setFloor("deprecated"); // Important! col is not null
+        newRoom.setFloorObj(floorRepository.getFloorByFloorId(roomDTO.getFloor_id()));
+        newRoom.setX(roomDTO.getX());
+        newRoom.setY(roomDTO.getY());
+        newRoom.setStatus(roomDTO.getStatus());
+        newRoom.setRemark(roomDTO.getRemark());
+        return roomRepository.save(newRoom);
     }
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
+    }
+
+    public List<Room> getAllRoomsByFloorId(Long floor_id) {
+        return roomRepository.getAllRoomsByFloorId(floor_id);
     }
     
     public List<Room> getAllRoomsByActiveStatus() {
@@ -44,12 +58,18 @@ public class RoomService {
         return roomRepository.findById(id);
     }
 
-    public Room updateRoom(Long id, Room room) {
-        room.setId(id);
+    public Room updateRoom(RoomDTO roomDTO) {
+        final Optional<Room> optRoom = roomRepository.findById(roomDTO.getRoom_id());
+        if (!optRoom.isPresent())
+            return null;
+        final Room room = optRoom.get();
+        room.setRemark(roomDTO.getRemark());
+        room.setStatus(roomDTO.getStatus());
+        room.setType(roomDTO.getType());
         return roomRepository.save(room);
     }
     
-    public Room updateRoomStatus(Long id, String status) {
+    /*public Room updateRoomStatus(Long id, String status) {
     	Optional<Room> findById = roomRepository.findById(id);
     	if(findById.isPresent()) {
     		Room room = findById.get();
@@ -88,7 +108,7 @@ public class RoomService {
     		return roomRepository.save(room);
     	}
     	return null;
-    }
+    }*/
     
 
     public int deleteRoom(Long id) {

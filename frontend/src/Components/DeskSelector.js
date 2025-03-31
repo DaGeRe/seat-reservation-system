@@ -6,7 +6,6 @@ export default function DeskSelector(
     {
         selectedRoom,
         allDesks,
-        selectedDesk,
         roomToOption,
         setSelectedDeskId,
         setEquipment,
@@ -32,7 +31,6 @@ export default function DeskSelector(
                         )
                     }
                     freeSolo={false} // Eingabe ist deaktiviert
-                    value={selectedDesk}
                     onChange={(_, option) => {
                         const array = option.split('-');
                         const currDeskNumberInRoom = array[0];
