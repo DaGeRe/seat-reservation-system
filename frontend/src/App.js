@@ -15,6 +15,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import RoomSearch from './Components/Home/RoomSearch';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/manageseries" element={<ManageSeries />}></Route>
           <Route path="/createseries" element={<CreateSeries />}></Route>
           <Route path='/freedesks' element={<FreeDesks/>}/>
+          <Route path='/roomSearch' element={<RoomSearch/>}/>
           <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </Router>

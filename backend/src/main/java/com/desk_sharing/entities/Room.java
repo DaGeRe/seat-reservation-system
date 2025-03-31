@@ -1,14 +1,12 @@
 package com.desk_sharing.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "rooms")
 public class Room {
     @Id
@@ -23,7 +21,7 @@ public class Room {
     private String building;
 
     
-    @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.REMOVE })
+    @ManyToOne(cascade =  { CascadeType.PERSIST })
     @JoinColumn(name = "floor_id", nullable = true)
     private Floor floorObj;
 

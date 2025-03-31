@@ -50,6 +50,7 @@ describe('', ()=>{
             // No admin
             cy.contains('span', 'Admin').should('not.exist').then(()=>{
                 // Change pw
+                cy.get('a#sidebar_settings0').click().then(()=>{
                 cy.contains('span', 'Password').click().then(()=>{
                     Cypress.Promise.all([
                         cy.setStr('changePassword_prevPassword', pw1),
@@ -63,23 +64,25 @@ describe('', ()=>{
                                         // No admin
                                         cy.contains('span', 'Admin').should('not.exist').then(()=>{
                                             // Rechange pw
-                                            cy.contains('span', 'Password').click().then(()=>{
-                                                Cypress.Promise.all([
-                                                    cy.setStr('changePassword_prevPassword', pw2),
-                                                    cy.setStr('changePassword_newPassword', pw1),
-                                                    cy.setStr('changePassword_newPasswordAgain', pw1)
-                                                ]).then(()=>{
-                                                    cy.get('button#changePassword_submit').click().then(()=>{
-                                                        cy.logout().then(()=>{                    
-                                                            cy.login(mail, pw1).then(()=>{
-                                                                // No admin
-                                                                cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                                                    cy.logout().then(()=>{});
-                                                                });
+                                            cy.get('a#sidebar_settings0').click().then(()=>{
+                                                cy.contains('span', 'Password').click().then(()=>{
+                                                    Cypress.Promise.all([
+                                                        cy.setStr('changePassword_prevPassword', pw2),
+                                                        cy.setStr('changePassword_newPassword', pw1),
+                                                        cy.setStr('changePassword_newPasswordAgain', pw1)
+                                                    ]).then(()=>{
+                                                        cy.get('button#changePassword_submit').click().then(()=>{
+                                                            cy.logout().then(()=>{                    
+                                                                cy.login(mail, pw1).then(()=>{
+                                                                    // No admin
+                                                                    cy.contains('span', 'Admin').should('not.exist').then(()=>{
+                                                                        cy.logout().then(()=>{});
+                                                                    });
+                                                                })
                                                             })
                                                         })
-                                                    })
-                                                });
+                                                    });
+                                                })
                                             })
                                         })
                                     })
@@ -87,6 +90,7 @@ describe('', ()=>{
                             });
                         })
                     }) 
+                })
                 })
             })
         });
@@ -114,11 +118,7 @@ it('test change name', ()=>{
                                                             cy.login(mail, pw1).then(()=>{
                                                                 cy.contains('span',`Hello, ${vorname2}`).should('exist').then(()=>{
                                                                     cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                                                        /*cy.getAmountOfUsersForMail(mail).then((ret)=>{
-                                                                            if (ret > 0) {
-                                                                                cy.deleteUser(mail).then((r)=>{cy.task('log', r);});
-                                                                            }
-                                                                        });*/
+                                                                        
                                                                         cy.logout().then(()=>{});
                                                                     });
                                                                 })

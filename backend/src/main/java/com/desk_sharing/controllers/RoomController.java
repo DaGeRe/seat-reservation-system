@@ -1,6 +1,8 @@
 package com.desk_sharing.controllers;
 
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.model.DatesAndTimesDTO;
+import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
 
@@ -23,9 +25,9 @@ public class RoomController {
     UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
-        userService.logging("createRoom( " + room + " )");
-        Room savedRoom = roomService.saveRoom(room);
+    public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
+        userService.logging("createRoom() with remark: " + roomDTO.getRemark() + " " + roomDTO.getFloor_id());
+        final Room savedRoom = roomService.saveRoom(roomDTO);
         return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
     }
 
@@ -33,6 +35,13 @@ public class RoomController {
     public ResponseEntity<List<Room>> getAllRooms() {
         userService.logging("getAllRooms()");
         List<Room> rooms = roomService.getAllRooms();
+        return new ResponseEntity<>(rooms, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByFloorId/{floor_id}")
+    public ResponseEntity<List<Room>> getAllRoomsByFloorId(@PathVariable("floor_id") Long floor_id) {
+        userService.logging("getAllRoomsByFloorId("+floor_id+")");
+        final List<Room> rooms = roomService.getAllRoomsByFloorId(floor_id);
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
     
@@ -52,45 +61,17 @@ public class RoomController {
         return ret;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Room> updateRoom(@PathVariable("id") Long id, @RequestBody Room room) {
-        userService.logging("updateRoom( + " + id + ", " + room + " )");
-        Room updatedRoom = roomService.updateRoom(id, room);
-        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}/floor/{floor}")
-    public ResponseEntity<Room> updateRoomFloor(@PathVariable("id") Long id, @PathVariable("floor") String floor) {
-        userService.logging("updateRoomFloor( + " + id + ", " + floor + " )");
-        Room updatedRoom = roomService.updateRoomFloor(id, floor);
-        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}/remark/{remark}")
-    public ResponseEntity<Room> updateRoomRemark(@PathVariable("id") Long id, @PathVariable("remark") String remark) {
-        userService.logging("updateRoomRemark( + " + id + ", " + remark + " )");
-        Room updatedRoom = roomService.updateRoomRemark(id, remark);
-        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
-    }
-    
-    @PutMapping("/{id}/type/{type}")
-    public ResponseEntity<Room> updateRoomType(@PathVariable("id") Long id, @PathVariable("type") String type) {
-        userService.logging("updateRoomType( + " + id + ", " + type + " )");
-        Room updatedRoom = roomService.updateRoomType(id, type);
-        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
-    }
-    
-    @PutMapping("/{id}/{status}")
-    public ResponseEntity<Room> updateRoomStatus(@PathVariable("id") Long id, @PathVariable("status") String status) {
-        userService.logging("updateRoomStatus( + " + id + ", " + status + " )");
-        Room updatedRoom = roomService.updateRoomStatus(id, status);
-        return new ResponseEntity<>(updatedRoom, HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<Room> updateRoom(@RequestBody RoomDTO roomDTO) {
+        userService.logging("updateRoom( " + roomDTO + " )");
+        final Room updatedRoom = roomService.updateRoom(roomDTO);
+        return new ResponseEntity<>(updatedRoom, updatedRoom == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Integer> deleteRoom(@PathVariable("id") Long id) {
         userService.logging("deleteRoom( + " + id + " )");
-        int ret = roomService.deleteRoom(id);
+        final int ret = roomService.deleteRoom(id);
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     } 
     
@@ -99,4 +80,15 @@ public class RoomController {
         userService.logging("deleteRoomFf( + " + id + " )");
         return roomService.deleteRoomFf(id);
     }
+
+    @GetMapping("/byMinimalAmountOfWorkstations/{minimalAmountOfWorkstations}")
+    public ResponseEntity<List<Room>> getByMinimalAmountOfWorkstations(@PathVariable("minimalAmountOfWorkstations") Integer minimalAmountOfWorkstations) {
+        userService.logging("getByMinimalAmountOfWorkstations( + " + minimalAmountOfWorkstations + " )");
+        return new ResponseEntity<>(roomService.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations), HttpStatus.OK);
+    }
+    @PostMapping("/byMinimalAmountOfWorkstationsAndFreeOnDate/{minimalAmountOfWorkstations}")
+    public ResponseEntity<List<Room>> getByMinimalAmountOfWorkstationsAndFreeOnDate(@PathVariable("minimalAmountOfWorkstations") Integer minimalAmountOfWorkstations, @RequestBody DatesAndTimesDTO datesAndTimesDTO) {
+        userService.logging("getByMinimalAmountOfWorkstationsAndFreeOnDate( + " + minimalAmountOfWorkstations + ", " + datesAndTimesDTO + " )");
+        return new ResponseEntity<>(roomService.getByMinimalAmountOfWorkstationsAndFreeOnDate(minimalAmountOfWorkstations, datesAndTimesDTO), HttpStatus.OK);
+    }   
 }

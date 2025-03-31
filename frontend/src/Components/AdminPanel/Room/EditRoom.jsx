@@ -2,92 +2,67 @@ import {Grid2, Box} from '@mui/material';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, {useMemo} from 'react';
+import {Fragment, useState, useRef} from 'react';
 import { toast } from 'react-toastify';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { putRequest } from '../../RequestFunctions/RequestFunctions';
 import { roomToOption } from '../Room/RoomAndOption';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import RoomDefinition from './RoomDefinition.js';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function EditRoom({ editRoomModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [floor, setFloor] = React.useState(GROUND);
-  const [selectedRoom, setSelectedRoom] = React.useState('');
-  const [newRoomType, setNewRoomType] = React.useState('');
-  const [newRoomStatus, setNewRoomStatus] = React.useState('');
-  const [newRoomRemark, setNewRoomRemark] = React.useState('');
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
-
-  const handleClose = () => {
-      editRoomModal();
-  };
-
-  const deselectRoom = () => {
-    setSelectedRoom(null);
-    setNewRoomType('');
-    setNewRoomStatus('');
-    setNewRoomRemark('');
-  };
+  const [room, setRoom] = useState('');
+  const [newRoomType, setNewRoomType] = useState('');
+  const [newRoomStatus, setNewRoomStatus] = useState('');
+  const [newRoomRemark, setNewRoomRemark] = useState('');
 
   async function updateRoom() {
-    if (selectedRoom != null && selectedRoom.id) {
-      putRequest( 
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/${selectedRoom.id}`,
-        headers,
-        (_) => {
-          toast.success(t('roomChangedSuccessfully'));
-        },
-        () => {console.log('Failed to handle room type change in EditRoom.jsx');},
-          JSON.stringify({
-            'floor': selectedRoom.floor,
-            'status': newRoomStatus,
-            'type': newRoomType,
-            'x': selectedRoom.x,
-            'y': selectedRoom.y,
-            'remark': newRoomRemark,
-            'building':selectedRoom.building
-          })
-      );
-      editRoomModal();
-      deselectRoom();
-    }
+    if (!room || room === '')
+      return;
+    putRequest( 
+      `${process.env.REACT_APP_BACKEND_URL}/rooms`,
+      headers.current,
+      (_) => {
+        toast.success(t('roomChangedSuccessfully'));
+        editRoomModal();
+      },
+      () => {console.log('Failed to handle room change in EditRoom.jsx');},
+      JSON.stringify(
+        { 
+          'room_id': room.id,
+          'status': newRoomStatus,
+          'type': newRoomType,
+          'remark': newRoomRemark
+        }
+      )
+    );
+  };
+
+  /**
+   * Set the floor on which we want to create an new room with x- and y-coords.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (!data || data.room === '' || data.room.id === room.id) 
+      return;
+    setRoom(data.room);
   };
 
     return (
-      <React.Fragment>
+      <Fragment>
         <DialogContent>
           <Grid2 container >
             <Box sx={{ flexGrow: 1, padding: '10px' }}>
               <FloorImage 
-                floor={floor}
-                setFloor={(floorStr) => {
-                  setFloor(floorStr);
-                  deselectRoom();
-                }}
-                building={building}
-                setBuilding={(buildingStr) => {
-                  setBuilding(buildingStr);
-                  deselectRoom();
-                }}
-                headers={headers}
-                setCurrentRoom={(room) => {
-                  setSelectedRoom(room);
-                  setNewRoomType(room.type);
-                  setNewRoomStatus(room.status);
-                  setNewRoomRemark(room.remark);
-                }}
+                sendDataToParent={handleChildData}
+                click_freely={false}
               />
               {
-                selectedRoom && selectedRoom !== '' && (
+                room && room !== '' && (
                   <> 
-                    <h2>{roomToOption(selectedRoom)}</h2>
+                    <h2>{roomToOption(room)}</h2>
                     <RoomDefinition 
                       t={t}
                       type={newRoomType}
@@ -103,11 +78,11 @@ export default function EditRoom({ editRoomModal }) {
             </Box>
           </Grid2>
           <DialogActions>
-            <Button id='room_close_btn' onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+            <Button id='room_close_btn' onClick={editRoomModal}>&nbsp;{t('close').toUpperCase()}</Button>
             <Button id='room_submit_btn' onClick={updateRoom}>&nbsp;{t('submit').toUpperCase()}</Button>
           </DialogActions>
         </DialogContent>
-      </React.Fragment>
+      </Fragment>
     );
 
 }

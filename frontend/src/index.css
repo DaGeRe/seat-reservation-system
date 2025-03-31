@@ -16,7 +16,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url('./Components/Assets/saxony.jpg') no-repeat;
+  background: url('./saxony.jpg') no-repeat;
   background-size: cover;
 }
 

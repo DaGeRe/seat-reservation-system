@@ -17,9 +17,6 @@ export default function AddEmployee({ addEmployeeModal }) {
   const [surname, setSurname] = React.useState('');
   const [visibility, setVisibility] = React.useState(true);
   const [isAdmin, setIsAdmin] = React.useState(false);
-  React.useEffect(() => {
-      
-  }, []);
 
   const handleCloseBtn = () => {
     addEmployeeModal();

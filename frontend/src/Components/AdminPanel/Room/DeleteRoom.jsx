@@ -3,72 +3,68 @@ import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DeleteFf from '../../DeleteFf';
-import React, {useMemo} from 'react';
+import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
-import { GROUND, BAUTZNER_STR_19_A_B } from '../../../constants.js';
 
 export default function DeleteRoom({ deleteRoomModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  // The current floor. (either Ground or First)
-  const [floor, setFloor] = React.useState(GROUND);
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
-  const [currRoomId, setCurrRoomId] = React.useState(-1);
-  const [building, setBuilding] = React.useState(BAUTZNER_STR_19_A_B);
+  const [room, setRoom] = React.useState('');
   const helpText = t('helpDeleteRoom');
 
-  const handleClose = () => {
-      deleteRoomModal();
+  async function deleteRoomFf() {
+    if (!room || room === '')
+      return;
+
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${room.id}`,
+      headers.current,
+      (_) => {
+        toast.success(t('roomDeleted'));
+        deleteRoomModal();
+      }
+    );
   }
 
-  async function deleteRoomById(id){
+  /**
+   * Set the room, that we want to delete.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (!data || data.room === '' || data.room.id === room.id) 
+      return;
+      
+    setRoom(data.room);
+
     deleteRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/${id}`,
-      headers,
+      `${process.env.REACT_APP_BACKEND_URL}/rooms/${data.room.id}`,
+      headers.current,
       (data) => {
         if (data !== 0) {
           setOpenFfDialog(true);
         }
         else {
           toast.success(t('roomDeleted'));
-          //getAllRooms();
           deleteRoomModal();
         }
       },
       () => {'Failed to delete room in DeleteRoom.jsx.'},
       
-    );
-  }
+    );  
+  };
 
-  async function deleteRoomFf(){
-    if (currRoomId !== -1) {
-      
-      deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${currRoomId}`,
-        headers,
-        (_) => {
-          toast.success(t('roomDeleted'));
-          //getAllRooms();
-          deleteRoomModal();
-        }
-      );
-    }
-  } 
 
   return (
     <React.Fragment>
       <InfoModal text={helpText}/>
       <DeleteFf 
         open={openFfDialog}
-        onClose={handleClose}
+        onClose={deleteRoomModal}
         onDelete={deleteRoomFf}
         text={t('fFDeleteRoom')}
       />
@@ -77,22 +73,15 @@ export default function DeleteRoom({ deleteRoomModal }) {
           <Box sx={{ flexGrow: 1, padding: '10px' }}>
             <FloorImage 
               present_color='red'
-              floor={floor}
-              setFloor={setFloor}
-              building={building}
-              setBuilding={setBuilding}
-              headers={headers}
-              setCurrentRoom={(room) => {
-                const room_id = room.id;
-                deleteRoomById(room_id);
-                setCurrRoomId(room_id);
-              }}
+              click_freely={false}
+              sendDataToParent={handleChildData}
             />
           </Box>
         </Grid2>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
+        {/*<Button disabled={!room || room === ''} onClick={onDelete}>{t('delete')}</Button>*/}
+        <Button onClick={deleteRoomModal}>&nbsp;{t('close').toUpperCase()}</Button>
       </DialogActions>
     </React.Fragment>
   );

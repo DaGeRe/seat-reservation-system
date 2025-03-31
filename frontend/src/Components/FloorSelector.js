@@ -1,103 +1,156 @@
-import React from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { FIRST_ATTIC, FOURTH_ATTIC, SECOND_ATTIC, ATTIC, BAUTZEN, ZWICKAU, LEIPZIG, CHEMNITZ, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, GROUND, FIRST, SECOND } from '../constants';
+import { getRequest } from './RequestFunctions/RequestFunctions';
 
+/**
+ * GUI to select an building and an floor.
+ * @param {*} idString An string that add to the id's in the html template.
+ * @param {*} sendDataToParent The function that is called when data has to be transmitted to the parent component. 
+ * @returns 
+ */
 const FloorSelector = ({
-  building,
-  setBuilding,
-  floor,
-  setFloor
+  idString,
+  sendDataToParent
 }) => {
   const { t } = useTranslation();
-  
-  /**
-   * 
-   * @param {*} building_name The name of the building. E.g.: Bautzner Str. 19a/b, Bautzner Str. 19c, Chemnitz, ...
-   * @returns Return an array of floors depending on the selected building.
-   */
-  function createFloorsPerBuilding(building_name) {
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+  const [buildings, setBuildings] = useState([]);
+  const [floors, setFloors] = useState([]);
+  const [building, setBuilding] = useState('');
+  const [floor, setFloor] = useState('');
+  // Is set to true if the default building was loaded.
+  const defaultBuildingWasLoaded = useRef(false);
+  // Is set to true if the default floor was loaded.
+  const defaultFloorWasLoaded = useRef(false);
 
-    if (building_name === BAUTZNER_STR_19_A_B) {
-      return [
-        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor').toUpperCase()}</MenuItem>,
-        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === BAUTZNER_STR_19_C) {
-      return [
-        <MenuItem key='groundFloor' value={GROUND}>{t('groundFloor_19c').toUpperCase()}</MenuItem>,
-        <MenuItem key='firstFloor' value={FIRST}>{t('firstFloor_19c').toUpperCase()}</MenuItem>,
-        <MenuItem key='thirdFloor' value={SECOND}>{t('thirdFloor_19c').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === BAUTZEN) {
-      return [
-        <MenuItem key='first_attic' value={FIRST_ATTIC}>{t('first_attic').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === LEIPZIG) {
-      return [
-        <MenuItem key='second_attic' value={SECOND_ATTIC}>{t('second_attic').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === ZWICKAU) {
-      return [
-        <MenuItem key='attic' value={ATTIC}>{t('attic').toUpperCase()}</MenuItem>
-      ];
-    } else if (building_name === CHEMNITZ) {
-      return [
-        <MenuItem key='second_attic' value={SECOND_ATTIC}>{t('second_attic').toUpperCase()}</MenuItem>,
-        <MenuItem key='fourth_attic' value={FOURTH_ATTIC}>{t('fourth_attic').toUpperCase()}</MenuItem>
-      ];
-    }
-    return [];
-  }
+  React.useEffect(()=>{
+    sendDataToParent(floor);
+  },[sendDataToParent, floor]);
+
+  /**
+   * Fetch all buildings. Also check if the default building was fetched.
+   * If not: do so and set it as the current building. Otherwise: set the first
+   * building as the current one. Also do so if the user has no default building.
+   */
+  useEffect(() => {
+    getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/buildings/all`,
+        headers.current,
+        received_buildings => {
+          setBuildings(received_buildings);
+          
+          if (defaultBuildingWasLoaded.current) {
+            setBuilding(received_buildings[0])
+          }
+          else {
+            defaultBuildingWasLoaded.current = true;
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+            getRequest(
+              `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+              headers.current,
+              received_defaultFloor => {
+                if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
+                  setBuilding(received_defaultFloor.building);
+                }
+                else {
+                  setBuilding(received_buildings[0])
+                }
+              },
+              () => {
+                console.log('Error fetching default building and floor in FloorSelector.js');
+              }
+            );
+          }
+        },
+        () => {
+            console.log('Error fetching buildings in fetchBuildings.js');
+        }
+    );
+  },[]);
+
+  /**
+   * Fetch all floors for the current building. Also check if the default floor was fetched.
+   * If not: do so and set it as the current floor. Otherwise: set the first
+   * floor as the current one. Also do so if the user has no default floor.
+   */
+  useEffect(() => {
+    if (!building.building_id)
+      return;
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/floors/getAllFloorsForBuildingId/${building.building_id}`,
+      headers.current,
+      received_floors => {
+        setFloors(received_floors);
+        if (defaultFloorWasLoaded.current) {
+          setFloor(received_floors[0]);
+        }
+        else {
+          defaultFloorWasLoaded.current = true;
+          const userId = localStorage.getItem('userId');
+          if (!userId) return;
+          getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+            headers.current,
+            received_defaultFloor => {
+              if (received_defaultFloor && received_defaultFloor.floor_id) {
+                setFloor(received_defaultFloor);
+              }
+              else {
+                setFloor(received_floors[0]);
+              }
+            },
+            () => {
+              console.log('Error fetching default floor and floor in FloorSelector.js');
+            }
+          );
+        }
+      },
+      () => {
+          console.log('Error fetching floors in fetchFloors.js');
+      }
+    );
+  }, [building.building_id]);
 
   return (
     <>
-      <FormControl id='floorselector_setBuilding' required size='small' fullWidth>
-        <InputLabel id='select-label-building'>{t('building')}</InputLabel>
-        <Select
-          labelId='select-label-building'
-          id='select-building'
-          value={building}
-          label={t('building')}
-          onChange={(e) => {
-            setBuilding(e.target.value);
-            // Set the respective floor as default.
-            if (e.target.value === BAUTZNER_STR_19_A_B || e.target.value === BAUTZNER_STR_19_C)
-              setFloor(GROUND);
-            else if (e.target.value === BAUTZEN)
-              setFloor(FIRST_ATTIC);
-            else if (e.target.value === ZWICKAU)
-              setFloor(ATTIC);
-            else if (e.target.value === LEIPZIG || e.target.value === CHEMNITZ)
-              setFloor(SECOND_ATTIC);
-          }}
-        >
-          <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B.toUpperCase()}</MenuItem>
-          <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C.toUpperCase()}</MenuItem>
-          <MenuItem value={ZWICKAU}>{ZWICKAU.toUpperCase()}</MenuItem>
-          <MenuItem value={CHEMNITZ}>{CHEMNITZ.toUpperCase()}</MenuItem>
-          <MenuItem value={LEIPZIG}>{LEIPZIG.toUpperCase()}</MenuItem>
-          <MenuItem value={BAUTZEN}>{BAUTZEN.toUpperCase()}</MenuItem>
-        </Select>
-      </FormControl>
-      <br /><br />
-      <FormControl 
-        id='floorselector_setFloor' 
-        required 
-        size='small' 
-        fullWidth
-      >
-        <InputLabel id='select-label-floor'>{t('floor')}</InputLabel>
-        <Select
-          labelId='select-label-floor'
-          id='select-floor'
-          value={floor}
-          label={t('floor')}
-          onChange={(e) => setFloor(e.target.value)}
-        >
-          {createFloorsPerBuilding(building)}
-        </Select>
-      </FormControl>
+    <FormControl id={`${idString}_floorSelector_setBuilding`} required size='small' fullWidth>
+        <InputLabel>{t('building')}</InputLabel>
+            <Select
+                id={`${idString}_select-building`}
+                value={
+                  building !== '' ? building.building_id : ''
+                }
+                label={t('building')}
+                onChange={(e) => {
+                  setFloor('');
+                  setBuilding(buildings.find(b => b.building_id === e.target.value) || '');
+                }}
+            >
+              {buildings.map(e => {
+                  return <MenuItem id={`${idString}_building_${e.building_id}`} key={e.building_id} value={e.building_id}>{e.name}</MenuItem>;
+              })}
+            </Select>
+        </FormControl>
+        <br/><br/>
+        <FormControl id={`${idString}_floorSelector_setFloor`} required size='small' fullWidth>
+            <InputLabel>{t('floor')}</InputLabel>
+            <Select
+                id={`${idString}_select-floor`}
+                value={
+                  floor !== '' ? floor.floor_id : ''
+                }
+                label={t('floor')}
+                onChange={(e) => {
+                  setFloor(floors.find(f => f.floor_id === e.target.value) || '');
+                }}
+            >
+              {floors.map(e => {
+                  return <MenuItem id={`${idString}_floor_${e.floor_id}`} key={e.floor_id} value={e.floor_id}>{e.name}</MenuItem>;
+              })}
+            </Select>
+        </FormControl>
     </>
   );
 };

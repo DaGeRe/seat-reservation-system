@@ -1,64 +1,53 @@
 import './FloorImage.css';
-import {IconButton, Tooltip, tooltipClasses} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import bautzner_ab_ground_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19a/Erdgeschoss.png';
-import bautzner_ab_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19a/1. Obergeschoss.png';
-import bautzner_c_first_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/1. Obergeschoss.png';
-import bautzner_c_second_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/2. Obergeschoss.png';
-import bautzner_c_third_upper_floor_img from '../Assets/Hauptstelle Dresden,  Bautzner Str.19c/3. Obergeschoss.png';
-import zwickau_attic_img from '../Assets/Außenstelle Zwickau/Dachgeschoss.png';
-import bautzen_first_attic_img from '../Assets/Außenstelle Bautzen/1. Dachgeschoss.png';
-import chemnitz_second_attic_img from '../Assets/Außenstelle Chemnitz/2. Dachgeschoss.png';
-import chemnitz_fourth_attic_img from '../Assets/Außenstelle Chemnitz/4. Dachgeschoss.png';
-import leipzig_second_attic_img from '../Assets/Außenstelle Leipzig/2. Dachgeschoss.png';
-import React, {useEffect, useCallback } from 'react';
-import LaptopIcon from '@mui/icons-material/Laptop';
-import {getRequest} from '../RequestFunctions/RequestFunctions';
+import {IconButton} from '@mui/material';
+import React, {useRef, useEffect} from 'react';
 import FloorSelector from '../FloorSelector.js';
-import { GROUND, FOURTH_ATTIC, FIRST, SECOND, BAUTZNER_STR_19_A_B, BAUTZNER_STR_19_C, ZWICKAU, CHEMNITZ, LEIPZIG, SECOND_ATTIC, ATTIC, FIRST_ATTIC, BAUTZEN } from '../../constants.js';
+import { getRequest } from '../RequestFunctions/RequestFunctions.js';
+import LaptopIcon from '@mui/icons-material/Laptop';
+import HtmlTooltip from './HtmlTooltip.jsx';
 /**
- * @param floor The current floor.
- * @param headers The headers including the jwt.
- * @param clickedXPosition The x coordinate clicked on the map.
- * @param clickedYPosition The y coordinate clicked on the map.
- * @param setCurrentRoom A function that is executed if the user has clicked on an known room.
+ * @param sendDataToParent The function that is called when data has to be transmitted to the parent component. 
  * @param present_color The color (green, blue, ...) of the known rooms.
+ * @param click_freely False if the user is only allowed to click on already existing rooms.
  * @returns The rendered map with known rooms and the option to add an room.
  */
-export default function FloorImage(
+const FloorImage = (
     {
-        floor, 
-        setFloor,
-        building,
-        setBuilding,
-        headers, 
-        clickedXPosition, 
-        clickedYPosition, 
-        setCurrentRoom, 
-        present_color = 'blue'
-    }) {
-    const [allRooms, setAllRooms] = React.useState([]);
+        sendDataToParent,
+        present_color = 'blue',
+        click_freely = true
+    }) => {
+    const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
     /* isHoveredOverOldRoom is true iff the mouse pointer is over an button that locates an known room on the map.*/
     const [isHoveredOverOldRoom, setIsHoveredOverOldRoom] = React.useState(false);
     const [x, setX] = React.useState(0.0);
     const [y, setY] = React.useState(0.0);
+    const [rooms, setRooms] = React.useState([]);
+    const [floor, setFloor] = React.useState('');
+    const [room, setRoom] = React.useState('');
     const new_color = 'green';
-    
-    const getAllActiveRooms = useCallback(
-        async () => {
-            getRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/rooms`,
-                headers,
-                setAllRooms,
-                () => {console.log('Failed to fetch all rooms in FloorImage.jsx.');}
-            );
-        },
-        [headers, setAllRooms]
-    );
 
+    const handleChildData = (data) => {
+        setFloor(data);
+    };
+
+    useEffect(()=>{
+        sendDataToParent({'floor': floor, 'room': room, 'x':x, 'y': y});
+      },[sendDataToParent, floor, room, x, y]);
+
+    // Fetch rooms for floor.
     useEffect(() => {
-        getAllActiveRooms();
-    }, [getAllActiveRooms]);
+        if (floor?.name && floor?.nameOfImg) {
+            getRequest(
+                `${process.env.REACT_APP_BACKEND_URL}/rooms/getAllByFloorId/${floor.floor_id}`,
+                headers.current,
+                setRooms,
+                () => {
+                    console.log('Error fetching default building and floor in fetchDefaultFloor.js');
+                }
+            );
+        }
+    }, [floor]);
     
     /** Set isHoveredOverOldRoom to true to indicate that the mousepointer is above an button that locates known room on the map.*/
     const handleMouseEnter = () => {
@@ -80,148 +69,94 @@ export default function FloorImage(
             return;
         }
         const rect = e.target.getBoundingClientRect();
-        const x = e.clientX - rect.left; // X coordinate within the image
-        const y = e.clientY - rect.top; // Y coordinate within the image
-        const xPercent =  (x/rect.width)*100; 
-        const yPercent =  (y/rect.height)*100;
-        if (clickedXPosition) {
+        const x_curr = e.clientX - rect.left; // X coordinate within the image
+        const y_curr = e.clientY - rect.top; // Y coordinate within the image
+        const xPercent =  (x_curr/rect.width)*100; 
+        const yPercent =  (y_curr/rect.height)*100;
+        //if (clickedXPosition) {
             setX(xPercent);
-            clickedXPosition(xPercent);
-        }
-        if (clickedYPosition) {
+            //clickedXPosition(xPercent);
+        //}
+        //if (clickedYPosition) {
             setY(yPercent);
-            clickedYPosition(yPercent);
-        }
+            //clickedYPosition(yPercent);
+        //}
     }
-    
-    const HtmlTooltip = styled(({ className, ...props }) => (
-        <Tooltip {...props} classes={{ popper: className }} />
-        ))(({ theme }) => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: '#f5f5f9',
-            color: 'rgba(0, 0, 0, 0.87)',
-            maxWidth: 220,
-            fontSize: theme.typography.pxToRem(12),
-            border: '1px solid #dadde9',
-        },
-    }));
-
-        var floorImage = null;
-        if (building === BAUTZNER_STR_19_A_B) {
-            if (floor === GROUND)
-                floorImage = bautzner_ab_ground_floor_img;
-            else if (floor === FIRST)
-                floorImage = bautzner_ab_upper_floor_img;
-        }
-        else if (building === BAUTZNER_STR_19_C) {
-            if (floor === GROUND)
-                floorImage = bautzner_c_first_upper_floor_img;
-            else if (floor === FIRST)
-                floorImage = bautzner_c_second_upper_floor_img;
-            else if (floor === SECOND) {
-                floorImage = bautzner_c_third_upper_floor_img;
-            }
-        }
-        else if (building === ZWICKAU) {
-            if (floor === ATTIC)
-                floorImage = zwickau_attic_img;
-        }
-        else if (building === CHEMNITZ) {
-            if (floor === SECOND_ATTIC) {
-                floorImage = chemnitz_second_attic_img;
-            }
-            else if (floor === FOURTH_ATTIC) {
-                floorImage = chemnitz_fourth_attic_img;
-            }
-        }
-        else if (building === LEIPZIG) {
-            if (floor === SECOND_ATTIC)
-                floorImage = leipzig_second_attic_img;
-        }
-        else if (building === BAUTZEN) {
-            if (floor === FIRST_ATTIC)
-                floorImage = bautzen_first_attic_img;
-        }
-
-        return (
-            <>
-                <FloorSelector
-                    floor={floor}
-                    setFloor={setFloor}
-                    building={building}
-                    setBuilding={setBuilding}
-                />
-                <br></br> <br></br>
-                {floorImage && (
-                    
-                    <div className='image-container' onMouseDown={handleMouseClick}>
-                        {/* Floor Image */}
-                        <img src={floorImage} alt='floorImage' className='floor-image' 
-                            style={{ maxWidth: '100%', maxHeight: '600px' }} 
-                        />
-
-                            {/* Conditional render for specific coordinates */}
-                            {x !== 0.0 && y !== 0.0 && (
-                                <div
-                                    className="image-icon"
-                                    style={{
-                                        top: `${y}%`,
-                                        left: `${x}%`
+    return (
+        <>  
+            <FloorSelector
+                idString={'Floor_FloorImage'}
+                sendDataToParent={handleChildData}
+            />
+            <br/><br/>
+            {floor !== '' && (
+                <div className='image-container' onMouseDown={handleMouseClick}>
+                    <img src={`/Assets/${floor.building.name}/${floor.nameOfImg}`} alt='floorImage' className='floor-image' 
+                        style={{ maxWidth: '100%', maxHeight: '600px' }} 
+                    />
+                    {click_freely && x !== 0.0 && y !== 0.0 && (
+                        <div
+                            className='image-icon'
+                            style={{
+                                top: `${y}%`,
+                                left: `${x}%`
+                            }}
+                        >
+                            <IconButton>
+                                <LaptopIcon 
+                                    style={{ 
+                                        color: new_color, 
+                                        fontSize: '24px' 
                                     }}
+                                    className='image-icon-new'
+                                />
+                            </IconButton>
+                        </div>
+                    )}
+
+                    {/* Render icons for all rooms matching the current floor */}
+                    {
+                        rooms
+                        .map((room, i) => (
+                            <div
+                                key={i}
+                                className='image-icon'
+                                
+                                style={{
+                                    top: `${room.y}%`,
+                                    left: `${room.x}%`
+                                }}
+                            >
+                                <HtmlTooltip
+                                    title={
+                                        <React.Fragment>
+                                            <em>{room.remark}</em>
+                                        </React.Fragment>
+                                    }
                                 >
-                                    <IconButton>
-                                        <LaptopIcon 
-                                            style={{ 
-                                                color: new_color, 
-                                                fontSize: '24px' 
-                                            }}
-                                            className='image-icon-new'
-                                        />
-                                    </IconButton>
-                                </div>
-                            )}
-        
-                            {/* Render icons for all rooms matching the current floor */}
-                            {
-                                allRooms
-                                .filter(room => room.floor === floor && room.building === building)
-                                .map((room, i) => (
-                                    <div
-                                        key={i}
-                                        className='image-icon'
-                                        
-                                        style={{
-                                            top: `${room.y}%`,
-                                            left: `${room.x}%`
+                                <IconButton
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
+                                    id={`icon_button_${room.remark}`}
+                                    onClick={() => setRoom(room)}
+                                >
+                                    <LaptopIcon
+                                        style={{ 
+                                            color: present_color, 
+                                            fontSize: '24px' 
                                         }}
-                                    >
-                                        <HtmlTooltip
-                                            title={
-                                                <React.Fragment>
-                                                    <em>{room.remark}</em>
-                                                </React.Fragment>
-                                            }
-                                        >
-                                        <IconButton
-                                            onMouseEnter={handleMouseEnter}
-                                            onMouseLeave={handleMouseLeave}
-                                            id={`icon_button_${room.remark}`}
-                                            onClick={() => setCurrentRoom && setCurrentRoom(room)}
-                                        >
-                                            <LaptopIcon
-                                                style={{ 
-                                                    color: present_color, 
-                                                    fontSize: '24px' 
-                                                }}
-                                                id={`icon_${room.remark}`}
-                                                className='image-icon-old'
-                                            />
-                                        </IconButton>
-                                    </HtmlTooltip>
-                                </div>
-                            ))}
-                    </div>
-                )}
-            </>
-        );        
-    };
+                                        id={`icon_${room.remark}`}
+                                        className='image-icon-old'
+                                    />
+                                </IconButton>
+                            </HtmlTooltip>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </>
+
+    );  
+};
+
+export default FloorImage;

@@ -38,6 +38,13 @@ public class SeriesController {
         return new ResponseEntity<List<Desk>>(desks, HttpStatus.OK);
     };
 
+    @PostMapping("/desksForBuildingAndDatesAndTimes/{building_id}")
+    public ResponseEntity<List<Desk>> desksForBuildingAndDatesAndTimes(@PathVariable("building_id") Long building_id, @RequestBody DatesAndTimesDTO datesAndTimesDTO) {
+        userService.logging("desksForBuildingAndDatesAndTimes( " + building_id + ", " + datesAndTimesDTO + " )");
+        final List<Desk> desks = seriesService.desksForBuildingAndDatesAndTimes(building_id, datesAndTimesDTO);
+        return new ResponseEntity<List<Desk>>(desks, HttpStatus.OK);
+    };
+
     @PostMapping("/dates")
     public ResponseEntity<List<Date>> getDatesForRange(@RequestBody RangeDTO rangeDTO) {
         userService.logging("getDatesForRange( " + rangeDTO + " )");

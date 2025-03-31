@@ -1,23 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Box, FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SidebarComponent from '../Home/SidebarComponent';
-import { postRequest } from '../RequestFunctions/RequestFunctions';
+import { postRequest, getRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import {DeskTable} from '../misc/DesksTable';
-import { BAUTZEN,BAUTZNER_STR_19_C, BAUTZNER_STR_19_A_B, CHEMNITZ, LEIPZIG, ZWICKAU } from '../../constants';
 
 const CreateSeries = () => {
-    const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-    }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+    const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
     const { t, i18n } = useTranslation();
-    const [selectedBuilding, setSelectedBuilding] = useState(t('any'));
+    const valueForAllBuildings = useRef('0');
+    const [selectedBuilding, setSelectedBuilding] = useState(valueForAllBuildings.current);
     const [possibleDesks, setPossibleDesks] = useState([]);
     const [dates, setDates] = useState([]);
     const [startDate, setStartDate] = useState(new Date()); 
@@ -27,10 +23,41 @@ const CreateSeries = () => {
     const [frequency, setFrequency] = useState('daily');
     const [repaint, setRepaint] = useState(false)
     const [dayOfTheWeek, setDayOfTheWeek] = useState(0);
-
+    const [buildings, setBuildings] = useState([]);
+    
     function create_headline() {
         return i18n.language === 'de' ? 'Erstellen von Serienterminen' : 'Creation of Series Bookings';
     }
+
+    /**
+     * Fetch all buildings and if an default building is found 
+     * set it as the selected building.
+     */
+    useEffect(()=>{
+        getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/buildings/all`,
+            headers.current,
+            buildings=>{
+                setBuildings(buildings);
+                setSelectedBuilding(valueForAllBuildings.current);
+                const userId = localStorage.getItem('userId');
+                if (!userId) return;
+                getRequest(
+                    `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+                    headers.current,
+                    received_defaultFloor => {
+                        if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
+                            setSelectedBuilding(received_defaultFloor.building.building_id);
+                        }
+                    },
+                    () => {
+                    console.log('Error fetching default building and floor in FloorSelector.js');
+                    }
+                );
+            },
+            () => {console.log('Error fetching buildings in fetchBuildings.js');}
+        );
+    }, []);
 
     /**
      * Creates an message that indicates if the series creation was successful or not.
@@ -49,7 +76,7 @@ const CreateSeries = () => {
     /**
      * Fetch dates between startDate and endDate.
      */
-    React.useEffect(() => {
+    useEffect(() => {
         if (startDate > endDate) {
             toast.error(t('startDateBiggerThanStartDate'));
             setDates([]);
@@ -62,7 +89,7 @@ const CreateSeries = () => {
         }
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series/dates`, 
-            headers,
+            headers.current,
             setDates,
             () => {
             console.log('Error fetching dates in CreateSeries.jsx');
@@ -76,24 +103,20 @@ const CreateSeries = () => {
                 dayOfTheWeek: dayOfTheWeek
             })
         );
-        }, [headers, t, startDate, endDate, startTime, endTime, frequency, dayOfTheWeek, repaint]); 
+        }, [t, startDate, endDate, startTime, endTime, frequency, dayOfTheWeek, repaint]); 
 
     /**
      * Fetch all available desks for dates and times.
      */
-    React.useEffect(() => {
+    useEffect(() => {
         if (dates.length > 0) {
+            const url = selectedBuilding === valueForAllBuildings.current ? 
+                `${process.env.REACT_APP_BACKEND_URL}/series/desksForDatesAndTimes` : 
+                `${process.env.REACT_APP_BACKEND_URL}/series/desksForBuildingAndDatesAndTimes/${selectedBuilding}`
             postRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/series/desksForDatesAndTimes`, 
-                headers,
-                (unfiltered_possible_desks)=>{
-                    if (selectedBuilding === t('any')) {
-                        setPossibleDesks(unfiltered_possible_desks);
-                    }
-                    else {
-                        setPossibleDesks(unfiltered_possible_desks.filter(desk => desk.room.building === selectedBuilding));
-                    }
-                },
+                url, 
+                headers.current,
+                setPossibleDesks,
                 () => {
                 console.log('Error fetching desks in CreateSeries');
                 },
@@ -105,7 +128,7 @@ const CreateSeries = () => {
         } else {
             setPossibleDesks([]);
         }
-    }, [dates, headers, endTime, startTime, selectedBuilding, t]);
+    }, [dates, endTime, startTime, selectedBuilding, t]);
 
     /**
      * Create an series object on the backend side.
@@ -114,7 +137,7 @@ const CreateSeries = () => {
     function addSeries(desk) {
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series`,
-            headers,
+            headers.current,
             (ret) => {
                 toast.success(create_msg(ret));
                 // Be sure to change an depedency of React.useEffect(..) to force an repaint.
@@ -222,13 +245,16 @@ const CreateSeries = () => {
                             setSelectedBuilding(e.target.value);
                         }}
                     >
-                        <MenuItem value={t('any')}>{t('any')}</MenuItem>
-                        <MenuItem value={BAUTZNER_STR_19_A_B}>{BAUTZNER_STR_19_A_B}</MenuItem>
-                        <MenuItem value={BAUTZNER_STR_19_C}>{BAUTZNER_STR_19_C}</MenuItem>
-                        <MenuItem value={ZWICKAU}>{ZWICKAU}</MenuItem>
-                        <MenuItem value={CHEMNITZ}>{CHEMNITZ}</MenuItem>
-                        <MenuItem value={LEIPZIG}>{LEIPZIG}</MenuItem>
-                        <MenuItem value={BAUTZEN}>{BAUTZEN}</MenuItem>
+                        {
+                            [
+                                <MenuItem id={`createSeries_building_all`} key={valueForAllBuildings.current} value={valueForAllBuildings.current}>{t('any')}</MenuItem>,
+                                ...buildings.map(e => (
+                                <MenuItem id={`createSeries_building_${e.building_id}`} key={e.building_id} value={e.building_id}>
+                                    {e.name}
+                                </MenuItem>
+                                ))
+                            ]
+                        }
                     </Select>
                 </FormControl>
                 </div>

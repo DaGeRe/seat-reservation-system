@@ -23,7 +23,7 @@ public class UserEntity {
     private String surname;
     private boolean visibility;
     private boolean admin;
-    @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.REMOVE })
+    @ManyToOne(cascade =  { CascadeType.PERSIST })
     @JoinColumn(name = "default_floor_id", nullable = true)
     private Floor default_floor;
 

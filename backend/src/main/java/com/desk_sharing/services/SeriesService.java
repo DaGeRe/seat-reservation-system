@@ -62,7 +62,7 @@ public class SeriesService {
      * @param timestring    The timestring (e.g.: "11:30").
      * @return  The java.sql.Time (e.g.: 11:30:00.000000) transfered from timestring.
      */
-    private Time timestringToTime(String timestring) {
+    public static Time timestringToTime(String timestring) {
         // In case of timestring="12:17:22 PM", we cut off the last three chars
         timestring = timestring.contains("PM") || timestring.contains("AM") ? timestring.substring(0, timestring.length() - 3) : timestring;
         try { 
@@ -124,6 +124,22 @@ public class SeriesService {
      */
     public List<Desk> getDesksForDatesAndTimes(DatesAndTimesDTO datesAndTimesDTO) {
         final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
+            datesAndTimesDTO.getDates(), 
+            timestringToTime(datesAndTimesDTO.getStartTime()),
+            timestringToTime(datesAndTimesDTO.getEndTime())
+        );
+        return desks;
+    }
+
+    /**
+     * Calculates list of desks that are available at each date for the specified timerange and which belongs to the building identified by building_id.
+     * @param building_id The id of the building in question.
+     * @param datesAndTimesDTO  Contains a list of dates and an start and endtime for each date.
+     * @return  A list of desks that are available at each date for the specified timerange for the specified building.
+     */
+    public List<Desk> desksForBuildingAndDatesAndTimes(Long building_id, DatesAndTimesDTO datesAndTimesDTO) {
+        final List<Desk> desks = deskRepository.desksForBuildingAndDatesAndTimes(
+            building_id,
             datesAndTimesDTO.getDates(), 
             timestringToTime(datesAndTimesDTO.getStartTime()),
             timestringToTime(datesAndTimesDTO.getEndTime())

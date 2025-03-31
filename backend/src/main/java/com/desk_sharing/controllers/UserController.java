@@ -68,12 +68,10 @@ public class UserController {
             final Floor floor = userService.getDefaultFloorForUserId(id);
             return new ResponseEntity<>(floor, HttpStatus.OK);
         } catch (IndexOutOfBoundsException e) {
-            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) ERROR:  IndexOutOfBoundsException");
-            e.printStackTrace();
-            return new ResponseEntity<>(new Floor(), HttpStatus.CONFLICT);
+            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) Was not able to find default floor for user. Send empty floor.");
+            return new ResponseEntity<>(new Floor(), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) ERROR:  EntityNotFoundException");
-            e.printStackTrace();
+            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) " + e.getMessage());
             return new ResponseEntity<>(new Floor(), HttpStatus.NOT_FOUND);
         }
     }

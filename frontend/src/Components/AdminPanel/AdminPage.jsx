@@ -153,7 +153,7 @@ const AdminPage = () => {
         <BootstrapDialogTitle id="customized-dialog-title" className="toolHeader" style={{ textAlign: 'center', backgroundColor: 'green', color: 'white' }}>
           {t("deleteRoom").toUpperCase()}
         </BootstrapDialogTitle>
-        <DeleteRoom deleteRoomModal={toggleDeleteRoomModal} />
+        <DeleteRoom sendDataToParent={e=>setIsDeleteRoomOpen(e)} deleteRoomModal={toggleDeleteRoomModal} />
       </BootstrapDialog>
 
       <BootstrapDialog onClose={toggleEditRoomModal} aria-labelledby="customized-dialog-title" open={isEditRoomOpen}>

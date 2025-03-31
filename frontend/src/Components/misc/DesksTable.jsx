@@ -1,4 +1,3 @@
-import { BAUTZEN, CHEMNITZ, FOURTH_ATTIC, GROUND, ZWICKAU, FIRST, LEIPZIG, BAUTZNER_STR_19_C, SECOND_ATTIC } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import {
@@ -13,51 +12,6 @@ import {
 
 const DeskTable = ({name, desks, submit_function}) =>{
     const { t } = useTranslation();
-    
-    function floorTableCell(building, floor) {
-        let floorName = '';
-            if (building === BAUTZNER_STR_19_C) {
-                if (floor === GROUND) {
-                    floorName = t('groundFloor_19c');
-                }
-                else if (floor === FIRST) {
-                    floorName = t('firstFloor_19c')
-                }
-                else {
-                    floorName = t('thirdFloor_19c');
-                }
-            }
-            else if (building === ZWICKAU) {
-                floorName = t('attic');
-            }
-            else if (building === CHEMNITZ) {
-                if (floor === SECOND_ATTIC) {
-                    floorName = t('second_attic');
-                }
-                else if (floor === FOURTH_ATTIC) {
-                    floorName = t('fourth_attic');
-                }
-            }
-            else if (building === BAUTZEN) {
-        
-                floorName = t('first_attic');
-            }
-            else if (building === LEIPZIG) {
-                floorName = t('second_attic');
-            }
-            else {
-                if (floor === GROUND) {
-                    floorName = t('groundFloor');
-                }
-                else if (floor === FIRST) {
-                    floorName = t('firstFloor');
-                }
-                else {
-                    floorName = t('thirdFloor');
-                }
-            }
-            return floorName;
-    };
     
     return (
         <TableContainer component={Paper} sx={{
@@ -82,8 +36,8 @@ const DeskTable = ({name, desks, submit_function}) =>{
                                 <TableCell>{desk.remark}</TableCell>
                                 <TableCell>{desk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                 <TableCell>{desk.room.remark}</TableCell>
-                                <TableCell>{desk.room.building}</TableCell>
-                                <TableCell>{floorTableCell(desk.room.building, desk.room.floor)}</TableCell>
+                                <TableCell>{desk.room.floorObj.building.name}</TableCell>
+                                <TableCell>{desk.room.floorObj.name}</TableCell>
                                 <TableCell>
                                     <Button id={`sbmt_btn_${desk.remark}`} variant='contained' onClick={(_)=>{
                                         submit_function(desk);}}>

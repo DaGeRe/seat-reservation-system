@@ -7,3 +7,16 @@
   cursor: pointer;
   margin-bottom: 5px;
 }
+
+/*Add some space around the back button.*/
+div.contentWrapper {
+  padding-top: 50px;
+  padding-right: 50px;
+}
+
+/*Add some rome around the whole gui.*/
+div.customPadding {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+};
