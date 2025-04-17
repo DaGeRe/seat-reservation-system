@@ -1,6 +1,7 @@
 package com.desk_sharing.controllers;
 
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
@@ -79,4 +80,15 @@ public class RoomController {
         userService.logging("deleteRoomFf( + " + id + " )");
         return roomService.deleteRoomFf(id);
     }
+
+    @GetMapping("/byMinimalAmountOfWorkstations/{minimalAmountOfWorkstations}")
+    public ResponseEntity<List<Room>> getByMinimalAmountOfWorkstations(@PathVariable("minimalAmountOfWorkstations") Integer minimalAmountOfWorkstations) {
+        userService.logging("getByMinimalAmountOfWorkstations( + " + minimalAmountOfWorkstations + " )");
+        return new ResponseEntity<>(roomService.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations), HttpStatus.OK);
+    }
+    @PostMapping("/byMinimalAmountOfWorkstationsAndFreeOnDate/{minimalAmountOfWorkstations}")
+    public ResponseEntity<List<Room>> getByMinimalAmountOfWorkstationsAndFreeOnDate(@PathVariable("minimalAmountOfWorkstations") Integer minimalAmountOfWorkstations, @RequestBody DatesAndTimesDTO datesAndTimesDTO) {
+        userService.logging("getByMinimalAmountOfWorkstationsAndFreeOnDate( + " + minimalAmountOfWorkstations + ", " + datesAndTimesDTO + " )");
+        return new ResponseEntity<>(roomService.getByMinimalAmountOfWorkstationsAndFreeOnDate(minimalAmountOfWorkstations, datesAndTimesDTO), HttpStatus.OK);
+    }   
 }

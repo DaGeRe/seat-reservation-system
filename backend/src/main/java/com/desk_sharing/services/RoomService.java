@@ -2,6 +2,7 @@ package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.FloorRepository;
@@ -110,6 +111,19 @@ public class RoomService {
     	return null;
     }*/
     
+    public List<Room> getByMinimalAmountOfWorkstations(int minimalAmountOfWorkstations) {
+        return roomRepository.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations);
+    };
+
+    public List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(int minimalAmountOfWorkstations, DatesAndTimesDTO datesAndTimesDTO) {
+
+        return roomRepository.getByMinimalAmountOfWorkstationsAndFreeOnDate(
+            minimalAmountOfWorkstations,
+            datesAndTimesDTO.getDates(),
+            SeriesService.timestringToTime(datesAndTimesDTO.getStartTime()),
+            SeriesService.timestringToTime(datesAndTimesDTO.getEndTime())
+        );
+    };
 
     public int deleteRoom(Long id) {
         List<Desk> desksPerRoom = deskRepository.findByRoomId(id);

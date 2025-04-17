@@ -83,7 +83,8 @@ const FreeDesks = () => {
                 dates: [bookingDate],
                 startTime: startTime,
                 endTime: endTime
-            }));
+            })
+        );
     }, [bookingDate, selectedBuilding, t, endTime, startTime, repaint]);
     
     function addBooking(selectedDesk) {

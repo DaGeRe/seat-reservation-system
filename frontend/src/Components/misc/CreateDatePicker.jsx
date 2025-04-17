@@ -4,10 +4,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 import de from 'date-fns/locale/de';
 registerLocale('de', de);
 
-const CreateDatePicker = ({date, setter, label}) => {
+const CreateDatePicker = ({date, setter, label, disabledFunc=()=>{return false}}) => {
     return (
         <FormControl id='createDatePicker_formControl' required fullWidth>
             <DatePicker
+                disabled={disabledFunc()}
                 selected={date}
                 onChange={setter}
                 locale='de'

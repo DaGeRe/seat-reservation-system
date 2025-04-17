@@ -12,8 +12,11 @@ import { CiLogout } from 'react-icons/ci';
 import { MdGTranslate } from 'react-icons/md';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox, IoIosSettings, IoIosAlbums } from 'react-icons/io';
+import { IoSearchSharp } from 'react-icons/io5';
+import { HiOutlineSparkles } from "react-icons/hi2";
 import LaptopIcon from '@mui/icons-material/Laptop';
-import Settings from "./Settings";
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import DefaultFloor from './DefaultFloor';
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -76,21 +79,25 @@ const SidebarComponent = () => {
         navigate("/freeDesks", { replace: true });
         break;
 
+      case 'roomSearch':
+        navigate("/roomSearch", { replace: true });
+        break;
+
       case "language":
         const currentLanguage = i18n.language;
         const newLanguage = currentLanguage === "en" ? "de" : "en";
         i18n.changeLanguage(newLanguage);
         break;
 
-      case "changePassword":
+      case 'changePassword':
         setIsChangePasswordModalOpen(true);
         break;
 
-      case 'settings':
+      case 'defaultFloor':
         setIsSettingsModalOpen(true);
         break;
 
-      case "logout":
+      case 'logout':
         setIsLogoutConfirmationOpen(true);
         break;
 
@@ -107,13 +114,9 @@ const SidebarComponent = () => {
     setIsSettingsModalOpen(false);
   };
 
+
   const handleCloseLogoutConfirmationModal = () => {
     setIsLogoutConfirmationOpen(false);
-  };
-
-  const handleChangePasswordSubmit = (event) => {
-    event.preventDefault();
-    setIsChangePasswordModalOpen(false);
   };
 
   const handleLogoutConfirmed = () => {
@@ -226,14 +229,7 @@ const SidebarComponent = () => {
             {t('bookings')}
           </MenuItem>
 
-          <MenuItem
-            id='sidebar_freeDesks'
-            active={activeTab === 'freeDesks'}
-            icon={<LaptopIcon />}
-            onClick={() => handleClick('freeDesks')}
-          >
-            {t('freeDesks')}
-          </MenuItem>
+          
 
  
             <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
@@ -254,28 +250,43 @@ const SidebarComponent = () => {
             {i18n.language === "en" ? "Deutsch" : "English"}
           </MenuItem>
 
-        {/*</Menu>
-        <Menu>*/}
-
-          <MenuItem id='sidebar_settings' icon={<IoIosSettings/>} onClick={
-            () => handleClick('settings')}
-          >{t('settings')}</MenuItem>
+        <SubMenu id='sidebar_search0' icon={<IoSearchSharp />}  label={t('search')}>
+          <MenuItem id='sidebar_search' icon={<MeetingRoomIcon/>} onClick={
+            () => handleClick('roomSearch')}
+          >{t('room')}</MenuItem>
+          <MenuItem
+            id='sidebar_freeDesks'
+            active={activeTab === 'freeDesks'}
+            icon={<LaptopIcon />}
+            onClick={() => handleClick('freeDesks')}
+          >
+            {t('workstations')}
+          </MenuItem>
+          </SubMenu>
           
-            
-          <MenuItem id='sidebar_changePassword' icon={<FaLock />} onClick={() => handleClick('changePassword')}>{t('password')}</MenuItem>
+          <SubMenu id='sidebar_settings0' icon={<IoIosSettings/>} label={t('settings')}>
+            <MenuItem id='sidebar_settings' icon={<HiOutlineSparkles />} onClick={
+              () => handleClick('defaultFloor')}>
+                {t('defaultFloor')}
+              </MenuItem>
+            <MenuItem id='sidebar_changePassword' icon={<FaLock/>} onClick={() => handleClick('changePassword')}>
+              {t('password')}
+            </MenuItem>
+          </SubMenu>
+          
           <MenuItem id='sidebar_logout' icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
         </Menu>
       </Sidebar>
 
-      <Settings
+      <DefaultFloor
         isOpen={isSettingsModalOpen}
         onClose={handleCloseSettingsModal}
       />
-
+      <div>{isChangePasswordModalOpen}</div>
       <ChangePassword
         isOpen={isChangePasswordModalOpen}
         onClose={handleCloseChangePasswordModal}
-        onSubmit={handleChangePasswordSubmit}
+        //onSubmit={handleChangePasswordSubmit}
       />
 
       <LogoutConfirmationModal

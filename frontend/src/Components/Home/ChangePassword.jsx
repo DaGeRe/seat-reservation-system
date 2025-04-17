@@ -1,158 +1,76 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useState, useRef } from 'react';
+import {Dialog, TextField, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { putRequest } from '../RequestFunctions/RequestFunctions';
 
 const ChangePassword = ({ isOpen, onClose }) => {
-  const headers = JSON.parse(sessionStorage.getItem('headers'));
-  const { t } = useTranslation();
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+  const { t, i18n } = useTranslation();
   const userId = localStorage.getItem('userId');
-  const [formData, setFormData] = useState({
-    prevPassword: "",
-    newPassword: "",
-    newPasswordAgain: ""
-  });
-  const [error, setError] = useState(null);
+  const [prevPassword, setPrevPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordAgain, setNewPasswordAgain] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Check if new passwords match
-    if (formData.newPassword !== formData.newPasswordAgain) {
-      setError("New passwords do not match");
+  function submit() {
+    if (newPassword === '' || prevPassword === '' || newPasswordAgain === '') {
+      toast.error(i18n.language === 'de' ? 'Alle Felder müssen befüllt sein' : 'All fields must have an value');
       return;
     }
-/*     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`, {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify({
-            oldPassword: formData.prevPassword,
-            newPassword: formData.newPassword
-        })
-      });
-      const data = await response.json();
-      if (response.ok && data) {
-        toast.success(t('passwordChangedSuccessfully'));
-        onClose();
-      } else {
-        setError(t('passwordChangFailed'));
-      }
-    } catch (error) {
-        console.error(t('passwordChangFailed'), error);
-        setError(t('passwordChangFailed'));
-    } */
+    if (newPassword !== newPasswordAgain) {
+      toast.error(t('passwordsDontMatch'));
+      return;
+    }
+
     putRequest(
       `${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`,
-      headers,
+      headers.current,
       (data) => {
         if (data) {
           toast.success(t('passwordChangedSuccessfully'));
           onClose();
         }
         else {
-          setError(t('passwordChangFailed'));
+          toast.error(t('passwordChangFailed'));
         }
       },
       () => {
-        console.error(t('passwordChangFailed'), error);
-        setError(t('passwordChangFailed'));
+        toast.error(t('passwordChangFailed'));
       },
       JSON.stringify({
-        oldPassword: formData.prevPassword,
-        newPassword: formData.newPassword
+        oldPassword: prevPassword,
+        newPassword: newPassword
       })
     );
-  };
+  }
 
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 9999 // Set a high z-index value
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          padding: "20px",
-          background: "#FFF",
-          borderRadius: "10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          minHeight: "200px",
-          margin: "1rem",
-          position: "relative",
-          minWidth: "300px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-        }}
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent click from bubbling up to the backdrop
-        }}
-      >
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div id='changePassword_prevPassword'>
-            <label style={{ display: "block", marginBottom: "5px" }}>{t("previousPassword")}</label>
-            <input type="password" name="prevPassword" value={formData.prevPassword} onChange={handleChange} required style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              transition: "border-color 0.3s"
-            }} />
-          </div>
-          <div id='changePassword_newPassword'>
-            <label style={{ display: "block", marginBottom: "5px" }}>{t("newPassword")}</label>
-            <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} required style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              transition: "border-color 0.3s"
-            }} />
-          </div>
-          <div id='changePassword_newPasswordAgain'>
-            <label style={{ display: "block", marginBottom: "5px" }}>{t("newPasswordAgain")}</label>
-            <input type="password" name="newPasswordAgain" value={formData.newPasswordAgain} onChange={handleChange} required style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              transition: "border-color 0.3s"
-            }} />
-          </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <button id='changePassword_submit' type='submit' style={{
-            padding: "10px 20px",
-            borderRadius: "5px",
-            border: "none",
-            backgroundColor: "#008444",
-            color: "#FFF",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "background-color 0.3s"
-          }}>{t('submit')}</button>
-        </form>
-      </div>
-    </div>
+    <Dialog open={isOpen} onClose={onClose}>
+      <DialogTitle>{t('password')}</DialogTitle>
+      <DialogContent>
+        <div id='changePassword_prevPassword'>
+          <TextField label={t('previousPassword')} type='password' onChange={e=>setPrevPassword(e.target.value)} value={prevPassword} required/>
+        </div>
+        <br/><br/>
+        <div id='changePassword_newPassword'>
+          <TextField label={t('newPassword')} type='password' onChange={e=>setNewPassword(e.target.value)} value={newPassword} required/>
+        </div>
+        <br/><br/>
+        <div id='changePassword_newPasswordAgain'>
+        <TextField label={t('newPassword')} type='password' onChange={e=>setNewPasswordAgain(e.target.value)} value={newPasswordAgain} required/>
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button id='changePassword_close' onClick={onClose} color='primary'>
+          {t('cancel')}
+        </Button>
+        <Button id='changePassword_submit' color='primary' onClick={submit} autoFocus>
+          {t('submit')}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

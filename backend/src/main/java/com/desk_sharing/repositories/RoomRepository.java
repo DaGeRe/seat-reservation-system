@@ -1,6 +1,9 @@
 package com.desk_sharing.repositories;
 
 import com.desk_sharing.entities.Room;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +23,41 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     + "select * from rooms where floor_id = :floor_id "
     ,nativeQuery=true)
     public List<Room> getAllRoomsByFloorId(@Param("floor_id") long floor_id);
+
+    @Query(value=""   
+    + "SELECT r.* " 
+    + "FROM rooms r " 
+    + "JOIN desks d " 
+    + "ON r.room_id = d.room_id "
+    + "GROUP BY r.room_id "
+    + "HAVING COUNT(d.desk_id) >= :minimalAmountOfWorkstations "
+    ,nativeQuery=true)
+    public List<Room> getByMinimalAmountOfWorkstations(@Param("minimalAmountOfWorkstations") int minimalAmountOfWorkstations);
+
+    @Query(value=""   
+    + "SELECT r.* " 
+    + "FROM rooms r " 
+    + "JOIN desks d0 " 
+    + "ON r.room_id = d0.room_id "
+    + "WHERE "
+    + "d0.desk_id NOT IN ( " +
+    "   SELECT d.desk_id " +
+    "   FROM desks d " +
+    "   JOIN bookings b ON d.desk_id = b.desk_id " +
+    "   WHERE b.day IN (:days) " +
+    "   AND ( " +
+    "           (b.begin BETWEEN :startTime AND :endTime) " +
+    "           OR (b.end BETWEEN :startTime AND :endTime) " +
+    "           OR (b.begin <= :endTime AND b.end >= :startTime) " +  // Overlap check
+    "       ) " +
+    "   ) " +
+    "GROUP BY r.room_id "
+    + "HAVING COUNT(d0.desk_id) >= :minimalAmountOfWorkstations "
+    ,nativeQuery=true)
+    public List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(
+        @Param("minimalAmountOfWorkstations") int minimalAmountOfWorkstations, 
+        @Param("days") List<Date> days, 
+        @Param("startTime") Time startTime, 
+        @Param("endTime") Time endTime
+    );
 }
