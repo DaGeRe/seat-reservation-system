@@ -44,12 +44,18 @@ services:
     networks:
       - ${NETWORK}
     environment:
+      - JAVA_OPTS=-Djavax.net.ssl.trustStore=/opt/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit
       - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
       - DOCKER_HOST=unix:///var/run/docker.sock
       - PW_TLS=${PW_TLS}
       - PW_DB=${PW_DB}
       - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
       - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
+      - LDAP_DIR_CONTEXT_PASSWORD=${LDAP_DIR_CONTEXT_PASSWORD}
+      - LDAP_DIR_CONTEXT_PRINCIPAL=${LDAP_DIR_CONTEXT_PRINCIPAL}
+      - LDAP_DIR_CONTEXT_URL=${LDAP_DIR_CONTEXT_URL}
+      - LDAP_IDENTITY_MAPPING_BASE=${LDAP_IDENTITY_MAPPING_BASE}
+      - LDAP_FILTER_PATTERN=$(LDAP_FILTER_PATTERN)
 
   database:
     restart: unless-stopped

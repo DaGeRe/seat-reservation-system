@@ -37,6 +37,12 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /usr/src/app
 
+RUN apt update && apt install ldap-utils
+
+COPY ca_ad.cer /usr/local/share/ca-certificates/ldapserver.crt
+#RUN update-ca-certificates
+RUN keytool -import -trustcacerts -alias ldapserver -file /usr/local/share/ca-certificates/ldapserver.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
+
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
 # Copy the source code and necessary resources from the build stage
