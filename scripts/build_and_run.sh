@@ -3,7 +3,7 @@
 # Funktion, die beim Empfang von SIGINT (Ctrl+C) ausgeführt wird
 cleanup() {
     echo "Ctrl+C gedrückt. Führe 'docker compose down' aus..."
-    docker compose down
+    docker compose stop
     exit 0
 }
 
@@ -21,4 +21,4 @@ docker compose up
 
 # Wenn das Skript normal beendet wird, führe auch 'docker compose down' aus
 echo "Skript beendet. Führe 'docker compose down' aus..."
-docker compose down
+docker compose stop

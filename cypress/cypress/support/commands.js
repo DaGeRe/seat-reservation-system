@@ -89,7 +89,7 @@ Cypress.Commands.add('logout', ()=>{
   });
 });
 
-Cypress.Commands.add('login', (mail='test@mail.com', pw='test') => {
+Cypress.Commands.add('login', (mail='test@mail.com', pw=Cypress.env('TEST_ADMIN_PW')) => {
   cy.visit('/').then(()=>{
     cy.intercept('POST', '/users/login').as('loginRequest');
     Cypress.Promise.all([

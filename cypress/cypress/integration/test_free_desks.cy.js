@@ -12,7 +12,7 @@ describe('', ()=> {
 
     it('simple booking on free desks', () => {
         cy.login().then(()=>{
-            cy.login('test_admin@mail.com', 'test').then(()=>{
+            cy.login('test_admin@mail.com', Cypress.env('TEST_ADMIN_PW')).then(()=>{
                 cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                         cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
@@ -50,7 +50,7 @@ describe('', ()=> {
 
     it('two bookings on free desks', () => {
         cy.login().then(()=>{
-            cy.login('test_admin@mail.com', 'test').then(()=>{
+            cy.login('test_admin@mail.com', Cypress.env('TEST_ADMIN_PW')).then(()=>{
                 cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                         cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{

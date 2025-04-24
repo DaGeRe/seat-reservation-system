@@ -1,5 +1,5 @@
 describe('', ()=>{
-    const pw1 = 'pw';
+    const pw1 = Cypress.env('TEST_USER_PW');
     const pw2 = pw1+2;
     const vorname1 = 'max';
     const vorname2 = vorname1+1;
