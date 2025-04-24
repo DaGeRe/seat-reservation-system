@@ -1,5 +1,5 @@
 describe('', ()=>{
-    const pw1 = 'pw';
+    const pw1 = Cypress.env('TEST_USER_PW');
     const vorname1 = 'max';
     const nachname = 'mustermann';
     const mail = 'foo@bar.com'
@@ -17,7 +17,7 @@ describe('', ()=>{
     })
 
     it('check if every floor loads correctly', ()=>{
-        cy.login(mail, pw1).then(()=>{
+        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
             cy.visit('/floor').then(()=>{
                 cy.get('img').should('exist').should('have.attr', 'src').and('include', 'Zwickau').then(()=>{
                     cy.setFloor(7,1,'Hauptstelle Dresden,  Bautzner Str.19c/1. Obergeschoss.png').then(()=>{
@@ -48,7 +48,7 @@ describe('', ()=>{
     })
 
     it('test set the default building and floor as normal user', ()=>{
-        cy.login(mail, pw1).then(()=>{
+        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
             cy.get('a#sidebar_settings0').click(()=>{
                 cy.get('a#sidebar_settings').should('exist').click().then(()=>{
                     cy.get('div#settings_floorSelector_setBuilding').click().then(()=>{
@@ -61,7 +61,7 @@ describe('', ()=>{
                                                 cy.login(mail, pw1).then(()=>{
                                                     cy.get('a#sidebar_settings').should('exist').click().then(()=>{
                                                         cy.get('div#settings_select-floor').should('have.text', floor).then(()=>{
-                                                            cy.visit("/floor").then(()=>{
+                                                            cy.visit('/floor').then(()=>{
                                                                 cy.get('div#Floor_FloorImage_select-building').should('have.text', building).then(()=>{
                                                                     cy.get('div#Floor_FloorImage_select-floor').should('have.text', floor).then(()=>{
                                                                         cy.wrap('1');                                                                   

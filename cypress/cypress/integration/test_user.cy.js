@@ -1,10 +1,10 @@
 describe('', ()=>{
-    const pw1 = 'pw';
+    const pw1 = Cypress.env('TEST_USER_PW');
     const pw2 = pw1+2;
     const vorname1 = 'max';
     const vorname2 = vorname1+1;
     const nachname = 'mustermann';
-    const mail = 'foo@bar.com'
+    const mail = 'user.mail@lit.justiz.sachsen.de';
 
     beforeEach(()=>{
         cy.login().then(()=>{

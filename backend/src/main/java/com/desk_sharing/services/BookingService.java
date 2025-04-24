@@ -4,6 +4,7 @@ import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.model.BookingEditDTO;
+import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
@@ -20,7 +21,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
-
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.desk_sharing.entities.UserEntity;
@@ -45,6 +45,19 @@ public class BookingService {
 
     @Autowired
     DeskService deskService;
+
+    public Map<String, List<BookingProjectionDTO>> getBookingsFromColleaguesOnDate(final List<String> emailStrings, final Date date) {
+        final Map<String, List<BookingProjectionDTO>> bookingsForEmail = new HashMap<>();
+        for (String emailString: emailStrings) {
+            final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository
+                .getEveryBookingForEmail("%" + emailString + "%").stream()
+                .map(BookingProjectionDTO::new)
+                .filter(bookingProjectionDto -> bookingProjectionDto.getDay().equals(date))
+                .toList();
+            bookingsForEmail.put(emailString, bookingProjectionDtos);
+        }
+        return bookingsForEmail;
+    }
     
     public Booking createBooking(Map<String, Object> bookingData) {
     	int user_id = Integer.parseInt(bookingData.get("user_id").toString());

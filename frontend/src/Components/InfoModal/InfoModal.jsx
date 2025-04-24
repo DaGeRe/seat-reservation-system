@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import './InfoModal.css'; // Optional: Styles
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { IconButton, DialogContent, DialogActions, Button } from '@mui/material';
+import LiveHelpIcon  from '@mui/icons-material/HelpOutline';
+import './InfoModal.css';
+import { useTranslation } from 'react-i18next';
 
 const InfoModal = ({text}) => {
     const { t } = useTranslation();
@@ -21,29 +19,44 @@ const InfoModal = ({text}) => {
     };
   
     return (
-      <div>
-        {/* <div>Information!!!</div> */}
-        {/* Trigger Button mit dem Fragezeichen */}
+      <>
+      <IconButton
+        aria-label='help'
+        onClick={openModal}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+          backgroundColor: '#fff',
+          color: '#008444',
+          boxShadow: 3,
+          padding: 0, // etwa 12px
+          minWidth: 'auto',
+          minHeight: 'auto',
+          width: 'auto',
+          height: 'auto',
+          zIndex: 1500,
+          '&:hover': {
+            backgroundColor: '#f1f1f1',
+          },
+        }}
+      >
+        <LiveHelpIcon />
+      </IconButton>
 
-            <button onClick={openModal} className="help-button">
-                <QuestionMarkIcon
-                />
-            </button>
-
-        
-        {/* Modal wird nur gerendert, wenn isModalOpen true ist */}
         {isModalOpen && (
-          <div className="modal-overlay">
+          <div className='modal-overlay'>
             <DialogContent className="modal-content">
-               {/* <p>{text}</p> */}
-             <p dangerouslySetInnerHTML={{ __html: text }} />
-                <DialogActions>
-                    <Button onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-                </DialogActions>
+              <p style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: text }} />
+              <DialogActions>
+                <Button onClick={handleClose}>
+                  {t('close').toUpperCase()}
+                </Button>
+              </DialogActions>
             </DialogContent>
           </div>
         )}
-      </div>
+      </>
     );
   };
   

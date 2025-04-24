@@ -1,41 +1,38 @@
-import React, { useState } from "react";
-import "./LoginPage.css";
-import { FaUser } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
-//import flagImage from "../Assets/flag.png";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import './LoginPage.css';
+import { FaUser } from 'react-icons/fa';
+import { FaLock } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import isEmail from '../misc/isEmail';
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
-  const [loginError, setLoginError] = useState("");
-
-  const isEmail = (email) =>
-    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+  const [loginError, setLoginError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!isEmail(values.email)) {
-      setLoginError(t("invalidEmail"));
+      setLoginError(t('invalidEmail'));
       return;
     }
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(values),
       });
       if (!response.ok) {
-        throw new Error("Login failed");
+        throw new Error('Login failed');
       }
       const data = await response.json();
       if (data !== null) {
@@ -51,12 +48,12 @@ const LoginPage = () => {
         localStorage.setItem("visibility", String(data.visibility));
         navigate("/home", { replace: true });
       } else {
-        setLoginError(t("invalidCredentials"));
+        setLoginError(t('invalidCredentials'));
         return;
       }
     } catch (error) {
-        toast.error(t("loginFailed"));
-        setLoginError(t("loginFailed"));
+        toast.error(t('loginFailed'));
+        setLoginError(t('loginFailed'));
     }
   };
 

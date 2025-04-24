@@ -50,6 +50,13 @@ public class BookingController {
     @Autowired
     DeskService deskService;
 
+    @PostMapping("getBookingsFromColleaguesOnDate/{date}")
+    public ResponseEntity<Map<String, List<BookingProjectionDTO>>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {
+        userService.logging("getBookingsFromColleaguesOnDate( " + emailStrings + " | " + date + " )");
+        System.out.println(bookingService.getBookingsFromColleaguesOnDate(emailStrings, date));
+        return new ResponseEntity<>(bookingService.getBookingsFromColleaguesOnDate(emailStrings, date), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<BookingDTO> addBooking(@RequestBody Map<String, Object> bookingData) {
         userService.logging("addBooking( "+bookingData.toString()+" )");
@@ -94,7 +101,7 @@ public class BookingController {
 
     /**
      * Return all bookings that are done by the user identified by email.
-     * This method is used in /admin to find all bookings done by an user.  
+     * This method is eg used in /admin to find all bookings done by an user.  
      * @param email   The email address of the user.
      * @return  All bookings that are done by the user identified by email.
      */
@@ -105,6 +112,18 @@ public class BookingController {
         return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
     }
 
+    /**
+     * Return all bookings for an all users identified by the email that is an element in colleaguesEmails.
+     * This method is used in /colleagues to find all bookings for all members of an group.  
+     * @param colleaguesEmails   An list of emails.
+     * @return  A list of ColleaguesBookingDTO. Each contains an List of bookings for each user. 
+     */
+    /*@PutMapping("colleaguesBookings")
+    public ResponseEntity<Map<String, List<ColleaguesBookingDTO>>> getColleaguesBookings(@RequestBody List<String> colleaguesEmails) {
+        userService.logging("colleaguesBookings(" + colleaguesEmails + ")");
+        final Map<String, List<ColleaguesBookingDTO>> emailAndBookings = bookingService.getColleaguesBookings(colleaguesEmails);
+        return new ResponseEntity<>(emailAndBookings, HttpStatus.OK);
+    }*/
     /**
      * Return all bookings for an particular date provided as string.
      * This method is used in /admin to find all bookings for an particular date..  

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +27,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +35,9 @@ import java.util.Arrays;
 public class SecurityConfiguration {
 
     private final JwtAuthEntryPoint authEntryPoint;
+    @Autowired
+    CustomUserDetailsService customUserDetailService;
+
     @Autowired
     private Environment env;
     public SecurityConfiguration(JwtAuthEntryPoint authEntryPoint) {
@@ -73,7 +78,9 @@ public class SecurityConfiguration {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Allow to send request to the user/login endpoint without any restrictions.
                 .requestMatchers("/users/login").permitAll()
+                // Only users with the admin role are allowed.
                 .requestMatchers("/users/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -83,13 +90,35 @@ public class SecurityConfiguration {
     }
 
     /**
-     * Configure AuthenticationManager with LDAP AuthenticationProvider
+     * Configure AuthenticationManager with LDAP AuthenticationProvider 
+     * and database access object as fallback.
      */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder.authenticationProvider(ldapAuthenticationProvider());
+        // Authentication provider that tests the user credential against ad.
+        final AuthenticationProvider ldapProvider = ldapAuthenticationProvider();
+        // Authentication provider that tests the user credential against the 'build in' database.
+        final AuthenticationProvider dbProvider = daoAuthenticationProvider();
+        
+        // Fix the order in which authentication provider shall be applied. First ldap/ad then build in db.
+        final CustomDelegatingAuthenticationProvider delegatingProvider =
+        new CustomDelegatingAuthenticationProvider(List.of(ldapProvider, dbProvider));
+
+        final AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authBuilder.authenticationProvider(delegatingProvider);
         return authBuilder.build();
+    }
+
+    /**
+     * Build up the data access object provider that checks user credentials against
+     * the build in database.
+     */
+    @Bean
+    public AuthenticationProvider daoAuthenticationProvider() {
+        final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     /**

@@ -10,12 +10,12 @@ describe('', ()=> {
     
     it('Simple series creation', ()=>{
         const should = 62;
-        cy.login('test_admin@mail.com', 'test').then(()=>{
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                 cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
                         cy.logout().then(()=>{
-                            cy.login('test_user@mail.com', 'test').then(()=>{
+                            cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
                                 cy.visit('/createseries').then(()=>{
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
@@ -44,12 +44,12 @@ describe('', ()=> {
 
     it('simple weekly series creation for wednesday', ()=>{
         const should = 9;
-        cy.login('test_admin@mail.com', 'test').then(()=>{
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                 cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
                         cy.logout().then(()=>{
-                            cy.login('test_user@mail.com', 'test').then(()=>{
+                            cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
                                 cy.visit('/createseries').then(()=>{
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {
@@ -88,12 +88,12 @@ describe('', ()=> {
 
     it('simple monthly series creation for friday', ()=>{
         const should = 3;
-        cy.login('test_admin@mail.com', 'test').then(()=>{
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                 cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
                         cy.logout().then(()=>{
-                            cy.login('test_user@mail.com', 'test').then(()=>{
+                            cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
                                 cy.visit('/createseries').then(()=>{
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {

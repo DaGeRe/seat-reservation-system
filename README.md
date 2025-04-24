@@ -43,8 +43,7 @@ If you didnt have any error you can now run using this command: `java -jar targe
 ### Frontend
 
 Go to the frontend directory, make sure you have all the necessary packages: `npm i` or `npm install`.
-
-# Set the proxy with npm config set proxy http://proxy.justiz.sachsen.de:3128 and npm config set https-proxy http://proxy.justiz.sachsen.de:3128. Check with npm config get https-proxy. Maybe you have to set the registry with npm config set registry http://registry.npmjs.org/ to an non secured connection. Reset with npm config set registry https://registry.npmjs.org/. Due to poor internet connection quality installations often fail. Update the timeout with npm config set timeout 6000000 may help. Also after changes clean up the cache with #npm cache clear --force.
+Set the proxy with npm config set proxy http://proxy.justiz.sachsen.de:3128 and npm config set https-proxy http://proxy.justiz.sachsen.de:3128. Check with npm config get https-proxy. Maybe you have to set the registry with npm config set registry http://registry.npmjs.org/ to an non secured connection. Reset with npm config set registry https://registry.npmjs.org/. Due to poor internet connection quality installations often fail. Update the timeout with npm config set timeout 6000000 may help. Also after changes clean up the cache with #npm cache clear --force.
 
 And now run the frontend: `npm start`
 

@@ -57,6 +57,31 @@ Cypress.Commands.add('setStr', (id, str) => {
   });
 });
 
+Cypress.Commands.add('setStrDirect', (id, str) => {
+  cy.get(`input#${id}`).should('exist').then(()=>{
+    cy.get(`input#${id}`)
+    .then(($input) => {
+        const input = $input[0];
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,
+            'value'
+        ).set;
+        nativeInputValueSetter.call(input, str);
+
+        // Trigger events.
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+
+        //cy.wrap(input).should('have.value', str);
+        cy.get(`input#${id}`).should('have.value', str)
+        //cy.get(`div#${id}`).find('input').should('have.text', str)
+        .then(()=>{
+          return cy.wrap('1');
+        });
+    });
+  });
+});
+
 Cypress.Commands.add('highlightMousePosition', () => {
   cy.document().then((doc) => {
     const mouseTracker = doc.createElement('div');
@@ -89,7 +114,7 @@ Cypress.Commands.add('logout', ()=>{
   });
 });
 
-Cypress.Commands.add('login', (mail='test@mail.com', pw='test') => {
+Cypress.Commands.add('login', (mail=Cypress.env('TEST_ADMIN_MAIL'), pw=Cypress.env('TEST_ADMIN_PW')) => {
   cy.visit('/').then(()=>{
     cy.intercept('POST', '/users/login').as('loginRequest');
     Cypress.Promise.all([
@@ -143,7 +168,7 @@ Cypress.Commands.add('addUser', (mail, pw, vorname, nachname)=>{
   });
 });
 
-Cypress.Commands.add('deleteUser', (mail)=>{
+Cypress.Commands.add('deleteUser', (mail, ff=false)=>{
   cy.visit('/admin').then(()=>{
     cy.url().should('contains', '/admin').then(()=> {
       cy.get('button#userManagement').click().then(()=>{
@@ -156,9 +181,18 @@ Cypress.Commands.add('deleteUser', (mail)=>{
                           cy.setStr('filterEmployee_handleTextChange', mail)
                       ]).then(()=>{
                         cy.get('tr').find('button').click().then(()=>{   
-                          cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
-                            return cy.wrap('1');
-                          })
+                          if (ff) {
+                            cy.get('button#delete_ff_btn_yes').click().then(()=>{
+                              cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
+                                return cy.wrap('1');
+                              })
+                            })
+                          }
+                          else {
+                            cy.get('.Toastify__toast').should('be.visible').contains('User deleted successfully').then(()=>{  
+                              return cy.wrap('1');
+                            })
+                          }
                         })
                       })
                   })
@@ -201,6 +235,7 @@ Cypress.Commands.add('getAmountOfUsersForMail', (mail) => {
 // ##################################################################
 
 Cypress.Commands.add('setFloor', (buildingId, floorId, imgSrc) => {
+  //cy.task('log', `${buildingId} ${floorId} ${imgSrc}`)
   cy.get('div#Floor_FloorImage_floorSelector_setBuilding').click().then(()=>{
     cy.wait(1000).then(()=>{
       cy.get(`li#Floor_FloorImage_building_${buildingId}`).click().then(()=>{

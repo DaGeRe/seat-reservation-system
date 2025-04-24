@@ -20,16 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
 
-    private UserRepository userRepository;
-
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(username);
+        final UserEntity user = userRepository.findByEmail(username);
+        
         if (user == null) {
             throw new UsernameNotFoundException("Email " + username + " not found");
         }

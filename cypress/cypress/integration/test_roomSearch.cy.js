@@ -11,7 +11,7 @@ describe('', ()=> {
         const start_timeslot = 3;
         const end_timeslot = 10; 
         
-        cy.login('test_admin@mail.com', 'test').then(()=>{
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                 cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
@@ -19,7 +19,7 @@ describe('', ()=> {
                             cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark3).then(()=>{
                                 cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark4).then(()=>{
                                     cy.logout().then(()=>{
-                                        cy.login('test_user@mail.com', 'test').then(()=>{
+                                        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
                                             cy.visit('roomSearch').then(()=>{
                                                 cy.get('input#minimalAmountOfWorkstationsInput').should('have.value', '2').then(()=>{
                                                     cy.setStr('div_minimalAmountOfWorkstationsInput', '4').then(()=>{
