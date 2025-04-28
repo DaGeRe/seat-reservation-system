@@ -1,5 +1,8 @@
 services:
   frontend:
+    logging:
+      options:
+        max-size: 3m
     restart: unless-stopped
     build: 
       context: ${PROJECT_PATH}/frontend
@@ -24,6 +27,9 @@ services:
       - database
 
   backend:
+    logging:
+      options:
+        max-size: 3m
     restart: unless-stopped
     privileged: true
     volumes:
@@ -58,6 +64,9 @@ services:
       - LDAP_FILTER_PATTERN=$(LDAP_FILTER_PATTERN)
 
   database:
+    logging:
+      options:
+        max-size: 3m
     restart: unless-stopped
     build: 
       context: ${PROJECT_PATH}/database

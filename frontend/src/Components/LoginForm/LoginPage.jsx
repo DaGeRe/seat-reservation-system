@@ -5,20 +5,17 @@ import { FaLock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import isEmail from '../misc/isEmail';
 
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  //const news = '';
 
   const [values, setValues] = useState({
     email: '',
     password: '',
   });
   const [loginError, setLoginError] = useState('');
-
-  const isEmail = (email) =>
-    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -28,6 +28,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	,nativeQuery = true)
 	public List<Object[]> getBookingsForDesk(@Param("desk_id") Long desk_id);
 
+	/*@Query(value = "SELECT b.booking_id, b.room_id, b.desk_id, b.day, b.begin, b.end, u.id, u.email, r.remark, d.remark" 
+		+ " FROM bookings b join users u on u.id = b.user_id join rooms r on b.room_id = r.room_id join desks d on b.desk_id = d.desk_id WHERE email IN (:colleaguesEmails) ", nativeQuery = true)
+	public List<Object[]> getColleaguesBookings(final List<String> colleaguesEmails);*/
+
 	@Query(value = "SELECT * FROM bookings WHERE booking_id != :id AND room_id = :roomId AND desk_id=:deskId AND day=:day AND "
 			+ "((:startTime BETWEEN begin AND end) OR (:endTime BETWEEN begin AND end) OR "
 			+ "(begin >= :startTime AND begin < :endTime) OR (end > :startTime AND end <= :endTime))"
@@ -55,12 +59,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * This method is used in /admin to find all bookings.
      * @return  Every booking.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
 		+ "join rooms on bookings.room_id=rooms.room_id "
-		+ "join users on bookings.user_id=users.id", nativeQuery = true)
+		+ "join users on bookings.user_id=users.id "
+		+ "join floors on rooms.floor_id=floors.floor_id "
+		+ "join buildings on floors.building_id=buildings.building_id ", nativeQuery = true)
 	List<Object[]> getEveryBooking();
 
 	/**
@@ -69,12 +75,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param email   The email address of the user.
      * @return  All bookings that are done by the user identified by email.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
 		+ "join rooms on bookings.room_id=rooms.room_id "
 		+ "join users on bookings.user_id=users.id "
+		+ "join floors on rooms.floor_id=floors.floor_id "
+		+ "join buildings on floors.building_id=buildings.building_id "
 		+ " where email like :email ", nativeQuery = true)
 	List<Object[]> getEveryBookingForEmail(@Param("email") String email);
 
@@ -84,13 +92,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param date   The date as string.
      * @return  All bookings for an date..
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
 		+ "join rooms on bookings.room_id=rooms.room_id "
 		+ "join users on bookings.user_id=users.id "
-		+ "where day like :date ", nativeQuery = true)
+		+ "join floors on rooms.floor_id=floors.floor_id "
+		+ "join buildings on floors.building_id=buildings.building_id "
+		+ " where day like :date ", nativeQuery = true)
 	List<Object[]> getEveryBookingForDate(@Param("date") String date);
 
 	/**
@@ -99,13 +109,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param deskRemark    The remark of the desk in question.
      * @return  All bookings of the desk identified by deskRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
 		+ "join rooms on bookings.room_id=rooms.room_id "
 		+ "join users on bookings.user_id=users.id "
-		+ "where desks.remark like :deskRemark ", nativeQuery = true)
+		+ "join floors on rooms.floor_id=floors.floor_id "
+		+ "join buildings on floors.building_id=buildings.building_id "
+		+ " where desks.remark like :deskRemark ", nativeQuery = true)
 	List<Object[]> getEveryBookingForDeskRemark(@Param("deskRemark") String deskRemark);
 
 	/**
@@ -114,13 +126,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param roomRemark    The remark for the room in question.
      * @return  All bookings in the room identified by roomRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, rooms.building, bookings.series_id " 
-		+ "from bookings " 
-		+ "left join series on bookings.series_id=series.series_id "
-		+ "join desks on bookings.desk_id=desks.desk_id "
-		+ "join rooms on bookings.room_id=rooms.room_id "
-		+ "join users on bookings.user_id=users.id "
-		+ "where rooms.remark like :RoomRemark ", nativeQuery = true)
+	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+		+ " from bookings " 
+		+ " left join series on bookings.series_id=series.series_id "
+		+ " join desks on bookings.desk_id=desks.desk_id "
+		+ " join rooms on bookings.room_id=rooms.room_id "
+		+ " join users on bookings.user_id=users.id "
+		+ " join floors on rooms.floor_id=floors.floor_id "
+		+ " join buildings on floors.building_id=buildings.building_id "
+		+ " where rooms.remark like :RoomRemark ", nativeQuery = true)
 	List<Object[]> getEveryBookingForRoomRemark(@Param("RoomRemark") String RoomRemark);
 	
 	@Query(value="select * from bookings " +

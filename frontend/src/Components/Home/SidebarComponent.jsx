@@ -17,6 +17,7 @@ import { HiOutlineSparkles } from "react-icons/hi2";
 import LaptopIcon from '@mui/icons-material/Laptop';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import DefaultFloor from './DefaultFloor';
+import { AiOutlineTeam } from "react-icons/ai";
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
@@ -97,6 +98,10 @@ const SidebarComponent = () => {
         setIsSettingsModalOpen(true);
         break;
 
+      case 'colleagues':
+        navigate("/colleagues", { replace: true });
+        break;
+
       case 'logout':
         setIsLogoutConfirmationOpen(true);
         break;
@@ -120,66 +125,22 @@ const SidebarComponent = () => {
   };
 
   const handleLogoutConfirmed = () => {
-    localStorage.removeItem("userId"); // Clear the user's session
-    navigate("/", { replace: true }); // Redirect to login page
+    localStorage.removeItem('userId'); // Clear the user's session
+    navigate('/', { replace: true }); // Redirect to login page
   };
-
-  /*const changeVisibility = async () => {
-     try {
-      const response = await fetch(`/users/visibility/${localStorage.getItem("userId")}`, {
-        method: "PUT"
-      });
-      const data = await response.json();
-      if (response.ok && data !== -1) {
-        if (data === 1) {
-          setVisibility("true");
-          localStorage.setItem("visibility", "true");
-          toast.success(t("visible"));
-        } else {
-          setVisibility("false");
-          localStorage.setItem("visibility", "false");
-          toast.success(t("anonymousMessage"));
-        }
-      } else {
-        toast.warning(t("failVisibility"));
-      }
-    } catch (error) {
-        console.log("Error changing visibility");
-    }   
-    putRequest(
-      `/users/visibility/${localStorage.getItem("userId")}`,
-      headers,
-      (data) => {
-        if (data === -1) {
-          toast.warning(t("failVisibility"));
-        }
-        if (data === 1) {
-          setVisibility("true");
-          localStorage.setItem("visibility", "true");
-          toast.success(t("visible"));
-        }
-        else {
-          setVisibility("false");
-          localStorage.setItem("visibility", "false");
-          toast.success(t("anonymousMessage"));
-        }
-      },
-      () => {console.log(`Failed to put visibility for userId: ${localStorage.getItem("userId")}.`);}
-    );
-  }*/
 
   return (
     <div>
       <Sidebar
         collapsed={collapsed}
-        backgroundColor="#008444"
-        width={collapsed ? "80px" : "210px"}
+        backgroundColor='#008444'
+        width={collapsed ? '80px' : '210px'}
         style={{
-          height: "100vh",
+          height: '100vh',
           [`&.active`]: {
-            backgroundColor: "#13395e",
-            color: "#b6c8d9",
-            overflow: "auto",
+            backgroundColor: '#13395e',
+            color: '#b6c8d9',
+            overflow: 'auto',
           },
         }}
       >
@@ -188,16 +149,16 @@ const SidebarComponent = () => {
             button: ({ level, active }) => {
               if (level === 0)
                 return {
-                  backgroundColor: active ? "#ffdd00" : undefined,
+                  backgroundColor: active ? '#ffdd00' : undefined,
                 };
             },
           }}
         >
           <MenuItem
             id='sidebar_collapse'
-            active={activeTab === "collapse"}
+            active={activeTab === 'collapse'}
             icon={<BsList />}
-            onClick={() => handleClick("collapse")}
+            onClick={() => handleClick('collapse')}
           >
             {localStorage.getItem("name") ? `${t("hello")}, ${localStorage.getItem("name")}` : `${t("hello")}!`}
           </MenuItem>
@@ -229,42 +190,44 @@ const SidebarComponent = () => {
             {t('bookings')}
           </MenuItem>
 
-          
+          {/*Search*/}
+          <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
+            <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {navigate('/manageseries', { replace: true });}}>
+              {t('manage')}
+            </MenuItem>
+            <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {navigate('/createseries', { replace: true });}}>
+              {t('create')}
+            </MenuItem>
+          </SubMenu> 
 
- 
-            <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
-              <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {navigate('/manageseries', { replace: true });}}>
-                {t('manage')}
-              </MenuItem>
-              <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {navigate('/createseries', { replace: true });}}>
-                {t('create')}
-              </MenuItem>
-            </SubMenu> 
- 
-
-          <MenuItem
-            id='sidebar_language'
-            icon={<MdGTranslate />}
-            onClick={() => handleClick("language")}
-          >
-            {i18n.language === "en" ? "Deutsch" : "English"}
-          </MenuItem>
-
-        <SubMenu id='sidebar_search0' icon={<IoSearchSharp />}  label={t('search')}>
-          <MenuItem id='sidebar_search' icon={<MeetingRoomIcon/>} onClick={
-            () => handleClick('roomSearch')}
-          >{t('room')}</MenuItem>
-          <MenuItem
-            id='sidebar_freeDesks'
-            active={activeTab === 'freeDesks'}
-            icon={<LaptopIcon />}
-            onClick={() => handleClick('freeDesks')}
-          >
-            {t('workstations')}
-          </MenuItem>
+          {/*Settings*/}
+          <SubMenu id='sidebar_search0' icon={<IoSearchSharp />}  label={t('search')}>
+            <MenuItem id='sidebar_search' icon={<MeetingRoomIcon/>} onClick={
+              () => handleClick('roomSearch')}
+            >
+              {t('room')}
+            </MenuItem>
+            <MenuItem
+              id='sidebar_freeDesks'
+              active={activeTab === 'freeDesks'}
+              icon={<LaptopIcon />}
+              onClick={() => handleClick('freeDesks')}
+            >
+              {t('workstations')}
+            </MenuItem>
+            <MenuItem id='sidebar_colleagues' icon={<AiOutlineTeam />} onClick={() => handleClick('colleagues')}>
+              {t('colleagues')}
+            </MenuItem>
           </SubMenu>
-          
+
           <SubMenu id='sidebar_settings0' icon={<IoIosSettings/>} label={t('settings')}>
+            <MenuItem
+              id='sidebar_language'
+              icon={<MdGTranslate />}
+              onClick={() => handleClick("language")}
+            >
+              {i18n.language === "en" ? "Deutsch" : "English"}
+            </MenuItem>
             <MenuItem id='sidebar_settings' icon={<HiOutlineSparkles />} onClick={
               () => handleClick('defaultFloor')}>
                 {t('defaultFloor')}

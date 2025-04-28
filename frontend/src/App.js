@@ -16,6 +16,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import RoomSearch from './Components/Home/RoomSearch';
+import Colleagues from './Components/Home/Colleagues';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/createseries" element={<CreateSeries />}></Route>
           <Route path='/freedesks' element={<FreeDesks/>}/>
           <Route path='/roomSearch' element={<RoomSearch/>}/>
+          <Route path='/colleagues' element={<Colleagues/>}/>
           <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </Router>
