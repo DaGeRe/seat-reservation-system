@@ -10,6 +10,7 @@ import isEmail from '../misc/isEmail';
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  //const news = '';
 
   const [values, setValues] = useState({
     email: '',
