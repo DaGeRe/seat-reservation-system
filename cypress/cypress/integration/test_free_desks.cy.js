@@ -49,6 +49,7 @@ describe('', ()=> {
     })
 
     it('two bookings on free desks', () => {
+        cy.login().then(()=>{
             cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
                 cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
@@ -93,5 +94,6 @@ describe('', ()=> {
                 });
             });
         });
+    })
 });
         

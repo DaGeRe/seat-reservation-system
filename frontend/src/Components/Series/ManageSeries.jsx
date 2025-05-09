@@ -1,8 +1,6 @@
 import React, { useMemo, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import SidebarComponent from '../Home/SidebarComponent';
-import Box from '@mui/material/Box';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import Button from '@mui/material/Button';
 import DeleteFf from '../DeleteFf';
@@ -16,6 +14,7 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
+import LayoutPage from '../LayoutPage.jsx';
 
 const ManageSeries = () => {
   const headers = useMemo(() => {
@@ -73,6 +72,12 @@ const ManageSeries = () => {
   function CreateContent() {
     return (
       <>
+         <DeleteFf 
+          open={openFfDialog}
+          onClose={()=>{setOpenFfDialog(false);setCurrSeries(null);}}
+          onDelete={deleteSeries}
+          text={i18n.language === 'de' ? 'Möchten Sie diese Serienbuchung mit allen Buchungen wirklich löschen?' : 'With this series all associated bookings will be deleted.'}
+        />
         {serieses && serieses.length > 0 ? 
           <TableContainer component={Paper} sx={{
             maxHeight: 1000, // Set max height
@@ -119,27 +124,17 @@ const ManageSeries = () => {
     );
   };
 
+  function create_helpText() {
+    return i18n.language === 'de' ? 'Die Übersicht zu all Ihren getätigten Serienbuchungen, inklusive der Möglichkeit diese zu löschen.' : 'An overview of all your recurring bookings, including the option to delete them.';
+  }
+
   return (
-    <div className='mb-container'>
-      <div>
-        <SidebarComponent />
-      </div>
-      <div className='mb-content'>
-        <h1 className='mb-text'>{create_headline()}</h1>
-        <hr className='gradient' />
-        <DeleteFf 
-          open={openFfDialog}
-          onClose={()=>{setOpenFfDialog(false);setCurrSeries(null);}}
-          onDelete={deleteSeries}
-          text={i18n.language === 'de' ? 'Möchten Sie diese Serienbuchung mit allen Buchungen wirklich löschen?' : 'With this series all associated bookings will be deleted.'}
-        />
-        <div className='mb-content-container'>
-            <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '1000px' }}>
-              <CreateContent/>
-            </Box>
-        </div>
-      </div>
-    </div>
+    <LayoutPage
+      title={create_headline()}
+      helpText={create_helpText()}
+    >
+      <CreateContent/>
+    </LayoutPage>
   );
 };
 

@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
-import {Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { getRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import FloorSelector from '../FloorSelector';
+import LayoutModal from '../LayoutModal';
 /**
  * This component allows the user to set its default building and default floor.
  * After setting the defaults, the specified building and floor is always shown first when selecting an desk.
@@ -13,13 +13,13 @@ import FloorSelector from '../FloorSelector';
  */
 const DefaultFloor = ({ isOpen, onClose }) => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
-    const [defaultBuilding, setDefaultBuilding] = useState('');
+    //const [defaultBuilding, setDefaultBuilding] = useState('');
     const [defaultFloor, setDefaultFloor] = useState('');
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const handleChildData = (data) => {
       setDefaultFloor(data);
-      setDefaultBuilding(data.building);
+      //setDefaultBuilding(data.building);
     };
 
     /**
@@ -45,7 +45,7 @@ const DefaultFloor = ({ isOpen, onClose }) => {
       );
     };
 
-  return (
+  /*return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>{t('settings')}</DialogTitle>
       <DialogContent>
@@ -64,7 +64,21 @@ const DefaultFloor = ({ isOpen, onClose }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  );*/
+  return (
+    <LayoutModal
+      isOpen={isOpen} 
+      onClose={onClose}
+      title={i18n.language === 'de' ? 'Standard Etage' : 'Default floor'}
+      submit={saveDefaults}
+    >
+      <br/>
+      <FloorSelector
+        idString={'settings'}
+        sendDataToParent={handleChildData}
+      />
+    </LayoutModal>
+  )
 };
 
 export default DefaultFloor;

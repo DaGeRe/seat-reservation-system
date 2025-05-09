@@ -58,7 +58,8 @@ public class UserController {
     @GetMapping("/get")
     public List<UserEntity> getAllUsers() {
         userService.logging("getAllUsers()");
-        return userService.getAllUsers();
+        // Rm the hashed pw.
+        return userService.getAllUsers().stream().map(UserEntity::new).toList();
     }
 
     @GetMapping("getDefaultFloorForUserId/{id}")

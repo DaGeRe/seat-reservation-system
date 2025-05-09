@@ -1,4 +1,3 @@
-import './FloorImage.css';
 import {IconButton} from '@mui/material';
 import React, {useRef, useEffect} from 'react';
 import FloorSelector from '../FloorSelector.js';
@@ -73,14 +72,8 @@ const FloorImage = (
         const y_curr = e.clientY - rect.top; // Y coordinate within the image
         const xPercent =  (x_curr/rect.width)*100; 
         const yPercent =  (y_curr/rect.height)*100;
-        //if (clickedXPosition) {
-            setX(xPercent);
-            //clickedXPosition(xPercent);
-        //}
-        //if (clickedYPosition) {
-            setY(yPercent);
-            //clickedYPosition(yPercent);
-        //}
+        setX(xPercent);
+        setY(yPercent);
     }
     return (
         <>  
@@ -90,14 +83,14 @@ const FloorImage = (
             />
             <br/><br/>
             {floor !== '' && (
-                <div className='image-container' onMouseDown={handleMouseClick}>
-                    <img src={`/Assets/${floor.building.name}/${floor.nameOfImg}`} alt='floorImage' className='floor-image' 
-                        style={{ maxWidth: '100%', maxHeight: '600px' }} 
+                <div style={{position: 'relative', display:'inline-block'}} onMouseDown={handleMouseClick}>
+                    <img src={`/Assets/${floor.building.name}/${floor.nameOfImg}`} alt='floorImage'  
+                        style={{ maxWidth: '100%', maxHeight: '600px', position: 'relative' }} 
                     />
                     {click_freely && x !== 0.0 && y !== 0.0 && (
                         <div
-                            className='image-icon'
                             style={{
+                                position: 'absolute', fontSize: '30px', transform: 'translate(-50%, -50%)',
                                 top: `${y}%`,
                                 left: `${x}%`
                             }}
@@ -108,7 +101,6 @@ const FloorImage = (
                                         color: new_color, 
                                         fontSize: '24px' 
                                     }}
-                                    className='image-icon-new'
                                 />
                             </IconButton>
                         </div>
@@ -119,12 +111,13 @@ const FloorImage = (
                         rooms
                         .map((room, i) => (
                             <div
-                                key={i}
-                                className='image-icon'
-                                
+                                key={i}                                
                                 style={{
                                     top: `${room.y}%`,
-                                    left: `${room.x}%`
+                                    left: `${room.x}%`,
+                                    position: 'absolute',
+                                    fontSize: '30px',
+                                    transform: 'translate(-50%, -50%)'
                                 }}
                             >
                                 <HtmlTooltip
@@ -143,10 +136,9 @@ const FloorImage = (
                                     <LaptopIcon
                                         style={{ 
                                             color: present_color, 
-                                            fontSize: '24px' 
+                                            fontSize: '24px'
                                         }}
                                         id={`icon_${room.remark}`}
-                                        className='image-icon-old'
                                     />
                                 </IconButton>
                             </HtmlTooltip>

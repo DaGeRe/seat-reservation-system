@@ -1,20 +1,15 @@
-import { Grid2, DialogContent, Box } from '@mui/material';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import InfoModal from '../InfoModal/InfoModal.jsx'
-import './Floor.css'; 
-import SidebarComponent from '../Home/SidebarComponent'
 import FloorImage from '../FloorImage/FloorImage.jsx';
-import GenericBackButton from '../GenericBackButton.js';
 import { useTranslation } from 'react-i18next';
+import LayoutPage from '../LayoutPage.jsx';
 
 const Floor = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [room, setRoom] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const { date } = location.state || {};
-  const helpText = t('helpChooseRoom');
 
   /**
    * Set the floor on which we want to create an new room with x- and y-coords.
@@ -29,28 +24,16 @@ const Floor = () => {
   };
 
   return (
-    <div className='customPadding'>
-    <div className='sidebar'>
-      <SidebarComponent />
-    </div>
-    <GenericBackButton/>
-      <div className='contentWrapper'>
-      <Fragment>
-        <InfoModal text={helpText}/>
-        <DialogContent>
-          <Grid2 container >
-            <Box sx={{ flexGrow: 1, padding: '10px' }}>
-              <FloorImage
-                sendDataToParent={handleChildData}
-                click_freely={false}
-              />
-            </Box>
-          </Grid2>
-        </DialogContent> 
-      </Fragment> 
-      </div>
-
-   </div>
+    <LayoutPage
+      title={i18n.language === 'de' ? 'Raumauswahl' : 'Selection of rooms'}
+      helpText={t('helpChooseRoom')}
+      useGenericBackButton={true}
+    >
+      <FloorImage
+        sendDataToParent={handleChildData}
+        click_freely={false}
+      />
+    </LayoutPage>
   );
 };
 

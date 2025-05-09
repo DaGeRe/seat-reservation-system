@@ -1,20 +1,15 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from "moment";
 import { useTranslation } from 'react-i18next';
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './MyBookings.css';
-import SidebarComponent from './SidebarComponent';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import LayoutPage from '../LayoutPage';
+import LayoutModal from '../LayoutModal';
 
 const MyBookings = () => {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
   const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
@@ -27,7 +22,7 @@ const MyBookings = () => {
     async (userId) => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
-        headers,
+        headers.current,
         (bookings) => {
           const calendarEvents = bookings.map((booking) => ({
             id: booking.id,
@@ -43,10 +38,9 @@ const MyBookings = () => {
         }
       );
     },
-    [headers, setEvents, t]  // Abhängigkeiten: userId kommt als Argument rein, muss hier nicht aufgenommen werden.
+    [setEvents, t]
   );
 
-  // useEffect für Buchungen
   useEffect(() => {
     moment.locale(i18n.language);
     fetchBookings(userId);
@@ -68,7 +62,7 @@ const MyBookings = () => {
       setSelectedBookingEvent(event);
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/${event.id}`,
-        headers,
+        headers.current,
         setTheBookingEvent,
         () => {throw new Error('Failed to fetch booking details');}        
       );
@@ -83,68 +77,43 @@ const MyBookings = () => {
   const deleteBooking = async () => {
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/${theBookingEvent.id}`,
-       headers,
+       headers.current,
       reloadCalendar,
       () => {console.log('Error deleting booking:');}
     );
   };
   
-  const handleDeleteEvent = () => {
-    confirmAlert({
-      title: t("deleteBookingMessage"),
-      message:
-        t("date") + ' ' +
-        moment(selectedBookingEvent.start).format('YYYY-MM-DD') +
-        ' ' + t("from") + ' ' +
-        moment(selectedBookingEvent.start).format('HH:mm') +
-        ' ' + t("to") + ' ' +
-        moment(selectedBookingEvent.end).format('HH:mm'),
-      buttons: [
-        {
-          label: t("yes"),
-          onClick: deleteBooking // Call deleteBooking function when 'Yes' is clicked
-        },
-        {
-          label: t("no")
-        }
-      ]
-    });
-  };
-
-  function RenderSelectedBookingEventDetails () {
-    return (
-      <div>
-        {selectedBookingEvent && 
-          <div style={{ margin: '20px' }}>
-            <p>{t('day')}: {moment(selectedBookingEvent.start).format('DD.MM.YYYY')}</p>
-            <p>{t('start')}: {moment(selectedBookingEvent.start).format('HH:mm')}</p>
-            <p>{t('end')}: {moment(selectedBookingEvent.end).format('HH:mm')}</p>
-            
-            {theBookingEvent && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
-            {theBookingEvent && theBookingEvent.desk && <p>{t('desk')}: {/*theBookingEvent.desk.id + ' ' + */theBookingEvent.desk.remark}</p> }
-            <div className="mb-buttons">
-              <button className="mb-submit-btn" onClick={handleDeleteEvent}>
-                {t("delete")}
-              </button>
-            </div>
-          </div>
-        } 
-      </div>
-    );
-  };
+  function create_helpText() {
+    return i18n.language === 'de' ? 'Die Übersicht zu all Ihren getätigten Buchungen, inklusive der Möglichkeit diese zu löschen.' : 'An overview of all your bookings, including the option to delete them.';
+  }
 
   return (
-    <div className="mb-container">
-      <div>
-        <SidebarComponent />
-      </div>
-      <div className="mb-content">
-        <h1 className="mb-text">{t("myBookings")}</h1>
-        <hr className="gradient" />
-        
-        <div className="mb-content-container">
+    <LayoutPage
+      title={t('myBookings')}
+      helpText={create_helpText()}
+    >       
+      <>
+        <LayoutModal
+          isOpen={selectedBookingEvent !== null}
+          onClose={()=>{setSelectedBookingEvent(null);}}
+          submit={deleteBooking}
+          submitTxt={t('delete')}
+          title={i18n.language === 'de' ? 'Diese Buchung entfernen' : 'Delete this booking'}
+        >
           <div>
-            <Calendar
+            {selectedBookingEvent && 
+              <div style={{ margin: '20px' }}>
+                <p>{t('day')}: {moment(selectedBookingEvent.start).format('DD.MM.YYYY')}</p>
+                <p>{t('start')}: {moment(selectedBookingEvent.start).format('HH:mm')}</p>
+                <p>{t('end')}: {moment(selectedBookingEvent.end).format('HH:mm')}</p>
+                
+                {theBookingEvent && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
+                {theBookingEvent && theBookingEvent.desk && <p>{t('desk')}: {/*theBookingEvent.desk.id + ' ' + */theBookingEvent.desk.remark}</p> }
+              </div>
+            } 
+          </div>
+        </LayoutModal>
+          <Calendar
               localizer={localizer}
               style={{ height: '100vh' }}
               eventPropGetter={(event) => ({
@@ -161,45 +130,21 @@ const MyBookings = () => {
               popup={true}
               onSelectEvent={handleEventSelect}
               messages={{
-                next: t("next"),
-                previous: t("back"),
-                today: t("today"),
-                month: t("month"),
-                week: t("week"),
+                next: t('next'),
+                previous: t('back'),
+                today: t('today'),
+                month: t('month'),
+                week: t('week'),
                 day: t("day"),
                 agenda: t("agenda"),
                 date: t("date"),
                 time: t("time"),
                 event: t("event"),
                 noEventsInRange: t("noEventsInRange")
-             }}
+            }}
             />
-          </div>
-          <div className="mb-info-column">
-            {setSelectedBookingEvent && <RenderSelectedBookingEventDetails /> }
-            {!setSelectedBookingEvent && (
-              <div className="choose">
-                {t("choose")}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-       {/*{showEditModal && (
-        <Dialog open={showEditModal} onClose={() => setShowEditModal(false)}>
-          <DialogTitle>{t("editBookingTime")}</DialogTitle>
-          <DialogContent>
-            <EditBookingModal
-              editBookingModal={() => setShowEditModal(false)} // Close modal function
-              id={selectedBookingEvent.id} // Pass necessary props
-              startTimeFromDb={moment(selectedBookingEvent.start).format("HH:mm:ss")}
-              endTimeFromDb={moment(selectedBookingEvent.end).format("HH:mm:ss")}
-              onSuccess={reloadCalendar}
-            />
-          </DialogContent>
-        </Dialog>
-      )}*/}
-    </div>
+          </>
+    </LayoutPage>
   );
 };
 

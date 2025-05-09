@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, TextField, Box, Checkbox, FormControlLabel} from '@mui/material';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, TextField, Checkbox, FormControlLabel} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { getRequest, postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
-import SidebarComponent from './SidebarComponent';
+import LayoutPage from '../LayoutPage';
 
 const RoomSearch = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -143,21 +143,18 @@ const RoomSearch = () => {
         </>
       );
     }
+
+    function create_helpText() {
+      return i18n.language === 'de' ? 'Für eine allgemeine Übersicht wählen Sie die Mindestanazhl an Arbeitsplätzen aus und schauen sie in der unten stehenden Tabelle nach einen passenden Raum.<br/>Wenn Sie überprüfen wollen ob ein Raum mit einer Mindestkapazität noch in einer bestimmten Zeitspanne frei ist, setzen Sie zusätzlich das Häckchen und wählen den Tag sowie Start- und Endzeit aus.' : 'For a general overview, select the minimum number of desks and check the table below for a suitable room.<br/>If you want to check if a room with a minimum capacity is available during a specific time frame, also check the box and select the day as well as the start and end time.'
+    }
+
     return (
-      <div className='mb-container'>
-            <div>
-                <SidebarComponent />
-            </div>
-            <div className='mb-content'>
-                <h1 className='mb-text'>{i18n.language === 'de' ? 'Raumsuche' : 'Roomsearch'}</h1>
-                <hr className='gradient' />
-                <div className='mb-content-container'>
-                    <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '800px' }}>
-                        <CreateContent/>
-                    </Box>
-                </div>
-            </div>
-        </div>
+      <LayoutPage
+        title={i18n.language === 'de' ? 'Raumsuche' : 'Roomsearch'}
+        helpText={create_helpText()}
+      >
+        <CreateContent/>
+      </LayoutPage>
     );
 };
 

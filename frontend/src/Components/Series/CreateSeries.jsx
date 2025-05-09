@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
-import { Box, FormControl,Select, MenuItem, InputLabel } from '@mui/material';
+import { FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import SidebarComponent from '../Home/SidebarComponent';
 import { postRequest, getRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import {DeskTable} from '../misc/DesksTable';
-
+import LayoutPage from '../LayoutPage';
 const CreateSeries = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
     const { t, i18n } = useTranslation();
@@ -309,23 +308,14 @@ const CreateSeries = () => {
             </>
         );
     };
-
+    
     return (
-        <div className='mb-container'>
-        <div>
-            <SidebarComponent />
-        </div>
-        <div className='mb-content'>
-            <h1 className='mb-text'>{create_headline()}</h1>
-            <hr className='gradient' />
-            
-            <div className='mb-content-container'>
-                <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '800px' }}>
-                    <CreateContent/>
-                </Box>
-            </div>
-        </div>
-        </div>
+        <LayoutPage
+            title={create_headline()}
+            helpText={i18n.language === 'de' ? 'Wählen Sie zunächst das Start- und Endedatum, wie auch den Start- und Endzeitpunkt aus.<br/>Legen Sie im Anschluss eine Frequenz und das gewünschte Gebäude fest. Gegegebenfalls können Sie noch einen Wochentag setzen.<br/>In der unteren Tabelle können Sie nun ein mögliches Zimmer für Ihre Serienbuchungen auswählen.' : 'First, select the start and end date, as well as the start and end time.</br>Then, choose a frequency and the desired building. If necessary, you can also set a weekday.</br>In the table below, you can now select a possible room for your recurring bookings'}
+        >
+            <CreateContent/>
+        </LayoutPage>
     );
 };
 

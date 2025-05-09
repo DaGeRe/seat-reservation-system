@@ -14,10 +14,6 @@ export default function EditBookingModal({ editBookingModal, id, startTimeFromDb
   const { t } = useTranslation();
   const [startTime, setStartTime] = React.useState("ttt");
   const [endTime, setEndTime] = React.useState("fff");
-  /*  
-  const [startTime, setStartTime] = React.useState(startTimeFromDb);
-  const [endTime, setEndTime] = React.useState(endTimeFromDb);
-  */
   const handleCloseBtn = () => {
     editBookingModal();
   }

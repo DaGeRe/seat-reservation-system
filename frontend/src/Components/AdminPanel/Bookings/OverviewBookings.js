@@ -1,6 +1,6 @@
 import { InputLabel, Select, MenuItem, FormControl, TextField } from '@mui/material';
-import DialogContent from '@mui/material/DialogContent';
-import React, { useMemo, useCallback } from 'react';
+import { toast } from 'react-toastify';
+import React, { useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from "react-i18next";
 import { formatDate_yyyymmdd_to_ddmmyyyy, formatDate_ddmmyyyy_to_yyyymmdd } from '../../misc/formatDate';
 import {
@@ -11,21 +11,18 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button
 } from '@mui/material';
-import {getRequest} from '../../RequestFunctions/RequestFunctions'
+import LayoutModal from '../../LayoutModal';
+import {deleteRequest, getRequest} from '../../RequestFunctions/RequestFunctions'
 
-export default function OverviewBookings({ overviewBookingsModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+export default function OverviewBookings({ isOpen, onClose }) {
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  
   const [bookings, setBookings] = React.useState([]);
   const [filter, setFilter] = React.useState('');
   const [text, setText] = React.useState('');
-
+  
   const getBookings = useCallback(
     async () => {
       if (filter !== '' && text === '')
@@ -42,22 +39,38 @@ export default function OverviewBookings({ overviewBookingsModal }) {
         }
         getRequest(
           `${process.env.REACT_APP_BACKEND_URL}/bookings${filter}${filter_text}`,
-          headers,
+          headers.current,
           setBookings,
           () => {console.log('Failed to fetch  bookings in OverviewBookings.js')}
         );
       },
-      [headers, setBookings, filter, text]
+      [setBookings, filter, text]
     );
 
+    // Init fetch of all bookings.
     React.useEffect(() => {
       getBookings();
     }, [getBookings]);      
+
+    function deleteBooking(bookingId) {
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingId}`,
+        headers.current,
+        () => {
+          toast.success(t('bookingDeleted'));
+          getBookings();
+        },
+        () => {console.log('Error deleting bookings.')}
+      );
+    }
+
     return (
-      <>
-        <React.Fragment>
-          <DialogContent>
-            <div id='filter-settings' style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
+      <LayoutModal
+        title={t('overviewBooking')}
+        onClose={onClose}
+        isOpen={isOpen}
+      >
+        <div id='filter-settings' style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
               <FormControl id='overviewBookings_setFilter' variant='outlined' fullWidth disabled={false}>
                 <InputLabel>Filter</InputLabel>
                   <Select
@@ -86,7 +99,7 @@ export default function OverviewBookings({ overviewBookingsModal }) {
                 </FormControl>
             </div>
             <div>
-                 <label>{t('bookingsSum') + ': ' + bookings.length}</label>   
+            <label>{t('bookingsSum') + ': ' + bookings.length}</label>   
             </div>
             <TableContainer component={Paper} sx={{
               maxHeight: 1000, // Set max height
@@ -118,15 +131,13 @@ export default function OverviewBookings({ overviewBookingsModal }) {
                         <TableCell>{booking.roomRemark}</TableCell>
                         <TableCell>{booking.building}</TableCell>
                         <TableCell>{booking.seriesId !== '' ? booking.seriesId : '-'}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell><Button id={`bnt_delete_${booking.booking_id}`} onClick={deleteBooking.bind(null,booking.booking_id)}>{t('delete')}</Button></TableCell>
                       </TableRow>
                     ))
                   }
                 </TableBody>
               </Table>
             </TableContainer>
-          </DialogContent>
-        </React.Fragment>
-      </>
+            </LayoutModal>
     );
 }

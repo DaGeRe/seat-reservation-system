@@ -25,7 +25,7 @@ describe('', ()=> {
                                                         cy.setStr('roomDefinition_setStatus', 'enable'),
                                                         cy.setStr('roomDefinition_setRemark', newRoomRemark)
                                                     ]).then(()=>{
-                                                        cy.get('button#room_submit_btn').click().then(()=>{
+                                                        cy.get('button#modal_submit').click().then(()=>{
                                                             cy.get('.Toastify__toast').should('be.visible').contains('Room was changed successfully').then(()=>{
                                                                 cy.rmRoom(buildingId, floorId, newRoomRemark, imgSrc).then(()=>{
                                                                     cy.wrap('1');
@@ -62,7 +62,7 @@ describe('', ()=> {
                                                             cy.setStr('workstationDefinition_setEquipment', 'with equipment'),
                                                             cy.setStr('workStationDefinition_setRemark', newDeskRemark)
                                                         ]).then(()=>{
-                                                            cy.get('button#workstation_submit_btn').click().then(()=>{
+                                                            cy.get('button#modal_submit').click().then(()=>{//cy.get('button#workstation_submit_btn').click().then(()=>{
                                                                 cy.get('.Toastify__toast').should('be.visible').contains('Desk updated successfully').then(()=>{
                                                                     cy.rmDesk(buildingId, floorId, roomRemark, imgSrc, newDeskRemark).then(()=>{
                                                                         return cy.wrap('1');
@@ -82,40 +82,5 @@ describe('', ()=> {
                 })
             })
         })
-    
-        /*cy.login().then(()=>{
-            cy.visit('/admin').then(()=>{
-                //cy.wait(1000).then(()=> {
-                cy.url().should('contains', '/admin').then(()=> {
-                    cy.get('button#roomManagement').click().then(()=>{
-                        cy.get('button#editWorkstation').click().then(()=>{
-                            Cypress.Promise.all([
-                                cy.setStr('floorselector_setBuilding', building),
-                                cy.setStr('floorselector_setFloor', floor)
-                            ]).then(()=>{
-                                cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{ 
-                                    cy.get('div#textfield_desk_in_room').click().then(()=>{
-                                        cy.get('div').contains(`${deskRemark}`).click().then(()=>{
-                                            Cypress.Promise.all([
-                                                cy.setStr('workstationDefinition_setEquipment', 'with equipment'),
-                                                cy.setStr('workStationDefinition_setRemark', newDeskRemark)
-                                            ]).then(()=>{
-                                                cy.get('button#workstation_submit_btn').click().then(()=>{
-                                                    cy.get('.Toastify__toast').should('be.visible').contains('Desk updated successfully').then(()=>{
-                                                        cy.rmDesk(building, floor, roomRemark, newDeskRemark).then(()=>{
-                                                            return cy.wrap('1');
-                                                        });
-                                                    })
-                                                })                                                
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
-            })
-        })*/
     });
 });

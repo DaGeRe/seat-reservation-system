@@ -1,20 +1,20 @@
 import { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { Box,FormControl,Select, MenuItem, InputLabel } from '@mui/material';
+import { FormControl,Select, MenuItem, InputLabel } from '@mui/material';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import SidebarComponent from './SidebarComponent';
 import { toast } from 'react-toastify';
 import {postRequest, getRequest} from '../RequestFunctions/RequestFunctions';
 import {DeskTable} from '../misc/DesksTable';
 import bookingPostRequest from '../misc/bookingPostRequest';
+import LayoutPage from '../LayoutPage';
 
 const FreeDesks = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const valueForAllBuildings = useRef('0');
     const [selectedBuilding, setSelectedBuilding] = useState(valueForAllBuildings.current);
     const [possibleDesks, setPossibleDesks] = useState([]);
@@ -162,21 +162,17 @@ const FreeDesks = () => {
         );
     }
 
+    function create_helpText() {
+        return i18n.language === 'de' ? 'Wählen Sie einen Tag, die Start- und Endzeit sowie ein Gebäude aus. In der unten stehende Tabelle können Sie alle freien Arbeitsplätze einsehen und buchen.' : 'Select a day, start and end time, and a building. In the table below, you can view and book all available desks.'
+    }
+
     return (
-        <div className='mb-container'>
-            <div>
-                <SidebarComponent />
-            </div>
-            <div className='mb-content'>
-                <h1 className='mb-text'>{t('freeDesks')}</h1>
-                <hr className='gradient' />
-                <div className='mb-content-container'>
-                    <Box sx={{ flexGrow: 1, padding: '10px', maxWidth: '800px' }}>
-                        <CreateContent/>
-                    </Box>
-                </div>
-            </div>
-        </div>
+        <LayoutPage
+            title={t('freeDesks')}
+            helpText={create_helpText()}
+        >
+            <CreateContent/>
+        </LayoutPage>
     );
 };
 

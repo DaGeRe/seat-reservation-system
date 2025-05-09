@@ -1,17 +1,13 @@
-import {Grid2, Box} from '@mui/material';
-import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal/InfoModal.jsx'
-import './AddRoom.css'; 
-import { Fragment, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import RoomDefinition from '../Room/RoomDefinition.js';
+import LayoutModal from '../../LayoutModal.jsx';
 
-export default function AddRoom({ addRoomModal }) {
+export default function AddRoom({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [floor, setFloor] = useState('');
@@ -27,7 +23,7 @@ export default function AddRoom({ addRoomModal }) {
       toast.error(t('x_y_not_empty'));
       return false;
     }
-    if (!floor || !type) {
+    if (!floor || !type || !status) {
       toast.error(t('fields_not_empty'));
       return false;
     }
@@ -36,7 +32,7 @@ export default function AddRoom({ addRoomModal }) {
       headers.current,
       (_) => {
         toast.success(t('roomCreated'));
-        addRoomModal();
+        onClose();
       },
       () => {console.log('Failed to create room in AddRoom.jsx.')},
       JSON.stringify({
@@ -50,53 +46,42 @@ export default function AddRoom({ addRoomModal }) {
       })
     );
   }
-    const handleClose = () => {
-        addRoomModal();
+
+  /**
+   * Set the floor on which we want to create an new room with x- and y-coords.
+   * @param {*} data Object with properties floor, room, x, y. 
+   */
+  const handleChildData = (data) => {
+    if (data.floor) {
+      setFloor(data.floor);
     }
-
-    /**
-     * Set the floor on which we want to create an new room with x- and y-coords.
-     * @param {*} data Object with properties floor, room, x, y. 
-     */
-    const handleChildData = (data) => {
-      if (data.floor) {
-        setFloor(data.floor);
-      }
-      /*if (data.currentRoom) {
-
-      }*/
-      if (data.x && data.y) {
-        setX(data.x);
-        setY(data.y);
-      }
+    if (data.x && data.y) {
+      setX(data.x);
+      setY(data.y);
+    }
   };
 
     return (
-      <Fragment>
-          <InfoModal text={helpText}/>
-          <DialogContent>
-              <Grid2 container >
-                <Box sx={{ flexGrow: 1, padding: '10px' }}>
-                  <FloorImage
-                    sendDataToParent={handleChildData}
-                  />
-                  <RoomDefinition 
-                    t={t}
-                    type={type}
-                    setType={setType}
-                    status_val={status}
-                    setStatus={setStatus}
-                    remark={remark}
-                    setRemark={setRemark}
-                  />
-                  <br></br> <br></br>
-                  <DialogActions>
-                    <Button id='room_submit_btn' data-testid='room_submit_btn' onClick={()=>addRoom()}>&nbsp;{t('submit').toUpperCase()}</Button>
-                    <Button id='room_close_btn' data-testid='room_close_btn' onClick={handleClose}>&nbsp;{t('close').toUpperCase()}</Button>
-                  </DialogActions>
-                </Box>
-              </Grid2>
-            </DialogContent>
-      </Fragment>
+      <LayoutModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('addRoom')}
+        submit={addRoom}
+        submitTxt={t('submit')}
+      >
+        <InfoModal text={helpText}/>
+        <FloorImage
+          sendDataToParent={handleChildData}
+        />
+        <RoomDefinition 
+          t={t}
+          type={type}
+          setType={setType}
+          status_val={status}
+          setStatus={setStatus}
+          remark={remark}
+          setRemark={setRemark}
+        />
+      </LayoutModal>
     );
 }

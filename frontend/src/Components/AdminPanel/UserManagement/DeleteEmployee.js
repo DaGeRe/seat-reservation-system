@@ -1,14 +1,12 @@
-import {Grid2, Button} from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import DeleteFf from '../../DeleteFf';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import LayoutModal from '../../LayoutModal';
 
-export default function DeleteEmployee({ deleteEmployeeModal }) {
+export default function DeleteEmployee({ isOpen, onClose }) {
   const headers = useMemo(() => {
     // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
     const storedHeaders = sessionStorage.getItem('headers');
@@ -29,16 +27,11 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
     },
     [headers, setAllEmployee]
   );
-  // Refresh every time if something changes in allEmployee.
+  
+  // Init fetch of the employees
   React.useEffect(() => {
       getAllEmployee();
     }, [getAllEmployee]);
-
-  
-
-  const handleClose = () => {
-      deleteEmployeeModal();
-  };
 
   async function deleteEmployeeById(id) {
     setCurrUserId(id);
@@ -51,11 +44,11 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
         }
         else {
           toast.success(t('userDeleted'));
+          getAllEmployee();
         }
       },
       () => {console.log('Failed to delete employee in DeleteEmployee.js.')}
     );    
-    getAllEmployee();
   };
 
   async function deleteEmployeeByIdFf(id) {
@@ -65,6 +58,7 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
       (data) => {
         if (data) {
           toast.success(t('userDeleted'));
+          getAllEmployee();
         }
         else {
           toast.error(t('userDeletionFailed'));
@@ -72,8 +66,6 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
       },
       () => {console.log('Failed to delete employee fast forward in DeleteEmployee.js.')}
     );
-
-    getAllEmployee();
   };
 
   const closeDialog = () => {
@@ -81,22 +73,20 @@ export default function DeleteEmployee({ deleteEmployeeModal }) {
   };
 
     return (
-        <React.Fragment>
+        <LayoutModal
+          onClose={onClose}
+          isOpen={isOpen}
+          title={t('deleteEmployee')}
+        >
+
+        
             <DeleteFf 
               open={openFfDialog}
               onClose={closeDialog}
               onDelete={deleteEmployeeByIdFf.bind(null, currUserId)}
               text={t('fFDeleteEmployee')}
             />
-            <DialogContent>
-                <Grid2 container >
-                <EmployeeTable employees={allEmployee} onAction={deleteEmployeeById} action={t("delete").toUpperCase()} t={t}/>
-              </Grid2>
-
-            </DialogContent>
-            <DialogActions>
-                <Button id='deleteEmployee_handleClose' onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-            </DialogActions>
-        </React.Fragment>
+            <EmployeeTable employees={allEmployee} onAction={deleteEmployeeById} action={t("delete").toUpperCase()} t={t}/>
+        </LayoutModal>
     );
 }

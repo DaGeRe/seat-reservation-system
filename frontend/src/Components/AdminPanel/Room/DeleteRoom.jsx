@@ -1,7 +1,3 @@
-import {Grid2, Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import DeleteFf from '../../DeleteFf';
 import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
@@ -9,8 +5,9 @@ import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
+import LayoutModal from '../../LayoutModal.jsx';
 
-export default function DeleteRoom({ deleteRoomModal }) {
+export default function DeleteRoom({ open, close }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
@@ -26,7 +23,8 @@ export default function DeleteRoom({ deleteRoomModal }) {
       headers.current,
       (_) => {
         toast.success(t('roomDeleted'));
-        deleteRoomModal();
+        //deleteRoomModal();
+        close();
       }
     );
   }
@@ -50,7 +48,7 @@ export default function DeleteRoom({ deleteRoomModal }) {
         }
         else {
           toast.success(t('roomDeleted'));
-          deleteRoomModal();
+          close();//deleteRoomModal();
         }
       },
       () => {'Failed to delete room in DeleteRoom.jsx.'},
@@ -60,29 +58,24 @@ export default function DeleteRoom({ deleteRoomModal }) {
 
 
   return (
-    <React.Fragment>
+    <LayoutModal
+      onClose={close}
+      isOpen={open}
+      title={t('deleteRoom')}
+    >
       <InfoModal text={helpText}/>
       <DeleteFf 
         open={openFfDialog}
-        onClose={deleteRoomModal}
+        onClose={close}
         onDelete={deleteRoomFf}
         text={t('fFDeleteRoom')}
       />
-      <DialogContent>
-        <Grid2 container >
-          <Box sx={{ flexGrow: 1, padding: '10px' }}>
+
             <FloorImage 
               present_color='red'
               click_freely={false}
               sendDataToParent={handleChildData}
             />
-          </Box>
-        </Grid2>
-      </DialogContent>
-      <DialogActions>
-        {/*<Button disabled={!room || room === ''} onClick={onDelete}>{t('delete')}</Button>*/}
-        <Button onClick={deleteRoomModal}>&nbsp;{t('close').toUpperCase()}</Button>
-      </DialogActions>
-    </React.Fragment>
+    </LayoutModal>
   );
 }

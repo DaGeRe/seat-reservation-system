@@ -1,11 +1,6 @@
-import {Grid2} from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import React, {useRef} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import { toast } from 'react-toastify';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import {isOptionEqualToValue_Desk} from './DeskAndOption'
 import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
@@ -13,20 +8,17 @@ import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
 import WorkStationDefinition from './WorkStationDefinition.js';
+import LayoutModal from '../../LayoutModal.jsx';
 
-export default function EditWorkstation({ editWorkstationModal }) {
+export default function EditWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [allDesks, setAllDesks] = React.useState([]);
-  const [room, setRoom]= React.useState('');
-  const [selectedDeskId, setSelectedDeskId]= React.useState('');
-  const [equipment, setEquipment]= React.useState('');
-  const [remark, setRemark]= React.useState('');
+  const [allDesks, setAllDesks] = useState([]);
+  const [room, setRoom]= useState('');
+  const [selectedDeskId, setSelectedDeskId]= useState('');
+  const [equipment, setEquipment]= useState('');
+  const [remark, setRemark]= useState('');
   const helpText = t('helpEditWorkstation');
- 
-  const handleCloseBtn = () => {
-    editWorkstationModal();
-  }
 
   async function getDeskByRoomId(roomId){
     getRequest(
@@ -38,6 +30,12 @@ export default function EditWorkstation({ editWorkstationModal }) {
     );
   };
 
+  // Set default
+  useEffect(()=>{
+    setEquipment('');
+    setRemark('');
+  }, [room])
+
   async function updateWorkstation() {
     if (selectedDeskId && equipment && remark) {
       putRequest(
@@ -45,7 +43,9 @@ export default function EditWorkstation({ editWorkstationModal }) {
         headers.current,
         (_) => {
           toast.success(t('deskUpdate'));
-          editWorkstationModal();
+          //setEquipment('');
+          //setRemark('');
+          onClose();
         },
         () => {console.log('Failed to update workstation in EditWorkstation.js');},
         JSON.stringify({
@@ -72,44 +72,41 @@ export default function EditWorkstation({ editWorkstationModal }) {
   };
 
   return (
-    <React.Fragment>
+    <LayoutModal
+      onClose={()=>{/*setEquipment('');
+        setRemark('');*/onClose();}}
+      isOpen={isOpen}
+      title={t('editWorkstation')}
+      submit={updateWorkstation}
+      submitTxt={t('update')}
+    >
       <InfoModal text={helpText}/>
-      <DialogContent>
-        <Grid2 container>
-          <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorImage 
-              sendDataToParent={handleChildData}
-              click_freely={false}
-            />
-            <DeskSelector
-              selectedRoom={room}
-              allDesks={allDesks}
-              roomToOption={roomToOption}
-              setSelectedDeskId={setSelectedDeskId}
-              setEquipment={setEquipment}
-              setRemark={setRemark}
-              isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
-              t={t}
-            />
-            <br></br><br></br>
-            {
-              selectedDeskId && (
-                <WorkStationDefinition
-                  t={t}
-                  equipment={equipment}
-                  setEquipment={setEquipment}
-                  remark={remark}
-                  setRemark={setRemark}
-                />
-              )
-            }
-          </Box>
-        </Grid2>
-      </DialogContent>
-      <DialogActions>
-        <Button id='workstation_submit_btn' onClick={()=>updateWorkstation()}>&nbsp;{t('update').toUpperCase()}</Button>
-        <Button id='workstation_close_btn' onClick={handleCloseBtn}>&nbsp;{t('close').toUpperCase()}</Button>
-      </DialogActions>
-    </React.Fragment>
+      <FloorImage 
+        sendDataToParent={handleChildData}
+        click_freely={false}
+      />
+      <DeskSelector
+        selectedRoom={room}
+        allDesks={allDesks}
+        roomToOption={roomToOption}
+        setSelectedDeskId={setSelectedDeskId}
+        setEquipment={setEquipment}
+        setRemark={setRemark}
+        isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
+        t={t}
+      />
+      <br></br><br></br>
+      {
+        selectedDeskId && (
+          <WorkStationDefinition
+            t={t}
+            equipment={equipment}
+            setEquipment={setEquipment}
+            remark={remark}
+            setRemark={setRemark}
+          />
+        )
+      }
+    </LayoutModal>
   );
 }

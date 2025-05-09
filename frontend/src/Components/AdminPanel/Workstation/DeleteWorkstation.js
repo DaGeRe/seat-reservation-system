@@ -1,9 +1,4 @@
-import {Grid2} from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import { roomToOption} from '../Room/RoomAndOption';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import React, { useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
@@ -13,8 +8,9 @@ import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
+import LayoutModal from '../../LayoutModal.jsx';
 
-export default function DeleteWorkstation({ deleteWorkstationModal }) {
+export default function DeleteWorkstation({ onClose, isOpen }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [allDesks, setAllDesks] = React.useState([]);
@@ -23,10 +19,6 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const [openFfDialog, setOpenFfDialog] = React.useState(false);
 
   const helpText = t('helpDeleteWorkstation');
-  
-  const handleClose = () => {
-    deleteWorkstationModal();
-  };
 
   function getDeskByRoomId(roomId) {
     if(roomId) {
@@ -44,6 +36,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
    * @param {*} urlExtension Is set to 'ff/' if fast forward deletion is needed. This means also delete all bookings associated wit this desk.
    */
   async function deleteWorkstation (urlExtension = '') {
+    //console.log('deleteWorkstation', urlExtension, selectedDeskId);
     if(selectedDeskId){
       deleteRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
@@ -54,7 +47,7 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
           }
           else {
             toast.success(t('deskDelete'));
-            deleteWorkstationModal();
+            onClose();
           }
         },
         () => {console.log('Failed to delete workstation in DeleteWorkstation.js');}
@@ -73,42 +66,40 @@ export default function DeleteWorkstation({ deleteWorkstationModal }) {
   const handleChildData = (data) => {
     if (!data || data.room === '') 
       return;
+    if (data.room.id === room.id)
+      return;
     setRoom(data.room);
     getDeskByRoomId(data.room.id);
   };
 
   return (
-    <React.Fragment>
+    <LayoutModal
+      title={t('deleteWorkstation')}
+      onClose={onClose}
+      isOpen={isOpen}
+      submit={()=>deleteWorkstation()}
+      submitTxt={t('delete')}
+    >
       <InfoModal text={helpText}/>
       <DeleteFf 
         open={openFfDialog}
-        onClose={handleClose}
+        onClose={onClose}
         onDelete={deleteWorkstationFf}
         text={t('fFDeleteWorkStation')}
       />
-      <DialogContent>
-        <Grid2 container >
-          <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorImage 
-              sendDataToParent={handleChildData}
-              click_freely={false}
-            />
-            <DeskSelector
-              selectedRoom={room}
-              allDesks={allDesks}
-              setSelectedDeskId={setSelectedDeskId}
-              roomToOption={roomToOption}
-              deskToOption={deskToOption}
-              isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
-              t={t}
-            />
-            </Box>
-          </Grid2>
-        </DialogContent>
-      <DialogActions>
-        <Button id='delete_workstation_button' onClick={()=>deleteWorkstation()}>&nbsp;{t("delete").toUpperCase()}</Button>
-        <Button id='close_workstation_button' onClick={handleClose}>&nbsp;{t("close").toUpperCase()}</Button>
-      </DialogActions>
-    </React.Fragment>
+      <FloorImage 
+        sendDataToParent={handleChildData}
+        click_freely={false}
+      />
+      <DeskSelector
+        selectedRoom={room}
+        allDesks={allDesks}
+        setSelectedDeskId={setSelectedDeskId}
+        roomToOption={roomToOption}
+        deskToOption={deskToOption}
+        isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
+        t={t}
+      />
+    </LayoutModal>
   );
 }

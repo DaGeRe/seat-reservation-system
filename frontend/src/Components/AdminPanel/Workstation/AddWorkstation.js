@@ -1,8 +1,3 @@
-import {Grid2} from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
@@ -11,20 +6,16 @@ import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal/InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
+import LayoutModal from '../../LayoutModal.jsx';
 
-export default function AddWorkstation({ addWorkstationModal }) {
+export default function AddWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  //const [room, setRoom] = React.useState('');
   const [room, setRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
 
   const helpText = t('helpAddWorkstation');
-
-  const handleCloseBtn = () => {
-    addWorkstationModal();
-  };
 
   async function addWorkstation(){
     if(!room){
@@ -42,7 +33,7 @@ export default function AddWorkstation({ addWorkstationModal }) {
       headers.current,
       (_) => {
         toast.success(t('deskCreated'));
-        addWorkstationModal();
+        onClose();
       },
       () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
       JSON.stringify({
@@ -64,36 +55,32 @@ export default function AddWorkstation({ addWorkstationModal }) {
   };
 
   return (
-    <React.Fragment>
+    <LayoutModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t("addWorkstation")}
+      submit={addWorkstation}
+      submitTxt={t('submit')}
+    >
       <InfoModal text={helpText}/>
-      <DialogContent>
-        <Grid2 container >
-          <Box sx={{ flexGrow: 1, padding: '10px' }}>
-            <FloorImage 
-              sendDataToParent={handleChildData}
-              click_freely={false}
+      <FloorImage 
+        sendDataToParent={handleChildData}
+        click_freely={false}
+      />
+      {
+        room && (
+          <div>
+            <h2>{roomToOption(room)}</h2>
+            <WorkStationDefinition
+              t={t}
+              equipment={equipment}
+              setEquipment={setEquipment}
+              remark={remark}
+              setRemark={setRemark}
             />
-          {
-            room && (
-              <div>
-                <h2>{roomToOption(room)}</h2>
-                <WorkStationDefinition
-                  t={t}
-                  equipment={equipment}
-                  setEquipment={setEquipment}
-                  remark={remark}
-                  setRemark={setRemark}
-                />
-              </div>
-            )
-          }
-          </Box>
-        </Grid2>
-      </DialogContent>
-      <DialogActions>
-        <Button id='desk_submit_btn' onClick={()=>addWorkstation()}>&nbsp;{t("submit").toUpperCase()}</Button>
-        <Button id='desk_close_btn' onClick={handleCloseBtn}>&nbsp;{t("close").toUpperCase()}</Button>
-      </DialogActions>
-    </React.Fragment>
+          </div>
+        )
+      }
+    </LayoutModal>
   );
 }

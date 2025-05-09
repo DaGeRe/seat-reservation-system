@@ -1,4 +1,5 @@
 package com.desk_sharing.entities;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import jakarta.persistence.*;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     
     @Id
@@ -31,4 +33,16 @@ public class UserEntity {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
+
+    public UserEntity(UserEntity other) {
+        this.id = other.getId();
+        this.email = other.getEmail();
+        this.password = "";
+        this.name = other.getName();
+        this.surname = other.getSurname();
+        this.visibility = other.isVisibility();
+        this.admin = other.isAdmin();
+        this.default_floor = other.getDefault_floor();
+        this.roles = other.getRoles();
+    }
 }
