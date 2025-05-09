@@ -30,7 +30,7 @@ describe('', ()=>{
                                                 cy.setFloor(2,8,'Außenstelle Chemnitz/4. Dachgeschoss.png').then(()=>{
                                                     cy.setFloor(3,9,'Außenstelle Leipzig/2. Dachgeschoss.png').then(()=>{
                                                         cy.setFloor(4,10,'Außenstelle Bautzen/1. Dachgeschoss.png').then(()=>{
-                                                            cy.screenshot('a');
+                                                            //cy.screenshot('a');
                                                         })
                                                     })
                                                 })

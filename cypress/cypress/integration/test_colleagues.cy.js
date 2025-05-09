@@ -54,7 +54,7 @@ describe('', ()=> {
                                                                                                 cy.get(`tr[id="${user1Mail}"]`).find(`td[id="${user1Mail}_bookings"]`).find('span').should('have.length', 1),
                                                                                                 cy.get(`tr[id="${user2Mail}"]`).find(`td[id="${user2Mail}_bookings"]`).find('span').should('have.length', 1),
                                                                                                 cy.get(`tr[id="${user3Mail}"]`).find(`td[id="${user3Mail}_bookings"]`).find('span').should('have.length', 1)]).then(()=>{
-                                                                                                cy.screenshot('a').then(()=>{
+                                                                                                //cy.screenshot('a').then(()=>{
                                                                                                     cy.logout().then(()=>{
                                                                                                         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
                                                                                                             Cypress.Promise.all([
@@ -64,7 +64,7 @@ describe('', ()=> {
                                                                                                             ]);
                                                                                                         })
                                                                                                     })
-                                                                                                })
+                                                                                                //})
                                                                                             })
                                                                                         })
                                                                                     })

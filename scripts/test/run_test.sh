@@ -1,8 +1,8 @@
 # Check if an argument is passed
 . .env 
 if [ -z "$1" ]; then
-  # No argument provided, default command
-  docker run \
+    # No argument provided, default command
+    docker run \
     -e no_proxy="backend,frontend,backend:8080,jus-srv-test30.justiz.sachsen.de, jus-srv-test30.justiz.sachsen.de:8082" \
     -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
     -e TEST_USER_PW="${TEST_USER_PW}" \
@@ -14,8 +14,8 @@ if [ -z "$1" ]; then
     cypress/included:latest \
     --quiet
 else
-  # Argument provided, include it in the command
-  docker run \
+    # Argument provided, include it in the command
+    docker run \
     -e no_proxy="backend,frontend,backend:8080,jus-srv-test30.justiz.sachsen.de, jus-srv-test30.justiz.sachsen.de:8082" \
     -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
     -e TEST_USER_PW="${TEST_USER_PW}" \
