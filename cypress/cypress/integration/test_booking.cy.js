@@ -59,7 +59,7 @@ describe('', ()=> {
                             cy.visit('/floor').then(()=>{
                                 cy.setFloor(buildingId, floorId, imgSrc).then(()=>{
                                     cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
-                                        cy.get('div').contains(`${deskRemark1}`).click().then(()=>{
+                                        cy.get('p').contains(`${deskRemark1}`).click({ force: true }).then(()=>{
                                             cy.selectTimeRange(start_timeslot2, end_timeslot2).then(()=>{
                                                 cy.get('.Toastify__toast').should('be.visible').contains('This slot overlaps with another booking for this desk').then(()=>{
                                                     return cy.wrap('1');

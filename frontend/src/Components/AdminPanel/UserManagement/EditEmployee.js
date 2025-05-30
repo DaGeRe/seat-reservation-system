@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 import { putRequest, getRequest} from '../../RequestFunctions/RequestFunctions';
-import LayoutModal from '../../LayoutModal';
+import LayoutModal from '../../Templates/LayoutModal';
 
 export default function EditEmployee({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

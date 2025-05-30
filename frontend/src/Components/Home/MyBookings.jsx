@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
-import LayoutPage from '../LayoutPage';
-import LayoutModal from '../LayoutModal';
+import LayoutPage from '../Templates/LayoutPage';
+import LayoutModal from '../Templates/LayoutModal';
 
 const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

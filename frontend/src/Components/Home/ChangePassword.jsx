@@ -3,7 +3,7 @@ import { TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { putRequest } from '../RequestFunctions/RequestFunctions';
-import LayoutModal from '../LayoutModal';
+import LayoutModal from '../Templates/LayoutModal';
 
 const ChangePassword = ({ isOpen, onClose }) => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

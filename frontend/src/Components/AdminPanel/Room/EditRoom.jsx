@@ -5,7 +5,7 @@ import { putRequest } from '../../RequestFunctions/RequestFunctions';
 import { roomToOption } from '../Room/RoomAndOption';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import RoomDefinition from './RoomDefinition.js';
-import LayoutModal from '../../LayoutModal.jsx';
+import LayoutModal from '../../Templates/LayoutModal.jsx';
 
 export default function EditRoom({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

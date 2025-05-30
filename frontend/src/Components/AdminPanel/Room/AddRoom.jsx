@@ -1,11 +1,11 @@
 import FloorImage from '../../FloorImage/FloorImage.jsx'
-import InfoModal from '../../InfoModal/InfoModal.jsx'
+import InfoModal from '../../InfoModal.jsx';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import RoomDefinition from '../Room/RoomDefinition.js';
-import LayoutModal from '../../LayoutModal.jsx';
+import LayoutModal from '../../Templates/LayoutModal.jsx';
 
 export default function AddRoom({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

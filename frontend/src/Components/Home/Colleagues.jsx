@@ -6,7 +6,7 @@ import CreateDatePicker from '../misc/CreateDatePicker';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import isEmail from '../misc/isEmail';
-import LayoutPage from '../LayoutPage';
+import LayoutPage from '../Templates/LayoutPage';
 
 const Colleagues = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

@@ -6,9 +6,9 @@ import DeleteFf from '../../DeleteFf';
 import {deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
-import InfoModal from '../../InfoModal/InfoModal.jsx';
+import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
-import LayoutModal from '../../LayoutModal.jsx';
+import LayoutModal from '../../Templates/LayoutModal.jsx';
 
 export default function DeleteWorkstation({ onClose, isOpen }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

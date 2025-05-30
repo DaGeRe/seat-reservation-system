@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
-import LayoutModal from '../../LayoutModal';
+import LayoutModal from '../../Templates/LayoutModal';
 
 export default function DeleteEmployee({ isOpen, onClose }) {
   const headers = useMemo(() => {

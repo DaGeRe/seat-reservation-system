@@ -14,7 +14,7 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
-import LayoutPage from '../LayoutPage.jsx';
+import LayoutPage from '../Templates/LayoutPage.jsx';
 
 const ManageSeries = () => {
   const headers = useMemo(() => {

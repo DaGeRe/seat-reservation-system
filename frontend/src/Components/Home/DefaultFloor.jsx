@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { getRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import FloorSelector from '../FloorSelector';
-import LayoutModal from '../LayoutModal';
+import LayoutModal from '../Templates/LayoutModal';
 /**
  * This component allows the user to set its default building and default floor.
  * After setting the defaults, the specified building and floor is always shown first when selecting an desk.

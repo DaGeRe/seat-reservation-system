@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import {postRequest, getRequest} from '../RequestFunctions/RequestFunctions';
 import {DeskTable} from '../misc/DesksTable';
 import bookingPostRequest from '../misc/bookingPostRequest';
-import LayoutPage from '../LayoutPage';
+import LayoutPage from '../Templates/LayoutPage';
 
 const FreeDesks = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

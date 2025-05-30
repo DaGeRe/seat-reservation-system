@@ -5,10 +5,10 @@ import {isOptionEqualToValue_Desk} from './DeskAndOption'
 import {roomToOption} from '../Room/RoomAndOption'
 import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
-import InfoModal from '../../InfoModal/InfoModal.jsx';
+import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import LayoutModal from '../../LayoutModal.jsx';
+import LayoutModal from '../../Templates/LayoutModal.jsx';
 
 export default function EditWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

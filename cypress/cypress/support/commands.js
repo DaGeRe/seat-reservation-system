@@ -118,10 +118,10 @@ Cypress.Commands.add('login', (mail=Cypress.env('TEST_ADMIN_MAIL'), pw=Cypress.e
   cy.visit('/').then(()=>{
     cy.intercept('POST', '/users/login').as('loginRequest');
     Cypress.Promise.all([
-      cy.get('[data-testid="email"]').type(mail),
-      cy.get('[data-testid="password"]').type(pw)
+      cy.get('input#email').type(mail),
+      cy.get('input#password').type(pw)
     ]).then(()=>{
-      cy.get('[data-testid="loginBtn"]').click().then(()=>{
+      cy.get('button#login_btn').click().then(()=>{
         cy.wait('@loginRequest').then((interception) => {
           const response = interception.response;
           expect(response === null).to.equal(false);
@@ -392,9 +392,9 @@ Cypress.Commands.add('addBooking', (buildingId, floorId, roomRemark, imgSrc, des
   cy.visit('/floor').then(()=>{
     cy.setFloor(buildingId, floorId, imgSrc).then(()=>{
       cy.get(`button#icon_button_${roomRemark}`).click().then(()=>{
-        cy.get('div').contains(`${deskRemark}`).click().then(()=>{
+        cy.get('p').contains(`${deskRemark}`).click({ force: true }).then(()=>{
           cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
-            cy.get('button.submit-btn').click().then(()=>{
+            cy.get('button#submit_booking_btn').click().then(()=>{
               cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
                 cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
                   return cy.wrap('1');

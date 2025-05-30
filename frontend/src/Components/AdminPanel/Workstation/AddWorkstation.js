@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import {roomToOption} from '../Room/RoomAndOption';
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
-import InfoModal from '../../InfoModal/InfoModal.jsx';
+import InfoModal from '../../InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import LayoutModal from '../../LayoutModal.jsx';
+import LayoutModal from '../../Templates/LayoutModal.jsx';
 
 export default function AddWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

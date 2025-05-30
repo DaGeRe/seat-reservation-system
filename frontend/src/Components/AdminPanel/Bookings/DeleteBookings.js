@@ -7,7 +7,7 @@ import moment from 'moment';
 import BookingTable from './BookingTable';
 import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
-import LayoutModal from '../../LayoutModal';
+import LayoutModal from '../../Templates/LayoutModal';
 
 export default function DeleteBookings({ onClose, isOpen }) {
   const headers = useMemo(() => {

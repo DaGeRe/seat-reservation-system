@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getRequest, postRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
-import LayoutPage from '../LayoutPage';
+import LayoutPage from '../Templates/LayoutPage';
 
 const RoomSearch = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));

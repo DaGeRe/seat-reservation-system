@@ -13,8 +13,8 @@ import DeleteEmployee from './UserManagement/DeleteEmployee';
 import EditEmployee from './UserManagement/EditEmployee';
 import OverviewBookings from './Bookings/OverviewBookings';
 import { useTranslation } from 'react-i18next';
-import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog, BootstrapDialogTitle } from '../Bootstrap';
-import LayoutPage from '../LayoutPage';
+import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog } from '../Bootstrap';
+import LayoutPage from '../Templates/LayoutPage';
 
 const AdminPage = () => {
   const { t } = useTranslation();
@@ -50,7 +50,6 @@ const AdminPage = () => {
   };
 
   const toggleBookingButtons = () => {
-    console.log('abcd');
     setShowBookingButtons(!showBookingButtons);
     setIsOverviewBookingsOpen(!isOverviewBookingsOpen);
     if (showBookingButtons === false) {

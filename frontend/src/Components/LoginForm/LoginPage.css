@@ -54,6 +54,14 @@
 
 }
 
+.icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;  
+}
+
 .wrapper .forgot-password {
     position: relative;
     display: flex;

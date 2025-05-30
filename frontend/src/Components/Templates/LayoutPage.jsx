@@ -1,15 +1,15 @@
-import SidebarComponent from './Home/SidebarComponent';
+import SidebarComponent from '../Home/SidebarComponent.jsx';
 import { Box } from '@mui/material';
-import InfoModal from './InfoModal/InfoModal';
-import GenericBackButton from './GenericBackButton';
+import InfoModal from '../InfoModal.jsx';
+import GenericBackButton from '../GenericBackButton.js';
 import {LayoutPage_theme} from './LayoutPage.theme.js';
 
-const LayoutPage = ({title, helpText, useGenericBackButton=false, children}) => {
+const LayoutPage = ({title, helpText, useGenericBackButton=false, withSidebar=true, children}) => {
     return (
         <Box
             sx={LayoutPage_theme.pageWrapper}
         >
-            <SidebarComponent />
+            {withSidebar && <SidebarComponent />}
         
             <Box sx={{
                 flexGrow: 1,

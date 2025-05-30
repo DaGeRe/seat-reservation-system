@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FloorImage from '../FloorImage/FloorImage.jsx';
 import { useTranslation } from 'react-i18next';
-import LayoutPage from '../LayoutPage.jsx';
+import LayoutPage from '../Templates/LayoutPage.jsx';
 
 const Floor = () => {
   const { t, i18n } = useTranslation();

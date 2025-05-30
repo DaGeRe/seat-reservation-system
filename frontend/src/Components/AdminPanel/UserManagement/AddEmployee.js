@@ -3,7 +3,7 @@ import {useRef, useState} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
-import LayoutModal from '../../LayoutModal';
+import LayoutModal from '../../Templates/LayoutModal';
 
 export default function AddEmployee({ isOpen, onClose }) {
   const headers =  useRef(JSON.parse(sessionStorage.getItem('headers')));

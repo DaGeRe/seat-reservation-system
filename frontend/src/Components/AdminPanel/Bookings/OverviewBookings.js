@@ -1,7 +1,7 @@
 import { InputLabel, Select, MenuItem, FormControl, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
-import React, { useRef, useMemo, useCallback } from 'react';
-import { useTranslation } from "react-i18next";
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { formatDate_yyyymmdd_to_ddmmyyyy, formatDate_ddmmyyyy_to_yyyymmdd } from '../../misc/formatDate';
 import {
   Table,
@@ -13,15 +13,15 @@ import {
   Paper,
   Button
 } from '@mui/material';
-import LayoutModal from '../../LayoutModal';
+import LayoutModal from '../../Templates/LayoutModal';
 import {deleteRequest, getRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function OverviewBookings({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [bookings, setBookings] = React.useState([]);
-  const [filter, setFilter] = React.useState('');
-  const [text, setText] = React.useState('');
+  const [bookings, setBookings] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [text, setText] = useState('');
   
   const getBookings = useCallback(
     async () => {
@@ -48,7 +48,7 @@ export default function OverviewBookings({ isOpen, onClose }) {
     );
 
     // Init fetch of all bookings.
-    React.useEffect(() => {
+    useEffect(() => {
       getBookings();
     }, [getBookings]);      
 
