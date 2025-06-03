@@ -1,20 +1,16 @@
 import { Autocomplete, FormControl, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
-import React, { useMemo, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import BookingTable from './BookingTable';
 import { roomToOption, optionToRoomId} from '../Room/RoomAndOption';
 import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions'
-import LayoutModal from '../../Templates/LayoutModal';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin';
 
 export default function DeleteBookings({ onClose, isOpen }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [date, setDate] = React.useState('');
   const [allActiveRooms, setAllActiveRooms] = React.useState([]);
@@ -24,13 +20,14 @@ export default function DeleteBookings({ onClose, isOpen }) {
   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-        headers,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/status`,
+        //`${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
+        headers.current,
         setAllActiveRooms,
         () => {console.log('Failed to fetch all rooms in EditBookings.js');},
       );
     },
-    [headers, setAllActiveRooms]
+    [setAllActiveRooms]
   );
   
   React.useEffect(() => {
@@ -39,8 +36,8 @@ export default function DeleteBookings({ onClose, isOpen }) {
 
   async function deleteBookingsById(id) {
     deleteRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/bookings/${id}`,
-      headers,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/${id}`,
+      headers.current,
       () => {
         toast.success(t('bookingDeleted'));
         searchBooking();
@@ -53,8 +50,8 @@ export default function DeleteBookings({ onClose, isOpen }) {
       if(selectedRoom){
         const roomId = optionToRoomId(selectedRoom);
         getRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
-          headers,
+          `${process.env.REACT_APP_BACKEND_URL}/admin/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`, 
+          headers.current,
           setAllBookings, 
           () => {console.log('Error fetching bookings')}, 
         );
@@ -62,16 +59,14 @@ export default function DeleteBookings({ onClose, isOpen }) {
   }
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       title={t('deleteBooking')}
       onClose={onClose}
       isOpen={isOpen}
     >
-
-
-                  <Stack direction={"row"} style={{padding:"30px"}} width={"100%"}>
+      <Stack direction={'row'} style={{padding:'30px'}} width={'100%'}>
           <Autocomplete
-            id="tags-filled"
+            id='tags-filled'
             fullWidth
             options={allActiveRooms.map(roomToOption)}
             // To avoid an warning allow every possible option.
@@ -121,6 +116,6 @@ export default function DeleteBookings({ onClose, isOpen }) {
                       }
               
           
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

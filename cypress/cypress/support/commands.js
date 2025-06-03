@@ -1,3 +1,8 @@
+/*
+test_free_desks.cy.js  
+series
+*/
+
 Cypress.Commands.add('selectTimeRange', (startSlot, endSlot) => {
   const basename = '.rbc-time-content';
   cy.get(basename).then(($el_base) => {
@@ -339,6 +344,9 @@ Cypress.Commands.add('rmDesk', (buildingId, floorId, roomRemark, imgSrc, deskRem
   })
 });
 
+/**
+ * Must be logged in as admin.
+ */
 Cypress.Commands.add('addDesk', (buildingId, floorId, roomRemark, imgSrc, deskRemark)=>{
   cy.visit('/admin').then(()=>{
     cy.get('button#roomManagement').click().then(()=>{
@@ -395,9 +403,11 @@ Cypress.Commands.add('addBooking', (buildingId, floorId, roomRemark, imgSrc, des
         cy.get('p').contains(`${deskRemark}`).click({ force: true }).then(()=>{
           cy.selectTimeRange(start_timeslot, end_timeslot).then(()=>{
             cy.get('button#submit_booking_btn').click().then(()=>{
-              cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
-                cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
-                  return cy.wrap('1');
+              cy.wait(1000).then(()=>{
+                cy.get('.react-confirm-alert').should('be.visible').contains(deskRemark).get('button').contains('Yes').click().then(()=>{
+                  cy.get('.Toastify__toast').should('be.visible').contains('Booking saved successfully').then(()=>{
+                    return cy.wrap('1');
+                  })
                 })
               })
             })

@@ -1,7 +1,7 @@
 package com.desk_sharing.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +14,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.services.UserService;
 
-import jakarta.persistence.EntityNotFoundException;
-
-import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.AuthResponseDTO;
 import com.desk_sharing.model.LoginDto;
-import com.desk_sharing.entities.Floor;
-import com.desk_sharing.entities.Role;
 import com.desk_sharing.security.JWTGenerator;
 import com.desk_sharing.repositories.UserRepository;
-import com.desk_sharing.repositories.RoleRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/users")
@@ -45,24 +36,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
     private JWTGenerator jwtGenerator;
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
 
-    @GetMapping("/get")
-    public List<UserEntity> getAllUsers() {
-        userService.logging("getAllUsers()");
-        // Rm the hashed pw.
-        return userService.getAllUsers().stream().map(UserEntity::new).toList();
-    }
-
-    @GetMapping("getDefaultFloorForUserId/{id}")
+    /*@GetMapping("getDefaultFloorForUserId/{id}")
     public ResponseEntity<Floor> getDefaultFloorForUserId(@PathVariable("id") int id) {
         userService.logging("getDefaultFloorForUserId( " + id + " )");
         try {
@@ -75,9 +55,9 @@ public class UserController {
             userService.logging("\tgetDefaultFloorForUserId( " + id + " ) " + e.getMessage());
             return new ResponseEntity<>(new Floor(), HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
-    @GetMapping("setDefaulFloorForUserId/{id}/{floor_id}")
+    /*@GetMapping("setDefaulFloorForUserId/{id}/{floor_id}")
     public boolean setDefaulFloorForUserId(@PathVariable("id") int id, @PathVariable("floor_id") Long floor_id) {
         userService.logging("setDefaulFloorForUserId( " + id + ", " + floor_id + " )");
         try {
@@ -87,7 +67,7 @@ public class UserController {
             userService.logging(e.getMessage());
             return false;
         }
-    }
+    }*/
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
@@ -122,42 +102,10 @@ public class UserController {
         );     
     }
 
-    @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-        userService.logging("register( " + registerDto.getEmail() + ", " + registerDto.getName() + ", " + registerDto.getSurname() + ", " + registerDto.getName() + " )");
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
-            return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
-        }
-        UserEntity user = new UserEntity();
-        user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
-        user.setEmail(registerDto.getEmail());
-        user.setName(registerDto.getName());
-        user.setSurname(registerDto.getSurname());
-        user.setVisibility(registerDto.isVisibility());
-        user.setAdmin(registerDto.isAdmin());
-        
-        // If the user is an admin grant the matching privileges.
-        final Role role = registerDto.isAdmin() ? 
-            roleRepository.findByName("ROLE_ADMIN").get() : 
-            roleRepository.findByName("ROLE_USER").get();
-        
-        user.setRoles(Collections.singletonList(role));
-        userRepository.save(user);
-        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
-    }
-
     @PutMapping("/visibility/{id}")
     public int changeVisibility(@PathVariable("id") int id) {
         userService.logging("changeVisibility( " + id + " )");
         return userService.changeVisibility(id);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
-        userService.logging("updateUserById( " + id + ", " + user.toString() + " )");
-        UserEntity updateUser = userService.updateUserById(id, user);
-        HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
-        return ResponseEntity.status(status).body(updateUser);
     }
 
     @PutMapping("/password/{id}")
@@ -169,20 +117,7 @@ public class UserController {
         HttpStatus status = (answer) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(answer);
     }
-
-    @DeleteMapping("/ff/{id}")
-    public boolean deleteUserFf(@PathVariable("id") int id) {
-        userService.logging("deleteUserFf( " + id + " )");
-        return userService.deleteUserFf(id);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Integer> deleteUser(@PathVariable("id") int id) {
-        userService.logging("deleteUser( " + id + " )");
-        int ret = userService.deleteUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body(ret);
-    }
-
+ 
     @GetMapping("/get/{id}")
     public UserEntity getUser(@PathVariable("id") int id) {
         userService.logging("deleteUser( " + id + " )");

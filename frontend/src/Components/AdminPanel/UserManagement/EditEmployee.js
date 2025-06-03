@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from "react-i18next";
 import EmployeeTable from './EmployeeTable';
 import { putRequest, getRequest} from '../../RequestFunctions/RequestFunctions';
-import LayoutModal from '../../Templates/LayoutModal';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin';
 
 export default function EditEmployee({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -21,7 +21,8 @@ export default function EditEmployee({ isOpen, onClose }) {
   const getAllEmployee = useCallback(
     async () => {
       getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/users/get`,
+        //`${process.env.REACT_APP_BACKEND_URL}/users/get`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/users/get`,
         headers.current,
         setAllEmployee,
         () => {console.log('Failed to fetch all employees in EditEmployee.js')}
@@ -42,7 +43,8 @@ export default function EditEmployee({ isOpen, onClose }) {
     }
 
     putRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
+      //`${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/users/${id}`,
       headers.current,
       (_) => {
         toast.success(t('userUpdated'));
@@ -79,13 +81,13 @@ export default function EditEmployee({ isOpen, onClose }) {
   }
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       title={t('editEmployee')}
       onClose={onClose}
       isOpen={isOpen}
     >
       <EmployeeTable employees={allEmployee} onAction={editEmployeeById} action={t("edit").toUpperCase()} t={t}/>
-      <LayoutModal
+      <LayoutModalAdmin
         isOpen={isEditEmployeeOpen}
         onClose={setIsEditEmployeeOpen.bind(null, !isEditEmployeeOpen)}
         submit={updateEmployee}
@@ -154,7 +156,7 @@ export default function EditEmployee({ isOpen, onClose }) {
             <FormControlLabel value={false} control={<Radio />} label={t('false')} />
           </RadioGroup>
         </FormControl>
-      </LayoutModal>
-    </LayoutModal>
+      </LayoutModalAdmin>
+    </LayoutModalAdmin>
   );
 }

@@ -8,6 +8,12 @@ import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import {DeskTable} from '../misc/DesksTable';
 import LayoutPage from '../Templates/LayoutPage';
+
+/**
+ * Interface to create series (=recurrent) bookings.
+ *  
+ * @returns An page that allows to create series bookings.
+ */
 const CreateSeries = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
     const { t, i18n } = useTranslation();
@@ -76,7 +82,14 @@ const CreateSeries = () => {
      * Fetch dates between startDate and endDate.
      */
     useEffect(() => {
-        if (startDate > endDate) {
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+        
+        // Reset time so only the date matters. We do this let the user choose the same date as start and end.
+        startDateObj.setHours(0,0,0,0); 
+        endDateObj.setHours(0,0,0,0);
+
+        if (startDateObj > endDateObj) {
             toast.error(t('startDateBiggerThanStartDate'));
             setDates([]);
             return;
@@ -94,8 +107,8 @@ const CreateSeries = () => {
             console.log('Error fetching dates in CreateSeries.jsx');
             },
             JSON.stringify({
-                startDate: startDate,
-                endDate: endDate,
+                startDate: startDateObj,
+                endDate: endDateObj,
                 startTime: startTime,
                 endTime: endTime,
                 frequency: frequency, 
@@ -313,6 +326,7 @@ const CreateSeries = () => {
         <LayoutPage
             title={create_headline()}
             helpText={i18n.language === 'de' ? 'Wählen Sie zunächst das Start- und Endedatum, wie auch den Start- und Endzeitpunkt aus.<br/>Legen Sie im Anschluss eine Frequenz und das gewünschte Gebäude fest. Gegegebenfalls können Sie noch einen Wochentag setzen.<br/>In der unteren Tabelle können Sie nun ein mögliches Zimmer für Ihre Serienbuchungen auswählen.' : 'First, select the start and end date, as well as the start and end time.</br>Then, choose a frequency and the desired building. If necessary, you can also set a weekday.</br>In the table below, you can now select a possible room for your recurring bookings'}
+            withPaddingX={true}
         >
             <CreateContent/>
         </LayoutPage>

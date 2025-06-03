@@ -18,7 +18,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    // The email of the user. Is used to uniquly identify the user in the application.
     private String email;
     private String password;
     private String name;
@@ -28,6 +28,10 @@ public class UserEntity {
     @ManyToOne(cascade =  { CascadeType.PERSIST })
     @JoinColumn(name = "default_floor_id", nullable = true)
     private Floor default_floor;
+    // The default view in the calendar in MyBookings.jsx. Either "day", "week" or "month".
+    @ManyToOne(cascade =  { CascadeType.PERSIST })
+    @JoinColumn(name = "defaultViewModeId", nullable = true)
+    private ViewMode defaultViewMode;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -44,5 +48,6 @@ public class UserEntity {
         this.admin = other.isAdmin();
         this.default_floor = other.getDefault_floor();
         this.roles = other.getRoles();
+        this.defaultViewMode = other.getDefaultViewMode();
     }
 }

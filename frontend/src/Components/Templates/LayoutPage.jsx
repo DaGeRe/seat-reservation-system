@@ -1,33 +1,35 @@
 import SidebarComponent from '../Home/SidebarComponent.jsx';
-import { Box } from '@mui/material';
+import { Box, Typography, Divider} from '@mui/material';
 import InfoModal from '../InfoModal.jsx';
 import GenericBackButton from '../GenericBackButton.js';
 import {LayoutPage_theme} from './LayoutPage.theme.js';
+/** 
+ * Simple template for pages.
+ * 
+ * @param title The title of the page. 
+ * @param helpText The text that is displayed when the user clicks on the help button. If helpText === '' is true then the button is not displayed.
+ * @param useGenericBackButton If true an button is displayed with that the user can navigate back.
+ * @param withSidebar If true the sidebar is displayed.
+ * @param withPaddingX If true around the content is an padding in x direction. 
+ * @param children The content of the page.
+ */
+const LayoutPage = ({title, helpText, useGenericBackButton=false, withSidebar=true, withPaddingX=false, children}) => {
 
-const LayoutPage = ({title, helpText, useGenericBackButton=false, withSidebar=true, children}) => {
     return (
         <Box
             sx={LayoutPage_theme.pageWrapper}
         >
             {withSidebar && <SidebarComponent />}
-        
-            <Box sx={{
-                flexGrow: 1,
-                overflowY: 'auto',
-                px: 3, // paddingX
-                py: 2, // paddingY
-            }}>
+            <Box sx={LayoutPage_theme.content}>
+                <Typography variant='h4' component='h1' sx={LayoutPage_theme.h1}>
+                    {title}
+                </Typography>
                 
-                <h1 style={{margin: '20px', textAlign: 'center',}}>{title}</h1>
-                <hr className='gradient' />
+                <Divider sx={LayoutPage_theme.divider} />
                 <br/>
                 {helpText !== '' && <InfoModal text={helpText}/>}
                 {useGenericBackButton && <GenericBackButton/>}
-                <Box sx={{
-                    flexGrow: 1,
-                    width: '100%',
-                    boxSizing: 'border-box',
-                }}>
+                <Box sx={withPaddingX ? LayoutPage_theme.innerContent_padding : LayoutPage_theme.innerContent}>
                     {children}
                 </Box>
             </Box>

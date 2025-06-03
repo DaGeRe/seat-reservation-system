@@ -15,7 +15,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   
-  const news = '<br/><ul><li>Anmeldung mit Windowskennung ist möglich</li><li>Festlegen von Standardetage möglich</li></ul>';
+  const news = '<br/><ul><li>Anmeldung mit Windowskennung ist möglich</li><li>Festlegen von Standardetage möglich</li><li>Es kann nach Buchungen von Kollegen gesucht werden</li><li>Es kann nach Räumen gemäß der Kapazität gesucht werden</li><li>Der Anwender kann seine Standardansicht in der Buchungsübersicht wählen</li></ul>';
   const wrapper_sx = {
     width: '420px',
     height: '370px',

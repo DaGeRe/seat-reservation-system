@@ -14,7 +14,7 @@ import EditEmployee from './UserManagement/EditEmployee';
 import OverviewBookings from './Bookings/OverviewBookings';
 import { useTranslation } from 'react-i18next';
 import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog } from '../Bootstrap';
-import LayoutPage from '../Templates/LayoutPage';
+import LayoutPageAdmin from '../Templates/LayoutPageAdmin';
 
 const AdminPage = () => {
   const { t } = useTranslation();
@@ -69,7 +69,7 @@ const AdminPage = () => {
   const toggleDeleteEmployeeModal = () => setIsDeleteEmployeeOpen(!isDeleteEmployeeOpen);
   
   return (
-    <LayoutPage
+    <LayoutPageAdmin
       title={t('adminPanel')}
       helpText={''}
     >
@@ -161,7 +161,7 @@ const AdminPage = () => {
         <OverviewBookings isOpen={isOverviewBookingsOpen} onClose={setIsOverviewBookingsOpen.bind(null, !isOverviewBookingsOpen)}/>
       </BootstrapEmployeeDialog>
       
-      </LayoutPage>
+      </LayoutPageAdmin>
   );
 };
 

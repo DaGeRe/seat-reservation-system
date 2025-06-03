@@ -2,7 +2,7 @@ import { Autocomplete, Dialog, FormControl, Grid2, Stack, TextField } from '@mui
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import React, { useMemo, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { useTranslation } from "react-i18next";
 import moment from 'moment';
 import styled from '@emotion/styled';
@@ -11,30 +11,26 @@ import BookingTable from './BookingTable';
 import {getRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function EditBookings({ editBookingsModal }) {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [date, setDate] = React.useState('');
-  const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
-  const [allActiveRooms, setAllActiveRooms] = React.useState([]);
-  const [selectedRoom, setSelectedRoom]= React.useState('');
-  const [selectedId, setSelectedId]= React.useState('');
-  const [selectedStartTime, setSelectedStartTime] = React.useState();
-  const [selectedEndTime, setSelectedEndTime] = React.useState('');
-  const [allBookings, setAllBookings] = React.useState([]);
+  const [date, setDate] = useState('');
+  const [isEditBookingOpen, setIsEditBookingOpen] = useState(false);
+  const [allActiveRooms, setAllActiveRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom]= useState('');
+  const [selectedId, setSelectedId]= useState('');
+  const [selectedStartTime, setSelectedStartTime] = useState();
+  const [selectedEndTime, setSelectedEndTime] = useState('');
+  const [allBookings, setAllBookings] = useState([]);
   const getAllActiveRooms = useCallback(
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/status`,
-        headers,
+        headers.current,
         setAllActiveRooms,
         () => {console.log('Failed to fetch all rooms in EditBookings.js');},
       );
     },
-    [headers, setAllActiveRooms]
+    [setAllActiveRooms]
   );
   React.useEffect(() => {
     getAllActiveRooms();
@@ -65,7 +61,7 @@ export default function EditBookings({ editBookingsModal }) {
       let roomId = idVal[0];
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/room/date/${roomId+"?day="+moment(date).format("YYYY-MM-DD")}`,
-        headers,
+        headers.current,
         setAllBookings,
         () => {console.log('Error fetching bookings')},
       );

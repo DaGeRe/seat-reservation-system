@@ -13,24 +13,23 @@ import { MdGTranslate } from 'react-icons/md';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox, IoIosSettings, IoIosAlbums } from 'react-icons/io';
 import { IoSearchSharp } from 'react-icons/io5';
-import { HiOutlineSparkles } from "react-icons/hi2";
+import { HiOutlineSparkles } from 'react-icons/hi2';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import DefaultFloor from './DefaultFloor';
 import { AiOutlineTeam } from "react-icons/ai";
+import Defaults from "./Defaults";
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem('sidebarCollapsed') === 'true'
   );
-  //const [seriesSubMenuOpen, setSeriesSubMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('');//useState('calendar');
   const location = useLocation();
   const navigate = useNavigate();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
+  const [isDefaultsModalOpen, setIsDefaultsModalOpen] = useState(false);
   
   useEffect(() => {
     if (location.pathname === '/admin') {
@@ -94,8 +93,8 @@ const SidebarComponent = () => {
         setIsChangePasswordModalOpen(true);
         break;
 
-      case 'defaultFloor':
-        setIsSettingsModalOpen(true);
+      case 'defaults':
+        setIsDefaultsModalOpen(true);
         break;
 
       case 'colleagues':
@@ -113,10 +112,6 @@ const SidebarComponent = () => {
 
   const handleCloseChangePasswordModal = () => {
     setIsChangePasswordModalOpen(false);
-  };
-
-  const handleCloseSettingsModal = () => {
-    setIsSettingsModalOpen(false);
   };
 
 
@@ -228,9 +223,12 @@ const SidebarComponent = () => {
             >
               {i18n.language === "en" ? "Deutsch" : "English"}
             </MenuItem>
-            <MenuItem id='sidebar_settings' icon={<HiOutlineSparkles />} onClick={
-              () => handleClick('defaultFloor')}>
-                {t('defaultFloor')}
+
+              <MenuItem 
+                id='sidebar_defaults' 
+                icon={<HiOutlineSparkles />} onClick={
+                () => handleClick('defaults')}>
+                  {t('defaults')}
               </MenuItem>
             <MenuItem id='sidebar_changePassword' icon={<FaLock/>} onClick={() => handleClick('changePassword')}>
               {t('password')}
@@ -241,11 +239,10 @@ const SidebarComponent = () => {
         </Menu>
       </Sidebar>
 
-      <DefaultFloor
-        isOpen={isSettingsModalOpen}
-        onClose={handleCloseSettingsModal}
+      <Defaults 
+        isOpen={isDefaultsModalOpen}
+        onClose={setIsDefaultsModalOpen.bind(null, false)}
       />
-      <div>{isChangePasswordModalOpen}</div>
       <ChangePassword
         isOpen={isChangePasswordModalOpen}
         onClose={handleCloseChangePasswordModal}

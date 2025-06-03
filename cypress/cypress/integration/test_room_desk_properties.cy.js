@@ -83,4 +83,18 @@ describe('', ()=> {
             })
         })
     });
+
+    it('test if normal user cannot access admin page',  ()=>{
+        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
+            cy.visit('admin').then(()=>{
+                cy.get('h1').contains('Error').then(()=>{
+                    cy.get('p').contains('You have no sufficient rights to see this page!').then(()=>{
+                        cy.get('button#generic_back_button').click().then(()=>{
+                            cy.url().should('include', '/home');
+                        })
+                    })
+                })
+            })
+        })
+    })
 });

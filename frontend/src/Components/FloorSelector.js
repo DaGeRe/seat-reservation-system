@@ -7,7 +7,6 @@ import { getRequest } from './RequestFunctions/RequestFunctions';
  * GUI to select an building and an floor.
  * @param {*} idString An string that add to the id's in the html template.
  * @param {*} sendDataToParent The function that is called when data has to be transmitted to the parent component. 
- * @returns 
  */
 const FloorSelector = ({
   idString,
@@ -48,7 +47,7 @@ const FloorSelector = ({
             const userId = localStorage.getItem('userId');
             if (!userId) return;
             getRequest(
-              `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+              `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
               headers.current,
               received_defaultFloor => {
                 if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
@@ -91,7 +90,7 @@ const FloorSelector = ({
           const userId = localStorage.getItem('userId');
           if (!userId) return;
           getRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+            `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
             headers.current,
             received_defaultFloor => {
               if (received_defaultFloor && received_defaultFloor.floor_id) {

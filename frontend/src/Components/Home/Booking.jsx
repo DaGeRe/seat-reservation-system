@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -12,11 +12,7 @@ import bookingPostRequest from '../misc/bookingPostRequest.js';
 import LayoutPage from '../Templates/LayoutPage.jsx';
 
 const Booking = () => {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,24 +32,24 @@ const Booking = () => {
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-        headers,
+        headers.current,
         setDesks,
         () => {console.log('Failed to fetch desks in Booking.jsx');}
       )
     },
-    [roomId, headers]
+    [roomId]
   );
 
   const fetchRoom = useCallback(
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/rooms/${roomId}`,
-        headers,
+        headers.current,
         setRoom, 
         () => {console.log('Failed to fetch desks in Booking.jsx');}
       )
     },
-    [roomId, headers]
+    [roomId]
   );
 
   useEffect(() => {
@@ -74,7 +70,7 @@ const Booking = () => {
     async () => {
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
-        headers,
+        headers.current,
         (bookingsForDeskDTOs) => {
           // Parse the booking data and add events to tempArray
           const bookingEvents = bookingsForDeskDTOs.map((bookingsForDeskDTO) => ({
@@ -90,7 +86,7 @@ const Booking = () => {
         },
         () => {console.log('Failed to fetch desks in Booking.jsx');}
       );
-    }, [clickedDeskId, t,  headers]
+    }, [clickedDeskId, t]
 );
 
   useEffect(() => {
@@ -147,7 +143,7 @@ const Booking = () => {
 
   const booking = async () => {
     if (!clickedDeskId || !event.start || !event.end) {
-      toast.error(t("blank"));
+      toast.error(t('blank'));
       return;
     }  
     loadBookings();
@@ -165,7 +161,6 @@ const Booking = () => {
       begin: start,
       end: ending
     };
-
     bookingPostRequest('Booking.jsx', bookingData, clickedDeskRemark, headers, t, (booking)=>{navigate('/home', { state: { booking }, replace: true });})
   };
 
@@ -178,6 +173,7 @@ const Booking = () => {
       title={getHeadline()}
       helpText={helpText}
       useGenericBackButton={true}
+      withPaddingX={true}
     >
       <Box sx={{ display: 'flex',  width: '100%' }}>
         <Box id='desks' sx={{ width: '20%', paddingRight: '20px' }}>

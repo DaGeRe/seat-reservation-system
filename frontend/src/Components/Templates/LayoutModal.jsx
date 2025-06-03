@@ -1,12 +1,6 @@
 import {Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-/**
- * /e2e/cypress/videos/test_colleagues.cy.js.mp4
- * /e2e/cypress/videos/test_default.cy.js.mp4
- * /e2e/cypress/videos/test_roomSearch.cy.js.mp4
- * /e2e/cypress/videos/test_room_desk_properties.cy.js.mp4
- * /e2e/cypress/videos/test_user.cy.js.mp4
- * 
+/** 
  * Simple template for modal windows.
  * @param isOpen Boolean flag that indicates if the modal is shown.
  * @param onClose Function that closes the modal.

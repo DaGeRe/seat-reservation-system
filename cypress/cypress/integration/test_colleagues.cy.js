@@ -40,10 +40,10 @@ describe('', ()=> {
                                             cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark1, 7, 11).then(()=>{
                                                 cy.login(user2Mail, user2Pw).then(()=>{
                                                     cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark2, 7, 11).then(()=>{
-                                                        cy.login(user3Mail, user3Pw).then(()=>{
+                                                         cy.login(user3Mail, user3Pw).then(()=>{
                                                             cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark2, 1, 5).then(()=>{
                                                                 cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
-                                                                    cy.visit('/colleagues').then(()=>{
+                                                                   cy.visit('/colleagues').then(()=>{
                                                                         cy.setStrDirect('emailsString', `${user1Mail}, ${user2Mail}, ${user3Mail}, ${Cypress.env('TEST_ADMIN_MAIL')}`).then(()=>{
                                                                             cy.get('button#searchBookingsOfColleaguesBtn').click().then(()=>{
                                                                                 cy.wait(1000).then(()=>{
@@ -54,7 +54,6 @@ describe('', ()=> {
                                                                                                 cy.get(`tr[id="${user1Mail}"]`).find(`td[id="${user1Mail}_bookings"]`).find('span').should('have.length', 1),
                                                                                                 cy.get(`tr[id="${user2Mail}"]`).find(`td[id="${user2Mail}_bookings"]`).find('span').should('have.length', 1),
                                                                                                 cy.get(`tr[id="${user3Mail}"]`).find(`td[id="${user3Mail}_bookings"]`).find('span').should('have.length', 1)]).then(()=>{
-                                                                                                //cy.screenshot('a').then(()=>{
                                                                                                     cy.logout().then(()=>{
                                                                                                         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
                                                                                                             Cypress.Promise.all([
@@ -64,14 +63,13 @@ describe('', ()=> {
                                                                                                             ]);
                                                                                                         })
                                                                                                     })
-                                                                                                //})
                                                                                             })
                                                                                         })
                                                                                     })
                                                                                 })
                                                                             })
                                                                         })
-                                                                    })      
+                                                                    }) 
                                                                 })
                                                             })
                                                         })

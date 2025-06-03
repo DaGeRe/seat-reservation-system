@@ -3,7 +3,7 @@ import {useRef, useState} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
-import LayoutModal from '../../Templates/LayoutModal';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin';
 
 export default function AddEmployee({ isOpen, onClose }) {
   const headers =  useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -22,7 +22,8 @@ export default function AddEmployee({ isOpen, onClose }) {
     }
 
     postRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/users/register`,
+      //`${process.env.REACT_APP_BACKEND_URL}/users/register`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/users/register`,
       headers.current,
       (_) => {
         toast.success(t('userCreated'));
@@ -43,7 +44,7 @@ export default function AddEmployee({ isOpen, onClose }) {
     );
   }
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       title={t('addEmployee')}
       onClose={onClose}
       isOpen={isOpen}
@@ -125,6 +126,6 @@ export default function AddEmployee({ isOpen, onClose }) {
           
         </RadioGroup>
       </FormControl>
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

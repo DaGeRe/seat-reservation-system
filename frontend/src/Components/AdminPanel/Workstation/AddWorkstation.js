@@ -6,7 +6,7 @@ import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import LayoutModal from '../../Templates/LayoutModal.jsx';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 
 export default function AddWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -29,7 +29,8 @@ export default function AddWorkstation({ isOpen, onClose }) {
       return false;
     }
     postRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/desks`,
+      //`${process.env.REACT_APP_BACKEND_URL}/desks`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/desks`,
       headers.current,
       (_) => {
         toast.success(t('deskCreated'));
@@ -55,10 +56,10 @@ export default function AddWorkstation({ isOpen, onClose }) {
   };
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       isOpen={isOpen}
       onClose={onClose}
-      title={t("addWorkstation")}
+      title={t('addWorkstation')}
       submit={addWorkstation}
       submitTxt={t('submit')}
     >
@@ -81,6 +82,6 @@ export default function AddWorkstation({ isOpen, onClose }) {
           </div>
         )
       }
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

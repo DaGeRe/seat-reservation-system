@@ -8,7 +8,39 @@ describe('', ()=> {
     const deskRemark1 = 'testdesk1';
     const imgSrc = '/Assets/Hauptstelle Dresden,  Bautzner Str.19ab/1. Obergeschoss.png';
     
-    it('Simple series creation', ()=>{
+    it('Simple series creation as admin', ()=>{
+        const should = 62;
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+            cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                    cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
+                        cy.logout().then(()=>{
+                            cy.visit('/createseries').then(()=>{
+                                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                                    cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
+                                        Cypress.Promise.all([
+                                            cy.setStr('startDate', startdate),
+                                            cy.setStr('endDate', enddate),
+                                        ]).then(()=>{
+                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
+                                                    cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                                        cy.countBookings(roomRemark).should('equal', 62);
+                                                    });
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    });
+                })
+            })
+        })
+    });
+
+    it('Simple series creation as user', ()=>{
         const should = 62;
         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
@@ -26,7 +58,9 @@ describe('', ()=> {
                                                 cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                                     cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
                                                         cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
-                                                            cy.countBookings(roomRemark).should('equal', 62);
+                                                            cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                cy.countBookings(roomRemark).should('equal', 62);
+                                                            });
                                                         });
                                                     })
                                                 })
@@ -67,8 +101,10 @@ describe('', ()=> {
                                                         cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                                         cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
                                                             cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
-                                                                cy.countBookings(roomRemark).then((cnt)=>{
-                                                                    cy.wrap(cnt).should('equal', should);
+                                                                cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                    cy.countBookings(roomRemark).then((cnt)=>{
+                                                                        cy.wrap(cnt).should('equal', should);
+                                                                    })
                                                                 })
                                                             })
                                                         })
@@ -109,8 +145,10 @@ describe('', ()=> {
                                                     cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
                                                         cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
                                                             cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
-                                                                cy.countBookings(roomRemark).then((cnt)=>{
-                                                                    cy.wrap(cnt).should('equal', should);
+                                                                cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                    cy.countBookings(roomRemark).then((cnt)=>{
+                                                                        cy.wrap(cnt).should('equal', should);
+                                                                    })
                                                                 })
                                                             })
                                                         })
@@ -122,6 +160,76 @@ describe('', ()=> {
                                 })
                             })
                         });
+                    })
+                })
+            })
+        })
+    })
+
+    it('test for error if startdate > enddate', ()=>{
+        const should = 1;
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+            cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                    cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
+                        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
+                            cy.visit('/createseries').then(()=>{
+                                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                                    cy.get('div#dates_label').should('exist').then(()=> {
+                                        cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
+                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                cy.get('div#dates_label').should('exist').then(()=> {
+                                                    Cypress.Promise.all([
+                                                        cy.setStr('startDate', enddate),
+                                                        cy.setStr('endDate', startdate)
+                                                    ]).then(()=>{
+                                                        cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
+                                                            cy.wait(2000).then(()=>{
+                                                                cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Start date must not be greater than the end date.');
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+
+    it('test for error if startime > endtime', ()=>{
+        const should = 1;
+        cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+            cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                    cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
+                        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
+                            cy.visit('/createseries').then(()=>{
+                                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                                    cy.get('div#dates_label').should('exist').then(()=> {
+                                        cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
+                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                cy.get('div#dates_label').should('exist').then(()=> {
+                                                    Cypress.Promise.all([
+                                                        cy.setStr('startTime', '18:00:00'),
+                                                        cy.setStr('endTime', '15:30:00'),
+                                                    ]).then(()=>{
+                                                        cy.wait(2000).then(()=>{
+                                                            cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Start time must not be greater than the end time.');
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
                     })
                 })
             })

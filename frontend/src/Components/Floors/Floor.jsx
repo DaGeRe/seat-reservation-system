@@ -28,6 +28,7 @@ const Floor = () => {
       title={i18n.language === 'de' ? 'Raumauswahl' : 'Selection of rooms'}
       helpText={t('helpChooseRoom')}
       useGenericBackButton={true}
+      withPaddingX={true}
     >
       <FloorImage
         sendDataToParent={handleChildData}

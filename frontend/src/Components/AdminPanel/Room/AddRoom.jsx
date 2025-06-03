@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import RoomDefinition from '../Room/RoomDefinition.js';
-import LayoutModal from '../../Templates/LayoutModal.jsx';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 
 export default function AddRoom({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -28,7 +28,8 @@ export default function AddRoom({ isOpen, onClose }) {
       return false;
     }
     postRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
+      //`${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/rooms/create`,
       headers.current,
       (_) => {
         toast.success(t('roomCreated'));
@@ -62,7 +63,7 @@ export default function AddRoom({ isOpen, onClose }) {
   };
 
     return (
-      <LayoutModal
+      <LayoutModalAdmin
         isOpen={isOpen}
         onClose={onClose}
         title={t('addRoom')}
@@ -82,6 +83,6 @@ export default function AddRoom({ isOpen, onClose }) {
           remark={remark}
           setRemark={setRemark}
         />
-      </LayoutModal>
+      </LayoutModalAdmin>
     );
 }

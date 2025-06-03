@@ -2,7 +2,7 @@ describe('', ()=>{
     const pw1 = Cypress.env('TEST_USER_PW');
     const vorname1 = 'max';
     const nachname = 'mustermann';
-    const mail = 'foo@bar.com'
+    const mail = 'foo@lit.justiz.sachsen.de'
     const building = 'Außenstelle Chemnitz';
     const floor = '4. Dachgeschoss';
     beforeEach(()=>{
@@ -30,7 +30,6 @@ describe('', ()=>{
                                                 cy.setFloor(2,8,'Außenstelle Chemnitz/4. Dachgeschoss.png').then(()=>{
                                                     cy.setFloor(3,9,'Außenstelle Leipzig/2. Dachgeschoss.png').then(()=>{
                                                         cy.setFloor(4,10,'Außenstelle Bautzen/1. Dachgeschoss.png').then(()=>{
-                                                            //cy.screenshot('a');
                                                         })
                                                     })
                                                 })
@@ -48,35 +47,51 @@ describe('', ()=>{
     })
 
     it('test set the default building and floor as normal user', ()=>{
-        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
-            cy.get('a#sidebar_settings0').click(()=>{
-                cy.get('a#sidebar_settings').should('exist').click().then(()=>{
-                    cy.get('div#settings_floorSelector_setBuilding').click().then(()=>{
-                        cy.get('li#settings_building_2').click().then(()=>{
-                            cy.get('div#settings_floorSelector_setFloor').click().then(()=>{
-                                cy.get('li#settings_floor_8').click().then(()=>{
-                                    cy.get('button#settings_btn_onConfirm').click().then(()=>{
-                                        cy.get('.Toastify__toast').should('be.visible').contains('Settings successful updated.').then(()=>{
-                                            cy.logout().then(()=>{
-                                                cy.login(mail, pw1).then(()=>{
-                                                    cy.get('a#sidebar_settings').should('exist').click().then(()=>{
-                                                        cy.get('div#settings_select-floor').should('have.text', floor).then(()=>{
-                                                            cy.visit('/floor').then(()=>{
-                                                                cy.get('div#Floor_FloorImage_select-building').should('have.text', building).then(()=>{
-                                                                    cy.get('div#Floor_FloorImage_select-floor').should('have.text', floor).then(()=>{
-                                                                        cy.wrap('1');                                                                   
-                                                                    })
+        cy.login(mail, Cypress.env('TEST_USER_PW')).then(()=>{
+            cy.get('a#sidebar_settings0').click().then(()=>{
+                cy.get('a#sidebar_defaults').should('exist').click().then(()=>{
+                    // Check if default viewMode is week that has the id 2.
+                    cy.get('div#formcontrol_defaultView input').should('have.value', '2').then(()=>{
+                        // Change the viewMode to day that has the id 1.
+                        cy.get('div#formcontrol_defaultView').click().then(()=>{
+                            cy.get('li#view_1').click().then(()=>{
+                                // Check if viewMode is day that has the id 1.
+                                cy.get('div#formcontrol_defaultView input').should('have.value', '1').then(()=>{
+                                    cy.get('div#settings_floorSelector_setBuilding').click().then(()=>{
+                                        cy.get('li#settings_building_2').click().then(()=>{
+                                            cy.get('div#settings_floorSelector_setFloor').click().then(()=>{
+                                                cy.get('li#settings_floor_8').click().then(()=>{
+                                                    cy.get('button#modal_submit').click().then(()=>{
+                                                        cy.get('.Toastify__toast').should('be.visible').contains('Settings successful updated.').then(()=>{
+                                                            cy.logout().then(()=>{
+                                                                cy.login(mail, pw1).then(()=>{
+                                                                    cy.get('a#sidebar_settings0').should('exist').click().then(()=>{
+                                                                        // Check default floor.
+                                                                        cy.visit('/floor').then(()=>{
+                                                                            cy.get('div#Floor_FloorImage_select-building').should('have.text', building).then(()=>{
+                                                                                cy.get('div#Floor_FloorImage_select-floor').should('have.text', floor).then(()=>{
+                                                                                    // Check default viewmode.
+                                                                                    cy.visit('/mybookings').then(()=>{
+                                                                                        cy.contains('button', 'Day').should('have.class', 'rbc-active').then(()=>{
+                                                                                            cy.wrap('1');                     
+                                                                                        })
+                                                                                    })                                              
+                                                                                })
+                                                                            });
+                                                                        })
+                                                                    });
                                                                 });
-                                                            })
+                                                            });                                        
                                                         });
-                                                    });
+                                                    });                                
                                                 });
-                                            });                                        
+                                            });
                                         });
-                                    });                                
-                                });
-                            });
-                        });
+                                    })
+                                })  
+                            })                        
+                        })
+                        /**/
                     })
                 });
             })

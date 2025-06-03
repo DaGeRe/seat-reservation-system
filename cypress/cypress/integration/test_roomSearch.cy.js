@@ -47,8 +47,10 @@ describe('', ()=> {
                                                                                                 cy.contains('td', roomRemark).should('exist').then(()=>{
                                                                                                     cy.setStr('div_minimalAmountOfWorkstationsInput', '4').then(()=>{
                                                                                                         cy.contains('td', roomRemark).should('not.exist').then(()=>{
-                                                                                                            cy.rmRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{      
-                                                                                                                return cy.wrap('1');
+                                                                                                            cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                                                                cy.rmRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{      
+                                                                                                                    return cy.wrap('1');
+                                                                                                                })
                                                                                                             })
                                                                                                         })
                                                                                                     })
@@ -57,9 +59,6 @@ describe('', ()=> {
                                                                                         })
                                                                                     })
                                                                                 })
-                                                                                //cy.rmRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{      
-                                                                                //    return cy.wrap('1');
-                                                                                //})
                                                                             })
                                                                         })
                                                                     })

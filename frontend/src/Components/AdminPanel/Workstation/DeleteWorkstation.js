@@ -8,7 +8,7 @@ import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
-import LayoutModal from '../../Templates/LayoutModal.jsx';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 
 export default function DeleteWorkstation({ onClose, isOpen }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -23,7 +23,7 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
   function getDeskByRoomId(roomId) {
     if(roomId) {
       getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/room/${roomId}`,
         headers.current,
         setAllDesks,
         () => {console.log(`Failed to fetch all desks for roomid ${roomId} in DeleteWorkstation.js`);},
@@ -36,10 +36,10 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
    * @param {*} urlExtension Is set to 'ff/' if fast forward deletion is needed. This means also delete all bookings associated wit this desk.
    */
   async function deleteWorkstation (urlExtension = '') {
-    //console.log('deleteWorkstation', urlExtension, selectedDeskId);
     if(selectedDeskId){
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/${urlExtension}${selectedDeskId}`,
+        //`${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
         headers.current,
         (data) => {
           if (data !== 0) {
@@ -73,7 +73,7 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
   };
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       title={t('deleteWorkstation')}
       onClose={onClose}
       isOpen={isOpen}
@@ -100,6 +100,6 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
         isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
         t={t}
       />
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

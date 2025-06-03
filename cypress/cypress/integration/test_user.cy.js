@@ -113,18 +113,15 @@ it('test change name', ()=>{
                                         cy.setStr('editEmployeeModal-setName', vorname2).then(()=>{
                                             cy.get('button#modal_submit').click().then(()=>{//cy.get('button#editEmployeeModal_updateEmployee').click().then(()=>{
                                                 cy.get('.Toastify__toast').should('be.visible').contains('User updated successfully').then(()=>{
-                                                    //cy.get('button#modal_close').click().then(()=>{//cy.get('button#editEmployee_handleClose').click().then(()=>{
                                                         cy.logout().then(()=>{
                                                             cy.login(mail, pw1).then(()=>{
                                                                 cy.contains('span',`Hello, ${vorname2}`).should('exist').then(()=>{
                                                                     cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                                                                        
                                                                         cy.logout().then(()=>{});
                                                                     });
                                                                 })
                                                             });
                                                         });
-                                                    //});
                                                 });
                                             })
                                         })
@@ -132,11 +129,56 @@ it('test change name', ()=>{
                                 })
                             })
                         })
-                    //})
                 })
             })
         })
     })
+})
+it('test deletion of user with bookings/series', ()=>{
+    const buildingId = 6; // Hauptstelle Dresden, Bautzner Straße ab
+    const floorId = 5; // 1. Obergeschoss - Hauptstelle Dresden, Bautzner Straße ab
+    const roomRemark = 'testraum';
+    const deskRemark1 = 'testdesk1';
+    const imgSrc = '/Assets/Hauptstelle Dresden,  Bautzner Str.19ab/1. Obergeschoss.png';
+    
+    cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+        cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+            cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
+                cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
+                    cy.logout().then(()=>{
+                        cy.login(mail, pw1).then(()=>{
+                            cy.visit('/createseries').then(()=>{
+                                cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
+                                    cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
+                                        Cypress.Promise.all([
+                                            cy.setStr('startTime', '08:00:00'),
+                                            cy.setStr('endTime', '11:00:00')
+                                        ]).then(()=>{
+                                            cy.get('div#dates_label').find('span').should('have.length', 1).then(()=>{
+                                                cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
+                                                    cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                                        cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark1, 15, 18).then(()=>{
+                                                            cy.logout().then(()=>{
+                                                                cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{                                                            
+                                                                    cy.countBookings(roomRemark).should('equal', 2).then(()=>{
+                                                                        cy.deleteUser(mail, true).then(()=>{})
+                                                                    })
+                                                                })
+                                                            })
+                                                        })
+                                                    });
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        });
+                    });
+                });
+            });
+        });
+    });
 })
 
 });

@@ -6,17 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desk_sharing.entities.Desk;
-import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.UserService;
 
@@ -30,19 +25,19 @@ public class DeskController {
     @Autowired
     UserService userService;
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Desk> createDesk(@RequestBody DeskDTO desk) {
         userService.logging("createDesk( " + desk + " )");
         Desk savedDesk = deskService.saveDesk(desk);
         return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
-    }
+    }*/
 
-    @PutMapping("/updateDesk")
+    /*@PutMapping("/updateDesk")
     public ResponseEntity<Desk> updateDesk(@RequestBody DeskDTO desk) {
         userService.logging("updateDesk( " + desk + " )");
         Desk updatedDesk = deskService.updateDesk(desk.getDeskId(), desk.getEquipment(), desk.getRemark());
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping
     public ResponseEntity<List<Desk>> getAllDesks() {
@@ -59,6 +54,7 @@ public class DeskController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    
     @GetMapping("/room/{id}")
     public ResponseEntity<List<Desk>> getDeskByRoomId(@PathVariable("id") Long roomId) {
         userService.logging("getDeskByRoomId( " + roomId + " )");
@@ -66,7 +62,7 @@ public class DeskController {
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    /*@DeleteMapping("/{id}")
     public ResponseEntity<Integer> deleteDesk(@PathVariable("id") Long id) {
         userService.logging("deleteDesk( " + id + " )");
         int ret = deskService.deleteDesk(id);
@@ -79,5 +75,5 @@ public class DeskController {
         deskService.deleteDeskFf(id);
         // The return value 0 means everything was done right.
         return ResponseEntity.status(HttpStatus.OK).body(0);
-    }
+    }*/
 }

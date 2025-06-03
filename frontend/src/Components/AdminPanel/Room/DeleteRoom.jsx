@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import {deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
-import LayoutModal from '../../Templates/LayoutModal.jsx';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 
 export default function DeleteRoom({ open, close }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -19,7 +19,8 @@ export default function DeleteRoom({ open, close }) {
       return;
 
     deleteRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${room.id}`,
+      //`${process.env.REACT_APP_BACKEND_URL}/rooms/ff/${room.id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/rooms/ff/${room.id}`,
       headers.current,
       (_) => {
         toast.success(t('roomDeleted'));
@@ -40,7 +41,8 @@ export default function DeleteRoom({ open, close }) {
     setRoom(data.room);
 
     deleteRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/rooms/${data.room.id}`,
+      //`${process.env.REACT_APP_BACKEND_URL}/rooms/${data.room.id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/rooms/${data.room.id}`,
       headers.current,
       (data) => {
         if (data !== 0) {
@@ -58,7 +60,7 @@ export default function DeleteRoom({ open, close }) {
 
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       onClose={close}
       isOpen={open}
       title={t('deleteRoom')}
@@ -76,6 +78,6 @@ export default function DeleteRoom({ open, close }) {
               click_freely={false}
               sendDataToParent={handleChildData}
             />
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

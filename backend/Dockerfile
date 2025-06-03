@@ -47,4 +47,8 @@ RUN keytool -import -trustcacerts -alias ldapserver -file /usr/local/share/ca-ce
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
 # Copy the source code and necessary resources from the build stage
 COPY --from=build /usr/src/app /usr/src/app
-CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
+
+# Mit tls debugging
+#CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Djavax.net.debug=ssl,handshake", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
+#CMD ["java", "-Dhttp.proxyHost=proxy.justiz.sachsen.de", "-Dhttp.proxyPort=3128", "-Dhttps.proxyHost=proxy.justiz.sachsen.de", "-Dhttps.proxyPort=3128", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

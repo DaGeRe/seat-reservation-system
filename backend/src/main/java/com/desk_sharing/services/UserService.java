@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.FloorRepository;
+import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.FloorDTO;
 import com.desk_sharing.controllers.BookingController;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Floor;
+import com.desk_sharing.entities.Series;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ public class UserService  {
     private FloorRepository floorRepository;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private SeriesRepository seriesRepository;
 
     public void logging(String msg) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -91,6 +95,7 @@ public class UserService  {
             return null;
         return managedFloor;
     }
+
     public int changeVisibility(int id) {
         try {
             UserEntity user = userRepository.getReferenceById(id);
@@ -164,11 +169,24 @@ public class UserService  {
         }
     }
 
+    /**
+     * Delete the user and all associated data.
+     * @param id    The id of the user.
+     * @return  True if everything is deleted.
+     */
     public boolean deleteUserFf(int id) {
         try {
-            List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+            // Delete all bookings that are issued by the user.
+            final List<Booking> bookingsPerUser = bookingRepository.getBookingsByUserId(id);
+            //System.out.println("bookingsPerUser.size() " + bookingsPerUser.size());
             for (Booking booking: bookingsPerUser) {
                 bookingRepository.deleteById(booking.getId());
+            }
+            // Delete all series that are issued by the user.
+            final List<Series> seriesPerUser = seriesRepository.findByUserId(id);
+            //System.out.println("seriesPerUser.size() " + seriesPerUser.size());
+            for (Series series: seriesPerUser) {
+                seriesRepository.deleteById(series.getId());
             }
             userRepository.deleteById(id);
             return true;

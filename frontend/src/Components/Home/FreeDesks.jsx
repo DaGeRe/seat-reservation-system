@@ -96,7 +96,7 @@ const FreeDesks = () => {
             begin: startTime,
             end: endTime
         };
-        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers.current, t, (_)=>{setRepaint(!repaint);})
+        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers, t, (_)=>{setRepaint(!repaint);})
     };
     function CreateContent() {
         return (
@@ -170,6 +170,7 @@ const FreeDesks = () => {
         <LayoutPage
             title={t('freeDesks')}
             helpText={create_helpText()}
+            withPaddingX={true}
         >
             <CreateContent/>
         </LayoutPage>

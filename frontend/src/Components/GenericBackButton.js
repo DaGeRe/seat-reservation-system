@@ -21,7 +21,7 @@ const GenericBackButton = () => {
         },
       });
       return (
-        <StyledButton  onClick={back} variant="contained">
+        <StyledButton id='generic_back_button' onClick={back} variant="contained">
             {t('back')}
         </StyledButton>
       );

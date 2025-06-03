@@ -13,7 +13,8 @@ import {
   Paper,
   Button
 } from '@mui/material';
-import LayoutModal from '../../Templates/LayoutModal';
+//import LayoutModal from '../../Templates/LayoutModal';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin';
 import {deleteRequest, getRequest} from '../../RequestFunctions/RequestFunctions'
 
 export default function OverviewBookings({ isOpen, onClose }) {
@@ -28,8 +29,10 @@ export default function OverviewBookings({ isOpen, onClose }) {
       if (filter !== '' && text === '')
           return;
         let filter_text = text;
+
         if (filter === '/singledate/') {
           const text_split = text.split('.');
+          console.log(text_split);
           if (text_split.length === 3) {
             filter_text = formatDate_ddmmyyyy_to_yyyymmdd(text);
           }
@@ -37,12 +40,14 @@ export default function OverviewBookings({ isOpen, onClose }) {
             filter_text = `${text_split[1]}-${text_split[0]}`;
           }
         }
+        const url = `${process.env.REACT_APP_BACKEND_URL}/admin/bookingFor${filter}${filter_text}`;
         getRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/bookings${filter}${filter_text}`,
+          url,
           headers.current,
           setBookings,
           () => {console.log('Failed to fetch  bookings in OverviewBookings.js')}
         );
+        
       },
       [setBookings, filter, text]
     );
@@ -54,7 +59,7 @@ export default function OverviewBookings({ isOpen, onClose }) {
 
     function deleteBooking(bookingId) {
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/deleteBooking/${bookingId}`,
         headers.current,
         () => {
           toast.success(t('bookingDeleted'));
@@ -65,7 +70,7 @@ export default function OverviewBookings({ isOpen, onClose }) {
     }
 
     return (
-      <LayoutModal
+      <LayoutModalAdmin
         title={t('overviewBooking')}
         onClose={onClose}
         isOpen={isOpen}
@@ -138,6 +143,6 @@ export default function OverviewBookings({ isOpen, onClose }) {
                 </TableBody>
               </Table>
             </TableContainer>
-            </LayoutModal>
+            </LayoutModalAdmin>
     );
 }

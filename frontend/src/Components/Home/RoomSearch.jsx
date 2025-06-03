@@ -152,6 +152,7 @@ const RoomSearch = () => {
       <LayoutPage
         title={i18n.language === 'de' ? 'Raumsuche' : 'Roomsearch'}
         helpText={create_helpText()}
+        withPaddingX={true}
       >
         <CreateContent/>
       </LayoutPage>

@@ -81,7 +81,7 @@ public class SecurityConfiguration {
                 // Allow to send request to the user/login endpoint without any restrictions.
                 .requestMatchers("/users/login").permitAll()
                 // Only users with the admin role are allowed.
-                .requestMatchers("/users/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .authenticationManager(authManager)

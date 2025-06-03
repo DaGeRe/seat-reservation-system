@@ -1,28 +1,25 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "moment/locale/de";
-import "./Home.css";
-import 'react-big-calendar/lib/css/react-big-calendar.css'
-import SidebarComponent from "./SidebarComponent";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'moment/locale/de';
+import './Home.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useTranslation } from 'react-i18next';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
+import LayoutPage from '../Templates/LayoutPage';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [now, setNow] = useState(moment());
-  const headers = useMemo(() => {
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const handleSelectSlot = ({ start }) => {
     const selectedDateEvent = {
       start,
       end: start,
-      title: t("selectedDate"),
+      title: t('selectedDate'),
       allDay: true,
     };
 
@@ -46,7 +43,7 @@ const Home = () => {
       // Post-Request senden
       postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
-        headers,
+        headers.current,
         (data) => {
           for (const day in data) {
             const newEvent = {
@@ -87,14 +84,60 @@ const Home = () => {
   }, [i18n.language]);
 
   return (
-    <div className="home-page">
+    <LayoutPage
+      title={t('chooseDate')}
+      helpText={''}
+    >
+      <Calendar
+        data-testid='abc'
+        localizer={localizer}
+        events={events}
+        startAccessor='start'
+        endAccessor='end'
+        views={['month']}
+        style={{ height: 500 }}
+        onSelectSlot={handleSelectSlot}
+        selectable={true}
+        onKeyPressEvent={(data) => console.log(data)}
+        messages={{
+          next: t('next'),
+          previous: t('back'),
+          today: t('today'),
+          month: t('month'),
+          week: t('week'),
+          day: t('day'),
+          agenda: t('agenda'),
+          noEventsInRange: t('noEventsInRange')
+        }}
+        onNavigate={handleNavigate}
+      />
+    </LayoutPage>
+  );
+
+
+  /*return (
+    <Box sx={{
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: 'aliceblue',
+      display: 'flex'
+    }}>
       <div>
         <SidebarComponent />
       </div>
-      <div className="home-content">
-        <div className="choose-date">
+      <Box sx={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#ffffff'
+      }}>
+        <Box sx={{display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: '15px',
+          paddingBottom: '15px'}}
+        >
           <h1>{t("chooseDate")}</h1>
-        </div>
+        </Box>
         <hr className="gradient" />
         <div data-testid='Home_Calendar'>
           <Calendar
@@ -122,9 +165,9 @@ const Home = () => {
            onNavigate={handleNavigate}
           />
         </div>
-      </div>
-    </div>
-  );
+      </Box>
+    </Box>
+  );*/
 };
 
 export default Home;

@@ -8,7 +8,7 @@ import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
 import WorkStationDefinition from './WorkStationDefinition.js';
-import LayoutModal from '../../Templates/LayoutModal.jsx';
+import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 
 export default function EditWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -22,7 +22,8 @@ export default function EditWorkstation({ isOpen, onClose }) {
 
   async function getDeskByRoomId(roomId){
     getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/desks/room/${roomId}`,
+      //`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
       headers.current,
       setAllDesks,
       () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
@@ -39,7 +40,8 @@ export default function EditWorkstation({ isOpen, onClose }) {
   async function updateWorkstation() {
     if (selectedDeskId && equipment && remark) {
       putRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/updateDesk`,
+        //`${process.env.REACT_APP_BACKEND_URL}/desks/updateDesk`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/updateDesk`,
         headers.current,
         (_) => {
           toast.success(t('deskUpdate'));
@@ -72,7 +74,7 @@ export default function EditWorkstation({ isOpen, onClose }) {
   };
 
   return (
-    <LayoutModal
+    <LayoutModalAdmin
       onClose={()=>{/*setEquipment('');
         setRemark('');*/onClose();}}
       isOpen={isOpen}
@@ -107,6 +109,6 @@ export default function EditWorkstation({ isOpen, onClose }) {
           />
         )
       }
-    </LayoutModal>
+    </LayoutModalAdmin>
   );
 }

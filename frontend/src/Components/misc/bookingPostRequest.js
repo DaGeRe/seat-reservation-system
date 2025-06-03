@@ -5,7 +5,7 @@ import { confirmAlert } from 'react-confirm-alert';
 function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBookingFunction) {
     postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
-        headers,
+        headers.current,
         (data) => {
             confirmAlert({
                 title: t('desk') + " " + deskRemark,
@@ -16,7 +16,7 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
                         onClick: async () => {
                             putRequest(
                                 `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${data.id}`,
-                                headers,
+                                headers.current,
                                 (dat) => {
                                     toast.success(t('booked'));
                                     const booking = {

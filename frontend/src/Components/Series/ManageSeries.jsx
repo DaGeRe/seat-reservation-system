@@ -1,4 +1,4 @@
-import React, { useMemo, useState} from 'react';
+import  {useRef, useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
@@ -17,15 +17,12 @@ import {
 import LayoutPage from '../Templates/LayoutPage.jsx';
 
 const ManageSeries = () => {
-  const headers = useMemo(() => {
-    // Wird nur einmal aus sessionStorage geladen, solange sessionStorage nicht verändert wird
-    const storedHeaders = sessionStorage.getItem('headers');
-    return storedHeaders ? JSON.parse(storedHeaders) : {};
-  }, []);  // Leeres Abhängigkeitsarray: Headers werden nur einmal geladen
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
   const [serieses, setSerieses] = useState([]);
-  const [currSeries, setCurrSeries] = useState();
-  const [openFfDialog, setOpenFfDialog] = React.useState(false);
+  const [openFfDialog, setOpenFfDialog] = useState(false);
+  const [selectedSeries, setSelectedSeries] = useState('');
+  const [refresh, setRefresh] = useState(true);
 
   function create_headline() {
     return i18n.language === 'de' ? 'Verwalten von Serienterminen' : 'Management of Series Bookings';
@@ -34,95 +31,33 @@ const ManageSeries = () => {
   /**
    * Fetch the series for the logged in user.
    */
-  React.useEffect(() => {
+  useEffect(() => {
     getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/series/${localStorage.getItem('email')}`, 
-        headers,
+        headers.current,
         setSerieses,
         () => {
           console.log('Error fetching series in ManageSeries.jsx');
         }
     );
-  }, [currSeries, headers]); 
+  }, [refresh]); 
 
-  function deleteSeries(/*series*/) {
-    const series = currSeries;
-    setCurrSeries(null);
-    if (series) {
-      
-      deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/series/${series.id}`,
-        headers,
-        (ret) => {
-            if (ret === 1) {
-              toast.success('de' ? `Serienterminen wurde erfolgreich gelöscht.` : `Series bookings was successful deleted.`);
-              setCurrSeries(null);
-            }
-        },
-        () => {
-          console.log('Error deleting series in ManageSeries.jsx');
-        }
-      );
-    }
-    else {
-      console.error('Current series is not defined in ManageSeries.jsx');
-    }
+  function deleteSeries() {
+    deleteRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/series/${selectedSeries.id}`,
+      headers.current,
+      (ret) => {
+          if (ret === 1) {
+            toast.success('de' ? `Serienterminen wurde erfolgreich gelöscht.` : `Series bookings was successful deleted.`);
+            setRefresh(!refresh);
+          }
+      },
+      () => {
+        console.log('Error deleting series in ManageSeries.jsx');
+      }
+    );
   }
 
-  function CreateContent() {
-    return (
-      <>
-         <DeleteFf 
-          open={openFfDialog}
-          onClose={()=>{setOpenFfDialog(false);setCurrSeries(null);}}
-          onDelete={deleteSeries}
-          text={i18n.language === 'de' ? 'Möchten Sie diese Serienbuchung mit allen Buchungen wirklich löschen?' : 'With this series all associated bookings will be deleted.'}
-        />
-        {serieses && serieses.length > 0 ? 
-          <TableContainer component={Paper} sx={{
-            maxHeight: 1000, // Set max height
-            overflowY: 'auto', // Enable vertical scroll
-          }}>
-            <Table stickyHeader>
-              <TableHead>
-                  <TableRow>
-                      <TableCell>{t('startDate')}</TableCell>
-                      <TableCell>{t('endDate')}</TableCell>
-                      <TableCell>{t('startTime')}</TableCell>
-                      <TableCell>{t('endTime')}</TableCell>
-                      <TableCell>{t('deskRemark')}</TableCell>
-                      <TableCell>{t('roomRemark')}</TableCell>
-                      <TableCell>{t('building')}</TableCell>
-                      <TableCell></TableCell>
-                  </TableRow>
-              </TableHead>
-              <TableBody>
-                {serieses.map((series) => (
-                  <TableRow key={series.id}>
-                    <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.startDate)}</TableCell>
-                    <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.endDate)}</TableCell>
-                    <TableCell>{series.rangeDTO.startTime}</TableCell>
-                    <TableCell>{series.rangeDTO.endTime}</TableCell>
-                    <TableCell>{series.desk.remark}</TableCell>
-                    <TableCell>{series.room.remark}</TableCell>
-                    <TableCell>{series.room.building}</TableCell>
-                    <TableCell>
-                        <Button variant='contained' onClick={(_)=>{
-                          setCurrSeries(series);
-                          setOpenFfDialog(true);
-                        }}>
-                            {t('delete')}
-                        </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        : <div>{i18n.language === 'de' ? 'Für Sie wurden keine Serienterminen gefunden.' : 'For the current user no series booking was found.'}</div>}
-      </>
-    );
-  };
 
   function create_helpText() {
     return i18n.language === 'de' ? 'Die Übersicht zu all Ihren getätigten Serienbuchungen, inklusive der Möglichkeit diese zu löschen.' : 'An overview of all your recurring bookings, including the option to delete them.';
@@ -133,7 +68,55 @@ const ManageSeries = () => {
       title={create_headline()}
       helpText={create_helpText()}
     >
-      <CreateContent/>
+    <DeleteFf 
+      open={openFfDialog}
+      onClose={()=>{setOpenFfDialog(false);}}
+      onDelete={deleteSeries}
+      text={i18n.language === 'de' ? 'Möchten Sie diese Serienbuchung mit allen Buchungen wirklich löschen?' : 'With this series all associated bookings will be deleted.'}
+    />
+      {serieses && serieses.length > 0 ? 
+
+        <TableContainer component={Paper} sx={{
+          maxHeight: 1000, // Set max height
+          overflowY: 'auto', // Enable vertical scroll
+        }}>
+          <Table stickyHeader>
+            <TableHead>
+                <TableRow>
+                  <TableCell>{t('startDate')}</TableCell>
+                  <TableCell>{t('endDate')}</TableCell>
+                  <TableCell>{t('startTime')}</TableCell>
+                  <TableCell>{t('endTime')}</TableCell>
+                  <TableCell>{t('deskRemark')}</TableCell>
+                  <TableCell>{t('roomRemark')}</TableCell>
+                  <TableCell>{t('building')}</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+              {serieses.map((series) => (
+                <TableRow key={series.id}>
+                  <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.startDate)}</TableCell>
+                  <TableCell>{formatDate_yyyymmdd_to_ddmmyyyy(series.rangeDTO.endDate)}</TableCell>
+                  <TableCell>{series.rangeDTO.startTime}</TableCell>
+                  <TableCell>{series.rangeDTO.endTime}</TableCell>
+                  <TableCell>{series.desk.remark}</TableCell>
+                  <TableCell>{series.room.remark}</TableCell>
+                  <TableCell>{series.room.building}</TableCell>
+                  <TableCell>
+                    <Button variant='contained' onClick={(_)=>{
+                      setSelectedSeries(series);
+                      setOpenFfDialog(true);                      
+                    }}>
+                        {t('delete')}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            </Table>
+          </TableContainer>
+        : <div>{i18n.language === 'de' ? 'Für Sie wurden keine Serienterminen gefunden.' : 'For the current user no series booking was found.'}</div>}
     </LayoutPage>
   );
 };

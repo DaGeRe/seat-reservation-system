@@ -12,6 +12,8 @@ const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState([]);
+  // Defines which view is displayed per default. Either day, week or month.
+  const [defaultView, setDefaultView] = useState(''); 
   const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
   // The current booking object (with id, room, desk) 
   const [theBookingEvent, setTheBookingEvent] = useState(null);
@@ -40,6 +42,18 @@ const MyBookings = () => {
     },
     [setEvents, t]
   );
+
+  // Fetch defauflt viewmode
+  useEffect(()=>{
+    getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
+        headers.current,
+        setDefaultView,
+        () => {
+        console.log('Error fetching default building and floor in FloorSelector.js');
+        }
+    );
+  },[]);
 
   useEffect(() => {
     moment.locale(i18n.language);
@@ -77,7 +91,7 @@ const MyBookings = () => {
   const deleteBooking = async () => {
     deleteRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/${theBookingEvent.id}`,
-       headers.current,
+      headers.current,
       reloadCalendar,
       () => {console.log('Error deleting booking:');}
     );
@@ -113,7 +127,8 @@ const MyBookings = () => {
             } 
           </div>
         </LayoutModal>
-          <Calendar
+          {defaultView.viewModeName && (
+            <Calendar
               localizer={localizer}
               style={{ height: '100vh' }}
               eventPropGetter={(event) => ({
@@ -122,9 +137,10 @@ const MyBookings = () => {
                 },
               })}
               events={events}
-              startAccessor="start"
-              endAccessor="end"
-              defaultView="week"
+              startAccessor='start'
+              endAccessor='end'
+              //defaultView='week'
+              defaultView={defaultView.viewModeName}
               min={new Date(0, 0, 0, 6, 0, 0)} // 6 am
               max={new Date(0, 0, 0, 22, 0, 0)} // 10 pm
               popup={true}
@@ -143,6 +159,7 @@ const MyBookings = () => {
                 noEventsInRange: t("noEventsInRange")
             }}
             />
+          )}
           </>
     </LayoutPage>
   );
