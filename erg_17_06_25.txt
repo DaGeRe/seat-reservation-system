@@ -1,0 +1,126 @@
+[?25l
+[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[?25l[2K[1A[2K[G[?25h
+
+DevTools listening on ws://127.0.0.1:43403/devtools/browser/23c6e0b1-0db4-474f-ab07-1b355d683fcd
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m simple booking as admin[0m[33m (77234ms)[0m
+  [32m  ✓[0m[90m simple booking as user[0m[33m (82414ms)[0m
+  [32m  ✓[0m[90m two bookings[0m[33m (124015ms)[0m
+  [32m  ✓[0m[90m two bookings but overlapping[0m[33m (119895ms)[0m
+
+
+[92m [0m[32m 4 passing[0m[90m (7m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_booking.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m Search for colleagues[0m[33m (299352ms)[0m
+
+
+[92m [0m[32m 1 passing[0m[90m (5m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_colleagues.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m check if every floor loads correctly[0m[33m (66003ms)[0m
+  [32m  ✓[0m[90m test set the default building and floor as normal user[0m[33m (26987ms)[0m
+
+
+[92m [0m[32m 2 passing[0m[90m (2m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_default.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m simple booking on free desks as admin[0m[33m (56164ms)[0m
+  [32m  ✓[0m[90m simple booking on free desks as user[0m[33m (58836ms)[0m
+  [32m  ✓[0m[90m two bookings on free desks as admin[0m[33m (53795ms)[0m
+  [32m  ✓[0m[90m two bookings on free desks as user[0m[33m (61699ms)[0m
+
+
+[92m [0m[32m 4 passing[0m[90m (4m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_free_desks.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m [0m[33m (204762ms)[0m
+
+
+[92m [0m[32m 1 passing[0m[90m (3m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_roomSearch.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m Change room properties[0m[33m (53914ms)[0m
+  [32m  ✓[0m[90m Change desk properties[0m[33m (51179ms)[0m
+  [32m  ✓[0m[90m test if normal user cannot access admin page[0m[90m (4592ms)[0m
+
+
+[92m [0m[32m 3 passing[0m[90m (2m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_room_desk_properties.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m Simple series creation as admin[0m[33m (48096ms)[0m
+  [32m  ✓[0m[90m Simple series creation as user[0m[33m (51965ms)[0m
+  [32m  ✓[0m[90m simple weekly series creation for wednesday[0m[33m (55237ms)[0m
+  [32m  ✓[0m[90m simple monthly series creation for friday[0m[33m (52810ms)[0m
+  [32m  ✓[0m[90m test for error if startdate > enddate[0m[33m (35500ms)[0m
+  [32m  ✓[0m[90m test for error if startime > endtime[0m[33m (32738ms)[0m
+
+
+[92m [0m[32m 6 passing[0m[90m (5m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_series.cy.js.mp4[39m
+
+
+[0m[0m
+[0m  [0m
+  [32m  ✓[0m[90m test register with same mail[0m[33m (18459ms)[0m
+  [32m  ✓[0m[90m test change password[0m[33m (28181ms)[0m
+  [32m  ✓[0m[90m test change name[0m[33m (22628ms)[0m
+  [32m  ✓[0m[90m test deletion of user with bookings/series[0m[33m (102861ms)[0m
+
+
+[92m [0m[32m 4 passing[0m[90m (3m)[0m
+
+
+[36m  ([4m[1mVideo[22m[24m)[39m
+
+  -  Video output: [36m/e2e/cypress/videos/test_user.cy.js.mp4[39m
+
+[?25h

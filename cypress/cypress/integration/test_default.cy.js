@@ -17,7 +17,7 @@ describe('', ()=>{
     })
 
     it('check if every floor loads correctly', ()=>{
-        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
+        cy.login(Cypress.env('mail'), Cypress.env('TEST_USER_PW')).then(()=>{
             cy.visit('/floor').then(()=>{
                 cy.get('img').should('exist').should('have.attr', 'src').and('include', 'Zwickau').then(()=>{
                     cy.setFloor(7,1,'Hauptstelle Dresden,  Bautzner Str.19c/1. Obergeschoss.png').then(()=>{
@@ -45,7 +45,6 @@ describe('', ()=>{
             })
         })
     })
-
     it('test set the default building and floor as normal user', ()=>{
         cy.login(mail, Cypress.env('TEST_USER_PW')).then(()=>{
             cy.get('a#sidebar_settings0').click().then(()=>{
@@ -91,7 +90,6 @@ describe('', ()=>{
                                 })  
                             })                        
                         })
-                        /**/
                     })
                 });
             })
