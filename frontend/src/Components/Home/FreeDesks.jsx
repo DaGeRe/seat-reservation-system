@@ -44,7 +44,7 @@ const FreeDesks = () => {
                 const userId = localStorage.getItem('userId');
                 if (!userId) return;
                 getRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/users/getDefaultFloorForUserId/${userId}`,
+                    `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
                     headers.current,
                     received_defaultFloor => {
                         if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
