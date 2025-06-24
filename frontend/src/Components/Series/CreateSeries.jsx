@@ -85,10 +85,11 @@ const CreateSeries = () => {
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
         
+        console.log(startDate, endDate);
         // Reset time so only the date matters. We do this let the user choose the same date as start and end.
-        startDateObj.setHours(0,0,0,0); 
-        endDateObj.setHours(0,0,0,0);
-
+        //startDateObj.setHours(0,0,0,1); 
+        //endDateObj.setHours(0,0,0,2);
+        console.log(startDateObj, endDateObj);
         if (startDateObj > endDateObj) {
             toast.error(t('startDateBiggerThanStartDate'));
             setDates([]);
@@ -102,7 +103,7 @@ const CreateSeries = () => {
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series/dates`, 
             headers.current,
-            setDates,
+            d => {console.log(d); setDates(d)},
             () => {
             console.log('Error fetching dates in CreateSeries.jsx');
             },
