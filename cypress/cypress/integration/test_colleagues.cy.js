@@ -29,7 +29,73 @@ describe('', ()=> {
                 cy.addRoom(buildingId, floorId, roomRemark, imgSrc).then(()=>{
                     cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark1).then(()=>{
                         cy.addDesk(buildingId, floorId, roomRemark, imgSrc, deskRemark2).then(()=>{
-                            Cypress.Promise.all([
+                            cy.getAmountOfUsersForMail(user1Mail).then((ret1)=>{
+                                if (ret1 > 0) {
+                                    cy.deleteUser(user1Mail).then(()=>{})
+                                }
+                                cy.addUser(user1Mail, user1Pw, user1Vorname, user1Nachname).then(()=>{
+                                    cy.getAmountOfUsersForMail(user2Mail).then((ret2)=>{
+                                        if (ret2 > 0) {
+                                            cy.deleteUser(user2Mail).then(()=>{})
+                                        }
+                                        cy.addUser(user2Mail, user2Pw, user2Vorname, user2Nachname).then(()=>{
+                                            cy.getAmountOfUsersForMail(user3Mail).then((ret3)=>{
+                                                if (ret3 > 0) {
+                                                    cy.deleteUser(user3Mail).then(()=>{})
+                                                }
+                                                cy.addUser(user3Mail, user3Pw, user3Vorname, user3Nachname).then(()=>{
+                                                    cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark1, 2, 6).then(()=>{
+                                                        cy.logout().then(()=>{
+                                                            cy.login(user1Mail,user1Pw).then(()=>{
+                                                                cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark1, 7, 11).then(()=>{
+                                                                    cy.login(user2Mail, user2Pw).then(()=>{
+                                                                        cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark2, 7, 11).then(()=>{
+                                                                             cy.login(user3Mail, user3Pw).then(()=>{
+                                                                                cy.addBooking(buildingId, floorId, roomRemark, imgSrc, deskRemark2, 1, 5).then(()=>{
+                                                                                    cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW')).then(()=>{
+                                                                                       cy.visit('/colleagues').then(()=>{
+                                                                                            cy.setStrDirect('emailsString', `${user1Mail}, ${user2Mail}, ${user3Mail}, ${Cypress.env('TEST_ADMIN_MAIL')}`).then(()=>{
+                                                                                                cy.get('button#searchBookingsOfColleaguesBtn').click().then(()=>{
+                                                                                                    cy.wait(1000).then(()=>{
+                                                                                                        cy.get('table#colleagues_table').should('exist').then(()=>{
+                                                                                                            cy.get('tr').should('have.length', 5).then(()=>{
+                                                                                                                Cypress.Promise.all([
+                                                                                                                    cy.get(`tr[id="${Cypress.env('TEST_ADMIN_MAIL')}"]`).find(`td[id="${Cypress.env('TEST_ADMIN_MAIL')}_bookings"]`).find('span').should('have.length', 1),
+                                                                                                                    cy.get(`tr[id="${user1Mail}"]`).find(`td[id="${user1Mail}_bookings"]`).find('span').should('have.length', 1),
+                                                                                                                    cy.get(`tr[id="${user2Mail}"]`).find(`td[id="${user2Mail}_bookings"]`).find('span').should('have.length', 1),
+                                                                                                                    cy.get(`tr[id="${user3Mail}"]`).find(`td[id="${user3Mail}_bookings"]`).find('span').should('have.length', 1)]).then(()=>{
+                                                                                                                        cy.logout().then(()=>{
+                                                                                                                            cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                                                                                Cypress.Promise.all([
+                                                                                                                                    cy.deleteUser(user1Mail, true),
+                                                                                                                                    cy.deleteUser(user2Mail, true),
+                                                                                                                                    cy.deleteUser(user3Mail, true)
+                                                                                                                                ]);
+                                                                                                                            })
+                                                                                                                        })
+                                                                                                                })
+                                                                                                            })
+                                                                                                        })
+                                                                                                    })
+                                                                                                })
+                                                                                            })
+                                                                                        }) 
+                                                                                    })
+                                                                                })
+                                                                            })
+                                                                        })
+                                                                    }) 
+                                                                })
+                                                            })
+                                                        })   
+                                                    })
+                                                });
+                                            })
+                                        });
+                                    })
+                                });
+                            })
+                            /*Cypress.Promise.all([
                                 cy.addUser(user1Mail, user1Pw, user1Vorname, user1Nachname),
                                 cy.addUser(user2Mail, user2Pw, user2Vorname, user2Nachname),
                                 cy.addUser(user3Mail, user3Pw, user3Vorname, user3Nachname)
@@ -78,8 +144,8 @@ describe('', ()=> {
                                             })
                                         })
                                     })   
-                                })                  
-                            })
+                                })                 
+                            })*/
                         })
                     })
                 })

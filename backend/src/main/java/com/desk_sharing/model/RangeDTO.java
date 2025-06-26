@@ -3,7 +3,7 @@ package com.desk_sharing.model;
 import lombok.Data;
 
 import lombok.AllArgsConstructor;
-
+//keck/socke
 @Data
 @AllArgsConstructor
 public class RangeDTO {

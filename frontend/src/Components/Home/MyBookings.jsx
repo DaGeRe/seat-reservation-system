@@ -7,6 +7,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
 import LayoutPage from '../Templates/LayoutPage';
 import LayoutModal from '../Templates/LayoutModal';
+import { toast } from 'react-toastify';
 
 const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -44,15 +45,20 @@ const MyBookings = () => {
   );
 
   // Fetch defauflt viewmode
-  useEffect(()=>{
-    getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
-        headers.current,
-        setDefaultView,
-        () => {
-        console.log('Error fetching default building and floor in FloorSelector.js');
-        }
-    );
+  useEffect(()=>{ 
+    if (localStorage.getItem('userId')) {
+      getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
+          headers.current,
+          setDefaultView,
+          () => {
+          console.log('Error fetching default viewmode in FloorSelector.js');
+          }
+      );
+    }
+    else {
+      toast.error('Error fetching default viewmode in FloorSelector.js');
+    }
   },[]);
 
   useEffect(() => {

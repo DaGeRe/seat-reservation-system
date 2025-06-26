@@ -223,9 +223,9 @@ Cypress.Commands.add('getAmountOfUsersForMail', (mail) => {
                 cy.wait(1000).then(()=>{
                   const length = Cypress.$(`tr`).length - 1;
                   cy.get('button#modal_close').click().then(()=>{
-                    cy.logout().then(()=>{
+                    //cy.logout().then(()=>{
                       return cy.wrap(length);
-                    });
+                    //});
                   });
                 });
               })

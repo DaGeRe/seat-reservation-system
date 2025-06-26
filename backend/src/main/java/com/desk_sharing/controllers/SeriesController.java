@@ -45,11 +45,15 @@ public class SeriesController {
         return new ResponseEntity<List<Desk>>(desks, HttpStatus.OK);
     };
 
+    /**
+     * Calculates dates between an start- and enddate.
+     * The start- and enddate as other modifiers are provided in rangeDTO.
+     * @param rangeDTO  Construct that contains informations for the timerange like start- and enddate.
+     * @return  The list of dates calculated by rangeDTO.
+     */
     @PostMapping("/dates")
     public ResponseEntity<List<Date>> getDatesForRange(@RequestBody RangeDTO rangeDTO) {
-        userService.logging("getDatesForRange( " + rangeDTO + " )");
         final List<Date> dates = seriesService.getDatesBetween(rangeDTO);
-    
         return new ResponseEntity<List<Date>>(dates, HttpStatus.OK);
     };
 
