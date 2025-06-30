@@ -21,8 +21,8 @@ public class HearbeatController {
      * As soon as the token is not valid anymore this method cant be called.
      * So it is not important what is returned.
      */
-    @GetMapping("/{userId}/{jwt}")
-    public ResponseEntity<Boolean> heartbeat(@PathVariable("userId") Integer userId, @PathVariable("jwt") String jwt) {
+    @GetMapping
+    public ResponseEntity<Boolean> heartbeat() {
         return new ResponseEntity<>(true/*heartbeatService.checkJwtForUserId(userId, jwt)*/,HttpStatus.OK);
     }
 

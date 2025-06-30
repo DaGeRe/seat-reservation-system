@@ -15,13 +15,12 @@ export default function EditEmployee({ isOpen, onClose }) {
   const [email, setEmail] = useState('');
   const [name, setName ] = useState('');
   const [surname, setSurname] = useState('');
-  const [visibility, setVisibility] = useState();
+  //const [visibility, setVisibility] = useState();
   const [isAdmin, setIsAdmin] = useState();
   
   const getAllEmployee = useCallback(
     async () => {
       getRequest(
-        //`${process.env.REACT_APP_BACKEND_URL}/users/get`,
         `${process.env.REACT_APP_BACKEND_URL}/admin/users/get`,
         headers.current,
         setAllEmployee,
@@ -35,7 +34,6 @@ export default function EditEmployee({ isOpen, onClose }) {
     getAllEmployee();
   }, [getAllEmployee]);
 
-
   async function updateEmployee() {
     if(!email  || !name || !surname){
       toast.error(t('fields_not_empty'));
@@ -43,8 +41,7 @@ export default function EditEmployee({ isOpen, onClose }) {
     }
 
     putRequest(
-      //`${process.env.REACT_APP_BACKEND_URL}/users/${id}`,
-      `${process.env.REACT_APP_BACKEND_URL}/admin/users/${id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/users`,
       headers.current,
       (_) => {
         toast.success(t('userUpdated'));
@@ -52,20 +49,19 @@ export default function EditEmployee({ isOpen, onClose }) {
       },
       () => {console.log('Failed to update employee in EditEmployeeModal.js');},
       JSON.stringify({
+        'userId':id,
         'email': email,
         'name': name,
         'surname': surname,
         'admin': isAdmin,
-        'visibility': visibility
+        'visibility': true//visibility
       })
     );
   }
 
   function editEmployeeById(id){
     // Usally there is one and only on employee with the requested id. 
-    console.log(allEmployee);
     const potential_employees = allEmployee.filter(employee => employee.id === id);
-    console.log(potential_employees);
     try {
       const to_be_edited_employee = potential_employees.at(0);
       setId(to_be_edited_employee.id);
@@ -73,7 +69,7 @@ export default function EditEmployee({ isOpen, onClose }) {
       setName(to_be_edited_employee.name);
       setSurname(to_be_edited_employee.surname);
       setIsAdmin(to_be_edited_employee.admin);
-      setVisibility(to_be_edited_employee.visibility);
+      //setVisibility(to_be_edited_employee.visibility);
       setIsEditEmployeeOpen(true);
     } catch (e) {
       console.error(`Error in editEmployeeById with employee with the id ${id}: ${e.message}.`)
@@ -132,17 +128,16 @@ export default function EditEmployee({ isOpen, onClose }) {
             <RadioGroup
               row
               aria-labelledby='ratioIsAdmin'
-              name='row-radio-buttons-group'
               value={isAdmin}
               onChange={(e)=> {
                 setIsAdmin(e.target.value)}
               }
             >
-            <FormControlLabel value={true} control={<Radio />} label={t('true')} />
-            <FormControlLabel value={false} control={<Radio />} label={t('false')} />
+            <FormControlLabel id='radioAdmin_true' value={true} control={<Radio />} label={t('true')} />
+            <FormControlLabel id='radioAdmin_false' value={false} control={<Radio />} label={t('false')} />
           </RadioGroup>
         </FormControl>
-        <br/><br/>
+        {/*<br/><br/>
         <FormControl>
           <FormLabel id='ratioIsVisible'>{t('visibility')}</FormLabel>
             <RadioGroup
@@ -155,7 +150,7 @@ export default function EditEmployee({ isOpen, onClose }) {
             <FormControlLabel value={true} control={<Radio />} label={t('true')} />
             <FormControlLabel value={false} control={<Radio />} label={t('false')} />
           </RadioGroup>
-        </FormControl>
+        </FormControl>*/}
       </LayoutModalAdmin>
     </LayoutModalAdmin>
   );

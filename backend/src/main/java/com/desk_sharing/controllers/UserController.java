@@ -88,6 +88,7 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = jwtGenerator.generateToken(authentication);
+        
         return new ResponseEntity<>(
             new AuthResponseDTO(
                 token, 

@@ -8,7 +8,7 @@ describe('', ()=> {
     const deskRemark1 = 'testdesk1';
     const imgSrc = '/Assets/Hauptstelle Dresden,  Bautzner Str.19ab/1. Obergeschoss.png';
     
-    /*it('Simple series creation as admin', ()=>{
+    it('Simple series creation as admin', ()=>{
         const should = 62;
         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
             cy.rmAllRooms(buildingId, floorId, roomRemark, imgSrc).then(()=>{
@@ -38,7 +38,7 @@ describe('', ()=> {
                 })
             })
         })
-    });*/
+    });
 
     it('Simple series creation as user', ()=>{
         const should = 62;
@@ -52,16 +52,16 @@ describe('', ()=> {
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
                                             cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
+                                                cy.wait(2000).then(()=>{
                                                 cy.get('li#createSeries_building_all').click().then(()=>{
                                                     Cypress.Promise.all([
                                                         cy.setStr('startDate', startdate),
                                                         cy.setStr('endDate', enddate),
                                                     ]).then(()=>{
                                                     
-                                                        cy.wait(2000).then(()=>{
-                                                        
-                                                            /*cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
-                                                                cy.wait(8000).then(()=>{
+                                                        //cy.wait(2000).then(()=>{
+                                                            cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                                //cy.wait(8000).then(()=>{
                                                                     cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
                                                                         cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
                                                                             cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
@@ -70,11 +70,12 @@ describe('', ()=> {
                                                                         });
                             
                                                                     })
-                                                                })
-                                                            })*/
-                                                        })
+                                                                //})
+                                                            })
+                                                        //})
                                                     })
                                                 })
+                                            })
                                             })
                                         })
                                     })
@@ -86,7 +87,7 @@ describe('', ()=> {
             })
         })
     });
-    /*
+
     it('simple weekly series creation for wednesday', ()=>{
         const should = 9;
         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
@@ -98,29 +99,35 @@ describe('', ()=> {
                                 cy.visit('/createseries').then(()=>{
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {
-                                            Cypress.Promise.all([
-                                                cy.setStr('startDate', startdate),
-                                                cy.setStr('endDate', enddate),
-                                                cy.setStr('frequence_select', 'weekly'),
-                                                cy.setStr('dayOfTheWeek_select', '2'), //mi
-                                                cy.setStr('startTime', '08:00:00'),
-                                                cy.setStr('endTime', '11:00:00')
-                                            ]).then(()=>{
-                                                cy.get('div#dates_label').find('span', { timeout: 20000 })
-                                                    .should('have.length.greaterThan', 0)
-                                                    .then(() => {
-                                                        cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
-                                                        cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
-                                                            cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
-                                                                cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
-                                                                    cy.countBookings(roomRemark).then((cnt)=>{
-                                                                        cy.wrap(cnt).should('equal', should);
+                                            cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
+                                                cy.wait(2000).then(()=>{
+                                                    cy.get('li#createSeries_building_all').click().then(()=>{
+                                                        Cypress.Promise.all([
+                                                            cy.setStr('startDate', startdate),
+                                                            cy.setStr('endDate', enddate),
+                                                            cy.setStr('frequence_select', 'weekly'),
+                                                            cy.setStr('dayOfTheWeek_select', '2'), //mi
+                                                            cy.setStr('startTime', '08:00:00'),
+                                                            cy.setStr('endTime', '11:00:00')
+                                                        ]).then(()=>{
+                                                            cy.get('div#dates_label').find('span', { timeout: 20000 })
+                                                                .should('have.length.greaterThan', 0)
+                                                                .then(() => {
+                                                                    cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                                    cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
+                                                                        cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                                                            cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                                cy.countBookings(roomRemark).then((cnt)=>{
+                                                                                    cy.wrap(cnt).should('equal', should);
+                                                                                })
+                                                                            })
+                                                                        })
                                                                     })
                                                                 })
                                                             })
                                                         })
                                                     })
-                                                });
+                                                })
                                             })
                                         })
                                     })
@@ -132,7 +139,7 @@ describe('', ()=> {
             })
         })
     });
-
+    
     it('simple monthly series creation for friday', ()=>{
         const should = 3;
         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
@@ -144,27 +151,33 @@ describe('', ()=> {
                                 cy.visit('/createseries').then(()=>{
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {
-                                            Cypress.Promise.all([
-                                                cy.setStr('startDate', startdate),
-                                                cy.setStr('endDate', enddate),
-                                                cy.setStr('frequence_select', 'monthly'),
-                                                cy.setStr('dayOfTheWeek_select', '4'), //fr
-                                                cy.setStr('startTime', '15:30:00'),
-                                                cy.setStr('endTime', '18:00:00'),
-                                            ]).then(()=>{
-                                                cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
-                                                    cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
-                                                        cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
-                                                            cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
-                                                                cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
-                                                                    cy.countBookings(roomRemark).then((cnt)=>{
-                                                                        cy.wrap(cnt).should('equal', should);
+                                            cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
+                                                cy.wait(2000).then(()=>{
+                                                    cy.get('li#createSeries_building_all').click().then(()=>{
+                                                        Cypress.Promise.all([
+                                                            cy.setStr('startDate', startdate),
+                                                            cy.setStr('endDate', enddate),
+                                                            cy.setStr('frequence_select', 'monthly'),
+                                                            cy.setStr('dayOfTheWeek_select', '4'), //fr
+                                                            cy.setStr('startTime', '15:30:00'),
+                                                            cy.setStr('endTime', '18:00:00'),
+                                                        ]).then(()=>{
+                                                            cy.get('div#dates_label').find('span', { timeout: 20000 }).should('have.length.greaterThan', 0).then(() => {
+                                                                cy.get('div#dates_label').find('span').should('have.length', should).then(()=>{
+                                                                    cy.get(`tr[id*="${deskRemark1}"`).find('button').click().then(()=>{
+                                                                        cy.get('.Toastify__toast').should('be.visible').should('include.text', 'Creation of series bookings from').should('include.text', 'was successful.').then(()=>{
+                                                                            cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
+                                                                                cy.countBookings(roomRemark).then((cnt)=>{
+                                                                                    cy.wrap(cnt).should('equal', should);
+                                                                                })
+                                                                            })
+                                                                        })
                                                                     })
                                                                 })
-                                                            })
+                                                            });
                                                         })
                                                     })
-                                                });
+                                                })
                                             })
                                         })
                                     })
@@ -176,7 +189,7 @@ describe('', ()=> {
             })
         })
     })
-
+    
     it('test for error if startdate > enddate', ()=>{
         const should = 1;
         cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
@@ -245,5 +258,5 @@ describe('', ()=> {
                 })
             })
         })
-    })*/
+    })
 });

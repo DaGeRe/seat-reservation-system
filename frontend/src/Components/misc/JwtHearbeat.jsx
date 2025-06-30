@@ -3,7 +3,7 @@ import { getRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-const HEARTBEAT_INTERVAL_MINUTES = .1;
+const HEARTBEAT_INTERVAL_MINUTES = 1;
 
 const JwtHeartbeat = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const JwtHeartbeat = () => {
             //console.log(localStorage.getItem('userId'), typeof localStorage.getItem('userId'));
             if (!localStorage.getItem('userId')) return;
             getRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/hearbeat/${localStorage.getItem('userId')}/${sessionStorage.getItem('accessToken')}`,
+                `${process.env.REACT_APP_BACKEND_URL}/hearbeat`,
                 headers.current,
                 () => { },
                 (errCode) => { 

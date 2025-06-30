@@ -23,6 +23,7 @@ import com.desk_sharing.services.UserService;
 
 import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.RoomDTO;
+import com.desk_sharing.model.UserDto;
 import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.entities.Booking;
@@ -197,12 +198,18 @@ public class AdminController {
         return userService.getAllUsers().stream().map(UserEntity::new).toList();
     }
 
-    @PutMapping("users/{id}")
-    public ResponseEntity<UserEntity> updateUserById(@PathVariable("id") int id, @RequestBody UserEntity user) {
-        userService.logging("updateUserById( " + id + ", " + user.toString() + " )");
-        UserEntity updateUser = userService.updateUserById(id, user);
-        HttpStatus status = (updateUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
-        return ResponseEntity.status(status).body(updateUser);
+    /**
+     * Update the user described by userDto.email and userDto.id.
+     * All other properties of userDto describe the new attributes.
+     * @param userDto The data object that describes the new user.
+     * @return The updated user as RepsonseEntity. 
+     */
+    @PutMapping("users")
+    public ResponseEntity<UserEntity> updateUserById(@RequestBody UserDto userDto) {
+        userService.logging("updateUserById( " + userDto.toString() + " )");
+        final UserEntity updatedUser = userService.updateUserById(userDto);
+        final HttpStatus status = (updatedUser != null) ? HttpStatus.OK : HttpStatus.CONFLICT;
+        return ResponseEntity.status(status).body(updatedUser);
     }
 
     @DeleteMapping("users/ff/{id}")
@@ -211,7 +218,6 @@ public class AdminController {
         return userService.deleteUserFf(id);
     }
 
-  
     @DeleteMapping("users/{id}")
     public ResponseEntity<Integer> deleteUser(@PathVariable("id") int id) {
         userService.logging("deleteUser( " + id + " )");
@@ -219,20 +225,19 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(ret);
     }
 
-    @PostMapping("users/register")
+    @PostMapping("users")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
         userService.logging("register( " + registerDto.getEmail() + ", " + registerDto.getName() + ", " + registerDto.getSurname() + ", " + registerDto.getName() + " )");
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             
             return new ResponseEntity<>("Email ist bereits vergeben!", HttpStatus.BAD_REQUEST);
         }
-        UserEntity user = new UserEntity();
+        final UserEntity user = new UserEntity();
         user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
         user.setEmail(registerDto.getEmail());
         user.setName(registerDto.getName());
         user.setSurname(registerDto.getSurname());
         user.setVisibility(registerDto.isVisibility());
-        user.setAdmin(registerDto.isAdmin());
         
         // If the user is an admin grant the matching privileges.
         final Role role = registerDto.isAdmin() ? 

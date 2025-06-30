@@ -12,7 +12,7 @@ export default function AddEmployee({ isOpen, onClose }) {
   const [password, setPassword] = useState('');
   const [name, setName ] = useState('');
   const [surname, setSurname] = useState('');
-  const [visibility, setVisibility] = useState(true);
+  //const [visibility, setVisibility] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
   async function addEmployee(){
@@ -20,10 +20,8 @@ export default function AddEmployee({ isOpen, onClose }) {
         toast.error(t('fields_not_empty'));
         return false;
     }
-    console.log("|" + email )
     postRequest(
-      //`${process.env.REACT_APP_BACKEND_URL}/users/register`,
-      `${process.env.REACT_APP_BACKEND_URL}/admin/users/register`,
+      `${process.env.REACT_APP_BACKEND_URL}/admin/users`,
       headers.current,
       (_) => {
         toast.success(t('userCreated'));
@@ -34,12 +32,12 @@ export default function AddEmployee({ isOpen, onClose }) {
         toast.error(t('emailAlreadyTaken'));
       },
       JSON.stringify({
-        'email': email,
+        'email': email.trim(),
         'password': password,
         'name': name,
         'surname': surname,
         'admin': isAdmin,
-        'visibility': visibility,
+        'visibility': true,
       })
     );
   }
@@ -98,20 +96,19 @@ export default function AddEmployee({ isOpen, onClose }) {
       </FormControl>
       <br/><br/>
       <FormControl id='addEmployee-isAdmin'>
-        <FormLabel id='demo-row-radio-buttons-group-label'>{t('admin')}?</FormLabel>
+        <FormLabel id='addEmployee-isAdmin-label'>{t('admin')}?</FormLabel>
         <RadioGroup
           row
-          aria-labelledby='demo-row-radio-buttons-group-label'
-          name='row-radio-buttons-group'
+          aria-labelledby='addEmployee-isAdmin-label'
           value={isAdmin}
           onChange={(e)=> setIsAdmin(e.target.value)}
         >
-          <FormControlLabel value='true' control={<Radio />} label={t('true')} />
-          <FormControlLabel value='false' control={<Radio />} label={t('false')} />
+          <FormControlLabel id='radioAdmin_true' value='true' control={<Radio />} label={t('true')} />
+          <FormControlLabel id='radioAdmin_false' value='false' control={<Radio />} label={t('false')} />
         
         </RadioGroup>
       </FormControl>
-      <br></br>
+      {/*<br></br>
       <FormControl id='addEmployee-setVisibility'>
         <FormLabel id='demo-row-radio-buttons-group-label'>{t('visibility')}</FormLabel>
         <RadioGroup
@@ -125,7 +122,7 @@ export default function AddEmployee({ isOpen, onClose }) {
           <FormControlLabel value='false' control={<Radio />} label={t('no')} />
           
         </RadioGroup>
-      </FormControl>
+      </FormControl>*/}
     </LayoutModalAdmin>
   );
 }

@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.FloorRepository;
+import com.desk_sharing.repositories.RoleRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.FloorDTO;
+import com.desk_sharing.model.UserDto;
 import com.desk_sharing.controllers.BookingController;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Floor;
+import com.desk_sharing.entities.Role;
 import com.desk_sharing.entities.Series;
 
 import org.slf4j.Logger;
@@ -40,6 +43,8 @@ public class UserService  {
     private BookingRepository bookingRepository;
     @Autowired
     private SeriesRepository seriesRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public void logging(String msg) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -113,26 +118,49 @@ public class UserService  {
         }
     }
     
-    public UserEntity updateUserById(int id, UserEntity user) {
-            UserEntity userFromDB = userRepository.getReferenceById(id);            	
-            if (userRepository.existsByEmail(user.getEmail()) && !userFromDB.getEmail().equals(user.getEmail())) {
+    public UserEntity updateUserById(/*int id, */UserDto userDto) {
+            UserEntity userFromDB = userRepository.getReferenceById(userDto.getUserId());            	
+            if (!userRepository.existsByEmail(userDto.getEmail()) ) {
+                System.out.println("ERROR: user with email " + userDto.getEmail() + " was not found.");
+                return null;
+            }
+            if (!userFromDB.getEmail().equals(userDto.getEmail())) {
+                System.out.println("ERROR: user with email " + userDto.getEmail() + " does not match founded user with email " + userFromDB.getEmail() + ".");
                 return null;
             }
             
-            if(user.getEmail() != null) {
-                userFromDB.setEmail(user.getEmail());
+            if(userDto.getEmail() != null) {
+                userFromDB.setEmail(userDto.getEmail());
             }
             
-            if(user.getName() != null) {
-                userFromDB.setName(user.getName());
+            if(userDto.getName() != null) {
+                userFromDB.setName(userDto.getName());
             }
             
-            if(user.getSurname() != null) {
-                userFromDB.setSurname(user.getSurname());
+            if(userDto.getSurname() != null) {
+                userFromDB.setSurname(userDto.getSurname());
             }
-            userFromDB.setVisibility(user.isVisibility());
-            userFromDB.setAdmin(user.isAdmin());
+            userFromDB.setVisibility(userDto.isVisibility());
+
+            setAdmin(userFromDB, userDto.isAdmin());
+
             return userRepository.save(userFromDB);
+    }
+
+    public boolean setAdmin(final UserEntity userFromDB, boolean shallAdmin) {
+        final List<Role> userRoles = userFromDB.getRoles();
+        final Role adminRole = roleRepository.findByName("ROLE_ADMIN").isPresent() ? roleRepository.findByName("ROLE_ADMIN").get() : null;
+        if (adminRole == null) {
+            System.out.println("ERROR: ROLE_ADMIN was not found.");
+            return false;
+        }
+        if (shallAdmin && !userFromDB.isAdmin()) {
+            userRoles.add(adminRole);
+        }
+        else if (!shallAdmin && userFromDB.isAdmin()) {
+            userRoles.remove(adminRole);
+        }
+        return true;
     }
     
     public boolean changePassword(int id, String oldPassword, String newPassword) {
