@@ -1,43 +1,37 @@
-async function request(type, url, headers, successFunction, failFunction, body=JSON.stringify({})) {
-    try {
-        // GET cant have an body.
-        const response = type === 'GET' ? await fetch(url, {
-            method: type,
-            headers: headers,
-        }) : await fetch(url, {
-            method: type,
-            headers: headers,
-            body: body,
-        });
-        if (response.ok) {
-            // See if there is an response that is a json.
-            try {
-                const data = await response.json();
-                successFunction(data);
-            } 
-            // If the response is not a json (e.g. a simple message) just execute the success function.
-            // The provided data are not important in this case.
-            catch (e) {
-                if (e instanceof SyntaxError) {
-                    successFunction(null);
-                }
-                else {
-                    console.log(e);
-                    console.log(`Unknown error in ${type}Reuest.js.`);
-                };
-            }
-        }
-        else {
-            failFunction();
-        }
-    } catch (error) {
-        console.error(`Error: ${error} for ${type} on url: ${url}`);
-    }
-};
+// request.js oder request.ts
+import axios from 'axios';
 
+async function request(type, url, headers, successFunction, failFunction, body = {}) {
+  try {
+    const config = {
+      method: type,
+      url: url,
+      headers: headers,
+      data: body, // bei GET wird data ignoriert von Axios
+    };
+
+    const response = await axios(config);
+    successFunction(response.data ?? null);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        // Server antwortete mit einem Statuscode außerhalb von 2xx
+        failFunction(error.response.status);
+      } else {
+        console.error(`Netzwerk- oder Serverfehler bei ${type} ${url}:`, error.message);
+        failFunction(null); // Optional: Kannst du auch anders behandeln
+      }
+    } else {
+      console.error(`Unbekannter Fehler bei ${type} ${url}:`, error);
+      failFunction(null);
+    }
+  }
+}
+
+// Vordefinierte Methoden wie vorher
 const getRequest = request.bind(null, 'GET');
+const postRequest = request.bind(null, 'POST');
 const putRequest = request.bind(null, 'PUT');
 const deleteRequest = request.bind(null, 'DELETE');
-const postRequest = request.bind(null, 'POST');
 
-export {getRequest, putRequest, deleteRequest, postRequest};
+export { getRequest, postRequest, putRequest, deleteRequest };

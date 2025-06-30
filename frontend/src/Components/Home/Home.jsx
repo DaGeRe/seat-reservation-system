@@ -8,6 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useTranslation } from 'react-i18next';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
 import LayoutPage from '../Templates/LayoutPage';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -15,6 +16,7 @@ const Home = () => {
   const [events, setEvents] = useState([]);
   const [now, setNow] = useState(moment());
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+
   const handleSelectSlot = ({ start }) => {
     const selectedDateEvent = {
       start,
@@ -40,7 +42,6 @@ const Home = () => {
         daysInMonth.push(day.format('YYYY-MM-DD'));
       }
   
-      // Post-Request senden
       postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/getAllBookingsForDate`,
         headers.current,
@@ -57,8 +58,9 @@ const Home = () => {
           setEvents(eventsForMonth);  // Ereignisse für den Monat setzen
           setNow(date);  // Aktuelles Datum setzen
         },
-        () => {
-          console.log('Failed to post booking for date in Home.jsx.');
+        (errorCode) => { 
+          console.log('Fehler beim Abrufen der Buchungen:', errorCode);
+          toast.error(t(errorCode+''));          
         },
         JSON.stringify(daysInMonth)  // Tage des Monats an den Server senden
       );
@@ -88,6 +90,8 @@ const Home = () => {
       title={t('chooseDate')}
       helpText={''}
     >
+      {/*<div>{accessToken + ' !!!'}</div>*/}
+      {/*<div>{headers.current}</div>*/}
       <Calendar
         data-testid='abc'
         localizer={localizer}

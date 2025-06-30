@@ -34,7 +34,7 @@ public class JWTGenerator {
 		return null;
 	}
 	public String getUsernameFromJWT(String token){
-		Claims claims = Jwts.parserBuilder()
+		final Claims claims = Jwts.parserBuilder()
 				.setSigningKey(key)
 				.build()
 				.parseClaimsJws(token)
@@ -44,10 +44,10 @@ public class JWTGenerator {
 	
 	public boolean validateToken(String token) {
 		try {
-			 Jwts.parserBuilder()
-			 .setSigningKey(key)
-			 .build()
-			 .parseClaimsJws(token);
+			Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token);
             return true;
 		} catch (Exception ex) {
 			throw new AuthenticationCredentialsNotFoundException(

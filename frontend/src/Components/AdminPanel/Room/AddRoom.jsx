@@ -2,7 +2,7 @@ import FloorImage from '../../FloorImage/FloorImage.jsx'
 import InfoModal from '../../InfoModal.jsx';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import RoomDefinition from '../Room/RoomDefinition.js';
 import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';

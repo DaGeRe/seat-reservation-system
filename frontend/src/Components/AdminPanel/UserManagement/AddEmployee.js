@@ -20,7 +20,7 @@ export default function AddEmployee({ isOpen, onClose }) {
         toast.error(t('fields_not_empty'));
         return false;
     }
-
+    console.log("|" + email )
     postRequest(
       //`${process.env.REACT_APP_BACKEND_URL}/users/register`,
       `${process.env.REACT_APP_BACKEND_URL}/admin/users/register`,

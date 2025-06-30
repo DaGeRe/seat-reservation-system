@@ -1,5 +1,11 @@
 {
-    "news":"News",
+    "tokenInvalid": "Token invalid. Please login again.",
+    "http401": "You are not authorized or your session has expired. Please log in again.",
+    "http403": "You do not have permission to perform this action.",
+    "http405": "The requested resource was not found.",
+    "http500": "Server error. Please try again later.",
+    "httpOther": "An error has occurred."
+    ,"news":"News",
     "defaults":"Defaults",
     "help":"Help",
     "any": "Any",

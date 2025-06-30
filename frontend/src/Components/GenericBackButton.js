@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const GenericBackButton = () => {
     const { t } = useTranslation();

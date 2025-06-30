@@ -15,7 +15,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   
-  const news = '<br/><ul><li>Anmeldung mit Windowskennung ist möglich</li><li>Festlegen von Standardetage möglich</li><li>Es kann nach Buchungen von Kollegen gesucht werden</li><li>Es kann nach Räumen gemäß der Kapazität gesucht werden</li><li>Der Anwender kann seine Standardansicht in der Buchungsübersicht wählen</li></ul>';
+  //const news = '<br/><ul><li>Anmeldung mit Windowskennung ist möglich</li><li>Festlegen von Standardetage möglich</li><li>Es kann nach Buchungen von Kollegen gesucht werden</li><li>Es kann nach Räumen gemäß der Kapazität gesucht werden</li><li>Der Anwender kann seine Standardansicht in der Buchungsübersicht wählen</li></ul>';
+  const news = '<br/><ul><li>Sobald die Session abgelaufen ist (nach einer Stunde) wird der Anwender wieder zur Loginseite navigiert.</li></ul>';
   const wrapper_sx = {
     width: '420px',
     height: '370px',
@@ -45,7 +46,7 @@ const LoginPage = () => {
 
   async function login() {
 
-    if (!isEmail(email)) {
+    if (!isEmail(email.trim())) {
       setLoginError(t('invalidEmail'));
       return;
     }
@@ -56,7 +57,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email:email, password:password}),
+        body: JSON.stringify({email:email.trim(), password:password.trim()}),
       });
       if (!response.ok) {
         throw new Error('Login failed');
@@ -73,6 +74,7 @@ const LoginPage = () => {
         localStorage.setItem('surname', String(data.surname));
         localStorage.setItem('admin', String(data.admin));
         localStorage.setItem('visibility', String(data.visibility));
+        sessionStorage.setItem('accessToken', String(data['accessToken']));
         navigate('/home', { replace: true });
       } else {
         setLoginError(t('invalidCredentials'));

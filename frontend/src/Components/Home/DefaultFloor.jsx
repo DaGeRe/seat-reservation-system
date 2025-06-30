@@ -26,8 +26,10 @@ const DefaultFloor = ({ isOpen, onClose }) => {
      * Sends the default building and floor to database.
      */
     function saveDefaults() {
-      if (!localStorage.getItem('userId'))
+      if (!localStorage.getItem('userId')) {
+        console.log('userId is null');
         return;
+      }
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/users/setDefaulFloorForUserId/${localStorage.getItem('userId')}/${defaultFloor.floor_id}`, 
         headers.current,

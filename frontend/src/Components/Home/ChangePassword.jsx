@@ -8,7 +8,7 @@ import LayoutModal from '../Templates/LayoutModal';
 const ChangePassword = ({ isOpen, onClose }) => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
-  const userId = localStorage.getItem('userId');
+  //const userId = localStorage.getItem('userId');
   const [prevPassword, setPrevPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordAgain, setNewPasswordAgain] = useState('');
@@ -22,9 +22,12 @@ const ChangePassword = ({ isOpen, onClose }) => {
       toast.error(t('passwordsDontMatch'));
       return;
     }
-
+    if (!localStorage.getItem('userId')) {
+      console.log('userId is null');
+      return;
+    }
     putRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/users/password/${userId}`,
+      `${process.env.REACT_APP_BACKEND_URL}/users/password/${localStorage.getItem('userId')}`,
       headers.current,
       (data) => {
         if (data) {

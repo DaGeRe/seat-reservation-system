@@ -1,5 +1,11 @@
 {
-    "news":"Neuigkeiten",
+    "tokenInvalid": "Token abgelaufen. Bitte melden Sie sich erneut an.",
+    "http401": "Sie sind nicht autorisiert oder die Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+    ,"http403": "Sie haben keine Berechtigung für diese Aktion."
+    ,"http405": "Die angeforderte Ressource wurde nicht gefunden."
+    ,"http500": "Serverfehler. Bitte versuche Sie es später erneut."
+    ,"httpOther": "Ein Fehler ist aufgetreten."
+    ,"news":"Neuigkeiten",
     "defaults":"Voreinstellung",
     "help":"Hilfe",
     "any": "Jedes",

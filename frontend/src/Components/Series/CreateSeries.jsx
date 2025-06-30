@@ -46,7 +46,10 @@ const CreateSeries = () => {
                 setBuildings(buildings);
                 setSelectedBuilding(valueForAllBuildings.current);
                 const userId = localStorage.getItem('userId');
-                if (!userId) return;
+                if (!userId) {
+                    console.log('userId is null'); 
+                    return;
+                }
                 getRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
                     headers.current,

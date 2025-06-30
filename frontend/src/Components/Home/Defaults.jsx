@@ -40,6 +40,10 @@ const Defaults = ({ isOpen, onClose }) => {
 
     // Fetch defauflt viewmode
     useEffect(()=>{
+        if (!localStorage.getItem('userId')) {
+            console.log('userId is null');
+            return;
+        }
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
             headers.current,
@@ -52,6 +56,10 @@ const Defaults = ({ isOpen, onClose }) => {
     
     // Save defaults.
     function saveDefaults() {
+        if (!localStorage.getItem('userId')) {
+            console.log('userId is null');
+            return;
+        }
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/defaults/setDefaults/${localStorage.getItem('userId')}/${defaultViewId}/${defaultFloor.floor_id}`, 
             headers.current,

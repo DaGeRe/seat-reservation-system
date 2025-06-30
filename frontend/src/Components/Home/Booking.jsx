@@ -148,6 +148,10 @@ const Booking = () => {
     }  
     loadBookings();
     const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.log('userId is null');
+      return;
+    }
     const room_Id = roomId;
     const deskId = clickedDeskId;
     const day = moment(event.start).format('YYYY-MM-DD');

@@ -18,11 +18,16 @@ const MyBookings = () => {
   const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
   // The current booking object (with id, room, desk) 
   const [theBookingEvent, setTheBookingEvent] = useState(null);
-  const userId = localStorage.getItem('userId');
+  //const userId = localStorage.getItem('userId');
   const localizer = momentLocalizer(moment);
 
   const fetchBookings = useCallback(
-    async (userId) => {
+    async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.log('userId is null'); 
+        return;
+      }
       getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings/user/${userId}`, 
         headers.current,
@@ -46,25 +51,30 @@ const MyBookings = () => {
 
   // Fetch defauflt viewmode
   useEffect(()=>{ 
-    if (localStorage.getItem('userId')) {
-      getRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
-          headers.current,
-          setDefaultView,
-          () => {
-          console.log('Error fetching default viewmode in FloorSelector.js');
-          }
-      );
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        console.log('userId is null'); 
+        return;
     }
-    else {
+    getRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${userId}`,
+        headers.current,
+        setDefaultView,
+        (errorCode) => { 
+          console.log('Fehler beim Abrufen der Buchungen:', errorCode);
+          toast.error(t(errorCode+''));          
+        },
+    );
+    
+    /*else {
       toast.error('Error fetching default viewmode in FloorSelector.js');
-    }
-  },[]);
+    }*/
+  },[t]);
 
   useEffect(() => {
     moment.locale(i18n.language);
-    fetchBookings(userId);
-  }, [i18n.language, userId, fetchBookings]); // Hier keine Abhängigkeit auf selectedBookingEvent
+    fetchBookings();
+  }, [i18n.language, fetchBookings]); // Hier keine Abhängigkeit auf selectedBookingEvent
   
   useEffect(() => {
     if (selectedBookingEvent) {
@@ -90,7 +100,7 @@ const MyBookings = () => {
   };
 
   const reloadCalendar = async () => {
-    fetchBookings(userId);
+    fetchBookings();
     setSelectedBookingEvent(null);
   };  
 

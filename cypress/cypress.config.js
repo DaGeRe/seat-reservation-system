@@ -2,6 +2,7 @@ const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
+    //retries: 4,
     env: {
       TEST_USER_MAIL: process.env.TEST_USER_MAIL,
       TEST_USER_PW: process.env.TEST_USER_PW,
