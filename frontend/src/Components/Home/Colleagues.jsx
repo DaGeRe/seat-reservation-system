@@ -68,8 +68,8 @@ const Colleagues = () => {
     }
 
     function create_helpText() {
-      return i18n.language === 'de' ? '<h1>Buchungen von Kollegen</h1><ul><li>Geben Sie zunächst die Emailadressen der Kollegen, jeweils durch ein Komma getrennt, ein. Alternativ können Sie auch eine Gruppe auswählen und so die Emailadressen vorbelegen lassen.</li><li>Anschließend muss ein Datum ausgewählt werden.</li> <li>Starten Sie die Suche um die Buchungen der ausgewählten Kollegen zum bestimmten Datum einzusehen.</li>' : 
-                                                          '<h1>Bookings if colleagues</h1><ul><li>Type in the email addresses of the colleagues, each seperated by a comma. Alternatively you can select a group to autofill the email addresses of the group members.</li><li>Additionally choose a date.</li> <li>Start the search to see which user has bookings on the selected date.</li>';
+      return i18n.language === 'de' ? '<h1>Buchungen von Kollegen</h1><ul><li>Geben Sie zunächst die Emailadressen der Kollegen, jeweils durch ein Komma getrennt, ein. Alternativ können Sie auch eine Gruppe auswählen und so die Emailadressen vorbelegen lassen.</li><li>Anschließend muss ein Datum ausgewählt werden.</li> <li>Starten Sie die Suche um die Buchungen der ausgewählten Kollegen zum bestimmten Datum einzusehen.</li></ul>' : 
+                                                          '<h1>Bookings if colleagues</h1><ul><li>Type in the email addresses of the colleagues, each seperated by a comma. Alternatively you can select a group to autofill the email addresses of the group members.</li><li>Additionally choose a date.</li> <li>Start the search to see which user has bookings on the selected date.</li></ul>';
     }
     
     return (

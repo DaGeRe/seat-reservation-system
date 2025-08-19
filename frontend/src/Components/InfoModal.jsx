@@ -31,7 +31,7 @@ const InfoModal = ({text, helpIcon=true}) => {
             },
           }}
         >
-          {helpIcon ? <HelpOutline/> : <PriorityHighOutlined/>}
+          {helpIcon ? <HelpOutline/> : <PriorityHighOutlined style={{ color: 'red' }}/>}
         </IconButton>
       </Tooltip>
 

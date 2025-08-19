@@ -3,7 +3,7 @@ import { getRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-const HEARTBEAT_INTERVAL_MINUTES = 1;
+const HEARTBEAT_INTERVAL_MINUTES = 10;
 
 const JwtHeartbeat = () => {
     const navigate = useNavigate();

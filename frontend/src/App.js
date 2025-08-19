@@ -10,7 +10,7 @@ import {
 import Home from './Components/Home/Home';
 import LoginPage from './Components/LoginForm/LoginPage';
 import Floor from './Components/Floors/Floor';
-import Booking from './Components/Home/Booking';
+import Booking from './Components/Home/Booking/Booking';
 import AdminPage from './Components/AdminPanel/AdminPage';
 import MyBookings from './Components/Home/MyBookings';
 import ManageSeries from './Components/Series/ManageSeries';

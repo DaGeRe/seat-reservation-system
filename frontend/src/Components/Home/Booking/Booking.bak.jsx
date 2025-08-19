@@ -4,12 +4,18 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { Box, Button, Typography } from '@mui/material';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation  } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {getRequest} from '../RequestFunctions/RequestFunctions';
-import bookingPostRequest from '../misc/bookingPostRequest.js';
-import LayoutPage from '../Templates/LayoutPage.jsx';
+import LayoutPage from '../../Templates/LayoutPage.jsx';
+import { styles } from './Booking.style.js';
+import { FormControl, RadioGroup, FormControlLabel,Radio } from '@mui/material';
+import { fetchDesksImpl } from './fetchDesksImpl.js';
+import { fetchRoomImpl } from './fetchRoomImpl.js';
+import { loadBookingsImpl } from './loadBookingsImp.js';
+import { buildFullDaySlots } from './buildFullDaySlots.js';
+import { bookingImpl } from './bookingImpl.js';
+import { selectSlotImpl } from './selectSlotImpl.js';
 
 const Booking = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
@@ -22,35 +28,81 @@ const Booking = () => {
   const [desks, setDesks] = useState([]);
   const [deskEvents, setDeskEvents] = useState([]);
   const [events, setEvents] = useState([]);
+  const eventsRef = useRef(events);
   const [event, setEvent] = useState({});
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const [clickedDeskRemark, setClickedDeskRemark] = useState('');
   const helpText = t('helpCreateBooking');
-  const typography_sx = {margin:'5px',textAlign:'center'};
+  const minStartTimeRef = useRef(6); //6 am
+  const maxEndTimeRef = useRef(22); //10 pm
+  const [timeRangeMode, setTimeRangeMode] = useState('userDefined');
 
+  /**
+   * Callbacks
+   */
   const fetchDesks = useCallback(
     async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-        headers.current,
-        setDesks,
-        () => {console.log('Failed to fetch desks in Booking.jsx');}
-      )
+      fetchDesksImpl(roomId, headers.current, setDesks);
     },
     [roomId]
   );
 
   const fetchRoom = useCallback(
     async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/rooms/${roomId}`,
-        headers.current,
-        setRoom, 
-        () => {console.log('Failed to fetch desks in Booking.jsx');}
-      )
+      fetchRoomImpl(roomId, headers.current, setRoom);
     },
     [roomId]
   );
+
+  const selectSlot = useCallback(
+    (data) => {
+      selectSlotImpl(data, deskEvents, events, event, t);
+    },
+    [deskEvents, events, event, t, setEvents, setEvent]
+  );
+
+  const loadBookings = useCallback(() => {
+    if (!clickedDeskId) return;
+
+    console.log('loadbookings', clickedDeskId);
+    loadBookingsImpl(
+      clickedDeskId,
+      headers.current,
+      t,
+      setDeskEvents,
+      setEvents
+    );
+  }, [clickedDeskId, t]);
+
+  /**
+   * useEffects
+   */
+  useEffect(() => {
+    console.log('foo');
+    if (timeRangeMode === "fullDay") {
+      const allSlotsData = buildFullDaySlots(date, minStartTimeRef.current, maxEndTimeRef.current);
+      selectSlot(allSlotsData);
+    } else {
+      if (eventsRef.current.length !== 0)  {
+        setEvents(prev => prev.length === 0 ? prev : []);
+      }
+      //if (clickedDeskId !== null) loadBookings();
+      if (clickedDeskId) {
+        loadBookingsImpl(
+          clickedDeskId,
+          headers.current,
+          t,
+          setDeskEvents,
+          setEvents
+        );
+      }
+    }
+  }, [timeRangeMode, t, date, selectSlot, clickedDeskId]);
+  
+  
+  useEffect(() => {
+    eventsRef.current = events; // immer aktuell halten
+  }, [events]);
 
   useEffect(() => {
       fetchRoom();
@@ -66,29 +118,6 @@ const Booking = () => {
     moment.locale(i18n.language);
   }, [i18n.language]);
 
-  const loadBookings = useCallback(
-    async () => {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
-        headers.current,
-        (bookingsForDeskDTOs) => {
-          // Parse the booking data and add events to tempArray
-          const bookingEvents = bookingsForDeskDTOs.map((bookingsForDeskDTO) => ({
-            start: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.begin),
-            end: new Date(bookingsForDeskDTO.day + 'T' + bookingsForDeskDTO.end),
-            title: bookingsForDeskDTO.user_id.toString() === localStorage.getItem('userId')
-              ? ''
-              : (bookingsForDeskDTO.visibility ? (bookingsForDeskDTO.name + ' ' + bookingsForDeskDTO.surname)  : t('anonymous')),
-            id: bookingsForDeskDTO.booking_id,
-          }));
-          setDeskEvents(bookingEvents);
-          setEvents(bookingEvents);
-        },
-        () => {console.log('Failed to fetch desks in Booking.jsx');}
-      );
-    }, [clickedDeskId, t]
-);
-
   useEffect(() => {
     desks.forEach(desk => {
       if (desk.id === clickedDeskId) {
@@ -97,75 +126,24 @@ const Booking = () => {
     });
   }, [desks, clickedDeskId, loadBookings]);  
 
-  const selectSlot = (data) => {
-    const startTime = new Date(data.start);
-    const endTime = new Date(data.end);
-  
-    // Calculate the duration in milliseconds
-    const duration = endTime - startTime;
-  
-    // Check if the duration is within the allowed range
-    if (duration < 2 * 60 * 60 * 1000) {
-      toast.warning(t("minimum"));
-      return;
-    }
-  
-    if (duration > 9 * 60 * 60 * 1000) {
-      toast.warning(t("maximum"));
-      return;
-    }
-  
-    // Remove the existing event being created if any
-    const updatedEvents = events.filter(existingEvent => existingEvent.id !== event.id);
-  
-    // Check for overlapping events for the specific desk
-    const isOverlap = updatedEvents.some((existingEvent) =>
-      (existingEvent.start <= startTime && startTime < existingEvent.end) ||
-      (existingEvent.start < endTime && endTime <= existingEvent.end) ||
-      (startTime <= existingEvent.start && existingEvent.end <= endTime)
-    );
-  
-    if (isOverlap) {
-      toast.warning(t('overlap'));
-      return;
-    }
-  
-    const newEvent = {
-      start: data.start,
-      end: data.end,
-      id: 1,
-    };
-  
-    // Update events state with existing events and the new event
-    setEvents([...deskEvents, newEvent]);
-    setEvent(newEvent);
-  };
-
+  /**
+   * Misc functions
+   */
   const booking = async () => {
-    if (!clickedDeskId || !event.start || !event.end) {
-      toast.error(t('blank'));
-      return;
-    }  
-    loadBookings();
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      console.log('userId is null');
-      return;
+    try {
+      await bookingImpl(
+        event,
+        clickedDeskId,
+        roomId,
+        clickedDeskRemark,
+        headers,
+        t,
+        navigate
+      );
+    } catch (err) {
+      toast.error(t("blank"));
+      console.error("Booking failed:", err.message);
     }
-    const room_Id = roomId;
-    const deskId = clickedDeskId;
-    const day = moment(event.start).format('YYYY-MM-DD');
-    const start = moment(event.start).format('HH:mm:ss');
-    const ending = moment(event.end).format('HH:mm:ss');
-    const bookingData = {
-      user_id: userId,
-      room_id: room_Id,
-      desk_id: deskId,
-      day: day,
-      begin: start,
-      end: ending
-    };
-    bookingPostRequest('Booking.jsx', bookingData, clickedDeskRemark, headers, t, (booking)=>{navigate('/home', { state: { booking }, replace: true });})
   };
 
   function getHeadline() {
@@ -180,6 +158,7 @@ const Booking = () => {
       withPaddingX={true}
     >
       <Box sx={{ display: 'flex',  width: '100%' }}>
+
         <Box id='desks' sx={{ width: '20%', paddingRight: '20px' }}>
           {desks && desks.length > 0 ?
             (desks.map((desk, index) => (
@@ -209,27 +188,42 @@ const Booking = () => {
                   }} 
                   onClick={
                     () => {
+                      console.log(timeRangeMode);
                       setClickedDeskId(desk.id);
                       setClickedDeskRemark(desk.remark)
                     }}
                 >
-                  <Typography sx={typography_sx}>{desk.remark}</Typography >
-                  <Typography sx={typography_sx}>{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</Typography>
+                  <Typography sx={styles.typography}>{desk.remark}</Typography >
+                  <Typography sx={styles.typography}>{desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</Typography>
                 </Box>
               </Box>
             ))) : (
-              <Typography sx={typography_sx}>{t('noAvailableDesks')}</Typography> 
+              <Typography sx={styles.typography}>{t('noAvailableDesks')}</Typography> 
             )
           }
         </Box>
         <Box sx={{
           width: '80%',
           display: 'flex',
-          flexDirection: 'column', // <--- !
+          flexDirection: 'column', 
           alignItems: 'center',     // center hor
           gap: 2,                 
           marginRight: '10px',
         }}>
+          <FormControl>
+  <RadioGroup
+  row
+    aria-labelledby="demo-radio-buttons-group-label"
+    defaultValue="userDefined"
+    id='radioGrouptimeRangeMode'
+    name='radio-buttons-group'
+    value={timeRangeMode}
+        onChange={e=>setTimeRangeMode(e.target.value)}
+  >
+    <FormControlLabel disabled = {clickedDeskId === null} value='userDefined' control={<Radio />} label={i18n.language === 'de' ? 'Nutzerdefiniert' : 'Userdefined'} />
+    <FormControlLabel disabled = {clickedDeskId === null} value='fullDay' control={<Radio />} label={i18n.language === 'de' ? 'Ganztägig' : 'Whole day'} />
+  </RadioGroup>
+</FormControl>
           <Calendar
             localizer={localizer}
             events={events}
@@ -246,13 +240,13 @@ const Booking = () => {
               }
             }}
             selectable={true}
-            min={new Date(0, 0, 0, 6, 0, 0)} // 6 am
-            max={new Date(0, 0, 0, 22, 0, 0)} // 10 pm
+            min={new Date(0, 0, 0, minStartTimeRef.current, 0, 0)} // 6 am
+            max={new Date(0, 0, 0, maxEndTimeRef.current, 0, 0)} // 10 pm
             eventPropGetter={(event) => ({
               style: {
                 backgroundColor: deskEvents.some((deskEvent) => deskEvent.id === event.id)
-                  ? "grey" // Color for events from deskEvents
-                  : "#008444", // Color for new events
+                  ? 'grey' // Color for events from deskEvents
+                  : '#008444', // Color for new events
               },
             })}
             messages={{
