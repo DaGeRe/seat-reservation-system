@@ -80,7 +80,7 @@ const LoginPage = () => {
       <Box sx={styles.box}>
         <h1 style={styles.h1}>{t('login')}</h1>
         <br/>
-        <img src={'/Assets/flag.png'} alt='Flag' className='flag-image' />
+        <img src={'/Assets/flag.png'} alt='Flag' class='flag-image' />
         <FormControl fullWidth required size='small'>
           <OutlinedInput
             id='email'

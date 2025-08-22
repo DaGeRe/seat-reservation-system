@@ -47,5 +47,4 @@ export const styles = {
         borderColor: 'rgba(0,0,0,0.23)',
         },
     }
-    
 };
