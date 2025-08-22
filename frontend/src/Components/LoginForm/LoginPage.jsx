@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { FaUser } from 'react-icons/fa';
 import { FaLock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { styles } from './LoginForm.style';
+import { styles } from './LoginPage.style';
 import isEmail from '../misc/isEmail';
 import InfoModal from '../InfoModal';
+import News from './News';
 const LoginPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -30,27 +31,6 @@ const LoginPage = () => {
 
   const [state, dispatch] = useReducer(reducer, initState);
 
-  const news = '<style>'+
-  '.newslistlist ul {'+
-    'margin-left: 20px;'+
-   ' list-style-type: circle;'+
-  '}'+
-'</style>'+
-                '<br/>' +
-                '<ul class="newslistlist">' +
-                ' <li>Sobald die Session abgelaufen ist wird der Anwender wieder zur Loginseite navigiert.</li>' + 
-                ' <li>Anmeldung mit Windowskennung ist möglich</li><li>Festlegen von Standardetage möglich</li>' + 
-                ' <li>' +
-                '   Es kann nach Buchungen von Kollegen gesucht werden:' +
-                '   <ul>' +
-                '     <li>Nach der Anmeldung links im Baum unter Suchen&rightarrow;Kollegen auswählen.</li>' +
-                '     <li>In der ersten Zeile die E-Mail-Adressen ihrer Kollegen, durch Kommata getrennt, eingeben.</li>' +
-                '     <li>In der zweiten Zeile muss ein Datum festgelegt werden.</li>' +
-                '     <li>Optional kann in der dritten Zeile eine Gruppen ausgewählt werden. Die erste Zeile wird dann durch die E-Mail-Adressen der Mitglieder dieser Gruppe ersetzt.</li>' +
-                '     <li>Suche starten.</li>' +
-                '   </ul>' +
-                ' </li>' +
-                '</ul>';
 
   async function login() {
 
@@ -147,7 +127,7 @@ const LoginPage = () => {
       </Box>
       
     </Box>
-    <InfoModal text={`<h1>${t('news')}</h1>${news}`} helpIcon={false}/>
+    <InfoModal text={`<h1>${t('news')}</h1>${News}`} helpIcon={false}/>
     </>
   );
 };
