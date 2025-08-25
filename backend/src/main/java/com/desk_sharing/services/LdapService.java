@@ -3,19 +3,22 @@ package com.desk_sharing.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
+
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.Attribute;
 import javax.naming.NamingEnumeration;
 
 @Service
+@AllArgsConstructor
 public class LdapService {
-    @Autowired
-    private LdapTemplate ldapTemplate;
+    //@Autowired
+    private final LdapTemplate ldapTemplate;
 
    
     /**
@@ -24,7 +27,6 @@ public class LdapService {
      * @return  An list of all groups the user with email is memberOf. 
      */
     public List<String> getUserGroupsByEmail(String email) {
-
         return ldapTemplate.search(
             query()
             .base("")//.base("OU=Users") 

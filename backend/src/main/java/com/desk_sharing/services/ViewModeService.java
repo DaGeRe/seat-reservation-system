@@ -1,20 +1,23 @@
 package com.desk_sharing.services;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.repositories.ViewModeRepository;
+
+import lombok.AllArgsConstructor;
+
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.entities.ViewMode;
 
 @Service
+@AllArgsConstructor
 public class ViewModeService  {
-    @Autowired
-    private ViewModeRepository viewModeRepository;
-    @Autowired
-    private UserRepository userRepository;
+    //@Autowired
+    private final  ViewModeRepository viewModeRepository;
+    //@Autowired
+    private final UserRepository userRepository;
     /**
      * Returns the default viewmode for the user identified by id.
      * If there is no default viewmode set for the user, the week viewmode is returned. 
