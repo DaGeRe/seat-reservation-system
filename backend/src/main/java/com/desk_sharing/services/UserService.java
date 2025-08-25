@@ -3,6 +3,7 @@ package com.desk_sharing.services;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +31,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
+@AllArgsConstructor
 public class UserService  {
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private FloorRepository floorRepository;
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private SeriesRepository seriesRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final FloorRepository floorRepository;
+    private final BookingRepository bookingRepository;
+    private final SeriesRepository seriesRepository;
+    private final RoleRepository roleRepository;
 
     public void logging(String msg) {
         SecurityContext securityContext = SecurityContextHolder.getContext();

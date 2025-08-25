@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,24 +22,21 @@ import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
-import com.desk_sharing.repositories.RoomRepository;
+//import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class SeriesService {
-    @Autowired
-    private SeriesRepository seriesRepository;
-    @Autowired
-    DeskRepository deskRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoomRepository roomRepository;
-    @Autowired
-    BookingRepository bookingRepository;
+    private final SeriesRepository seriesRepository;
+    private final DeskRepository deskRepository;
+    private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+
 
     /**
      * Transfers an ISO 8601 datestring to an java.sql.Date.
