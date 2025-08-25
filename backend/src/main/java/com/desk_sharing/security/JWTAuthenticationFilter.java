@@ -17,10 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
-    private JWTGenerator tokenGenerator;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final JWTGenerator tokenGenerator;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public JWTAuthenticationFilter(final JWTGenerator tokenGenerator, final CustomUserDetailsService customUserDetailsService) {
+        this.tokenGenerator = tokenGenerator;
+        this.customUserDetailsService = customUserDetailsService;
+        System.out.println("achtung!!!!!!");
+    };
 
     @Override
     protected void doFilterInternal(

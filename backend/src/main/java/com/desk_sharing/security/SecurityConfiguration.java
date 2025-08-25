@@ -1,6 +1,5 @@
 package com.desk_sharing.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -35,13 +34,22 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final JwtAuthEntryPoint authEntryPoint;
-    @Autowired
-    CustomUserDetailsService customUserDetailService;
 
-    @Autowired
-    private Environment env;
-    public SecurityConfiguration(JwtAuthEntryPoint authEntryPoint) {
+    private final Environment env;
+
+    private final JWTGenerator tokenGenerator;
+
+    private final CustomUserDetailsService customUserDetailService;
+
+    public SecurityConfiguration(
+            JwtAuthEntryPoint authEntryPoint, 
+            final CustomUserDetailsService customUserDetailService, 
+            final Environment env,
+            final JWTGenerator tokenGenerator) {
         this.authEntryPoint = authEntryPoint;
+        this.customUserDetailService = customUserDetailService;
+        this.env = env;
+        this.tokenGenerator = tokenGenerator;
     }
 
     @Bean
@@ -85,7 +93,7 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
             )
             .authenticationManager(authManager)
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JWTAuthenticationFilter(tokenGenerator, customUserDetailService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -167,10 +175,5 @@ public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter() {
-        return new JWTAuthenticationFilter();
     }
 }

@@ -3,7 +3,6 @@ package com.desk_sharing.security;
 import com.desk_sharing.entities.Role;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,8 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    //@Autowired
+    //private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+
+    public CustomUserDetailsService(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
