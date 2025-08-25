@@ -10,10 +10,11 @@ import com.desk_sharing.model.SeriesDTO;
 import com.desk_sharing.services.SeriesService;
 import com.desk_sharing.services.UserService;
 
+import lombok.AllArgsConstructor;
+
 import java.sql.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,12 +25,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/series")
+@AllArgsConstructor
 public class SeriesController {
-    @Autowired 
-    private SeriesService seriesService;
-
-    @Autowired
-    private UserService userService;
+    private final SeriesService seriesService;
+    private final UserService userService;
     
     @PostMapping("/desksForDatesAndTimes")
     public ResponseEntity<List<Desk>> getDesksForDatesAndTimes(@RequestBody DatesAndTimesDTO datesAndTimesDTO) {

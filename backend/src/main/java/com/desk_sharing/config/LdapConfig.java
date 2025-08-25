@@ -30,7 +30,6 @@ public class LdapConfig {
         return contextSource;
     }
 
-    //webex app vdi
     @Bean
     public LdapTemplate ldapTemplate(@Qualifier("customLdapContextSource") LdapContextSource contextSource) {
         return new LdapTemplate(contextSource());

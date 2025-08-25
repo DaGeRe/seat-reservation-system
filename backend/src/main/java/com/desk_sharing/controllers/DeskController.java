@@ -3,7 +3,6 @@ package com.desk_sharing.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,29 +14,14 @@ import com.desk_sharing.entities.Desk;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.UserService;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/desks")
+@AllArgsConstructor
 public class DeskController {
-
-    @Autowired
-    DeskService deskService;
-
-    @Autowired
-    UserService userService;
-
-    /*@PostMapping
-    public ResponseEntity<Desk> createDesk(@RequestBody DeskDTO desk) {
-        userService.logging("createDesk( " + desk + " )");
-        Desk savedDesk = deskService.saveDesk(desk);
-        return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
-    }*/
-
-    /*@PutMapping("/updateDesk")
-    public ResponseEntity<Desk> updateDesk(@RequestBody DeskDTO desk) {
-        userService.logging("updateDesk( " + desk + " )");
-        Desk updatedDesk = deskService.updateDesk(desk.getDeskId(), desk.getEquipment(), desk.getRemark());
-        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
-    }*/
+    private final DeskService deskService;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<List<Desk>> getAllDesks() {

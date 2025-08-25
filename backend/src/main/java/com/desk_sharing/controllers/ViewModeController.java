@@ -1,6 +1,5 @@
 package com.desk_sharing.controllers;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,15 +10,15 @@ import com.desk_sharing.entities.ViewMode;
 import com.desk_sharing.services.UserService;
 import com.desk_sharing.services.ViewModeService;
 
+import lombok.AllArgsConstructor;
+
 
 @RestController
 @RequestMapping("/viewmodes")
+@AllArgsConstructor
 public class ViewModeController {
-
-    @Autowired
-    private ViewModeService viewModeService;
-    @Autowired
-    private UserService userService;
+    private final ViewModeService viewModeService;
+    private final UserService userService;
 
     /**
      * Returns a ResponseEntity with default viewmode for the user identified by id.

@@ -2,7 +2,6 @@ package com.desk_sharing.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.services.LdapService;
 import com.desk_sharing.services.UserService;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/ldap")
+@AllArgsConstructor
 public class LdapController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private LdapService ldapService;
+    private final UserService userService;
+    private final LdapService ldapService;
  
     @GetMapping("/getGroupsByEmail/{email}")
     public ResponseEntity<List<String>> getGroupsByEmail(@PathVariable("email") String email) {

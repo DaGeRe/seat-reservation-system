@@ -7,29 +7,20 @@ import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.FloorRepository;
 import com.desk_sharing.repositories.RoomRepository;
-import com.desk_sharing.repositories.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class RoomService {
-
-    @Autowired
-    DeskRepository deskRepository;
-
-    @Autowired
-    RoomRepository roomRepository;
-
-    @Autowired
-    BookingRepository bookingRepository;
-
-    @Autowired
-    private FloorRepository floorRepository;
-
-    @Autowired
-    DeskService deskService;
+    private final DeskRepository deskRepository;
+    private final RoomRepository roomRepository;
+    private final FloorRepository floorRepository;
+    private final DeskService deskService;
 
     public Room saveRoom(RoomDTO roomDTO) {
         final Room newRoom = new Room();

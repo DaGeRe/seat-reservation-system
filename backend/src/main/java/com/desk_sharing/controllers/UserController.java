@@ -1,10 +1,7 @@
 package com.desk_sharing.controllers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.services.UserService;
+
+import lombok.AllArgsConstructor;
 
 import com.desk_sharing.model.AuthResponseDTO;
 import com.desk_sharing.model.LoginDto;
@@ -30,44 +29,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JWTGenerator jwtGenerator;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final JWTGenerator jwtGenerator;
+    private final UserService userService;
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    private UserService userService;
-
-    /*@GetMapping("getDefaultFloorForUserId/{id}")
-    public ResponseEntity<Floor> getDefaultFloorForUserId(@PathVariable("id") int id) {
-        userService.logging("getDefaultFloorForUserId( " + id + " )");
-        try {
-            final Floor floor = userService.getDefaultFloorForUserId(id);
-            return new ResponseEntity<>(floor, HttpStatus.OK);
-        } catch (IndexOutOfBoundsException e) {
-            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) Was not able to find default floor for user. Send empty floor.");
-            return new ResponseEntity<>(new Floor(), HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            userService.logging("\tgetDefaultFloorForUserId( " + id + " ) " + e.getMessage());
-            return new ResponseEntity<>(new Floor(), HttpStatus.NOT_FOUND);
-        }
-    }*/
-
-    /*@GetMapping("setDefaulFloorForUserId/{id}/{floor_id}")
-    public boolean setDefaulFloorForUserId(@PathVariable("id") int id, @PathVariable("floor_id") Long floor_id) {
-        userService.logging("setDefaulFloorForUserId( " + id + ", " + floor_id + " )");
-        try {
-            return userService.setDefaulFloorForUserId(id, floor_id);
-        }
-        catch (EntityNotFoundException e) {
-            userService.logging(e.getMessage());
-            return false;
-        }
-    }*/
+    // private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {

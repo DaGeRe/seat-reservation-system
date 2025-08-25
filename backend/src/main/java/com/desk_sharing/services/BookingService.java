@@ -9,7 +9,6 @@ import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -21,30 +20,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.desk_sharing.entities.UserEntity;
 
 @Service
-public class BookingService {
- 
-    @Autowired
-    BookingRepository bookingRepository;
+@AllArgsConstructor
+public class BookingService { 
+    private final BookingRepository bookingRepository;
     
-    @Autowired
-    RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
     
-    @Autowired
-    DeskRepository deskRepository;
+    private final DeskRepository deskRepository;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    RoomService roomService;
+    private final RoomService roomService;
 
-    @Autowired
-    DeskService deskService;
+    private final DeskService deskService;
 
     public Map<String, List<BookingProjectionDTO>> getBookingsFromColleaguesOnDate(final List<String> emailStrings, final Date date) {
         final Map<String, List<BookingProjectionDTO>> bookingsForEmail = new HashMap<>();

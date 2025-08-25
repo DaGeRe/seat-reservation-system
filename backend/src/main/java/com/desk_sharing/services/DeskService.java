@@ -3,7 +3,6 @@ package com.desk_sharing.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.desk_sharing.entities.Desk;
@@ -14,32 +13,25 @@ import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.SeriesRepository;
+
+import lombok.AllArgsConstructor;
+
 import com.desk_sharing.repositories.BookingRepository;
 
 @Service
+@AllArgsConstructor
 public class DeskService {
-
-    @Autowired
-    DeskRepository deskRepository;
-
-    @Autowired
-    BookingRepository bookingRepository;
-
-    @Autowired
-    SeriesRepository seriesRepository;
-
-    @Autowired
-    SeriesService seriesService;
-
-    @Autowired
-    RoomRepository roomRepository;
-
+    private final DeskRepository deskRepository;
+    private final BookingRepository bookingRepository;
+    private final SeriesRepository seriesRepository;
+    private final SeriesService seriesService;
+    private final RoomRepository roomRepository;
 
     public Desk saveDesk(DeskDTO deskDto) {
-    	Optional<Room> optional = roomRepository.findById(deskDto.getRoomId());
-    	if(optional.isPresent()) {
-    		Desk desk = new Desk();
-    		desk.setRoom(optional.get());
+        Optional<Room> optional = roomRepository.findById(deskDto.getRoomId());
+        if(optional.isPresent()) {
+    	    Desk desk = new Desk();
+    	    desk.setRoom(optional.get());
     		desk.setEquipment(deskDto.getEquipment());
             desk.setRemark(deskDto.getRemark());
             List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());

@@ -1,4 +1,4 @@
-describe('', ()=> {   
+describe('Test the room search.', ()=> {   
     const buildingId = 6; // Hauptstelle Dresden, Bautzner Straße ab
     const floorId = 5; // 1. Obergeschoss - Hauptstelle Dresden, Bautzner Straße ab
     const roomRemark = 'testraum';

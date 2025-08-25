@@ -18,12 +18,7 @@ import java.util.stream.Collectors;
 /** This class is used to authenticate a user.*/
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
-
-    //@Autowired
-    //private UserRepository userRepository;
-
     private final UserRepository userRepository;
-
 
     public CustomUserDetailsService(final UserRepository userRepository) {
         this.userRepository = userRepository;

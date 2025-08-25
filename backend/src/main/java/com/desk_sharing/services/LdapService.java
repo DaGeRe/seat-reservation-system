@@ -17,10 +17,8 @@ import javax.naming.NamingEnumeration;
 @Service
 @AllArgsConstructor
 public class LdapService {
-    //@Autowired
     private final LdapTemplate ldapTemplate;
 
-   
     /**
      * Pulls all groups from ad that the user, which is identified by email, is an memberOf.
      * @param email The email that identifies the user.

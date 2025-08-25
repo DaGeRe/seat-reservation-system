@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Dictionary;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,28 +24,17 @@ import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.BookingsForDeskDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
-import com.desk_sharing.services.DeskService;
-import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
+
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/bookings")
+@AllArgsConstructor
 public class BookingController {
-
-    @Autowired
-    BookingService bookingService;
-
-    @Autowired
-    BookingRepository bookingRepository;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    RoomService roomService;
-
-    @Autowired
-    DeskService deskService;
+    private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
+    private final UserService userService;
 
     @PostMapping("getBookingsFromColleaguesOnDate/{date}")
     public ResponseEntity<Map<String, List<BookingProjectionDTO>>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {

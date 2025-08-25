@@ -5,7 +5,8 @@ import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +16,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/rooms")
+@AllArgsConstructor
 public class RoomController {
-
-    @Autowired
-    RoomService roomService;
-
-    @Autowired
-    UserService userService;
-
-    /*@PostMapping("/create")
-    public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
-        userService.logging("createRoom() with remark: " + roomDTO.getRemark() + " " + roomDTO.getFloor_id());
-        final Room savedRoom = roomService.saveRoom(roomDTO);
-        return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
-    }*/
+    private final RoomService roomService;
+    private final UserService userService;
 
     /**
      * Get all rooms.

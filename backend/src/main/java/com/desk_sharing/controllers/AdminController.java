@@ -1,9 +1,6 @@
 package com.desk_sharing.controllers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +17,8 @@ import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
+
+import lombok.AllArgsConstructor;
 
 import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.RoomDTO;
@@ -41,24 +40,17 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/admin")
+@AllArgsConstructor
 public class AdminController {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private RoomService roomService;
-    @Autowired
-    private DeskService deskService;
-    @Autowired
-    private BookingService bookingService;
-    @Autowired BookingRepository bookingRepository;
-    Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    private UserService userService;
-
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoomService roomService;
+    private final DeskService deskService;
+    private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
+    private final UserService userService;    
+    
     ////////////////
 
     @GetMapping("/status")
@@ -82,7 +74,7 @@ public class AdminController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-     /**
+    /**
      * Get every booking.
      * This method is used in /admin to find all bookings.
      * @return  Every booking.

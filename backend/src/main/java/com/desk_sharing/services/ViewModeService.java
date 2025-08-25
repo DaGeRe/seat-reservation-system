@@ -13,10 +13,8 @@ import com.desk_sharing.entities.ViewMode;
 
 @Service
 @AllArgsConstructor
-public class ViewModeService  {
-    //@Autowired
+public class ViewModeService {
     private final  ViewModeRepository viewModeRepository;
-    //@Autowired
     private final UserRepository userRepository;
     /**
      * Returns the default viewmode for the user identified by id.
