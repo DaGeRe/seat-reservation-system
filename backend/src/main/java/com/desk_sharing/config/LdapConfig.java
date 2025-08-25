@@ -1,6 +1,5 @@
 package com.desk_sharing.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +9,12 @@ import org.springframework.ldap.core.support.LdapContextSource;
 
 @Configuration
 public class LdapConfig {
-    @Autowired
-    private Environment env;
+    private final  Environment env;
+
+    public LdapConfig(final Environment env) {
+        this.env = env;
+    }
+
     @Bean(name = "customLdapContextSource")
     public LdapContextSource contextSource() {
         LdapContextSource contextSource = new LdapContextSource();

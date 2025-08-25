@@ -1,6 +1,5 @@
 package com.desk_sharing.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +22,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     public JWTAuthenticationFilter(final JWTGenerator tokenGenerator, final CustomUserDetailsService customUserDetailsService) {
         this.tokenGenerator = tokenGenerator;
         this.customUserDetailsService = customUserDetailsService;
-        System.out.println("achtung!!!!!!");
     };
 
     @Override
