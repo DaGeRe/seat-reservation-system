@@ -92,7 +92,7 @@ public class AdminController {
         }
     }
 
-        /**
+    /**
      * Return all bookings that are done by the user identified by email.
      * This method is eg used in /admin to find all bookings done by an user.  
      * @param email   The email address of the user.

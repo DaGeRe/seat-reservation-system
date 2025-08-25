@@ -1,37 +1,35 @@
 package com.desk_sharing.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import lombok.AllArgsConstructor;
+
 @Configuration
+@AllArgsConstructor
 public class LdapConfig {
-    private final  Environment env;
-
-    public LdapConfig(final Environment env) {
-        this.env = env;
-    }
-
-    @Bean(name = "customLdapContextSource")
-    public LdapContextSource contextSource() {
-        LdapContextSource contextSource = new LdapContextSource();
-        //           env.getProperty("spring.ldap.base"),
-        contextSource.setUrl(env.getProperty("spring.ldap.urls"));
-        /*contextSource.setBase("dc=yourdomain,dc=local");
-        contextSource.setUserDn("CN=your-user,OU=Users,DC=yourdomain,DC=local");
-        contextSource.setPassword("your-password");*/
-        contextSource.setBase(env.getProperty("spring.ldap.base"));
-        contextSource.setUserDn(env.getProperty("spring.ldap.username"));
-        contextSource.setPassword(env.getProperty("spring.ldap.password"));
-        
+    private final LdapProperties ldapProperties;
+    
+    @Bean
+    public LdapContextSource customLdapContextSource() {
+        // The context of every ldap/AD operation.
+        final LdapContextSource contextSource = new LdapContextSource();
+        contextSource.setUrl(ldapProperties.getUrls()); // Set the url of the ldap/AD server.
+        /*
+            Set the ground base for every search/fetch operation.
+            E.g.: if we look for groups this base is extended with the group ou.
+        */
+        contextSource.setBase(ldapProperties.getBase());
+        contextSource.setUserDn(ldapProperties.getUsername()); // The username of the client that uses AD.
+        contextSource.setPassword(ldapProperties.getPassword()); // The pw of the client that uses AD.
+        //contextSource.setReferral("ignore");
         return contextSource;
     }
 
     @Bean
-    public LdapTemplate ldapTemplate(@Qualifier("customLdapContextSource") LdapContextSource contextSource) {
-        return new LdapTemplate(contextSource());
+    public LdapTemplate ldapTemplate(LdapContextSource customLdapContextSource) {
+        return new LdapTemplate(customLdapContextSource);
     }
 }

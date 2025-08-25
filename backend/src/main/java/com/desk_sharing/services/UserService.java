@@ -6,18 +6,26 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desk_sharing.repositories.UserRepository;
+import com.desk_sharing.security.JWTGenerator;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.FloorRepository;
 import com.desk_sharing.repositories.RoleRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.misc.DaoUserNotFoundException;
+import com.desk_sharing.misc.LdapUserNotFoundException;
+import com.desk_sharing.model.AuthResponseDTO;
 import com.desk_sharing.model.FloorDTO;
 import com.desk_sharing.model.UserDto;
 import com.desk_sharing.controllers.BookingController;
@@ -40,17 +48,61 @@ public class UserService  {
     private final BookingRepository bookingRepository;
     private final SeriesRepository seriesRepository;
     private final RoleRepository roleRepository;
+    private final JWTGenerator jwtGenerator;
+    private final AuthenticationManager authenticationManager;
+    private final LdapService ldapService;
+
+    public AuthResponseDTO login(final String email, final String password) throws LdapUserNotFoundException, DaoUserNotFoundException, BadCredentialsException {
+        final boolean ldapUserExists = ldapService.userExistsByEmail(email);
+        final boolean daoUserExists = userRepository.findByEmail(email) != null;
+
+        if (!ldapUserExists && !daoUserExists) {
+            if (!ldapUserExists)
+                throw new LdapUserNotFoundException(email);
+            if (!daoUserExists)
+                throw new DaoUserNotFoundException(password);
+        }
+        
+
+        // Check if mail exists and password is correct.
+        final Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                email,
+                password
+            )
+        );
+        // If login was successful search for the dataset in the database.
+        UserEntity user = userRepository.findByEmail(email);   
+        if (user == null) {
+            throw new UsernameNotFoundException("Username not found after login.");
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final String token = jwtGenerator.generateToken(authentication);
+
+        return new AuthResponseDTO(
+            token, 
+            user.getEmail(),
+            user.getId(),
+            user.getName(),
+            user.getSurname(),
+            user.isAdmin(),
+            user.isVisibility()
+        );
+    }
 
     public void logging(String msg) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            String name = authentication.getName(); // Gibt den Benutzernamen zurück
-            logger.info("Name: " + name + " Msg: " + msg + ".");
-        }
-        else {
-            logger.info("Cant find name Msg: " + msg + ".");
-        }
+        
+            Authentication authentication = securityContext.getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                String name = authentication.getName(); // Gibt den Benutzernamen zurück
+                logger.info("Name: " + name + " Msg: " + msg + ".");
+            }
+            else {
+                logger.info("Cant find name Msg: " + msg + ".");
+            }
+
     }
 
     public List<UserEntity> getAllUsers() {

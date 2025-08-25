@@ -51,7 +51,10 @@ const LoginPage = () => {
         throw new Error('Login failed');
       }
       const data = await response.json();
-      if (data !== null) {
+      if (data === null)
+        throw new Error('Response is null');
+
+      if (data.message === String('SUCCESS')) {
         sessionStorage.setItem('headers',  JSON.stringify({
           'Authorization': 'Bearer ' +  String(data['accessToken']),
           'Content-Type': 'application/json',
@@ -65,7 +68,9 @@ const LoginPage = () => {
         sessionStorage.setItem('accessToken', String(data['accessToken']));
         navigate('/home', { replace: true });
       } else {
-        dispatch({ type: 'updateField', field: 'loginError', value: t('invalidCredentials')})
+        const errorMsg = t('loginFailed') + ' ' + t(process.env[`REACT_APP_${data.message}`]);
+        toast.error(errorMsg);
+        dispatch({ type: 'updateField', field: 'loginError', value: errorMsg})
         return;
       }
     } catch (error) {
@@ -80,7 +85,7 @@ const LoginPage = () => {
       <Box sx={styles.box}>
         <h1 style={styles.h1}>{t('login')}</h1>
         <br/>
-        <img src={'/Assets/flag.png'} alt='Flag' class='flag-image' />
+        <img src={'/Assets/flag.png'} alt='Flag' className='flag-image' />
         <FormControl fullWidth required size='small'>
           <OutlinedInput
             id='email'

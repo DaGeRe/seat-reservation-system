@@ -19,6 +19,6 @@ public class BeanCreationLogger implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
-        return bean; // kannst du leer lassen, wenn du nur vor Initialisierung loggen willst
+        return bean;
     }
 }

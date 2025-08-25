@@ -2,8 +2,10 @@ package com.desk_sharing.controllers;
 
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,65 +14,51 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.misc.DaoUserNotFoundException;
+import com.desk_sharing.misc.LdapUserNotFoundException;
 import com.desk_sharing.services.UserService;
 
 import lombok.AllArgsConstructor;
 
 import com.desk_sharing.model.AuthResponseDTO;
 import com.desk_sharing.model.LoginDto;
-import com.desk_sharing.security.JWTGenerator;
-import com.desk_sharing.repositories.UserRepository;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final JWTGenerator jwtGenerator;
+    //private final AuthenticationManager authenticationManager;
+    //private final UserRepository userRepository;
+    //private final JWTGenerator jwtGenerator;
     private final UserService userService;
+    private final Environment env;
 
     // private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDto loginDto) {
         userService.logging("login( " + loginDto.getEmail() + " )");
-        // Check if mail exists and password is correct.
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(),
-                loginDto.getPassword()
-            )
-        );
-
-        // If login was successful search for the dataset in the database.
-        UserEntity user = userRepository.findByEmail(loginDto.getEmail());   
-        if (user == null) {
-            throw new UsernameNotFoundException("Username not found after login.");
+        String errorMessage;
+        try {
+            return new ResponseEntity<>(
+                userService.login(loginDto.getEmail(), loginDto.getPassword()),
+                HttpStatus.OK
+            ); 
+        } catch (LdapUserNotFoundException e) {
+            errorMessage = env.getProperty("ERROR_USER_NOT_FOUND_IN_AD_MESSAGE");
+        } catch (DaoUserNotFoundException e) {
+            errorMessage = env.getProperty("ERROR_USER_NOT_FOUND_IN_DAO_MESSAGE");
+        } catch (BadCredentialsException e) {
+            errorMessage = env.getProperty("ERROR_WRONG_PW_MESSAGE");
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtGenerator.generateToken(authentication);
-        
         return new ResponseEntity<>(
-            new AuthResponseDTO(
-                token, 
-                user.getEmail(),
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.isAdmin(),
-                user.isVisibility()
+            AuthResponseDTO.FailRepsonse(
+                loginDto.getEmail(), 
+                errorMessage
             ), 
             HttpStatus.OK
-        );     
-    }
+        );
+    };
 
     @PutMapping("/visibility/{id}")
     public int changeVisibility(@PathVariable("id") int id) {

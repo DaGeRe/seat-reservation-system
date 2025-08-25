@@ -10,13 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HearbeatController {
     ////////////////
 
-    /*@DeleteMapping("/deleteBooking/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable("id") Long id) {
-        userService.logging("deleteBooking( " + id  +" )");
-        bookingService.deleteBooking(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }*/
-        /**
+    /**
      * As soon as the token is not valid anymore this method cant be called.
      * So it is not important what is returned.
      */

@@ -66,52 +66,6 @@ public class BookingController {
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
     }
 
-    /**
-     * Get every booking.
-     * This method is used in /admin to find all bookings.
-     * @return  Every booking.
-     */
-    /*@GetMapping
-    public ResponseEntity<List<BookingProjectionDTO>> getEveryBooking() {
-        userService.logging("getEveryBooking()");
-        try {
-            final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository.getEveryBooking().stream().map(BookingProjectionDTO::new).toList();//objectsToBookingProjectionDTOs(bookingRepository.getEveryBooking());
-            return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return  new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
-        }
-
-    }*/
-
-    /**
-     * Return all bookings that are done by the user identified by email.
-     * This method is eg used in /admin to find all bookings done by an user.  
-     * @param email   The email address of the user.
-     * @return  All bookings that are done by the user identified by email.
-     */
-    /*@GetMapping("email/{email}")
-    public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForEmail(@PathVariable("email") String email) {
-        userService.logging("getEveryBookingForEmail()");
-        final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository.getEveryBookingForEmail("%" + email + "%").stream().map(BookingProjectionDTO::new).toList();
-        return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
-    }*/
-
-    /**
-     * Return all bookings for an all users identified by the email that is an element in colleaguesEmails.
-     * This method is used in /colleagues to find all bookings for all members of an group.  
-     * @param colleaguesEmails   An list of emails.
-     * @return  A list of ColleaguesBookingDTO. Each contains an List of bookings for each user. 
-     */
-    /*@PutMapping("colleaguesBookings")
-    public ResponseEntity<Map<String, List<ColleaguesBookingDTO>>> getColleaguesBookings(@RequestBody List<String> colleaguesEmails) {
-        userService.logging("colleaguesBookings(" + colleaguesEmails + ")");
-        final Map<String, List<ColleaguesBookingDTO>> emailAndBookings = bookingService.getColleaguesBookings(colleaguesEmails);
-        return new ResponseEntity<>(emailAndBookings, HttpStatus.OK);
-    }*/
-    
-
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
         userService.logging("getBookingById( " + id  +" )");
@@ -174,13 +128,6 @@ public class BookingController {
         List<Booking> bookings = bookingService.findByDeskIdAndDay(desk_id, Date.valueOf(request.get("day")));
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
-    
-    /*@GetMapping("/room/date/{id}")
-    public ResponseEntity<List<Booking>> getRoomBookingsByDayAndRoomId(@PathVariable("id") Long roomId, @RequestParam("day") String day) {
-        userService.logging("getRoomBookingsByDayAndRoomId( " + roomId + ", " + day + " )");
-        List<Booking> bookings = bookingService.findByRoomIdAndDay(roomId, Date.valueOf(day));
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }*/
     
     @PutMapping("/edit/timings")
     public ResponseEntity<Booking> editBookingTimings(@RequestBody BookingEditDTO booking) {

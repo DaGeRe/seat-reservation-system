@@ -38,13 +38,6 @@ public class RoomController {
         final List<Room> rooms = roomService.getAllRoomsByFloorId(floor_id);
         return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
-    
-    /*@GetMapping("/status")
-    public ResponseEntity<List<Room>> getAllRoomsByActiveStatus() {
-        userService.logging("getAllRoomsByActiveStatus()");
-        List<Room> rooms = roomService.getAllRoomsByActiveStatus();
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
-    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<Room> getRoomById(@PathVariable("id") Long id) {
@@ -54,26 +47,6 @@ public class RoomController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         return ret;
     }
-
-    /*@PutMapping
-    public ResponseEntity<Room> updateRoom(@RequestBody RoomDTO roomDTO) {
-        userService.logging("updateRoom( " + roomDTO + " )");
-        final Room updatedRoom = roomService.updateRoom(roomDTO);
-        return new ResponseEntity<>(updatedRoom, updatedRoom == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
-    }*/
-
-    /*@DeleteMapping("/{id}")
-    public ResponseEntity<Integer> deleteRoom(@PathVariable("id") Long id) {
-        userService.logging("deleteRoom( + " + id + " )");
-        final int ret = roomService.deleteRoom(id);
-        return ResponseEntity.status(HttpStatus.OK).body(ret);
-    } 
-    
-    @DeleteMapping("/ff/{id}")
-    public boolean deleteRoomFf(@PathVariable("id") Long id) {
-        userService.logging("deleteRoomFf( + " + id + " )");
-        return roomService.deleteRoomFf(id);
-    }*/
 
     @GetMapping("/byMinimalAmountOfWorkstations/{minimalAmountOfWorkstations}")
     public ResponseEntity<List<Room>> getByMinimalAmountOfWorkstations(@PathVariable("minimalAmountOfWorkstations") Integer minimalAmountOfWorkstations) {

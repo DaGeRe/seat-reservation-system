@@ -45,19 +45,4 @@ public class DeskController {
         List<Desk> desks = deskService.getDeskByRoomId(roomId);
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
-
-    /*@DeleteMapping("/{id}")
-    public ResponseEntity<Integer> deleteDesk(@PathVariable("id") Long id) {
-        userService.logging("deleteDesk( " + id + " )");
-        int ret = deskService.deleteDesk(id);
-        return ResponseEntity.status(HttpStatus.OK).body(ret);
-    }
-
-    @DeleteMapping("/ff/{id}")
-    public ResponseEntity<Integer> deleteDeskFf(@PathVariable("id") Long id) {
-        userService.logging("deleteDeskFf( " + id + " )");
-        deskService.deleteDeskFf(id);
-        // The return value 0 means everything was done right.
-        return ResponseEntity.status(HttpStatus.OK).body(0);
-    }*/
 }
