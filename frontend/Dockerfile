@@ -15,7 +15,7 @@ COPY package.json .
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128
 RUN npm config set proxy http://proxy.justiz.sachsen.de:3128
-RUN npm install -g depcheck npm-check
+#RUN npm install -g depcheck npm-check
 RUN npm i --omit=dev
 
 COPY src src
