@@ -49,15 +49,13 @@ public class AuthProviderConfig {
     bindAuthenticator.setUserSearch(
         new FilterBasedLdapUserSearch(
             ldapProperties.getUserBase(),  
-            ldapProperties.getUserFilter(),//"(&(objectClass=user)(mail={0}))",       // oder (mail={0}) je nach Login
+            ldapProperties.getUserFilter(),
             customLdapContextSource
         )
     );
     
-
     return new LdapAuthenticationProvider(bindAuthenticator);
 }
-
 
     @Bean
     public BindAuthenticator bindAuthenticator(LdapContextSource customLdapContextSource) {
