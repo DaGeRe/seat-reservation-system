@@ -79,6 +79,12 @@ const LoginPage = () => {
     }
   }
 
+  const onKeyDown= (e) => {
+    if (e.key === 'Enter') {
+      login();
+    }
+  };
+
   return (
     <>
     <Box sx={styles.wrapper_sx}>
@@ -91,6 +97,7 @@ const LoginPage = () => {
             id='email'
             type='text'
             value={state.email}
+            onKeyDown={onKeyDown}
             onChange={e => dispatch({type: 'updateField', field: 'email', value: e.target.value})}
             endAdornment={
               <InputAdornment
@@ -110,6 +117,7 @@ const LoginPage = () => {
             id='password'
             type='password'
             value={state.password}
+            onKeyDown={onKeyDown}
             onChange={e => dispatch({type: 'updateField', field: 'password', value:e.target.value})}
             endAdornment={
               <InputAdornment
