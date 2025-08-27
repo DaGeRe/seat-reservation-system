@@ -88,5 +88,7 @@ cypress/cypress/videos/
 altdaten/*
 !altdaten/old_data_app.py
 
+# misc
 myldaps.sh
 ldap0
+*.bin
