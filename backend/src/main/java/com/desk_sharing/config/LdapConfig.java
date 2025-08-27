@@ -24,7 +24,6 @@ public class LdapConfig {
         contextSource.setBase(ldapProperties.getBase());
         contextSource.setUserDn(ldapProperties.getUsername()); // The username of the client that uses AD.
         contextSource.setPassword(ldapProperties.getPassword()); // The pw of the client that uses AD.
-        //contextSource.setReferral("ignore");
         return contextSource;
     }
 
