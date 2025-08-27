@@ -1,5 +1,4 @@
-# Use an official Node.js runtime as a base image
-FROM node:22
+FROM node:22-slim
 ENV NODE_ENV=production
 ARG PROJECT_PATH
 ARG PATH_TO_TLS
@@ -16,7 +15,11 @@ RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128
 RUN npm config set proxy http://proxy.justiz.sachsen.de:3128
 #RUN npm install -g depcheck npm-check
+
 RUN npm i --omit=dev
+
+# Rm useless stuff.
+RUN npm cache clean --force && rm -rf /tmp/*
 
 COPY src src
 
