@@ -132,7 +132,7 @@ const LoginPage = () => {
         </FormControl>
         <br/><br/>
 
-        {state.loginError && <div data-testid='loginErrorMsg' className='error'>{state.loginError}</div>}
+        {state.loginError && <div id='loginErrorMsg' className='error'>{state.loginError}</div>}
         <Button id='login_btn' type='submit'  color='primary' onClick={login} sx={styles.button_sx}>
             {t('login')}
         </Button>
