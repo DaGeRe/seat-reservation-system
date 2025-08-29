@@ -8,25 +8,19 @@ services:
       context: ${PROJECT_PATH}/frontend
       dockerfile: Dockerfile
       pull: false
+      # Things we need during build.
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         PATH_TO_TLS: ${PATH_TO_TLS}
+        REACT_APP_BACKEND_URL: https://${IP}:${BACKEND_PORT}
+        REACT_APP_ERROR_USER_NOT_FOUND_IN_AD: ${ERROR_USER_NOT_FOUND_IN_AD}
+        REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO: ${ERROR_USER_NOT_FOUND_IN_DAO}
+        REACT_APP_ERROR_WRONG_PW: ${ERROR_WRONG_PW}
+    # Things we need in the running container.
     environment:
-      - REACT_APP_BACKEND_URL=https://${IP}:${BACKEND_PORT}
-      - HTTPS=true
-      - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
-      - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
-      - http_proxy=http://proxy.justiz.sachsen.de:3128
-      - https_proxy=http://proxy.justiz.sachsen.de:3128
-      - SSL_CRT_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.crt
-      - SSL_KEY_FILE=/usr/src/app/tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
-      - PORT=${FRONTEND_PORT}
-      - REACT_APP_ERROR_USER_NOT_FOUND_IN_AD=${ERROR_USER_NOT_FOUND_IN_AD}
-      - REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO=${ERROR_USER_NOT_FOUND_IN_DAO}
-      - REACT_APP_ERROR_WRONG_PW=${ERROR_WRONG_PW}
       - GENERATE_SOURCEMAP=false # important to supress some warnings
     ports:
-      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+      - ${FRONTEND_PORT}:443
     networks:
       - ${NETWORK}
     depends_on:
