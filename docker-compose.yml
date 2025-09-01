@@ -51,22 +51,33 @@ services:
     networks:
       - ${NETWORK}
     environment:
-      - SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
-      - DOCKER_HOST=unix:///var/run/docker.sock
+      #- SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
+      #- DOCKER_HOST=unix:///var/run/docker.sock
+      # - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
+      # - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
+      # - http_proxy=http://proxy.justiz.sachsen.de:3128
+      # - https_proxy=http://proxy.justiz.sachsen.de:3128
+      # Used in application.properties to access the tls cert.
       - PW_TLS=${PW_TLS}
+      # Used in application.properties to access the db.
       - PW_DB=${PW_DB}
-      - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
-      - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
-      - http_proxy=http://proxy.justiz.sachsen.de:3128
-      - https_proxy=http://proxy.justiz.sachsen.de:3128
+      # Used in application.properties. The password for the member of AD.
       - LDAP_DIR_CONTEXT_PASSWORD=${LDAP_DIR_CONTEXT_PASSWORD}
+      # Used in application.properties. The username of the member of AD.
       - LDAP_DIR_CONTEXT_PRINCIPAL=${LDAP_DIR_CONTEXT_PRINCIPAL}
+      # Used in application.properties. The url of the ldap/AD server.
       - LDAP_DIR_CONTEXT_URL=${LDAP_DIR_CONTEXT_URL}
+      # Used in application.properties. The base ou (organizational unit) if we look for groups.
       - LDAP_GROUP_BASE=${LDAP_GROUP_BASE}
+      # Used in application.properties. The filter if we look for groups.
       - LDAP_GROUP_FILTER=${LDAP_GROUP_FILTER}
+      # Used in application.properties. The filter if we look for users. Here we search for the mail under the condition that the objectClass is user.
       - LDAP_USER_FILTER=${LDAP_USER_FILTER}
+      # Used in application.properties. The base ou (organizational unit) if we look for users.
       - LDAP_USER_BASE=${LDAP_USER_BASE}
+      # Used in application.properties. The default dc (domain component).
       - LDAP_BASE=${LDAP_BASE}
+      # Error messages.
       - ERROR_USER_NOT_FOUND_IN_AD=${ERROR_USER_NOT_FOUND_IN_AD}
       - ERROR_USER_NOT_FOUND_IN_DAO=${ERROR_USER_NOT_FOUND_IN_DAO}
       - ERROR_WRONG_PW=${ERROR_WRONG_PW}
