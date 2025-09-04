@@ -36,15 +36,12 @@ RUN npm ci --omit=dev
 COPY public public
 COPY src src
 
-# 
-#RUN npm run build
-#RUN if [ "$TARGET" = "production_runtime" ]; then echo "ok1"; else echo "falsch1"; fi
 RUN if [ "$TARGET" = "production_runtime" ]; then \
         npm run build; \
     else \
         echo "falsch1"; \
     fi
-RUN echo "$TARGET"
+
 # Small image to serve the builded bundle
 FROM nginx:alpine AS production_runtime
 
@@ -59,3 +56,28 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
+
+FROM node:22 AS development_runtime
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+
+ARG REACT_APP_ERROR_USER_NOT_FOUND_IN_AD
+ENV REACT_APP_ERROR_USER_NOT_FOUND_IN_AD=$REACT_APP_ERROR_USER_NOT_FOUND_IN_AD
+
+ARG REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO
+ENV REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO=$REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO
+
+ARG REACT_APP_ERROR_WRONG_PW
+ENV REACT_APP_ERROR_WRONG_PW=$REACT_APP_ERROR_WRONG_PW
+
+WORKDIR /usr/src/app
+COPY tls tls
+ENV SSL_CRT_FILE=tls/jus-srv-test30.justiz.sachsen.de.crt
+ARG FRONTEND_KEY_FILE
+ENV SSL_KEY_FILE=tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
+ENV PORT=443
+ENV HTTPS=true
+COPY --from=builder /usr/src/app/ .
+CMD ["npm", "start" ]
