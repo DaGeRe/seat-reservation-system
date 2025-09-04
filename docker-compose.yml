@@ -7,6 +7,7 @@ services:
     build: 
       context: ${PROJECT_PATH}/frontend
       dockerfile: Dockerfile
+      target: ${FRONTEND_TARGET}
       pull: false
       # Things we need during build.
       args:
@@ -16,9 +17,11 @@ services:
         REACT_APP_ERROR_USER_NOT_FOUND_IN_AD: ${ERROR_USER_NOT_FOUND_IN_AD}
         REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO: ${ERROR_USER_NOT_FOUND_IN_DAO}
         REACT_APP_ERROR_WRONG_PW: ${ERROR_WRONG_PW}
+        TARGET: ${FRONTEND_TARGET}
     # Things we need in the running container.
     environment:
       - GENERATE_SOURCEMAP=false # important to supress some warnings
+      - FRONTEND_KEY_FILE=${FRONTEND_KEY_FILE}
     ports:
       - ${FRONTEND_PORT}:443
     networks:
