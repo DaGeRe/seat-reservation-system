@@ -102,7 +102,7 @@ const ManageSeries = () => {
                   <TableCell>{series.rangeDTO.endTime}</TableCell>
                   <TableCell>{series.desk.remark}</TableCell>
                   <TableCell>{series.room.remark}</TableCell>
-                  <TableCell>{series.room.building}</TableCell>
+                  <TableCell>{series.room.floorObj.building.name}</TableCell>
                   <TableCell>
                     <Button variant='contained' onClick={(_)=>{
                       setSelectedSeries(series);
