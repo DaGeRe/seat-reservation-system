@@ -33,7 +33,6 @@ const LoginPage = () => {
 
 
   async function login() {
-
     if (!isEmail(state.email.trim())) {
       dispatch({ type: 'updateField', field: 'loginError', value: t('invalidEmail')});
       return;
@@ -79,12 +78,6 @@ const LoginPage = () => {
     }
   }
 
-  const onKeyDown= (e) => {
-    if (e.key === 'Enter') {
-      login();
-    }
-  };
-
   return (
     <>
     <Box sx={styles.wrapper_sx}>
@@ -92,12 +85,20 @@ const LoginPage = () => {
         <h1 style={styles.h1}>{t('login')}</h1>
         <br/>
         <img src={'/Assets/flag.png'} alt='Flag' className='flag-image' />
+        <form
+          onSubmit={(e)=>{
+              // Prevent page reload. 
+              e.preventDefault();
+              login();
+            }
+          }
+        >
         <FormControl fullWidth required size='small'>
           <OutlinedInput
             id='email'
             type='text'
             value={state.email}
-            onKeyDown={onKeyDown}
+            //onKeyDown={onKeyDown}
             onChange={e => dispatch({type: 'updateField', field: 'email', value: e.target.value})}
             endAdornment={
               <InputAdornment
@@ -117,7 +118,7 @@ const LoginPage = () => {
             id='password'
             type='password'
             value={state.password}
-            onKeyDown={onKeyDown}
+            //onKeyDown={onKeyDown}
             onChange={e => dispatch({type: 'updateField', field: 'password', value:e.target.value})}
             endAdornment={
               <InputAdornment
@@ -133,9 +134,11 @@ const LoginPage = () => {
         <br/><br/>
 
         {state.loginError && <div id='loginErrorMsg' className='error'>{state.loginError}</div>}
-        <Button id='login_btn' type='submit'  color='primary' onClick={login} sx={styles.button_sx}>
+        <Button id='login_btn' type='submit' color='primary' onClick={login} sx={styles.button_sx}>
             {t('login')}
         </Button>
+        </form>
+ 
         
       </Box>
       
