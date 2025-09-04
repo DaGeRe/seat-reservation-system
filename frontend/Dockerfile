@@ -20,6 +20,8 @@ ENV REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO=$REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO
 ARG REACT_APP_ERROR_WRONG_PW
 ENV REACT_APP_ERROR_WRONG_PW=$REACT_APP_ERROR_WRONG_PW
 
+ARG TARGET
+
 # Copy needed packages.
 COPY package.json package-lock.json* ./
 # Proxy stuff to install packages
@@ -35,10 +37,16 @@ COPY public public
 COPY src src
 
 # 
-RUN npm run build
-
+#RUN npm run build
+#RUN if [ "$TARGET" = "production_runtime" ]; then echo "ok1"; else echo "falsch1"; fi
+RUN if [ "$TARGET" = "production_runtime" ]; then \
+        npm run build; \
+    else \
+        echo "falsch1"; \
+    fi
+RUN echo "$TARGET"
 # Small image to serve the builded bundle
-FROM nginx:alpine AS runtime
+FROM nginx:alpine AS production_runtime
 
 # Copy SSL files
 COPY tls/jus-srv-test30.justiz.sachsen.de.crt /etc/ssl/certs/jus-srv-test30.justiz.sachsen.de.crt
