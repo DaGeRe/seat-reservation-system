@@ -1,10 +1,10 @@
 FROM maven:3.8.4-openjdk-17-slim AS build
 
 # Set environment variables for paths
-ARG PROJECT_PATH
-ENV PROJECT_PATH=$PROJECT_PATH
-ARG PATH_TO_TLS
-ENV PATH_TO_TLS=$PATH_TO_TLS
+# ARG PROJECT_PATH
+# ENV PROJECT_PATH=$PROJECT_PATH
+# ARG PATH_TO_TLS
+# ENV PATH_TO_TLS=$PATH_TO_TLS
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
