@@ -38,8 +38,6 @@ COPY src src
 
 RUN if [ "$TARGET" = "production_runtime" ]; then \
         npm run build; \
-    else \
-        echo "falsch1"; \
     fi
 
 # Small image to serve the builded bundle
@@ -74,9 +72,6 @@ ENV REACT_APP_ERROR_WRONG_PW=$REACT_APP_ERROR_WRONG_PW
 
 WORKDIR /usr/src/app
 COPY tls tls
-ENV SSL_CRT_FILE=tls/jus-srv-test30.justiz.sachsen.de.crt
-ARG FRONTEND_KEY_FILE
-ENV SSL_KEY_FILE=tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
 ENV PORT=443
 ENV HTTPS=true
 COPY --from=builder /usr/src/app/ .
