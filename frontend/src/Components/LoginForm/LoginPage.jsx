@@ -31,7 +31,6 @@ const LoginPage = () => {
 
   const [state, dispatch] = useReducer(reducer, initState);
 
-
   async function login() {
     if (!isEmail(state.email.trim())) {
       dispatch({ type: 'updateField', field: 'loginError', value: t('invalidEmail')});
