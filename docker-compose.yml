@@ -12,7 +12,6 @@ services:
       # Things we need during build.
       args:
         PROJECT_PATH: ${PROJECT_PATH}
-        PATH_TO_TLS: ${PATH_TO_TLS}
         REACT_APP_BACKEND_URL: https://${IP}:${BACKEND_PORT}
         REACT_APP_ERROR_USER_NOT_FOUND_IN_AD: ${ERROR_USER_NOT_FOUND_IN_AD}
         REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO: ${ERROR_USER_NOT_FOUND_IN_DAO}
@@ -21,7 +20,8 @@ services:
     # Things we need in the running container.
     environment:
       - GENERATE_SOURCEMAP=false # important to supress some warnings
-      - FRONTEND_KEY_FILE=${FRONTEND_KEY_FILE}
+      - SSL_KEY_FILE=tls/${FRONTEND_KEY_FILE}
+      - SSL_CRT_FILE=tls/${FRONTEND_CRT_FILE}
     ports:
       - ${FRONTEND_PORT}:443
     networks:
@@ -48,7 +48,7 @@ services:
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}
-        PATH_TO_TLS: ${PATH_TO_TLS}
+        #PATH_TO_TLS: ${PATH_TO_TLS}
     ports:
       - ${BACKEND_PORT}:8080
     networks:
