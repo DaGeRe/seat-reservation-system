@@ -52,7 +52,7 @@ describe('', ()=> {
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {//cy.get('h1').should('exist').then(()=> {
                                             cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
-                                                cy.wait(2000).then(()=>{
+                                                cy.wait(3000).then(()=>{
                                                 cy.get('li#createSeries_building_all').click().then(()=>{
                                                     Cypress.Promise.all([
                                                         cy.setStr('startDate', startdate),
@@ -100,7 +100,7 @@ describe('', ()=> {
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {
                                             cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
-                                                cy.wait(2000).then(()=>{
+                                                cy.wait(3000).then(()=>{
                                                     cy.get('li#createSeries_building_all').click().then(()=>{
                                                         Cypress.Promise.all([
                                                             cy.setStr('startDate', startdate),
@@ -152,7 +152,7 @@ describe('', ()=> {
                                     cy.get('#root', { timeout: 10000 }).should('exist').then(()=>{
                                         cy.get('div#dates_label').should('exist').then(()=> {
                                             cy.get('div#div_createSeries_selectBuilding').click().then(()=>{
-                                                cy.wait(2000).then(()=>{
+                                                cy.wait(3000).then(()=>{
                                                     cy.get('li#createSeries_building_all').click().then(()=>{
                                                         Cypress.Promise.all([
                                                             cy.setStr('startDate', startdate),
