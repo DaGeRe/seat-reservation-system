@@ -37,7 +37,7 @@ export default function AddRoom({ isOpen, onClose }) {
       },
       () => {console.log('Failed to create room in AddRoom.jsx.')},
       JSON.stringify({
-        'type': type,
+        'type': type.roomTypeName,
         'floor_id': floor.floor_id,      
         'x': x,
         'y': y,
@@ -76,8 +76,8 @@ export default function AddRoom({ isOpen, onClose }) {
         />
         <RoomDefinition 
           t={t}
-          type={type}
-          setType={setType}
+          defaultRoomType={type}
+          setDefaultRoomType={setType}
           status_val={status}
           setStatus={setStatus}
           remark={remark}

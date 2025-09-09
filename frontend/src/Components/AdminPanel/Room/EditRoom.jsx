@@ -17,28 +17,29 @@ export default function EditRoom({ isOpen, onClose }) {
 
   // Set the default.
   useEffect(()=>{
-    if (room.type) setNewRoomType(room.type);
+    //console.log(room);
+    if (room.roomType) setNewRoomType(room.roomType);
     if (room.status) setNewRoomStatus(room.status);
     if (room.remark) setNewRoomRemark(room.remark);
   }, [room])
 
   async function updateRoom() {
+    // console.log(room.id,newRoomStatus, newRoomType, newRoomRemark);
     if (!room || room === '')
       return;
     putRequest( 
-      //`${process.env.REACT_APP_BACKEND_URL}/rooms`,
       `${process.env.REACT_APP_BACKEND_URL}/admin/rooms`,
       headers.current,
       (_) => {
         toast.success(t('roomChangedSuccessfully'));
-        onClose();//editRoomModal();
+        onClose();
       },
       () => {console.log('Failed to handle room change in EditRoom.jsx');},
       JSON.stringify(
         { 
           'room_id': room.id,
           'status': newRoomStatus,
-          'type': newRoomType,
+          'type': newRoomType.roomTypeName,
           'remark': newRoomRemark
         }
       )
@@ -73,8 +74,8 @@ export default function EditRoom({ isOpen, onClose }) {
             <h2>{roomToOption(room)}</h2>
             <RoomDefinition 
               t={t}
-              type={newRoomType}
-              setType={setNewRoomType}
+              defaultRoomType={newRoomType}
+              setDefaultRoomType={setNewRoomType}
               status_val={newRoomStatus}
               setStatus={setNewRoomStatus}
               remark={newRoomRemark}

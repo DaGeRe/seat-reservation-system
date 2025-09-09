@@ -133,8 +133,8 @@ const RoomSearch = () => {
                   {rooms.map(room => (
                     <TableRow key={room.id} id={room.id}>
                       <TableCell id={`${room.id}_remark`}>{room.remark}</TableCell>
-                      <TableCell id={`${room.id}_buildingName`}> {room.floorObj.building.name}</TableCell>
-                      <TableCell id={`${room.id}_floorName`}>{room.floorObj.name}</TableCell>
+                      <TableCell id={`${room.id}_buildingName`}> {room.floor.building.name}</TableCell>
+                      <TableCell id={`${room.id}_floorName`}>{room.floor.name}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

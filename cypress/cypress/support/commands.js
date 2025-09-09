@@ -240,7 +240,6 @@ Cypress.Commands.add('getAmountOfUsersForMail', (mail) => {
 // ##################################################################
 
 Cypress.Commands.add('setFloor', (buildingId, floorId, imgSrc) => {
-  //cy.task('log', `${buildingId} ${floorId} ${imgSrc}`)
   cy.get('div#Floor_FloorImage_floorSelector_setBuilding').click().then(()=>{
     cy.wait(1000).then(()=>{
       cy.get(`li#Floor_FloorImage_building_${buildingId}`).click().then(()=>{
@@ -288,28 +287,23 @@ Cypress.Commands.add('rmRoom', (buildingId, floorId, roomRemark, imgSrc) => {
   })
 });
 
-Cypress.Commands.add('addRoom', (buildingId, floorId, roomRemark, imgSrc) => {
-  cy.visit('/admin').then(()=>{
-    cy.get('button#roomManagement').click().then(()=>{
-      cy.get('button#addRoom').click().then(()=>{
-        cy.setFloor(buildingId, floorId, imgSrc).then(()=>{    
-          Cypress.Promise.all([
-            cy.setStr('roomDefinition_setType', 'Normal'),
-            cy.setStr('roomDefinition_setStatus', 'enable'),
-            cy.setStr('roomDefinition_setRemark', roomRemark)
-          ]).then(()=> {
-            cy.get('img').click().then(()=>{
-              cy.get('button#modal_submit').click().then(()=>{
-                cy.get('.Toastify__toast').should('be.visible').contains('Room was created successfully').then(()=>{
-                  return cy.wrap('1');
-                });
-              });
-            })
-          })
-        })
-      })      
-    })
-  })
+Cypress.Commands.add('addRoom', (buildingId, floorId, roomRemark, imgSrc, roomType='normal', status='enable') => {
+  cy.visit('/admin')
+  .get('button#roomManagement').click()
+  .get('button#addRoom').click()
+  .setFloor(buildingId, floorId, imgSrc).then(()=>{
+    Cypress.Promise.all([
+      cy.setStr('roomDefinition_setType', roomType),
+      cy.setStr('roomDefinition_setStatus', status),
+      cy.setStr('roomDefinition_setRemark', roomRemark)
+    ]).then(()=> {
+      cy.get('img').click()
+      .get('button#modal_submit').click()
+      .get('.Toastify__toast').should('be.visible').contains('Room was created successfully').then(()=>{
+        return cy.wrap('1');
+      });
+    });   
+  }); 
 });
 
 Cypress.Commands.add('rmDesk', (buildingId, floorId, roomRemark, imgSrc, deskRemark) => {

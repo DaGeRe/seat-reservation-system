@@ -1,23 +1,67 @@
-
 import { FormControl, TextField, InputLabel, MenuItem, Select} from '@mui/material';
+import { useRef, useState, useEffect } from 'react';
 
-export default function RoomDefinition({t, type, setType, status_val, setStatus, remark, setRemark}) {
+import { getRequest } from '../../RequestFunctions/RequestFunctions';
+
+export default function RoomDefinition({t, defaultRoomType, setDefaultRoomType, status_val, setStatus, remark, setRemark}) {
+    const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+    const [roomTypes, setRoomTypes] = useState([]);
+    // useEffect(()=>{
+    //     console.log(roomTypes);
+    // },[roomTypes]);
+    // useEffect(()=>{
+    //     console.log(defaultRoomType);
+    // }, [defaultRoomType]);
+
+    // Fetch all room types.
+    useEffect(()=>{
+        getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/roomTypes`,
+            headers.current,
+            setRoomTypes,
+            () => {
+                console.log('Error fetching roomTypes in RoomDefinition.js');
+            }
+        );
+    }, []);
+
+    // Set the default room type if it is not defined.
+    useEffect(()=>{
+        /**
+         * First we check if the default room type is not defined or an empty string.
+         * This means that the father component dont provide a default value for this.
+         * In conclusion we set one type as default. 
+         * This happens e.g. when we add a new room.
+         */
+        if (
+            (!defaultRoomType || defaultRoomType === '') &&
+            (roomTypes && roomTypes.length > 0)
+        ) {
+            setDefaultRoomType(roomTypes[0]);
+        }
+    }, [roomTypes, defaultRoomType, setDefaultRoomType])
+
     return (
         <div>
             <br></br> <br></br>
             <FormControl id='roomDefinition_setType' required={true} fullWidth>
                 <InputLabel id='demo-simple-select-label'>{t('type')}</InputLabel>
-                    <Select
+                    {defaultRoomType && roomTypes && roomTypes.length > 0 && <Select
                         labelId='demo-simple-select-label'
-                        id='demo-simple-select'
-                        data-testid='select_type'
-                        value={type}
+                        id='select_type'
+                        value={defaultRoomType.roomTypeName}
                         label={t('type')}
-                        onChange={(e)=>setType(e.target.value)}
+                        onChange={e=>{
+                            const roomTypeName = e.target.value;
+                            setDefaultRoomType(roomTypes.find(rt => rt.roomTypeName === roomTypeName));
+                        }}
                     >
-                        <MenuItem value={'Silence'}>{t('silence').toUpperCase()}</MenuItem>
-                        <MenuItem value={'Normal'}>{t('normal').toUpperCase()}</MenuItem>
-                    </Select>
+                        {
+                            roomTypes.map(roomType => {
+                                return <MenuItem key={roomType.roomTypeId} value={roomType.roomTypeName}>{t(roomType.roomTypeName)}</MenuItem>
+                            })
+                        }
+                    </Select>}
             </FormControl>
             <br></br> <br></br>
             <FormControl id='roomDefinition_setStatus' required={true} fullWidth>

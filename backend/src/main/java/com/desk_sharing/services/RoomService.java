@@ -2,6 +2,7 @@ package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.RoomType;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
@@ -21,12 +22,14 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final FloorRepository floorRepository;
     private final DeskService deskService;
+    private final RoomTypeService roomTypeService;
 
     public Room saveRoom(RoomDTO roomDTO) {
         final Room newRoom = new Room();
-        newRoom.setType(roomDTO.getType());
-        newRoom.setFloor("deprecated"); // Important! col is not null
-        newRoom.setFloorObj(floorRepository.getFloorByFloorId(roomDTO.getFloor_id()));
+        //newRoom.setType(roomDTO.getType());
+        newRoom.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
+        //newRoom.setFloor("deprecated"); // Important! col is not null
+        newRoom.setFloor(floorRepository.getFloorByFloorId(roomDTO.getFloor_id()));
         newRoom.setX(roomDTO.getX());
         newRoom.setY(roomDTO.getY());
         newRoom.setStatus(roomDTO.getStatus());
@@ -57,7 +60,7 @@ public class RoomService {
         final Room room = optRoom.get();
         room.setRemark(roomDTO.getRemark());
         room.setStatus(roomDTO.getStatus());
-        room.setType(roomDTO.getType());
+        room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         return roomRepository.save(room);
     }
     

@@ -36,8 +36,8 @@ const DeskTable = ({name, desks, submit_function}) =>{
                                 <TableCell>{desk.remark}</TableCell>
                                 <TableCell>{desk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
                                 <TableCell>{desk.room.remark}</TableCell>
-                                <TableCell>{desk.room.floorObj.building.name}</TableCell>
-                                <TableCell>{desk.room.floorObj.name}</TableCell>
+                                <TableCell>{desk.room.floor.building.name}</TableCell>
+                                <TableCell>{desk.room.floor.name}</TableCell>
                                 <TableCell>
                                     <Button id={`sbmt_btn_${desk.remark}`} variant='contained' onClick={(_)=>{
                                         submit_function(desk);}}>
