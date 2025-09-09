@@ -1,32 +1,33 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, TextField } from '@mui/material';
+import MySelectComponent from '../../misc/MySelectComponent';
 
 export default function WorkStationDefinition({
     t, 
     equipment, 
     setEquipment,
     remark,
-    setRemark}) {
-
+    setRemark,
+    disabled=false
+}) {
+    
     return (
-        <div>
-            <FormControl id='workstationDefinition_setEquipment' fullWidth size='small'>
-                <InputLabel id='demo-simple-select-label'>{t('equipment')}</InputLabel>
-                <Select
-                    size='small'
-                    labelId="demo-simple-select-label"
-                    id='select_equipment'
-                    value={equipment}
-                    placeholder='Equipments'
-                    label='Equipments'
-                    onChange={(e) => setEquipment(e.target.value)}
-                >
-                    <MenuItem value={'with equipment'}>{t('withEquipment').toUpperCase()}</MenuItem>
-                    <MenuItem value={'without equipment'}>{t('withoutEquipment').toUpperCase()}</MenuItem>
-                </Select>
-            </FormControl>
-            <br></br><br></br>
-            <FormControl id='workStationDefinition_setRemark' required={false} size='small' fullWidth variant='standard'>
+        <>
+            
+            {/*equipment &&*/ <MySelectComponent 
+                t={t}
+                id={'workstationDefinition_setEquipment'}
+                name='equipment'
+                disabled={disabled}
+                value={equipment}
+                setValue={setEquipment}
+                url='equipments'
+                propertyName='equipmentName'
+                idName='equipmentId'
+            />}
+            <br/><br/>
+            {/*remark &&*/ <FormControl id='workStationDefinition_setRemark' required={false} size='small' fullWidth variant='standard'>
                 <TextField
+                    disabled={disabled}
                     id='textfield_desk_remark'
                     data-testid='textfield_desk_remark'
                     label={t('deskRemark')}
@@ -35,8 +36,8 @@ export default function WorkStationDefinition({
                     value={remark}
                     onChange={(e)=>setRemark(e.target.value)}
                 />
-            </FormControl>
-        </div>
+            </FormControl>}
+        </>
     );
 }
 

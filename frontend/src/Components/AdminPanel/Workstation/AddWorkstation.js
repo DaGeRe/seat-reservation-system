@@ -29,7 +29,6 @@ export default function AddWorkstation({ isOpen, onClose }) {
       return false;
     }
     postRequest(
-      //`${process.env.REACT_APP_BACKEND_URL}/desks`,
       `${process.env.REACT_APP_BACKEND_URL}/admin/desks`,
       headers.current,
       (_) => {
@@ -39,7 +38,7 @@ export default function AddWorkstation({ isOpen, onClose }) {
       () => {console.log('Failed to create a new desk in AddWorkstation.js.');},
       JSON.stringify({
         'roomId': roomId,
-        'equipment': equipment,
+        'equipment': equipment.equipmentName,
         'remark': remark
       })
     );

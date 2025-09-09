@@ -5,9 +5,7 @@ import com.desk_sharing.entities.Room;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
-import com.desk_sharing.repositories.FloorRepository;
 import com.desk_sharing.repositories.RoomRepository;
-
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ import java.util.Optional;
 public class RoomService {
     private final DeskRepository deskRepository;
     private final RoomRepository roomRepository;
-    private final FloorRepository floorRepository;
+    private final FloorService floorService;
     private final DeskService deskService;
     private final RoomTypeService roomTypeService;
     private final RoomStatusService roomStatusService;
@@ -27,13 +25,26 @@ public class RoomService {
     public Room saveRoom(RoomDTO roomDTO) {
         final Room newRoom = new Room();
         newRoom.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
-        newRoom.setFloor(floorRepository.getFloorByFloorId(roomDTO.getFloor_id()));
+        newRoom.setFloor(floorService.getFloorByFloorId(roomDTO.getFloor_id()));
         newRoom.setX(roomDTO.getX());
         newRoom.setY(roomDTO.getY());
         newRoom.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
         newRoom.setRemark(roomDTO.getRemark());
         return roomRepository.save(newRoom);
     }
+
+    public Room updateRoom(RoomDTO roomDTO) {
+        final Optional<Room> optRoom = roomRepository.findById(roomDTO.getRoom_id());
+        if (!optRoom.isPresent())
+            return null;
+        final Room room = optRoom.get();
+        room.setRemark(roomDTO.getRemark());
+        room.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
+        room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
+        return roomRepository.save(room);
+    }
+
+
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
@@ -51,16 +62,7 @@ public class RoomService {
         return roomRepository.findById(id);
     }
 
-    public Room updateRoom(RoomDTO roomDTO) {
-        final Optional<Room> optRoom = roomRepository.findById(roomDTO.getRoom_id());
-        if (!optRoom.isPresent())
-            return null;
-        final Room room = optRoom.get();
-        room.setRemark(roomDTO.getRemark());
-        room.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
-        room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
-        return roomRepository.save(room);
-    }
+
     
     public List<Room> getByMinimalAmountOfWorkstations(int minimalAmountOfWorkstations) {
         return roomRepository.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations);
@@ -94,7 +96,8 @@ public class RoomService {
 
     public boolean deleteRoomFf(Long id) {
         try {
-            List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
+            // Delete desks for this room.
+            final List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
             for (Desk desk: desksPerRoom) {
                 deskService.deleteDeskFf(desk.getId());
             }

@@ -50,7 +50,7 @@ const FloorSelector = ({
               `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
               headers.current,
               received_defaultFloor => {
-                if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
+                if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.id) {
                   setBuilding(received_defaultFloor.building);
                 }
                 else {
@@ -75,10 +75,10 @@ const FloorSelector = ({
    * floor as the current one. Also do so if the user has no default floor.
    */
   useEffect(() => {
-    if (!building.building_id)
+    if (!building.id)
       return;
     getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/floors/getAllFloorsForBuildingId/${building.building_id}`,
+      `${process.env.REACT_APP_BACKEND_URL}/floors/getAllFloorsForBuildingId/${building.id}`,
       headers.current,
       received_floors => {
         setFloors(received_floors);
@@ -110,7 +110,7 @@ const FloorSelector = ({
           console.log('Error fetching floors in fetchFloors.js');
       }
     );
-  }, [building.building_id]);
+  }, [building.id]);
 
   return (
     <>
@@ -119,16 +119,16 @@ const FloorSelector = ({
             <Select
                 id={`${idString}_select-building`}
                 value={
-                  building !== '' ? building.building_id : ''
+                  building !== '' ? building.id : ''
                 }
                 label={t('building')}
                 onChange={(e) => {
                   setFloor('');
-                  setBuilding(buildings.find(b => b.building_id === e.target.value) || '');
+                  setBuilding(buildings.find(b => b.id === e.target.value) || '');
                 }}
             >
               {buildings.map(e => {
-                  return <MenuItem id={`${idString}_building_${e.building_id}`} key={e.building_id} value={e.building_id}>{e.name}</MenuItem>;
+                  return <MenuItem id={`${idString}_building_${e.id}`} key={e.id} value={e.id}>{e.name}</MenuItem>;
               })}
             </Select>
         </FormControl>

@@ -1,45 +1,31 @@
-import { roomToOption} from '../Room/RoomAndOption';
-import React, { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import DeleteFf from '../../DeleteFf';
-import {deskToOption, isOptionEqualToValue_Desk} from './DeskAndOption';
-import {getRequest, deleteRequest} from '../../RequestFunctions/RequestFunctions';
+import { deleteRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
 import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
+import WorkStationDefinition from './WorkStationDefinition.js';
 
 export default function DeleteWorkstation({ onClose, isOpen }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [allDesks, setAllDesks] = React.useState([]);
-  const [room, setRoom]= React.useState('');
-  const [selectedDeskId, setSelectedDeskId]= React.useState('');
-  const [openFfDialog, setOpenFfDialog] = React.useState(false);
+  const [room, setRoom]= useState('');
+  const [selectedDesk, setSelectedDesk] = useState('');
+  const [openFfDialog, setOpenFfDialog] = useState(false);
 
   const helpText = t('helpDeleteWorkstation');
-
-  function getDeskByRoomId(roomId) {
-    if(roomId) {
-      getRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/room/${roomId}`,
-        headers.current,
-        setAllDesks,
-        () => {console.log(`Failed to fetch all desks for roomid ${roomId} in DeleteWorkstation.js`);},
-      );
-    }
-  };
 
   /**
    * Delete the desk identified by selectedDeskId 
    * @param {*} urlExtension Is set to 'ff/' if fast forward deletion is needed. This means also delete all bookings associated wit this desk.
    */
   async function deleteWorkstation (urlExtension = '') {
-    if(selectedDeskId){
+    if(selectedDesk?.id){
       deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/${urlExtension}${selectedDeskId}`,
-        //`${process.env.REACT_APP_BACKEND_URL}/desks/${urlExtension}${selectedDeskId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/admin/desks/${urlExtension}${selectedDesk.id}`,
         headers.current,
         (data) => {
           if (data !== 0) {
@@ -64,12 +50,11 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
    * @param {*} data Object with properties floor, room, x, y. 
    */
   const handleChildData = (data) => {
-    if (!data || data.room === '') 
+    if (!data || data.room === '' || data.room.id === room.id) {
       return;
-    if (data.room.id === room.id)
-      return;
+    }
     setRoom(data.room);
-    getDeskByRoomId(data.room.id);
+    setSelectedDesk('');
   };
 
   return (
@@ -93,13 +78,17 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
       />
       <DeskSelector
         selectedRoom={room}
-        allDesks={allDesks}
-        setSelectedDeskId={setSelectedDeskId}
-        roomToOption={roomToOption}
-        deskToOption={deskToOption}
-        isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
         t={t}
+        onChangeSelectedDesk={setSelectedDesk}
       />
+      {selectedDesk &&
+        <WorkStationDefinition 
+          t={t}
+          equipment={selectedDesk.equipment}
+          remark={selectedDesk.remark}
+          disabled={true}
+        />
+      }
     </LayoutModalAdmin>
   );
 }

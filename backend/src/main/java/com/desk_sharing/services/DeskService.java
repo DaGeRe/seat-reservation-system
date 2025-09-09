@@ -14,6 +14,7 @@ import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import com.desk_sharing.repositories.BookingRepository;
@@ -25,26 +26,25 @@ public class DeskService {
     private final BookingRepository bookingRepository;
     private final SeriesRepository seriesRepository;
     private final SeriesService seriesService;
+    private final EquipmentService equipmentService;
+    //private final RoomService roomService;
     private final RoomRepository roomRepository;
 
     public Desk saveDesk(DeskDTO deskDto) {
-        Optional<Room> optional = roomRepository.findById(deskDto.getRoomId());
-        if(optional.isPresent()) {
-    	    Desk desk = new Desk();
-    	    desk.setRoom(optional.get());
-    		desk.setEquipment(deskDto.getEquipment());
-            desk.setRemark(deskDto.getRemark());
-            List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
-            Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
+        final Desk desk = new Desk();
+        final Room room = roomRepository.findById(deskDto.getRoomId())
+            .orElseThrow(() -> new EntityNotFoundException("Room not found in DeskService.saveDesk : " + deskDto.getRoomId()));
+        desk.setRoom(room);
+        desk.setEquipment(equipmentService.getEquipmentByEquipmentName(deskDto.getEquipment()));
+        desk.setRemark(deskDto.getRemark());
+        final List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
+        final Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
             .filter(d -> d.getDeskNumberInRoom() != null)
             .map(Desk::getDeskNumberInRoom)
             .max(Long::compareTo)
             .orElse((long)0);
-            desk.setDeskNumberInRoom((long)newDeskNumberInRoom);
-    		return deskRepository.save(desk);
-    	} else {
-    		return null;
-    	}
+        desk.setDeskNumberInRoom((long)newDeskNumberInRoom);
+        return deskRepository.save(desk);
     }
 
     public List<Desk> getAllDesks() {
@@ -59,16 +59,12 @@ public class DeskService {
         return deskRepository.findByRoomId(roomId);
     }
 
-    public Desk updateDesk(Long id, String equipment, String remark) {
-        Optional<Desk> optional = getDeskById(id);
-        if(optional.isPresent()) {
-        	Desk desk = optional.get();
-        	desk.setEquipment(equipment);
-            desk.setRemark(remark);
-        	return deskRepository.save(desk);
-        } 
-        return null;
-        
+    public Desk updateDesk(Long deskId, String equipment, String remark) {
+        final Desk desk = getDeskById(deskId)
+            .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.updateDesk : " + deskId));
+        desk.setEquipment(equipmentService.getEquipmentByEquipmentName(equipment));
+        desk.setRemark(remark);
+        return deskRepository.save(desk);
     }
 
     public int deleteDesk(Long id) {

@@ -1,67 +1,79 @@
-import {TextField } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import React from 'react';
+import { MenuItem,FormControl, Select, Typography } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import {useEffect, useState, useRef} from 'react';
+
+import { getRequest } from './RequestFunctions/RequestFunctions';
 
 export default function DeskSelector(
     {
         selectedRoom,
-        allDesks,
-        roomToOption,
-        setSelectedDeskId,
-        setEquipment,
-        setRemark,
-        t
+        t,
+        onChangeSelectedDesk
     }
 ) {
+    const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+    const [desks, setDesks] = useState([]);
+
+
+
+    useEffect(()=>{
+        // Set defaults.
+        setDesks([]);
+        
+        if (!selectedRoom)
+            return;
+
+        getRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/admin/desks/room/${selectedRoom.id}`,
+            headers.current,
+            d => {
+                setDesks(d);
+                if (d.length < 1) {
+                    onChangeSelectedDesk('');
+                }
+                else {
+                    onChangeSelectedDesk(d[0]);
+                }
+            },
+            () => {console.log('Failed to fetch all desks in DeskSelector.js.');},
+            headers
+            );
+    }, [selectedRoom, onChangeSelectedDesk]);
+
     return (
-        selectedRoom && (
-            <div>
-                <h2>{roomToOption(selectedRoom)}</h2>
-                {allDesks && allDesks.length > 0 ? (
-                <div>
-                    <Autocomplete
-                    id='tags-filled'
-                    fullWidth
-                    options={
-                        allDesks.map(
-                            (desk) => {
-                                const equipment = desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment');
-                                return desk.deskNumberInRoom + '-' + equipment  + '-' + desk.remark;
+        selectedRoom && (<>
+            <Typography>{selectedRoom.remark}</Typography>
+            {selectedRoom && desks?.length > 0 ? 
+                    
+                    <div style={{ display: 'flex', gap: '.2rem' }}>
+                        <Typography>{t('chooseDesk')}</Typography>
+                        <FormControl 
+                            id='deskSelector'>
+                        <Select
+                            
+                            value=''
+                            label={t('desk')}
+                            onChange={e => onChangeSelectedDesk(desks.find(d => d['id'] === e.target.value))}
+                            variant='standard'
+                            disableUnderline
+                            IconComponent={ArrowDropDownIcon}
+                            sx={{
+                                minWidth: 'unset',
+                                padding: 0,
+                                '& .MuiSelect-select': {
+                                    padding: 0,
+                                },
+                            }}
+                        >
+                            {
+                                desks.map(desk => {
+                                    return <MenuItem id={`selectDeskForRoom_${desk.id}`} key={desk.id} value={desk.id}>{desk.remark}</MenuItem>;
+                                })
                             }
-                        )
-                    }
-                    freeSolo={false} // Eingabe ist deaktiviert
-                    onChange={(_, option) => {
-                        const array = option.split('-');
-                        const currDeskNumberInRoom = array[0];
-                        const currEquipment_translated = array[1];
-                        const currEquipment = currEquipment_translated === 'Mit Austattung' ? 'with equipment' : 'without equipment';
-                        const currRemark = array[2];
-                        const deskId = allDesks.find(desk => desk.deskNumberInRoom.toString() === currDeskNumberInRoom).id;
-                        
-                        setSelectedDeskId(deskId);
-                        if (setRemark)
-                            setRemark(currRemark);
-                        if (setEquipment)
-                            setEquipment(currEquipment);
-                    }}
-                    renderInput={(params) => (
-                        <div id='textfield_desk_in_room'>
-                            <TextField
-                                {...params}
-                                variant='outlined'
-                                size='small'
-                                disabled
-                                placeholder={t('selectDesk')}
-                            />
-                        </div>
-                    )}
-                    />
-                </div>
-                ) : (
-                <div>{t('noWorkstationForThisRoom')}</div>
-                )}
-            </div>
-        )
+                        </Select>
+                        </FormControl>
+                    </div>
+                : <div>{t('noWorkstationForThisRoom')}</div>}
+        </>)
     );
 };

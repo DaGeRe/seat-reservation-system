@@ -34,7 +34,7 @@ const DeskTable = ({name, desks, submit_function}) =>{
                         desks.map((desk) => (
                             <TableRow id={name+'_'+desk.remark} key={desk.id}>
                                 <TableCell>{desk.remark}</TableCell>
-                                <TableCell>{desk.equipment  === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}</TableCell>
+                                <TableCell>{t(desk.equipment.equipmentName)}</TableCell>
                                 <TableCell>{desk.room.remark}</TableCell>
                                 <TableCell>{desk.room.floor.building.name}</TableCell>
                                 <TableCell>{desk.room.floor.name}</TableCell>

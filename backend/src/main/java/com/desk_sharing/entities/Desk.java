@@ -19,8 +19,12 @@ public class Desk {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
     
-    @Column(name = "equipment", nullable = false)
-    private String equipment;
+    // @Column(name = "equipment", nullable = false)
+    // private String equipment;
+
+    @ManyToOne(cascade =  { CascadeType.PERSIST })
+    @JoinColumn(name = "equipmentId", nullable = false)
+    private Equipment equipment;
 
     @Column(name = "remark", nullable = true)
     private String remark;
@@ -29,8 +33,8 @@ public class Desk {
     @Column(name = "deskNumberInRoom", nullable = true)
     private Long deskNumberInRoom;
 
-    public Desk(Room room, String equipment) {
-        this.room = room;
-        this.equipment = equipment;
-    }
+    // public Desk(Room room, String equipment) {
+    //     this.room = room;
+    //     this.equipment = equipment;
+    // }
 }

@@ -17,134 +17,106 @@ describe('', ()=>{
         });
     })
     
-    it('test register with same mail', ()=>{
-        cy.login().then(()=>{
-            cy.visit('/admin').then(()=>{
-                cy.url().should('contains', '/admin').then(()=> {
-                    cy.get('button#userManagement').click().then(()=>{
-                        cy.get('button#addEmployee').click().then(()=>{
-                            cy.get('h2').should('be.visible').then(()=>{//cy.get('h2#customized-dialog-title').should('be.visible').then(()=>{
-                                Cypress.Promise.all([
-                                    cy.setStr('addEmployee-setEmail', mail),
-                                    cy.setStr('addEmployee-setPassword', pw1),
-                                    cy.setStr('addEmployee-setName', vorname1),
-                                    cy.setStr('addEmployee-setSurname', nachname)
-                                ]).then(()=>{
-                                    cy.get('button#modal_submit').click().then(()=>{//cy.contains('button', /SUBMIT/).click().then(()=>{
-                                            cy.get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
-                                            return cy.wrap('1');
-                                        })
-                                    });
-                                });;
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    })
+    // it('test register with same mail', ()=>{
+    //     cy.login()
+    //     .visit('/admin')
+    //     .url().should('contains', '/admin')
+    //     .get('button#userManagement').click()
+    //     .get('button#addEmployee').click()
+    //     .get('h2').should('be.visible').then(()=>{
+    //         Cypress.Promise.all([
+    //             cy.setStr('addEmployee-setEmail', mail),
+    //             cy.setStr('addEmployee-setPassword', pw1),
+    //             cy.setStr('addEmployee-setName', vorname1),
+    //             cy.setStr('addEmployee-setSurname', nachname)
+    //         ]).then(()=>{
+    //             cy.get('button#modal_submit').click()
+    //             .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
+    //                 return cy.wrap('1');
+    //             })
+    //         })
+    //     })
+    // })
 
-    it('test register with same mail with leading whitespace', ()=>{
-        cy.login().then(()=>{
-            cy.visit('/admin').then(()=>{
-                cy.url().should('contains', '/admin').then(()=> {
-                    cy.get('button#userManagement').click().then(()=>{
-                        cy.get('button#addEmployee').click().then(()=>{
-                            cy.get('h2').should('be.visible').then(()=>{//cy.get('h2#customized-dialog-title').should('be.visible').then(()=>{
-                                Cypress.Promise.all([
-                                    cy.setStr('addEmployee-setEmail', ' ' + mail),
-                                    cy.setStr('addEmployee-setPassword', pw1),
-                                    cy.setStr('addEmployee-setName', vorname1),
-                                    cy.setStr('addEmployee-setSurname', nachname)
-                                ]).then(()=>{
-                                    cy.get('button#modal_submit').click().then(()=>{//cy.contains('button', /SUBMIT/).click().then(()=>{
-                                            cy.get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
-                                            return cy.wrap('1');
-                                        })
-                                    });
-                                });;
-                            });
-                        })
-                    });
-                });
-            });
-        });
-    })
+    // it('test register with same mail with leading whitespace', ()=>{
+    //     cy.login()
+    //     .visit('/admin')
+    //     .url().should('contains', '/admin')
+    //     .get('button#userManagement').click()
+    //     .get('button#addEmployee').click()
+    //     .get('h2').should('be.visible').then(()=>{
+    //         Cypress.Promise.all([
+    //             cy.setStr('addEmployee-setEmail', ' ' + mail),
+    //             cy.setStr('addEmployee-setPassword', pw1),
+    //             cy.setStr('addEmployee-setName', vorname1),
+    //             cy.setStr('addEmployee-setSurname', nachname)
+    //         ]).then(()=>{
+    //             cy.get('button#modal_submit').click()
+    //             .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
+    //                 return cy.wrap('1');
+    //             })
+    //         });
+    //     })                 
+    // })
 
     it('test change admin', ()=>{
         cy.login(mail, pw1).then(()=>{
-            // No admin
-            cy.contains('span', 'Admin').should('not.exist').then(()=>{
-                cy.logout().then(()=>{
-                    cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
-                        cy.visit('/admin').then(()=>{
-                            cy.get('button#userManagement').click().then(()=>{
-                                cy.get('button#editEmployee').click().then(()=>{
-                                    Cypress.Promise.all([
-                                        cy.get('input#checkbox_handleCheckboxChange').click(),
-                                        cy.get('div#filterEmployee_handleFieldChange').click().then(()=>{
-                                            cy.get('[data-value="email"]').click()
-                                        }),
-                                        cy.get('div#filterEmployee_handleConditionChange').click().then(()=>{
-                                            cy.get('[data-value="is_equal"]').click()
-                                        }),
-                                        cy.get('div#filterEmployee_handleTextChange').find('input').type(mail)
-                                    ]).then(()=>{
-                                        cy.get(`[id="${mail}"]`).find('button').click().then(()=>{
-                                            cy.get('label#radioAdmin_true').click().then(()=>{
-                                                cy.get('button#modal_submit').click().then(()=>{
-                                                    cy.logout().then(()=>{
-                                                        cy.login(mail, pw1).then(()=>{
-                                                            // admin
-                                                            cy.contains('span', 'Admin').should('exist').then(()=>{
-                                                                cy.logout().then(()=>{
-                                                                    cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW')).then(()=>{
-                                                                        cy.visit('/admin').then(()=>{
-                                                                            cy.get('button#userManagement').click().then(()=>{
-                                                                                cy.get('button#editEmployee').click().then(()=>{
-                                                                                    Cypress.Promise.all([
-                                                                                        cy.get('input#checkbox_handleCheckboxChange').click(),
-                                                                                        cy.get('div#filterEmployee_handleFieldChange').click().then(()=>{
-                                                                                            cy.get('[data-value="email"]').click()
-                                                                                        }),
-                                                                                        cy.get('div#filterEmployee_handleConditionChange').click().then(()=>{
-                                                                                            cy.get('[data-value="is_equal"]').click()
-                                                                                        }),
-                                                                                        cy.get('div#filterEmployee_handleTextChange').find('input').type(mail)
-                                                                                    ]).then(()=>{
-                                                                                        cy.get(`[id="${mail}"]`).find('button').click().then(()=>{
-                                                                                            cy.get('label#radioAdmin_false').click().then(()=>{
-                                                                                                cy.get('button#modal_submit').click().then(()=>{
-                                                                                                    cy.logout().then(()=>{
-                                                                                                        cy.login(mail, pw1).then(()=>{
-                                                                                                            // No admin
-                                                                                                            cy.contains('span', 'Admin').should('not.exist');
-                                                                                                        })
-                                                                                                    })
-                                                                                                })
-                                                                                            })
-                                                                                        })
-                                                                                    })
-                                                                                })
-                                                                            })
-                                                                        })
-                                                                    })
-                                                                })
-                                                            })
-                                                        })
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
+        // No admin
+        cy.contains('span', 'Admin').should('not.exist')
+        .logout()
+        .login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW'))
+        .visit('/admin')
+        .get('button#userManagement').click()
+        .get('button#editEmployee').click()
+            // Search for user with mail
+            Cypress.Promise.all([
+                cy.get('input#checkbox_handleCheckboxChange').click(),
+                cy.get('div#filterEmployee_handleFieldChange').click()
+                    .get('[data-value="email"]').click()
+                ,
+                cy.get('div#filterEmployee_handleConditionChange').click()
+                    .get('[data-value="is_equal"]').click()
+                ,
+                cy.get('div#filterEmployee_handleTextChange').find('input').type(mail)
+            ]).then(()=>{
+                // Set user with mail to admin
+                cy.get(`[id="${mail}"]`).find('button').click()
+                .get('label#radioAdmin_true').click()
+                .get('button#modal_submit').click()
+                .logout()
+                .login(mail, pw1).then(()=>{
+                    // admin
+                    cy.contains('span', 'Admin').should('exist')
+                    .logout()
+                    .login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW'))
+                    .visit('/admin')
+                    .get('button#userManagement').click()
+                    .get('button#editEmployee').click()
+                    Cypress.Promise.all([
+                        cy.get('input#checkbox_handleCheckboxChange').click(),
+                        cy.get('div#filterEmployee_handleFieldChange').click()
+                            .get('[data-value="email"]').click()
+                        ,
+                        cy.get('div#filterEmployee_handleConditionChange').click()
+                            .get('[data-value="is_equal"]').click()
+                        ,
+                        cy.get('div#filterEmployee_handleTextChange').find('input').type(mail)
+                    ]).then(()=>{
+                        // Reset user with mail to non admin
+                        cy.get(`[id="${mail}"]`).find('button').click()
+                        .get('label#radioAdmin_false').click()
+                        .get('button#modal_submit').click()
+                        .logout()
+                        .login(mail, pw1).then(()=>{
+                            // No admin
+                            cy.contains('span', 'Admin').should('not.exist');
                         })
                     })
-                })      
+                })
             })
-        });
-    });
+        })
+    })
+
     
     it('test change password', ()=>{
         cy.login(mail, pw1).then(()=>{
@@ -235,6 +207,7 @@ describe('', ()=>{
         })
     })
 })
+
 it('test deletion of user with bookings/series', ()=>{
     const buildingId = 6; // Hauptstelle Dresden, Bautzner Straße ab
     const floorId = 5; // 1. Obergeschoss - Hauptstelle Dresden, Bautzner Straße ab

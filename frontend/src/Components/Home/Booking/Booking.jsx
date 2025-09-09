@@ -28,16 +28,6 @@ const Booking = () => {
   const [event, setEvent] = useState({});
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const [clickedDeskRemark, setClickedDeskRemark] = useState('');
-  // const initState = {
-  //   room: null,
-  //   desks: [],
-  //   events: [],
-  //   event: {},
-  //   clickedDeskId: null,
-  //   clickedDeskRemark
-  // };
-  
-  //const [timeRangeMode, setTimeRangeMode] = useState('userDefined');
 
   const eventRef = useRef(event);
   const eventsRef = useRef(events);
@@ -109,7 +99,6 @@ const Booking = () => {
         (e.start < endTime && endTime <= e.end) ||
         (startTime <= e.start && e.end <= endTime)
     );
-    console.log(isOverlap);
     if (isOverlap) {
       toast.warning(t('overlap'));
       return;
@@ -166,17 +155,6 @@ const Booking = () => {
   // Set locale for calendar
   useEffect(() => { moment.locale(i18n.language); }, [i18n.language]);
 
-  // Update events when timeRangeMode changes
-  /*useEffect(() => {
-    if (timeRangeMode === 'fullDay' && clickedDeskId) {
-      eventRef.current = null;
-      const slotsData = buildFullDaySlots(date, minStartTime, maxEndTime);
-      selectSlot(slotsData, eventRef.current.id);
-    } else {
-      loadBookings();
-    }
-  }, [timeRangeMode, clickedDeskId, date, selectSlot, loadBookings]);*/
-
   /** ----- HELPER ----- */
   const getHeadline = () => t('availableDesks') + (room ? ` in ${room.remark}` : '');
 
@@ -208,9 +186,7 @@ const Booking = () => {
                   }}
                 >
                   <Typography sx={typography_sx}>{desk.remark}</Typography>
-                  <Typography sx={typography_sx}>
-                    {desk.equipment === 'with equipment' ? t('withEquipment') : t('withoutEquipment')}
-                  </Typography>
+                  <Typography sx={typography_sx}>{t(desk.equipment.equipmentName)}</Typography>
                 </Box>
               </Box>
             ))

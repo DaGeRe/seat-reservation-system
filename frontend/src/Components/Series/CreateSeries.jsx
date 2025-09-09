@@ -54,8 +54,8 @@ const CreateSeries = () => {
                     `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultFloorForUserId/${userId}`,
                     headers.current,
                     received_defaultFloor => {
-                        if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.building_id) {
-                            setSelectedBuilding(received_defaultFloor.building.building_id);
+                        if (received_defaultFloor && received_defaultFloor.building && received_defaultFloor.building.id) {
+                            setSelectedBuilding(received_defaultFloor.building.id);
                         }
                     },
                     () => {
@@ -261,7 +261,7 @@ const CreateSeries = () => {
                             [
                                 <MenuItem id={`createSeries_building_all`} key={valueForAllBuildings.current} value={valueForAllBuildings.current}>{t('any')}</MenuItem>,
                                 ...buildings.map(e => (
-                                <MenuItem id={`createSeries_building_${e.building_id}`} key={e.building_id} value={e.building_id}>
+                                <MenuItem id={`createSeries_building_${e.id}`} key={e.id} value={e.id}>
                                     {e.name}
                                 </MenuItem>
                                 ))

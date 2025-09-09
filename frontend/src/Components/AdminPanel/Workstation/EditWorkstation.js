@@ -1,9 +1,7 @@
-import {useEffect, useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import {isOptionEqualToValue_Desk} from './DeskAndOption'
-import {roomToOption} from '../Room/RoomAndOption'
-import {getRequest, putRequest} from '../../RequestFunctions/RequestFunctions';
+import {putRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
@@ -13,46 +11,28 @@ import LayoutModalAdmin from '../../Templates/LayoutModalAdmin.jsx';
 export default function EditWorkstation({ isOpen, onClose }) {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
-  const [allDesks, setAllDesks] = useState([]);
+  // const [allDesks, setAllDesks] = useState([]);
   const [room, setRoom]= useState('');
-  const [selectedDeskId, setSelectedDeskId]= useState('');
+  const [selectedDesk, setSelectedDesk] = useState('');
   const [equipment, setEquipment]= useState('');
   const [remark, setRemark]= useState('');
   const helpText = t('helpEditWorkstation');
 
-  async function getDeskByRoomId(roomId){
-    getRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/admin/desks/room/${roomId}`,
-      //`${process.env.REACT_APP_BACKEND_URL}/desks/room/${roomId}`,
-      headers.current,
-      setAllDesks,
-      () => {console.log('Failed to fetch all desks in EditWorkstation.js.');},
-      headers
-    );
-  };
-
-  // Set default
-  useEffect(()=>{
-    setEquipment('');
-    setRemark('');
-  }, [room])
-
   async function updateWorkstation() {
-    if (selectedDeskId && equipment && remark) {
+    if (selectedDesk?.id && equipment && remark) {
       putRequest(
-        //`${process.env.REACT_APP_BACKEND_URL}/desks/updateDesk`,
         `${process.env.REACT_APP_BACKEND_URL}/admin/desks/updateDesk`,
         headers.current,
         (_) => {
           toast.success(t('deskUpdate'));
-          //setEquipment('');
-          //setRemark('');
+          // setEquipment('');
+          // setRemark('');
           onClose();
         },
         () => {console.log('Failed to update workstation in EditWorkstation.js');},
         JSON.stringify({
-          'deskId': selectedDeskId,
-          'equipment': equipment,
+          'deskId': selectedDesk.id,
+          'equipment': equipment.equipmentName,
           'remark': remark
         })
       );
@@ -62,15 +42,22 @@ export default function EditWorkstation({ isOpen, onClose }) {
     }
   };
 
+  useEffect(()=>{
+    setEquipment(selectedDesk.equipment);
+    setRemark(selectedDesk.remark);
+  },[selectedDesk])
+
   /**
    * Set the floor on which we want to create an new room with x- and y-coords.
    * @param {*} data Object with properties floor, room, x, y. 
    */
   const handleChildData = (data) => {
-    if (!data || data.room === '' || data.room.id === room.id) 
+    if (!data || data.room === '' || data.room.id === room.id) {
       return;
+    }
     setRoom(data.room);
-    getDeskByRoomId(data.room.id);
+    setRemark(data.room.remark);
+    setEquipment(data.room.equipment);
   };
 
   return (
@@ -89,17 +76,12 @@ export default function EditWorkstation({ isOpen, onClose }) {
       />
       <DeskSelector
         selectedRoom={room}
-        allDesks={allDesks}
-        roomToOption={roomToOption}
-        setSelectedDeskId={setSelectedDeskId}
-        setEquipment={setEquipment}
-        setRemark={setRemark}
-        isOptionEqualToValue_Desk={isOptionEqualToValue_Desk}
         t={t}
+        onChangeSelectedDesk={setSelectedDesk}
       />
       <br></br><br></br>
       {
-        selectedDeskId && (
+        selectedDesk && (
           <WorkStationDefinition
             t={t}
             equipment={equipment}

@@ -28,11 +28,13 @@ export default function AddRoom({ isOpen, onClose }) {
       return false;
     }
     postRequest(
-      //`${process.env.REACT_APP_BACKEND_URL}/rooms/create`,
       `${process.env.REACT_APP_BACKEND_URL}/admin/rooms/create`,
       headers.current,
       (_) => {
         toast.success(t('roomCreated'));
+        setX(.0);
+        setY(.0);
+        setRemark('');
         onClose();
       },
       () => {console.log('Failed to create room in AddRoom.jsx.')},
