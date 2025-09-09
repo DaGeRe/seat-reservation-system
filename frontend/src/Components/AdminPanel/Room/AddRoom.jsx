@@ -41,7 +41,7 @@ export default function AddRoom({ isOpen, onClose }) {
         'floor_id': floor.floor_id,      
         'x': x,
         'y': y,
-        'status': status,
+        'status': status.roomStatusName,
         'remark': remark,
 
       })
@@ -78,8 +78,8 @@ export default function AddRoom({ isOpen, onClose }) {
           t={t}
           defaultRoomType={type}
           setDefaultRoomType={setType}
-          status_val={status}
-          setStatus={setStatus}
+          defaultRoomStatus={status}
+          setDefaultRoomStatus={setStatus}
           remark={remark}
           setRemark={setRemark}
         />

@@ -90,8 +90,6 @@ const Home = () => {
       title={t('chooseDate')}
       helpText={''}
     >
-      {/*<div>{accessToken + ' !!!'}</div>*/}
-      {/*<div>{headers.current}</div>*/}
       <Calendar
         data-testid='abc'
         localizer={localizer}

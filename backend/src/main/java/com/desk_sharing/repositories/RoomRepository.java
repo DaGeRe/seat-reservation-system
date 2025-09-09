@@ -11,9 +11,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
-
+    @Query(value=""
+    + "select * from rooms where room_status_id = (select room_status_id from room_statuses where room_status_name = :status) "
+    ,nativeQuery=true)
 	List<Room> findAllByStatus(String status);
-	@Query(value=""
+	
+    @Query(value=""
     + "select * from rooms where remark = :roomRemark "
     ,nativeQuery=true)
     public Room findByRoomRemark(@Param("roomRemark") String roomRemark);

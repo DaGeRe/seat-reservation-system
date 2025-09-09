@@ -178,7 +178,7 @@ public class AdminController {
 
     @PostMapping("rooms/create")
     public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
-        userService.logging("createRoom() with remark: " + roomDTO.getRemark() + " " + roomDTO.getFloor_id());
+        userService.logging("createRoom(): " + roomDTO.getRemark() + " " + roomDTO.getFloor_id() + " " + roomDTO.getStatus());
         final Room savedRoom = roomService.saveRoom(roomDTO);
         return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
     }

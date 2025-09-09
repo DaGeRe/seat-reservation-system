@@ -19,6 +19,10 @@ public class Room {
     private RoomType roomType;
 
     @ManyToOne(cascade =  { CascadeType.PERSIST })
+    @JoinColumn(name = "roomStatusId", nullable = false)
+    private RoomStatus roomStatus;
+
+    @ManyToOne(cascade =  { CascadeType.PERSIST })
     @JoinColumn(name = "floor_id", nullable = false)
     private Floor floor;
 
@@ -28,11 +32,8 @@ public class Room {
     @Column(name = "y", nullable = false)
     private int y;
 
-    // @Column(name = "floor", nullable = false)
-    // private String floor;
-    
-    @Column(name = "status")
-    private String status;
+    // @Column(name = "status")
+    // private String status;
 
     @Column(name = "remark")
     private String remark;

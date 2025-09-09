@@ -2,7 +2,6 @@ package com.desk_sharing.services;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
-import com.desk_sharing.entities.RoomType;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
@@ -23,16 +22,15 @@ public class RoomService {
     private final FloorRepository floorRepository;
     private final DeskService deskService;
     private final RoomTypeService roomTypeService;
+    private final RoomStatusService roomStatusService;
 
     public Room saveRoom(RoomDTO roomDTO) {
         final Room newRoom = new Room();
-        //newRoom.setType(roomDTO.getType());
         newRoom.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
-        //newRoom.setFloor("deprecated"); // Important! col is not null
         newRoom.setFloor(floorRepository.getFloorByFloorId(roomDTO.getFloor_id()));
         newRoom.setX(roomDTO.getX());
         newRoom.setY(roomDTO.getY());
-        newRoom.setStatus(roomDTO.getStatus());
+        newRoom.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
         newRoom.setRemark(roomDTO.getRemark());
         return roomRepository.save(newRoom);
     }
@@ -45,7 +43,7 @@ public class RoomService {
         return roomRepository.getAllRoomsByFloorId(floor_id);
     }
     
-    public List<Room> getAllRoomsByActiveStatus() {
+    public final List<Room> getAllRoomsByActiveStatus() {
         return roomRepository.findAllByStatus("enable");
     }
 
@@ -59,51 +57,10 @@ public class RoomService {
             return null;
         final Room room = optRoom.get();
         room.setRemark(roomDTO.getRemark());
-        room.setStatus(roomDTO.getStatus());
+        room.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
         room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         return roomRepository.save(room);
     }
-    
-    /*public Room updateRoomStatus(Long id, String status) {
-    	Optional<Room> findById = roomRepository.findById(id);
-    	if(findById.isPresent()) {
-    		Room room = findById.get();
-    		room.setStatus(status);
-    		return roomRepository.save(room);
-    	}
-    	return null;
-        
-    }
-    
-    public Room updateRoomType(Long id, String type) {
-    	Optional<Room> findById = roomRepository.findById(id);
-    	if(findById.isPresent()) {
-    		Room room = findById.get();
-    		room.setType(type);
-    		return roomRepository.save(room);
-    	}
-    	return null;
-    }
-
-    public Room updateRoomFloor(Long id, String floor) {
-    	Optional<Room> findById = roomRepository.findById(id);
-    	if(findById.isPresent()) {
-    		Room room = findById.get();
-    		room.setFloor(floor);
-    		return roomRepository.save(room);
-    	}
-    	return null;
-    }
-
-    public Room updateRoomRemark(Long id, String remark) {
-    	Optional<Room> findById = roomRepository.findById(id);
-    	if(findById.isPresent()) {
-    		Room room = findById.get();
-    		room.setRemark(remark);
-    		return roomRepository.save(room);
-    	}
-    	return null;
-    }*/
     
     public List<Room> getByMinimalAmountOfWorkstations(int minimalAmountOfWorkstations) {
         return roomRepository.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations);

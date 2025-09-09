@@ -17,9 +17,8 @@ export default function EditRoom({ isOpen, onClose }) {
 
   // Set the default.
   useEffect(()=>{
-    //console.log(room);
     if (room.roomType) setNewRoomType(room.roomType);
-    if (room.status) setNewRoomStatus(room.status);
+    if (room.roomStatus) setNewRoomStatus(room.roomStatus);
     if (room.remark) setNewRoomRemark(room.remark);
   }, [room])
 
@@ -38,7 +37,7 @@ export default function EditRoom({ isOpen, onClose }) {
       JSON.stringify(
         { 
           'room_id': room.id,
-          'status': newRoomStatus,
+          'status': newRoomStatus.roomStatusName,
           'type': newRoomType.roomTypeName,
           'remark': newRoomRemark
         }
@@ -76,8 +75,8 @@ export default function EditRoom({ isOpen, onClose }) {
               t={t}
               defaultRoomType={newRoomType}
               setDefaultRoomType={setNewRoomType}
-              status_val={newRoomStatus}
-              setStatus={setNewRoomStatus}
+              defaultRoomStatus={newRoomStatus}
+              setDefaultRoomStatus={setNewRoomStatus}
               remark={newRoomRemark}
               setRemark={setNewRoomRemark}
             />
