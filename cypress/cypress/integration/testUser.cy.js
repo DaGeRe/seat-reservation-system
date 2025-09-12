@@ -17,47 +17,47 @@ describe('', ()=>{
         });
     })
     
-    // it('test register with same mail', ()=>{
-    //     cy.login()
-    //     .visit('/admin')
-    //     .url().should('contains', '/admin')
-    //     .get('button#userManagement').click()
-    //     .get('button#addEmployee').click()
-    //     .get('h2').should('be.visible').then(()=>{
-    //         Cypress.Promise.all([
-    //             cy.setStr('addEmployee-setEmail', mail),
-    //             cy.setStr('addEmployee-setPassword', pw1),
-    //             cy.setStr('addEmployee-setName', vorname1),
-    //             cy.setStr('addEmployee-setSurname', nachname)
-    //         ]).then(()=>{
-    //             cy.get('button#modal_submit').click()
-    //             .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
-    //                 return cy.wrap('1');
-    //             })
-    //         })
-    //     })
-    // })
+    it('test register with same mail', ()=>{
+        cy.login()
+        .visit('/admin')
+        .url().should('contains', '/admin')
+        .get('button#userManagement').click()
+        .get('button#addEmployee').click()
+        .get('h2').should('be.visible').then(()=>{
+            Cypress.Promise.all([
+                cy.setStr('addEmployee-setEmail', mail),
+                cy.setStr('addEmployee-setPassword', pw1),
+                cy.setStr('addEmployee-setName', vorname1),
+                cy.setStr('addEmployee-setSurname', nachname)
+            ]).then(()=>{
+                cy.get('button#modal_submit').click()
+                .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
+                    return cy.wrap('1');
+                })
+            })
+        })
+    })
 
-    // it('test register with same mail with leading whitespace', ()=>{
-    //     cy.login()
-    //     .visit('/admin')
-    //     .url().should('contains', '/admin')
-    //     .get('button#userManagement').click()
-    //     .get('button#addEmployee').click()
-    //     .get('h2').should('be.visible').then(()=>{
-    //         Cypress.Promise.all([
-    //             cy.setStr('addEmployee-setEmail', ' ' + mail),
-    //             cy.setStr('addEmployee-setPassword', pw1),
-    //             cy.setStr('addEmployee-setName', vorname1),
-    //             cy.setStr('addEmployee-setSurname', nachname)
-    //         ]).then(()=>{
-    //             cy.get('button#modal_submit').click()
-    //             .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
-    //                 return cy.wrap('1');
-    //             })
-    //         });
-    //     })                 
-    // })
+    it('test register with same mail with leading whitespace', ()=>{
+        cy.login()
+        .visit('/admin')
+        .url().should('contains', '/admin')
+        .get('button#userManagement').click()
+        .get('button#addEmployee').click()
+        .get('h2').should('be.visible').then(()=>{
+            Cypress.Promise.all([
+                cy.setStr('addEmployee-setEmail', ' ' + mail),
+                cy.setStr('addEmployee-setPassword', pw1),
+                cy.setStr('addEmployee-setName', vorname1),
+                cy.setStr('addEmployee-setSurname', nachname)
+            ]).then(()=>{
+                cy.get('button#modal_submit').click()
+                .get('.Toastify__toast').should('be.visible').contains('Creation was not successful. Is the email already used?').then(()=>{
+                    return cy.wrap('1');
+                })
+            });
+        })                 
+    })
 
     it('test change admin', ()=>{
         cy.login(mail, pw1).then(()=>{

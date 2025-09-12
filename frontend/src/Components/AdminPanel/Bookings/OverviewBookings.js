@@ -32,7 +32,6 @@ export default function OverviewBookings({ isOpen, onClose }) {
 
         if (filter === '/singledate/') {
           const text_split = text.split('.');
-          console.log(text_split);
           if (text_split.length === 3) {
             filter_text = formatDate_ddmmyyyy_to_yyyymmdd(text);
           }

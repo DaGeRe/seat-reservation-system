@@ -5,4 +5,4 @@ update rooms set room_type_id=(
 );
 alter table rooms drop column building;
 alter table rooms drop column floor;
-alter table rooms drop column type;
+alter table rooms drop column type; 
