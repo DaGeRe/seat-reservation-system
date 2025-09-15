@@ -6,6 +6,8 @@ import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -34,17 +36,13 @@ public class RoomService {
     }
 
     public Room updateRoom(RoomDTO roomDTO) {
-        final Optional<Room> optRoom = roomRepository.findById(roomDTO.getRoom_id());
-        if (!optRoom.isPresent())
-            return null;
-        final Room room = optRoom.get();
+        final Room room = roomRepository.findById(roomDTO.getRoom_id())
+            .orElseThrow(()-> new EntityNotFoundException("Room not found in RoomService.updateRoom : " + roomDTO.getRoom_id()));
         room.setRemark(roomDTO.getRemark());
         room.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
         room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         return roomRepository.save(room);
     }
-
-
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
