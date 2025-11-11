@@ -41,9 +41,19 @@ public class BookingService {
 
     private final DeskService deskService;
 
-    public Map<String, List<BookingProjectionDTO>> getBookingsFromColleaguesOnDate(final List<String> emailStrings, final Date date) {
+    /**
+     * Find and return an key-value-list of with every booking at date for each email.
+     * 
+     * @param emailStrings   A list of emails. One for each user for whom we like to find the bookings at date.
+     * @param date   The date on which we want to find the bookings for each user with an email in emailStrings.
+     * @return A key-value-list of every booking at date. The key is the email and the value is a list of bookings.
+     */
+    public final Map<String, List<BookingProjectionDTO>> getBookingsFromColleaguesOnDate(
+        final List<String> emailStrings, 
+        final Date date) 
+        {
         final Map<String, List<BookingProjectionDTO>> bookingsForEmail = new HashMap<>();
-        for (String emailString: emailStrings) {
+        for (final String emailString: emailStrings) {
             final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository
                 .getEveryBookingForEmail("%" + emailString + "%").stream()
                 .map(BookingProjectionDTO::new)
@@ -55,7 +65,7 @@ public class BookingService {
     }
     
     public Booking createBooking(Map<String, Object> bookingData) {
-    	int user_id = Integer.parseInt(bookingData.get("user_id").toString());
+        int user_id = Integer.parseInt(bookingData.get("user_id").toString());
         Long room_id = Long.parseLong(bookingData.get("room_id").toString());
         Long desk_id = Long.parseLong(bookingData.get("desk_id").toString());
         Date day = Date.valueOf(bookingData.get("day").toString());
@@ -74,7 +84,7 @@ public class BookingService {
         boolean anyLockedBooking = existingBookings.stream()
                 .anyMatch(booking -> booking.isBookingInProgress() && now.isBefore(booking.getLockExpiryTime()));
         if (existingBookings.isEmpty() || !anyLockedBooking) {
-        	Booking newBooking = new Booking(user, room, desk, day, begin, end);
+            Booking newBooking = new Booking(user, room, desk, day, begin, end);
             newBooking.setLockExpiryTime(LocalDateTime.now().plusMinutes(5));
             newBooking.setBookingInProgress(true);
             return addBooking(newBooking);
