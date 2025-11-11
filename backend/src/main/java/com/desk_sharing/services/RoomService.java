@@ -24,7 +24,17 @@ public class RoomService {
     private final RoomTypeService roomTypeService;
     private final RoomStatusService roomStatusService;
 
-    public Room saveRoom(RoomDTO roomDTO) {
+    /**
+     * Create and save a new room.
+     * The new room is defined by roomDTO.
+     * In roomDTo every important variable is provided like the floor_id.
+     * The primary key for the new room is room_id and is not given here, since
+     * it is later set during the save process in the db.
+     * 
+     * @param roomDTO   The definition of the new room.
+     * @return  The newly created room.
+     */
+    public final Room saveRoom(final RoomDTO roomDTO) {
         final Room newRoom = new Room();
         newRoom.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         newRoom.setFloor(floorService.getFloorByFloorId(roomDTO.getFloor_id()));
@@ -35,7 +45,18 @@ public class RoomService {
         return roomRepository.save(newRoom);
     }
 
-    public Room updateRoom(RoomDTO roomDTO) {
+    /**
+     * Update an existing room.
+     * The new values are defined by roomDTO.
+     * In roomDTO the remakr, the roomStatus or the roomType are taken into account.
+     * The room we wish to update are defined by roomDTO.room_id. Are room with this room_id must exist.
+     * For this existing room the remakr, status and type are updated and saved to the database.
+     *
+     * @throws EntityNotFoundException If the room_id is not present in the database.
+     * @param roomDTO   The definition structure with the room_id of the room we like to update and the new remakr, staus and type.
+     * @return  The updated room.
+     */
+    public final Room updateRoom(final RoomDTO roomDTO) {
         final Room room = roomRepository.findById(roomDTO.getRoom_id())
             .orElseThrow(()-> new EntityNotFoundException("Room not found in RoomService.updateRoom : " + roomDTO.getRoom_id()));
         room.setRemark(roomDTO.getRemark());
@@ -44,29 +65,66 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
-    public List<Room> getAllRooms() {
+    /**
+     * Find and return all existing rooms.
+     * 
+     * @return All rooms.
+     */
+    public final List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
-    public List<Room> getAllRoomsByFloorId(Long floor_id) {
+    /**
+     * Find and return all rooms for an floor.
+     * 
+     * @param floor_id  The id of the floor we want to find all rooms associated with.
+     * @return All rooms associated with the floor defined by floor_id.
+     */
+    public final List<Room> getAllRoomsByFloorId(final Long floor_id) {
         return roomRepository.getAllRoomsByFloorId(floor_id);
     }
     
+    /**
+     * Find and return all rooms that are enabled.
+     * 
+     * @return All rooms that are enabled. 
+     */
     public final List<Room> getAllRoomsByActiveStatus() {
         return roomRepository.findAllByStatus("enable");
     }
 
-    public Optional<Room> getRoomById(Long id) {
+    /**
+     * Try to find and return the room defined by id.
+     * 
+     * @param id The room id for the room we like to find.
+     * @return An optional of the room we like to find.
+     */
+    public final Optional<Room> getRoomById(final Long id) {
         return roomRepository.findById(id);
     }
-
-
     
-    public List<Room> getByMinimalAmountOfWorkstations(int minimalAmountOfWorkstations) {
+    /**
+     * Find and return an list of rooms that each has at least minimalAmountOfWorkstations associated with it.
+     * 
+     * @param minimalAmountOfWorkstations   The minimal amount of workstations a room must have to be returned.
+     * @return A list of rooms whom each has at least minimalAmountOfWorkstations workstations.
+     */
+    public final List<Room> getByMinimalAmountOfWorkstations(final int minimalAmountOfWorkstations) {
         return roomRepository.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations);
     };
 
-    public List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(int minimalAmountOfWorkstations, DatesAndTimesDTO datesAndTimesDTO) {
+
+    /**
+     * Find and return an list of rooms that each has at least minimalAmountOfWorkstations associated with it
+     * and that number of minimalAmountOfWorkstations are not occupied on an time defined by datesAndTimesDTO.
+     * 
+     * @param minimalAmountOfWorkstations   The minimal amount of workstations a room must have to be returned.
+     * @param datesAndTimesDTO  The time range where at least minimalAmountOfWorkstations must be not occupied.
+     * @return A list of rooms whom each has at least minimalAmountOfWorkstations workstations that are non occupied for the specified time.
+     */
+    public final List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(
+        final int minimalAmountOfWorkstations, 
+        final DatesAndTimesDTO datesAndTimesDTO) {
 
         return roomRepository.getByMinimalAmountOfWorkstationsAndFreeOnDate(
             minimalAmountOfWorkstations,
@@ -76,7 +134,14 @@ public class RoomService {
         );
     };
 
-    public int deleteRoom(Long id) {
+    /**
+     * Try to delete an room defined by the room id.
+     * If desks are associated with the room the deletion fails.
+     * 
+     * @param id    The id of the room we like to delete.
+     * @return 0 if success. -1 if an exception occurs. A number > 0 that s the amound of workstations still associated with the room. 
+     */
+    public final int deleteRoom(final Long id) {
         List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
         if (desksPerRoom.size() > 0) {
             return desksPerRoom.size();
@@ -92,7 +157,14 @@ public class RoomService {
         }
     }
 
-    public boolean deleteRoomFf(Long id) {
+    /**
+     * Delete an room defined by the room id.
+     * If desks are associated with the room, these workstations are deleted first.
+     * 
+     * @param id    The id of the room we like to delete.
+     * @return true if success, false otherwise. 
+     */
+    public final boolean deleteRoomFf(final Long id) {
         try {
             // Delete desks for this room.
             final List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
