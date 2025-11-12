@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -109,12 +108,19 @@ public class UserService  {
         return userRepository.findAll();
     }
 
-    public UserEntity getUser(int id) {
-        UserEntity user = userRepository.findById(id).orElse(null);
-        if (user instanceof HibernateProxy) {
-            HibernateProxy hibernateProxy = (HibernateProxy) user;
-            user = (UserEntity) hibernateProxy.getHibernateLazyInitializer().getImplementation();
-        }
+    /**
+     * Search and return the UserEntity identified by userId.
+     * 
+     * @throws EntityNotFoundException If the userId is not present in the database.
+     * @param userId    The id of the user we like to fetch.
+     * @return  If the user was found the UserEntity. Otherwise an EntityNotFoundException is thrown.
+     */
+    public UserEntity getUser(final int userId) {
+        final UserEntity user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        // if (user instanceof HibernateProxy) {
+        //     HibernateProxy hibernateProxy = (HibernateProxy) user;
+        //     user = (UserEntity) hibernateProxy.getHibernateLazyInitializer().getImplementation();
+        // }
         return user;
     }
 

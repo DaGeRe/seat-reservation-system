@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class FloorService {
     private final FloorRepository floorRepository;
 
-    public final Floor getFloorByFloorId(final long floorId) throws EntityNotFoundException {
+    public Floor getFloorByFloorId(final long floorId) throws EntityNotFoundException {
         return floorRepository.findById(floorId)
         .orElseThrow(() -> new EntityNotFoundException("Floor not found in FloorService.getFloorByFloorId : " + floorId));
     }
 
-    public final List<Floor> getAllFloorsForBuildingId(final Long buildingId) {
+    public List<Floor> getAllFloorsForBuildingId(final Long buildingId) {
         return floorRepository.findByBuildingId(buildingId);
     }
 }

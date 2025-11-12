@@ -91,15 +91,16 @@ const FreeDesks = () => {
     }, [bookingDate, selectedBuilding, t, endTime, startTime, repaint]);
     
     function addBooking(selectedDesk) {
-        const bookingData = {
-            user_id: localStorage.getItem('userId'),
-            room_id: selectedDesk.room.id,
-            desk_id: selectedDesk.id,
-            day: moment(bookingDate).format("YYYY-MM-DD"),
+        
+        const bookingDTO = {
+            userId: localStorage.getItem('userId'),
+            roomId: selectedDesk.room.id,
+            deskId: selectedDesk.id,
+            day: moment(bookingDate).format('YYYY-MM-DD'),
             begin: startTime,
             end: endTime
         };
-        bookingPostRequest('FreeDesks.jsx', bookingData, selectedDesk.remark, headers, t, (_)=>{setRepaint(!repaint);})
+        bookingPostRequest('FreeDesks.jsx', bookingDTO, selectedDesk.remark, headers, t, (_)=>{setRepaint(!repaint);})
     };
     function CreateContent() {
         return (

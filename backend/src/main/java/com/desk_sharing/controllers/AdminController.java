@@ -115,7 +115,6 @@ public class AdminController {
     public ResponseEntity<List<BookingProjectionDTO>> getEveryBookingForDate(@PathVariable("date") String date) {
         userService.logging("getEveryBookingForDate(" + date + ")");
         final List<BookingProjectionDTO> bookingProjectionDtos = bookingRepository.getEveryBookingForDate("%" + date + "%").stream().map(BookingProjectionDTO::new).toList();
-        System.out.println(bookingProjectionDtos.size());
         return new ResponseEntity<>(bookingProjectionDtos, HttpStatus.OK);
     }
 

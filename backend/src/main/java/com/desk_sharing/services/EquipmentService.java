@@ -15,17 +15,16 @@ import lombok.AllArgsConstructor;
 public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     
-    public final List<Equipment> getEquipments() {
+    public List<Equipment> getEquipments() {
         return equipmentRepository.findAll();
     }
 
-    public final Equipment getEquipmentByEquipmentId(final Long equipmentId) throws EntityNotFoundException{
-        //return equipmentRepository.findById(equipmentId).get();
+    public Equipment getEquipmentByEquipmentId(final Long equipmentId) throws EntityNotFoundException{
         return equipmentRepository.findById(equipmentId)
             .orElseThrow(() -> new EntityNotFoundException("Equipment not found in EquipmentService.getEquipmentByEquipmentId : " + equipmentId));
     }
 
-    public final Equipment getEquipmentByEquipmentName(final String equipmentName) {
+    public Equipment getEquipmentByEquipmentName(final String equipmentName) {
         return equipmentRepository.findByEquipmentName(equipmentName);
     }
 }

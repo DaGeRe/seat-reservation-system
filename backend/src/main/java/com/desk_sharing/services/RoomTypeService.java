@@ -14,15 +14,15 @@ import lombok.AllArgsConstructor;
 public class RoomTypeService {
     private final RoomTypeRepository roomTypeRepository;
     
-    public final List<RoomType> getRoomTypes() {
+    public List<RoomType> getRoomTypes() {
         return roomTypeRepository.findAll();
     }
 
-    public final RoomType getRoomTypeByRoomTypeId(final Long roomTypeId) {
+    public RoomType getRoomTypeByRoomTypeId(final Long roomTypeId) {
         return roomTypeRepository.findById(roomTypeId).get();
     }
 
-    public final RoomType getRoomTypeByRoomTypeName(final String roomTypeName) {
+    public RoomType getRoomTypeByRoomTypeName(final String roomTypeName) {
         return roomTypeRepository.findByRoomTypeName(roomTypeName);
     }
 }

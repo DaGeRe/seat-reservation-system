@@ -14,15 +14,15 @@ import lombok.AllArgsConstructor;
 public class RoomStatusService {
     private final RoomStatusRepository roomStatusRepository;
     
-    public final List<RoomStatus> getRoomStatuses() {
+    public List<RoomStatus> getRoomStatuses() {
         return roomStatusRepository.findAll();
     }
 
-    public final RoomStatus getRoomStatusByRoomStatusId(final Long roomStatusId) {
+    public RoomStatus getRoomStatusByRoomStatusId(final Long roomStatusId) {
         return roomStatusRepository.findById(roomStatusId).get();
     }
 
-    public final RoomStatus getRoomStatusByRoomStatusName(final String roomStatusName) {
+    public RoomStatus getRoomStatusByRoomStatusName(final String roomStatusName) {
         return roomStatusRepository.findByRoomStatusName(roomStatusName);
     }
 }

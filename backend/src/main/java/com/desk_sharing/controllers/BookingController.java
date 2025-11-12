@@ -39,12 +39,11 @@ public class BookingController {
     @PostMapping("getBookingsFromColleaguesOnDate/{date}")
     public ResponseEntity<Map<String, List<BookingProjectionDTO>>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {
         userService.logging("getBookingsFromColleaguesOnDate( " + emailStrings + " | " + date + " )");
-        System.out.println(bookingService.getBookingsFromColleaguesOnDate(emailStrings, date));
         return new ResponseEntity<>(bookingService.getBookingsFromColleaguesOnDate(emailStrings, date), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<BookingDTO> addBooking(@RequestBody Map<String, Object> bookingData) {
+    public ResponseEntity<BookingDTO> addBooking(@RequestBody BookingDTO bookingData) {
         userService.logging("addBooking( "+bookingData.toString()+" )");
         try {
             final Booking savedBooking = bookingService.createBooking(bookingData);

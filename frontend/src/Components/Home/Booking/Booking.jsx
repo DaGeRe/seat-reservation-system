@@ -119,10 +119,10 @@ const Booking = () => {
     const userId = localStorage.getItem('userId');
     if (!userId) return console.error('userId is null');
 
-    const bookingData = {
-      user_id: userId,
-      room_id: roomId,
-      desk_id: clickedDeskId,
+    const bookingDTO = {
+      userId: userId,
+      roomId: roomId,
+      deskId: clickedDeskId,
       day: moment(event.start).format('YYYY-MM-DD'),
       begin: moment(event.start).format('HH:mm:ss'),
       end: moment(event.end).format('HH:mm:ss'),
@@ -130,7 +130,7 @@ const Booking = () => {
 
     bookingPostRequest(
       'Booking.jsx',
-      bookingData,
+      bookingDTO,
       clickedDeskRemark,
       headers,
       t,

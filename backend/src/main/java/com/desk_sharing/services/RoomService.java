@@ -34,7 +34,7 @@ public class RoomService {
      * @param roomDTO   The definition of the new room.
      * @return  The newly created room.
      */
-    public final Room saveRoom(final RoomDTO roomDTO) {
+    public Room saveRoom(final RoomDTO roomDTO) {
         final Room newRoom = new Room();
         newRoom.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         newRoom.setFloor(floorService.getFloorByFloorId(roomDTO.getFloor_id()));
@@ -54,9 +54,9 @@ public class RoomService {
      *
      * @throws EntityNotFoundException If the room_id is not present in the database.
      * @param roomDTO   The definition structure with the room_id of the room we like to update and the new remakr, staus and type.
-     * @return  The updated room.
+     * @return  The updated room if the room was found. Otherwise an EntityNotFoundException is thrown.
      */
-    public final Room updateRoom(final RoomDTO roomDTO) {
+    public Room updateRoom(final RoomDTO roomDTO) {
         final Room room = roomRepository.findById(roomDTO.getRoom_id())
             .orElseThrow(()-> new EntityNotFoundException("Room not found in RoomService.updateRoom : " + roomDTO.getRoom_id()));
         room.setRemark(roomDTO.getRemark());
@@ -70,7 +70,7 @@ public class RoomService {
      * 
      * @return All rooms.
      */
-    public final List<Room> getAllRooms() {
+    public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
@@ -80,7 +80,7 @@ public class RoomService {
      * @param floor_id  The id of the floor we want to find all rooms associated with.
      * @return All rooms associated with the floor defined by floor_id.
      */
-    public final List<Room> getAllRoomsByFloorId(final Long floor_id) {
+    public List<Room> getAllRoomsByFloorId(final Long floor_id) {
         return roomRepository.getAllRoomsByFloorId(floor_id);
     }
     
@@ -89,7 +89,7 @@ public class RoomService {
      * 
      * @return All rooms that are enabled. 
      */
-    public final List<Room> getAllRoomsByActiveStatus() {
+    public List<Room> getAllRoomsByActiveStatus() {
         return roomRepository.findAllByStatus("enable");
     }
 
@@ -99,7 +99,7 @@ public class RoomService {
      * @param id The room id for the room we like to find.
      * @return An optional of the room we like to find.
      */
-    public final Optional<Room> getRoomById(final Long id) {
+    public Optional<Room> getRoomById(final Long id) {
         return roomRepository.findById(id);
     }
     
@@ -109,7 +109,7 @@ public class RoomService {
      * @param minimalAmountOfWorkstations   The minimal amount of workstations a room must have to be returned.
      * @return A list of rooms whom each has at least minimalAmountOfWorkstations workstations.
      */
-    public final List<Room> getByMinimalAmountOfWorkstations(final int minimalAmountOfWorkstations) {
+    public List<Room> getByMinimalAmountOfWorkstations(final int minimalAmountOfWorkstations) {
         return roomRepository.getByMinimalAmountOfWorkstations(minimalAmountOfWorkstations);
     };
 
@@ -122,7 +122,7 @@ public class RoomService {
      * @param datesAndTimesDTO  The time range where at least minimalAmountOfWorkstations must be not occupied.
      * @return A list of rooms whom each has at least minimalAmountOfWorkstations workstations that are non occupied for the specified time.
      */
-    public final List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(
+    public List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(
         final int minimalAmountOfWorkstations, 
         final DatesAndTimesDTO datesAndTimesDTO) {
 
@@ -141,7 +141,7 @@ public class RoomService {
      * @param id    The id of the room we like to delete.
      * @return 0 if success. -1 if an exception occurs. A number > 0 that s the amound of workstations still associated with the room. 
      */
-    public final int deleteRoom(final Long id) {
+    public int deleteRoom(final Long id) {
         List<Desk> desksPerRoom = deskRepository.findByRoomId(id);
         if (desksPerRoom.size() > 0) {
             return desksPerRoom.size();
