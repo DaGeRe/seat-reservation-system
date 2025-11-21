@@ -23,9 +23,9 @@ const CreateSeries = () => {
     const [dates, setDates] = useState([]);
     const [startDate, setStartDate] = useState(new Date()); 
     const [endDate, setEndDate] = useState(new Date());
-    const [startTime, setStartTime] = useState('12:00:00');
-    const [endTime, setEndTime] = useState('14:00:00');
-    const [frequency, setFrequency] = useState('daily');
+    const [startTime, setStartTime] = useState(`${process.env.REACT_APP_CREATE_SERIES_DEFAULT_STARTTIME}`);
+    const [endTime, setEndTime] = useState(`${process.env.REACT_APP_CREATE_SERIES_DEFAULT_ENDTIME}`);
+    const [frequency, setFrequency] = useState(`${process.env.REACT_APP_CREATE_SERIES_DEFAULT_FREQUENCY}`);
     const [repaint, setRepaint] = useState(false)
     const [dayOfTheWeek, setDayOfTheWeek] = useState(0);
     const [buildings, setBuildings] = useState([]);
