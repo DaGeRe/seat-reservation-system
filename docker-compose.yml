@@ -47,22 +47,16 @@ services:
       context: ${PROJECT_PATH}/backend
       dockerfile: Dockerfile
       pull: false
-      
+      # Things we need during build.
       args:
         PROJECT_PATH: ${PROJECT_PATH}
         BACKEND_PORT: ${BACKEND_PORT}
-        #PATH_TO_TLS: ${PATH_TO_TLS}
     ports:
       - ${BACKEND_PORT}:8080
     networks:
       - ${NETWORK}
+    # Things we need in the running container.
     environment:
-      #- SPRING_PROFILES_ACTIVE=${IP}:${DATABASE_PORT}
-      #- DOCKER_HOST=unix:///var/run/docker.sock
-      # - HTTP_PROXY=http://proxy.justiz.sachsen.de:3128
-      # - HTTPS_PROXY=http://proxy.justiz.sachsen.de:3128
-      # - http_proxy=http://proxy.justiz.sachsen.de:3128
-      # - https_proxy=http://proxy.justiz.sachsen.de:3128
       # Used in application.properties to access the tls cert.
       - PW_TLS=${PW_TLS}
       # Used in application.properties to access the db.
@@ -97,8 +91,10 @@ services:
       context: ${PROJECT_PATH}/database
       dockerfile: Dockerfile
       pull: false
+      # Things we need during build.
       args:
         PROJECT_PATH: ${PROJECT_PATH}
+    # Things we need in the running container.
     environment:
       MYSQL_DATABASE: mydatabase
       PW_DB: ${PW_DB}
