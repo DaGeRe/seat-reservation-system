@@ -23,10 +23,13 @@ services:
     # Things we need in the running container.
     environment:
       - GENERATE_SOURCEMAP=false # important to supress some warnings
-      - SSL_KEY_FILE=tls/${FRONTEND_KEY_FILE}
-      - SSL_CRT_FILE=tls/${FRONTEND_CRT_FILE}
+      - SSL_KEY_FILE=/etc/ssl/private/${FRONTEND_KEY_FILE}
+      - SSL_CRT_FILE=/etc/ssl/private/${FRONTEND_CRT_FILE}
     ports:
       - ${FRONTEND_PORT}:443
+    volumes:
+      # mount tls stuff read only
+      - ${PROJECT_PATH}/frontend/tls:/etc/ssl/private:ro
     networks:
       - ${NETWORK}
     depends_on:
