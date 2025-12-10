@@ -241,6 +241,7 @@
     ,"timerangeIsNotValid":"Timerange is not valid."
     ,"startDateBiggerThanStartDate":"Start date must not be greater than the end date."
     ,"startTimeBiggerThanStartTime":"Start time must not be greater than the end time."
+    ,"seriesDurationTooLong":"The duration of the series booking is too long."
     ,"noDesksForRange":"For the specified time range and building no desk is available."
 
     ,"colleagues":"Colleagues"

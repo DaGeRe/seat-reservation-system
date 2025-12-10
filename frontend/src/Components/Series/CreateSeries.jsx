@@ -86,10 +86,10 @@ const CreateSeries = () => {
      */
     useEffect(() => {
         // The date as iso format. Cut off the time etc to achieve a date like YYYY-MM-DD.
-        const startDateObj = new Date(startDate).toISOString().split('T')[0];
-        const endDateObj = new Date(endDate).toISOString().split('T')[0];
+        const startDateStr = new Date(startDate).toISOString().split('T')[0];
+        const endDateStr = new Date(endDate).toISOString().split('T')[0];
 
-        if (startDateObj > endDateObj) {
+        if (startDateStr > endDateStr) {
             toast.error(t('startDateBiggerThanStartDate'));
             setDates([]);
             return;
@@ -99,6 +99,19 @@ const CreateSeries = () => {
             setDates([]);
             return;
         }
+        
+        const diffInMs = new Date(endDateStr) - new Date(startDateStr);
+        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+        
+        /**
+         * We want to avoid that users can create series bookings for much longer than 1 year.
+         */
+        if (370 < diffInDays) {
+            toast.error(t('seriesDurationTooLong'));
+            setDates([]);
+            return;
+        }
+
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series/dates`, 
             headers.current,
@@ -107,8 +120,8 @@ const CreateSeries = () => {
             console.log('Error fetching dates in CreateSeries.jsx');
             },
             JSON.stringify({
-                startDate: startDateObj,
-                endDate: endDateObj,
+                startDate: startDateStr,
+                endDate: endDateStr,
                 startTime: startTime,
                 endTime: endTime,
                 frequency: frequency, 
