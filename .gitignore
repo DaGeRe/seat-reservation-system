@@ -72,8 +72,6 @@ backend/.m2/repository/com/desk_sharing/backend/0.0.1-SNAPSHOT/backend-0.0.1-SNA
 backend/tls/*
 frontend/tls/*
 tls*
-backend/tls/jus-srv-test30.justiz.sachsen.de.p12
-frontend/tls/jus-srv-test30.justiz.sachsen.de.crt
 
 # cypress
 cypress/screenshots/*
@@ -83,10 +81,6 @@ cypress/node_modules/
 cypress/package.json
 cypress/package-lock.json
 cypress/cypress/videos/
-
-# altdaten
-altdaten/*
-!altdaten/old_data_app.py
 
 # misc
 myldaps.sh

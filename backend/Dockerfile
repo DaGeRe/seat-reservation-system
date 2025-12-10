@@ -1,16 +1,10 @@
 FROM maven:3.8.4-openjdk-17-slim AS build
 
-# Set environment variables for paths
-# ARG PROJECT_PATH
-# ENV PROJECT_PATH=$PROJECT_PATH
-# ARG PATH_TO_TLS
-# ENV PATH_TO_TLS=$PATH_TO_TLS
-
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
 # Copy TLS certificates
-COPY tls src/main/resources/tls
+#COPY tls src/main/resources/tls
 
 # Copy Maven proxy and settings (offline pre-configured)
 COPY pom.xml .
@@ -38,7 +32,9 @@ WORKDIR /usr/src/app
 # RUN apt update && apt install ldap-utils
 COPY ca_ad.cer /usr/local/share/ca-certificates/ldapserver.crt
 #RUN update-ca-certificates
-RUN keytool -import -trustcacerts -alias ldapserver -file /usr/local/share/ca-certificates/ldapserver.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
+RUN keytool -import -trustcacerts -alias ldapserver \
+    -file /usr/local/share/ca-certificates/ldapserver.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
 
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar

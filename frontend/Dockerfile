@@ -72,10 +72,6 @@ ENV REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO=$REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO
 ARG REACT_APP_ERROR_WRONG_PW
 ENV REACT_APP_ERROR_WRONG_PW=$REACT_APP_ERROR_WRONG_PW
 
-# Copy SSL files
-#COPY tls/jus-srv-test30.justiz.sachsen.de.crt /etc/ssl/certs/jus-srv-test30.justiz.sachsen.de.crt
-#COPY tls/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem /etc/ssl/private/jus-srv-test30.justiz.sachsen.de.pk.un_encrypted.pem
-
 # The config for https etc.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
