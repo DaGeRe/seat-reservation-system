@@ -29,22 +29,35 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 
     /**
      * Calculates dates between [startDate, endDate] based on weekDay.
+     * 
+     * - 
+        SELECT (t*100 + u*10 + v) AS n
+        FROM
+            (SELECT 0 t UNION SELECT 1 ... UNION SELECT 9) t,
+            (SELECT 0 u UNION SELECT 1 ... UNION SELECT 9) u,
+            (SELECT 0 v UNION SELECT 1 ... UNION SELECT 9) v
+        creates all numbers from 0..999.
+     * - 
+        DATE(DATE_ADD(:startDate, INTERVAL n DAY)) AS calculated_date
+        add every n to the startdate. Every n represents a day. 0=startDate 999=startDate+999 days.  
      * @param startDate The start of the interval.
      * @param endDate   The end of the interval.
      * @param weekDay   The week day. 0 = monday, ..., 4 = friday
      * @return   Calculated dates between [startDate, endDate] based on weekDay.
      */
-    @Query(value = "SELECT DATE(DATE_ADD(:startDate, INTERVAL n DAY)) " +
-    "FROM ( " + 
-    "    SELECT (t * 10 + u) AS n " +
-    "    FROM " +
-    "        (SELECT 0 t UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t, " +
-    "        (SELECT 0 u UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) u " +
-    ") numbers " +
-    "WHERE DATE_ADD(:startDate, INTERVAL n DAY) <= :endDate " +
-    "AND WEEKDAY(DATE_ADD(:startDate, INTERVAL n DAY)) = :weekDay " +
-    "ORDER BY DATE(DATE_ADD(:startDate, INTERVAL n DAY)) ASC", 
-    nativeQuery = true)
+    @Query(value = 
+        "SELECT DATE(DATE_ADD(:startDate, INTERVAL n DAY)) AS calculated_date " +
+        "FROM ( " +
+        "    SELECT (t*100 + u*10 + v) AS n " +
+        "    FROM " +
+        "        (SELECT 0 t UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) t, " +
+        "        (SELECT 0 u UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) u, " +
+        "        (SELECT 0 v UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) v " +
+        ") numbers " +
+        "WHERE DATE_ADD(:startDate, INTERVAL n DAY) <= :endDate " +
+        "AND WEEKDAY(DATE_ADD(:startDate, INTERVAL n DAY)) = :weekDay " +
+        "ORDER BY calculated_date ASC", 
+        nativeQuery = true)
     List<java.sql.Date> findWeekdaysBetween(
         @Param("startDate") Date startDate, 
         @Param("endDate") Date endDate, 
