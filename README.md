@@ -66,7 +66,7 @@ and must be unencrypted.
 For a new environment the cers and keys must be new issued.
 
 ### .env
-The .env file is located in the project root. It contains som variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
+The .env file is located in the project root. It contains some variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
 Some variables are sensitiv, so the .env is not controlled by version control. Since the .env is crucial for the app the developer needs to take care of creating and maintaining this file.
 There is an .env_template file that hase some non-sensitive data included. The other entries must be entered by the developer.
 
