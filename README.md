@@ -6,7 +6,7 @@ Web application that allows to book workspaces in an office.
 
 `https://github.com/Gazzo-gif/Desk-Sharing-Tool`
 
-## How to run the project
+## How to run the project (deprecated)
 
 If the application is not running yet in the server:
 
@@ -21,7 +21,7 @@ You will be able to access the website in `http://jus-srv-test30:3000`,
 The databse will be in `http://jus-srv-test30:3306` and the backend with the REST API will be in `http://jus-srv-test30:8081`.
 
 
-## Run locally
+## Run locally (deprecated)
 
 ### Database
 
@@ -52,7 +52,7 @@ To run the tests, you can run: `npm run test`
 ## Developing
 
 The three subprojects (frontend, backend and database) are separately developed as docker containers. They are deployed via docker compose. To do so run the script scripts/build_and_run.sh. 
-Additionaly an fourth project, namely cypress, is used to perform end to end tests.
+Additionaly an fourth project, namely cypress, is used to perform end to end tests. (scripts/test/run_test.sh)
 
 ### SSL
 To provide an secure communication between the softwarecomponents tls used.
@@ -63,18 +63,12 @@ The server certificate has the format .p12 and also includes the public key next
 Since the server certificate is self signed by an in house authority, the frontend (=react app) needs the public key of the backend. With this the client knows that the communication
 actually happens with the desired server. The client certificate has an .crt extension
 and must be unencrypted.
+For a new environment the cers and keys must be new issued.
 
 ### .env
 The .env file is located in the project root. It contains som variables that need to be shared between different components of the project. Wherever some variable is needed the .env file is referenced. 
 Some variables are sensitiv, so the .env is not controlled by version control. Since the .env is crucial for the app the developer needs to take care of creating and maintaining this file.
-The most important variables are the following:
-| Name  | Example | Explanation      |
-|-------|------|-----------|
-| FRONTEND_PORT  | 3001   | The port of the frontend container |
-| BACKEND_PORT   | 8082   | The port of the backend container   |
-| DATABASE_PORT  | 3307   | The port of the database container   |
-| PROJECT_PATH  | /home/foo/DeskSharingTool   | The absolute path to the project |
-| PATH_TO_TLS | /home/foo/tls |The absolute path to the tls certs |
+There is an .env_template file that hase some non-sensitive data included. The other entries must be entered by the developer.
 
 ## Test
 
