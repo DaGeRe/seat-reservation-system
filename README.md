@@ -6,7 +6,7 @@ Web application that allows to book workspaces in an office.
 
 `https://github.com/Gazzo-gif/Desk-Sharing-Tool`
 
-## How to run the project locally using docker cpomse
+## How to run the project locally using docker compose
 
 The following commands only work for running the project locally. For further configuration, e.g. of ports, please edit `.env`. 
 
