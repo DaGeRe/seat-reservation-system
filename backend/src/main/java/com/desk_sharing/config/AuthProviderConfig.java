@@ -44,37 +44,12 @@ public class AuthProviderConfig {
     }
     
     @Bean
-    public AuthenticationProvider ldapAuthenticationProvider(LdapContextSource customLdapContextSource) {
-    BindAuthenticator bindAuthenticator = new BindAuthenticator(customLdapContextSource);
-    bindAuthenticator.setUserSearch(
-        new FilterBasedLdapUserSearch(
-            ldapProperties.getUserBase(),  
-            ldapProperties.getUserFilter(),
-            customLdapContextSource
-        )
-    );
-    
-    return new LdapAuthenticationProvider(bindAuthenticator);
-}
-
-    @Bean
-    public BindAuthenticator bindAuthenticator(LdapContextSource customLdapContextSource) {
-        BindAuthenticator authenticator = new BindAuthenticator(customLdapContextSource);
-        authenticator.setUserSearch(new FilterBasedLdapUserSearch(
-            "", // We stay loyal to the allready set base from LdapContextSource.
-            ldapProperties.getUserFilter(), // Per default we are looking in the user ou (organization unit).
-            customLdapContextSource
-        ));
-        return authenticator;
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager(
             final HttpSecurity http,
-            final CustomDelegatingAuthenticationProvider customDelegatingAuthenticationProvider
+            final AuthenticationProvider daoAuthenticationProvider // Direkt den DAO nutzen
         ) throws Exception {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder.authenticationProvider(customDelegatingAuthenticationProvider);
+        authBuilder.authenticationProvider(daoAuthenticationProvider);
         return authBuilder.build();
     }
 }

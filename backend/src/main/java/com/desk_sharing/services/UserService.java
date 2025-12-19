@@ -52,7 +52,7 @@ public class UserService  {
     private final LdapService ldapService;
 
     public AuthResponseDTO login(final String email, final String password) throws LdapUserNotFoundException, DaoUserNotFoundException, BadCredentialsException {
-        final boolean ldapUserExists = ldapService.userExistsByEmail(email);
+        final boolean ldapUserExists = false;
         final boolean daoUserExists = userRepository.findByEmail(email) != null;
 
         if (!ldapUserExists && !daoUserExists) {
@@ -61,6 +61,15 @@ public class UserService  {
             if (!daoUserExists)
                 throw new DaoUserNotFoundException(password);
         }
+        
+        System.out.println("DEBUG: Login-Versuch für Email: " + email);
+        System.out.println("DEBUG: Passwort im Klartext erhalten: " + password);
+        // Schau auch, was in der DB steht (falls du das userRepository dort hast)
+        System.out.println("DEBUG: Hash in DB: " + userRepository.findByEmail(email).getPassword());
+        
+        boolean match = passwordEncoder.matches("12345", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.TVu4ATA");
+        System.out.println("PASST DAS PASSWORT? " + match);
+        System.out.println(passwordEncoder.encode("12345"));
         
 
         // Check if mail exists and password is correct.

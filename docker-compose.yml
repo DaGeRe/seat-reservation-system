@@ -15,7 +15,7 @@ services:
         REACT_APP_CREATE_SERIES_DEFAULT_STARTTIME: ${CREATE_SERIES_DEFAULT_STARTTIME}
         REACT_APP_CREATE_SERIES_DEFAULT_ENDTIME: ${CREATE_SERIES_DEFAULT_ENDTIME}
         REACT_APP_CREATE_SERIES_DEFAULT_FREQUENCY: ${CREATE_SERIES_DEFAULT_FREQUENCY}
-        REACT_APP_BACKEND_URL: https://${IP}:${BACKEND_PORT}
+        REACT_APP_BACKEND_URL: http://localhost:${BACKEND_PORT}
         REACT_APP_ERROR_USER_NOT_FOUND_IN_AD: ${ERROR_USER_NOT_FOUND_IN_AD}
         REACT_APP_ERROR_USER_NOT_FOUND_IN_DAO: ${ERROR_USER_NOT_FOUND_IN_DAO}
         REACT_APP_ERROR_WRONG_PW: ${ERROR_WRONG_PW}
@@ -26,10 +26,7 @@ services:
       - SSL_KEY_FILE=/etc/ssl/private/${FRONTEND_KEY_FILE}
       - SSL_CRT_FILE=/etc/ssl/private/${FRONTEND_CRT_FILE}
     ports:
-      - ${FRONTEND_PORT}:443
-    volumes:
-      # mount tls stuff read only
-      - ${PROJECT_PATH}/frontend/tls:/etc/ssl/private:ro
+      - ${FRONTEND_PORT}:80
     networks:
       - ${NETWORK}
     depends_on:
@@ -46,8 +43,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/docker/daemon.json:/etc/docker/daemon.json 
       - ${BACKEND_LOGS}:/usr/src/app/logs
-        # mount tls stuff read only
-      - ${PROJECT_PATH}/backend/tls:/app/tls:ro
     build: 
       context: ${PROJECT_PATH}/backend
       dockerfile: Dockerfile
@@ -62,8 +57,6 @@ services:
       - ${NETWORK}
     # Things we need in the running container.
     environment:
-      # Used in application.properties to access the tls cert.
-      - PW_TLS=${PW_TLS}
       # Used in application.properties to access the db.
       - PW_DB=${PW_DB}
       # Used in application.properties. The password for the member of AD.

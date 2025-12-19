@@ -33,13 +33,9 @@ ARG TARGET
 
 # Copy needed packages.
 COPY package.json package-lock.json* ./
-# Proxy stuff to install packages
-RUN npm config set registry http://registry.npmjs.org/
-RUN npm config set https-proxy http://proxy.justiz.sachsen.de:3128
-RUN npm config set proxy http://proxy.justiz.sachsen.de:3128
 
 # Dependencies installing
-RUN npm ci --omit=dev
+RUN npm install
 
 # Cp source
 COPY public public

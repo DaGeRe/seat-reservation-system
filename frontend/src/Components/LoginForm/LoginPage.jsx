@@ -72,6 +72,7 @@ const LoginPage = () => {
         return;
       }
     } catch (error) {
+      console.log(error);
       toast.error(t('loginFailed'));
       dispatch({ type: 'updateField', field: 'loginError', value: t('loginFailed')});
     }

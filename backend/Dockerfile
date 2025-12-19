@@ -8,8 +8,8 @@ WORKDIR /usr/src/app
 
 # Copy Maven proxy and settings (offline pre-configured)
 COPY pom.xml .
-COPY settings.xml /usr/share/maven/
-COPY settings.xml /root/.m2/
+#COPY settings.xml /usr/share/maven/
+#COPY settings.xml /root/.m2/
 
 # Copy the Maven project files into the container
 COPY src src
@@ -29,12 +29,6 @@ FROM eclipse-temurin:17-jre-alpine
 ENV TZ=Europe/Paris
 
 WORKDIR /usr/src/app
-# RUN apt update && apt install ldap-utils
-COPY ca_ad.cer /usr/local/share/ca-certificates/ldapserver.crt
-#RUN update-ca-certificates
-RUN keytool -import -trustcacerts -alias ldapserver \
-    -file /usr/local/share/ca-certificates/ldapserver.crt \
-    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
 
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
