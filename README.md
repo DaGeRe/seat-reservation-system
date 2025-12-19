@@ -6,20 +6,26 @@ Web application that allows to book workspaces in an office.
 
 `https://github.com/Gazzo-gif/Desk-Sharing-Tool`
 
-## How to run the project (deprecated)
+## How to run the project locally using docker cpomse
 
-If the application is not running yet in the server:
+The following commands only work for running the project locally. For further configuration, e.g. of ports, please edit `.env`. 
 
-The given commands are assuming you are running the project in the SSH server.
+To run the project use: `docker compose up`.
 
-To run the project use: `docker-compose up`.
+If you need to build it use: `docker compose up --build`.
 
-If you need to build it use: `docker-compose up --build`.
+Afterwards, you can access the website in the browser accessing `localhost` directly. To login, please connect to your local mariadb server  using `mysql --protocol=tcp -P 3306 -u root -p12345 mydatabase` (or a different password that you might have configured in your `.env` file)
 
-You will be able to access the website in `http://jus-srv-test30:3000`,
+and execute
 
-The databse will be in `http://jus-srv-test30:3306` and the backend with the REST API will be in `http://jus-srv-test30:8081`.
+```
+INSERT INTO users 
+  (email, name, password, surname, visibility, default_view_mode_id, default_floor_id) 
+VALUES 
+  ('test@test.de',  'TestUser', '$2a$10$IFlMzQQRjWmQoidgkBphoeqbMvJiUCTYwUpJLZWLD3IUqDEPu4lAe', 'TestUser', '', NULL, NULL);
+```
 
+to create a test user. Now, you can login using the user name test@test.de and the password 12345.
 
 ## Run locally (deprecated)
 
