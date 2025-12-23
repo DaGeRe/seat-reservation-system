@@ -133,9 +133,54 @@ Prior we added a test user and a test admin. The later will allow us to add real
 Use ./scripts/build_and_run.sh. This will create the docker images. Also the containers are started. 
 Please see prior chapter if you want to start the project for the first time.
 
-## Maintenance
+## User Manual
 
-### Floor images
+### Add new user
+After you executed initDatabase.sh you can login as test.admin@mail.de with the password test. With this account you can start to add your real users. It is important that, after you setup youre real world users, you delete this user with this unsafe password.
+
+A step by step guide how to add a new user is seen in the following list:
+
+1. Login as user with ADMIN role.
+2. Left side you will see the row called Admin. Click on it to go to the Admin Panel.
+3. Click on User Management.
+4. Click on Add Employee. 
+5. Paste the email, a default password, the name and the surname of the new user.
+If the user shall be grandted admin rights select true. False otherwise.
+9. Click Submit.
+10. A small window will appear with the information that the user was creaded successfully.
+
+### Roles
+A basic role hierarchy is implemented. A user has per default the role USER. If this user needs to do some special tasks like adding other users or add/delete rooms he must be granted the role ADMIN. This is only can be done via gui if the executing user is a admin by himself. To do so:
+1. Login as user with ADMIN role.
+2. Left side you will see the row called Admin. Click on it to go to the Admin Panel.
+3. Click on User Management.
+4. You can either add, delete or edit an employee. Given that you want to grant a normal user admin rights we click on Edit Employee. 
+5. For a faster search enable filter. As column you choose Email. As the condition you choose =. Then paste the email of the user you want to change in the last text box.
+6. A row with informations about the user will appear. Click on EDIT.
+7. A window appears where you can change attributes of the user. (Note that for now the password cant be changed. Must be done in the future!)
+8. Set Admin to True.
+9. Click Update.
+10. A small window will appear with the information that the user was changed.
+
+A admin can do everything a normal user can do, plus all the administrative tasks. 
+
+### Create a booking
+The main task of this tool is to let the user create bookings in defined time ranges on specific desks.
+For this we assume that an admin already include at least a building with a floor that contains a room with an desk.
+
+1. Login
+2. You see the main page with the Calendar view. This is indicate by the word calendar that is highlighted in the left bar. And also in the url that contains /home.
+3. Choose a date on which you want to book a desk. Left click on it.
+4. You see the floor selection view. Here you can choose a building and a floor in this building. The image in the center is the floor plan of the selected floor. Every blue icon indicates a room. A room can have 0..n desks in it.
+5. Select a room. To do so left click on one of the blue icons. 
+6. You see the desk view for the choosen room. If the room has desks in it, you will see them on the left side.
+7. Choose a desk. To do so left click on one of the desks to the left. The choosen desk will change its color.
+8. Select a time range. To do so right click in the table. Hold the left button and move the mouse to the wanted end time of your booking. Release the left mouse button. If youre desired time range collides with a booking of a other user a error message will appear.
+9. After you choose a valid time range the selected time range will appear grey.
+10. Click BOOK on the bottom of the view.
+11. You will be asked if you like to commit this booking. Click either YES or No. If you clicked YES a message will appear, informing you the the booking was successfull.
+
+### Add new floor images
 Every room is associated with an floor in an building.
 This tool helps to visualize the position of the rooms with a floor plan of every floor. Every room is associated with a x- and a y-coordinate. The user see the room on the floor plan according to the x- and y-coordinate.
 That implies that for every floor an floor plan must be present. 
