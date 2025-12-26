@@ -82,43 +82,6 @@ under the License.
     -->
   </pluginGroups>
 
-  <!-- proxies
-   | This is a list of proxies which can be used on this machine to connect to the network.
-   | Unless otherwise specified (by system property or command-line switch), the first proxy
-   | specification in this list marked as active will be used.
-   |-->
-  <proxies>
-     <!-- <proxy>
-           <id>justiz</id>
-             <active>true</active>
-            <protocol>http</protocol>
-             <host>proxy.justiz.sachsen.de</host>
-             <port>3128</port>
-             <nonProxyHosts>backend,frontend,127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0.0/8,172.18.0.0/16,172.21.0.0/16,172.27.0.0/16,172.17.*.*,*.justiz.sachsen.de,*.sta.justiz.sachsen.de,*.adv,*.sta,*.itgvb.fs.sachsen.de,*.evasax.fs.sachsen.de,10.244.1.*,10.243.138.*,10.243.139.*,10.243.171.*,10.243.14.*,10.243.117.*,10.244.21.*,10.244.72.*,*.voip.sachsen.de,vpngate.pzd-svn.de,localhost,172.17.47.94,jus-srv-test30,jus-srv-test30:3000,jus-srv-test30:8081,jus-srv-test30.justiz.sachsen.de</nonProxyHosts>
-         </proxy>
-         <proxy>
-             <id>justiz-https</id>
-             <active>true</active>
-             <protocol>https</protocol>
-             <host>proxy.justiz.sachsen.de</host>
-             <port>3128</port>
-             <nonProxyHosts>backend,frontend,127.0.0.1,localhost,::1,*.local,172.17.0.0/16,192.168.0.0/16,10.0.0.0/8,172.18.0.0/16,172.21.0.0/16,172.27.0.0/16,172.17.*.*,*.justiz.sachsen.de,*.sta.justiz.sachsen.de,*.adv,*.sta,*.itgvb.fs.sachsen.de,*.evasax.fs.sachsen.de,10.244.1.*,10.243.138.*,10.243.139.*,10.243.171.*,10.243.14.*,10.243.117.*,10.244.21.*,10.244.72.*,*.voip.sachsen.de,vpngate.pzd-svn.de,localhost,172.17.47.94,jus-srv-test30,jus-srv-test30:3000,jus-srv-test30:8081,jus-srv-test30.justiz.sachsen.de</nonProxyHosts>
-         </proxy> <!-- proxy -->
-     | Specification for one proxy, to be used in connecting to the network.
-     |
-    <proxy>
-      <id>optional</id>
-      <active>true</active>
-      <protocol>http</protocol>
-      <username>proxyuser</username>
-      <password>proxypass</password>
-      <host>proxy.host.net</host>
-      <port>80</port>
-      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
-    </proxy>
-    -->
-  </proxies>
-
   <!-- servers
    | This is a list of authentication profiles, keyed by the server-id used within the system.
    | Authentication profiles can be used whenever maven must make a connection to a remote server.
