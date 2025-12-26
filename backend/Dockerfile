@@ -29,10 +29,10 @@ FROM eclipse-temurin:17-jre-alpine
 ENV TZ=Europe/Paris
 
 WORKDIR /usr/src/app
-COPY ca_ad.cer /usr/local/share/ca-certificates/ldapserver.crt
-RUN keytool -import -trustcacerts -alias ldapserver \
-    -file /usr/local/share/ca-certificates/ldapserver.crt \
-    -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
+# COPY ca_ad.cer /usr/local/share/ca-certificates/ldapserver.crt
+# RUN keytool -import -trustcacerts -alias ldapserver \
+#     -file /usr/local/share/ca-certificates/ldapserver.crt \
+#     -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt
 
 # Copy the compiled JAR file from the build stage
 COPY --from=build /usr/src/app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
