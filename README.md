@@ -19,6 +19,8 @@ In $PATH_TO_TLS/pws/ we create an file called pw_db.txt.
 The only content of this file shall be the password of our database.
 Create on and write it in $PATH_TO_TLS/pws/pw_db.txt.
 
+During the setup process you will execute bash scripts from the project root which are located in \$PROJECT_PATH/scripts. If a error occurs execute the following statement: `chmod -R +x \$PROJECT_PATH/scripts`.
+
 In the next step we go further with the tls directory \$PATH_TO_TLS. 
 
 ### TLS
