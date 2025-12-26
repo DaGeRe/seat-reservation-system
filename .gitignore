@@ -54,7 +54,7 @@ out.json
 # Frontend
 frontend/node_modules/**
 frontend/server*
-frontend/package-lock.json 
+#frontend/package-lock.json 
 
 # Backend
 backend/src/test/resources/dumps/*
