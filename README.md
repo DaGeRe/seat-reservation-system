@@ -27,7 +27,7 @@ The TLS directory can be created wherever you like; by default, use `$PROJECT_PA
 This directory later holds everything needed for tls/https communication. We write down the absolute path to this directory to add it later in the .env file as PATH_TO_TLS.
 In the tls directory we first add an other directory called pws.
 
-During the setup process you will execute bash scripts from the project root which are located in `$PROJECT_PATH/scripts`. If a error occurs execute the following statement: `chmod -R +x \$PROJECT_PATH/scripts`.
+During the setup process you will execute bash scripts from the project root which are located in `$PROJECT_PATH/scripts`. If a error occurs execute the following statement: `chmod -R +x $PROJECT_PATH/scripts`.
 
 In the next step we go further with the tls directory `$PATH_TO_TLS`
 
@@ -39,22 +39,22 @@ You can also create your own self signed cert. You need it in the .pfx format. \
 Independent if you want to use TLS or not you have to create a folder to store all the (maybe needed) cert stuff and password files. The path to this folder is later stored in the parameter PATH_TO_TLS in .env. If you followed the previous step this directory already exists. \
 Here you create the subfolder backend.
 
-In \${PATH_TO_TLS}/backend you add the pfx file. The name of this file is BACKEND_PFX_FILENAME in .env. To be sure you can create that directory even if you dont use TLS.
+In `${PATH_TO_TLS}/backend` you add the pfx file. The name of this file is BACKEND_PFX_FILENAME in .env. To be sure you can create that directory even if you dont use TLS.
 
-Create the folder \${PATH_TO_TLS}/frontend. To be sure you can create that directory even if you dont use TLS. Here you store the crt file and the key file for the certificate (must be unencrypted). You can extract key- and certfile with openssl. These files are represented by FRONTEND_KEY_FILE and FRONTEND_CRT_FILE in .env.
+Create the folder `${PATH_TO_TLS}/frontend`. To be sure you can create that directory even if you dont use TLS. Here you store the crt file and the key file for the certificate (must be unencrypted). You can extract key- and certfile with openssl. These files are represented by `FRONTEND_KEY_FILE` and `FRONTEND_CRT_FILE` in .env.
 
-To make sure no passwords are hard coded in the containers we also create the folder \${PATH_TO_TLS}/pws/. This directory and its content is needed even if no TLS is used!
+To make sure no passwords are hard coded in the containers we also create the folder `${PATH_TO_TLS}/pws/`. This directory and its content is needed even if no TLS is used!
 
-Here we create an file called pw_tls.txt. This file hase the password for our certifcation file as content. If no TLS is needed you can create an empty file with the specified name. (e.g. with `touch \$PATH_TO_TLS/pws/pw_tls.txt`)
+Here we create an file called pw_tls.txt. This file hase the password for our certifcation file as content. If no TLS is needed you can create an empty file with the specified name. (e.g. with `touch $PATH_TO_TLS/pws/pw_tls.txt`)
 
-We also create \${PATH_TO_TLS}/pws/pw_db.txt and \${PATH_TO_TLS}/pws/pw_ldap.txt. These files contain the password for the database and for the service user of ldap. If ldap is not used it can be empty.
+We also create `${PATH_TO_TLS}/pws/pw_db.txt` and `${PATH_TO_TLS}/pws/`pw_ldap.txt. These files contain the password for the database and for the service user of ldap. If ldap is not used it can be empty.
 
 ### Configure .env
 `.env` is used to store parameters that are used to run the project. Some of them may be confidential or vary based on the environment. So some of them must be set by hand.
 
 There are some variables we must can change (but the default values from `.env_template` are fine):
 * Network must be set either to mynetwork_dev or mynetwork. Both of them are defined in docker-compose.yml
-* BACKEND_LOGS must be set to an directory where we like to store the logging messages. Choose a folder you like. E.g.: \${PROJECT_PATH}/backend/logs_dev_backend/.
+* BACKEND_LOGS must be set to an directory where we like to store the logging messages. Choose a folder you like. E.g.: `${PROJECT_PATH}/backend/logs_dev_backend/`.
 * VOLUME must set either to mariadb_data_dev or mariadb_data. Both are defined in docker-compose.yml.
 
 In the next step we find the names of our containers and add them to .env.
@@ -63,9 +63,9 @@ Execute `docker ps`. You will se all running containers. Hopefully among them yo
 First search for a container namend something with frontend. This is the container name of our frontend container. Copy the name and add it in .env as FRONTEND_CONTAINER. Do similiar with backend and database.
 
 Now we add the needed tls informations to .env.
-Earlier we put our pfx TLS file in $PATH_TO_TLS/backend/. Now we add the full name (with extension) of this .pfx file and write it in .env as BACKEND_PFX_FILENAME. Attention: you only need to do this if you you want to use TLS. 
+Earlier we put our pfx TLS file in `PATH_TO_TLS/backend/`. Now we add the full name (with extension) of this .pfx file and write it in .env as BACKEND_PFX_FILENAME. Attention: you only need to do this if you you want to use TLS. 
 
-Now we do a similiar thing regarding the frontend. Do a `ls \$PATH_TO_TLS/frontend/` and you will see two files. The name of the file with the extension .crt is added to .env for FRONTEND_CRT_FILE. The file with the extension .key is added for FRONTEND_KEY_FILE. Attention: you only need to do this if you you want to use TLS. 
+Now we do a similiar thing regarding the frontend. Do a `ls $PATH_TO_TLS/frontend/` and you will see two files. The name of the file with the extension .crt is added to .env for FRONTEND_CRT_FILE. The file with the extension .key is added for FRONTEND_KEY_FILE. Attention: you only need to do this if you you want to use TLS. 
 
 Check if the default values for FRONTEND_PORT, BACKEND_PORT and DATABASE_PORT matches your needs.
 
@@ -167,7 +167,7 @@ Every room is associated with an floor in an building.
 This tool helps to visualize the position of the rooms with a floor plan of every floor. Every room is associated with a x- and a y-coordinate. The user see the room on the floor plan according to the x- and y-coordinate.
 That implies that for every floor an floor plan must be present. 
 
-Now the images of the floor plan are stored as .png in \$PROJECT_PATH/frontend/public/Assets/BuildingName where BuildingName must match to the name of the building stored in table buildings in the database.
+Now the images of the floor plan are stored as .png in `$PROJECT_PATH/frontend/public/Assets/BuildingName` where `BuildingName` must match to the name of the building stored in table buildings in the database.
 
 This approach is prone to errors. A better solution for the future is to store the images as blobs directly in the database.
 
@@ -175,7 +175,7 @@ For now you have to follow the following steps to add a new building or new floo
 
 1. Add a new entry to the table building. (only if you want to create a new building)
 2. Add a new entry to the table floor with floor_id as a foreign key to the needed building row. Note the name of the new floor.
-3. in \$PROJECT_PATH/frontend/public/assets/ create a new folder with the name of the building. The folder may be named \$PROJECT_PATH/frontend/public/assets/Mustergebäude.
+3. In `$PROJECT_PATH/frontend/public/assets/` create a new folder with the name of the building. The folder may be named `$PROJECT_PATH/frontend/public/assets/Mustergebäude`.
 4. For every floor you must have a png file representing the floor plan. The png file must have exact the same name as the freshly added floor in the floors table.
 5. If you restart your application (`./scripts/build_and_run.sh`) and choose the building and the floor you can add new rooms with new desks (if you have admin rights). After this these desks can be booked.
 
@@ -183,5 +183,5 @@ For now you have to follow the following steps to add a new building or new floo
 Use `./scripts/test/run_test.sh` after the containers are running.
 The test files are located in cypress/cypress/integration/.
 
-If you freshly cloned this project most of the tests will fail, since the test files use some hard coded things. For example: some tests assume that a specific building is stored in the database, and therefore the images of the floor belonging to the building are stored in $PROJECT_PATH/frontend/public/Assets/... . If these are not present in your project the test will fail..
+If you freshly cloned this project most of the tests will fail, since the test files use some hard coded things. For example: some tests assume that a specific building is stored in the database, and therefore the images of the floor belonging to the building must be stored in `$PROJECT_PATH/frontend/public/Assets/...` . If these are not present in your project the test will fail.
 
