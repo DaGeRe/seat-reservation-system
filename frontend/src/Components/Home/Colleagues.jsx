@@ -74,7 +74,7 @@ const Colleagues = () => {
     
     return (
       <LayoutPage
-        title={i18n.language === 'de' ? 'Kollegen' : 'Colleaguas'}
+        title={i18n.language === 'de' ? 'Kollegen' : 'Colleagues'}
         helpText={create_helpText()}
         withPaddingX={true}
       >
