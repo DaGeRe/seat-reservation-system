@@ -1,26 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { BsList } from "react-icons/bs";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { RiAdminFill } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaLock, FaBookmark } from "react-icons/fa";
+import { FaLock, FaBookmark, FaStar } from "react-icons/fa";
 import ChangePassword from "./ChangePassword";
 import LogoutConfirmationModal from "./LogoutConfirmationModal";
+import MfaSettings from "./MfaSettings";
+import NotificationSettings from "./NotificationSettings";
 import { CiLogout } from 'react-icons/ci';
-import { MdGTranslate } from 'react-icons/md';
+import { MdGTranslate, MdSecurity } from 'react-icons/md';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosCheckbox, IoIosSettings, IoIosAlbums } from 'react-icons/io';
 import { IoSearchSharp } from 'react-icons/io5';
 import { HiOutlineSparkles } from 'react-icons/hi2';
+import { MdVisibility } from 'react-icons/md';
 import LaptopIcon from '@mui/icons-material/Laptop';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import { AiOutlineTeam } from "react-icons/ai";
+import { MdLocalParking, MdSupportAgent, MdBuild } from 'react-icons/md';
+import { IoMdNotifications } from 'react-icons/io';
 import Defaults from "./Defaults";
+import VisibilityPreferences from "./VisibilityPreferences";
+import { putRequest } from "../RequestFunctions/RequestFunctions";
 
 const SidebarComponent = () => {
   const { t, i18n } = useTranslation();
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const [collapsed, setCollapsed] = useState(
     localStorage.getItem('sidebarCollapsed') === 'true'
   );
@@ -30,6 +38,9 @@ const SidebarComponent = () => {
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
   const [isDefaultsModalOpen, setIsDefaultsModalOpen] = useState(false);
+  const [isMfaSettingsOpen, setIsMfaSettingsOpen] = useState(false);
+  const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false);
+  const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   
   useEffect(() => {
     if (location.pathname === '/admin') {
@@ -45,13 +56,25 @@ const SidebarComponent = () => {
       //setSeriesSubMenuOpen(false);
       
     }
+    if (location.pathname === '/favourites') {
+      setActiveTab('favourites');
+    }
     if (location.pathname === '/manageseries' || location.pathname === '/createseries') {
       setActiveTab('series');
       //setSeriesSubMenuOpen(true);
     }
-    if (location.pathname === '/freeDesks') {
+    if (location.pathname === '/freedesks' || location.pathname === '/freeDesks') {
       setActiveTab('freeDesks');
       //setSeriesSubMenuOpen(false);
+    }
+    if (location.pathname === '/carpark') {
+      setActiveTab('carpark');
+    }
+    if (location.pathname === '/supportContacts') {
+      setActiveTab('supportContacts');
+    }
+    if (location.pathname === '/defects') {
+      setActiveTab('defects');
     }
 
   }, [location.pathname, activeTab]);
@@ -76,7 +99,11 @@ const SidebarComponent = () => {
         break;
 
       case 'freeDesks':
-        navigate("/freeDesks", { replace: true });
+        navigate("/freedesks", { replace: true });
+        break;
+
+      case 'favourites':
+        navigate("/favourites", { replace: true });
         break;
 
       case 'roomSearch':
@@ -87,6 +114,19 @@ const SidebarComponent = () => {
         const currentLanguage = i18n.language;
         const newLanguage = currentLanguage === "en" ? "de" : "en";
         i18n.changeLanguage(newLanguage);
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+          localStorage.setItem(`language_${userId}`, newLanguage);
+          putRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/users/me/language`,
+            headers.current,
+            () => {},
+            () => {
+              console.warn('Failed to persist user language preference');
+            },
+            JSON.stringify({ language: newLanguage })
+          );
+        }
         break;
 
       case 'changePassword':
@@ -96,13 +136,35 @@ const SidebarComponent = () => {
       case 'defaults':
         setIsDefaultsModalOpen(true);
         break;
+      case 'visibilityPrefs':
+        setIsVisibilityModalOpen(true);
+        break;
 
       case 'colleagues':
         navigate("/colleagues", { replace: true });
         break;
 
+      case 'carpark':
+        navigate("/carpark", { replace: true });
+        break;
+      case 'supportContacts':
+        navigate("/supportContacts", { replace: true });
+        break;
+
+      case 'defects':
+        navigate("/defects", { replace: true });
+        break;
+
       case 'logout':
         setIsLogoutConfirmationOpen(true);
+        break;
+
+      case 'mfaSettings':
+        setIsMfaSettingsOpen(true);
+        break;
+
+      case 'notifications':
+        setIsNotificationSettingsOpen(true);
         break;
 
       default:
@@ -120,7 +182,19 @@ const SidebarComponent = () => {
   };
 
   const handleLogoutConfirmed = () => {
-    localStorage.removeItem('userId'); // Clear the user's session
+    // Clear the user's session (auth + cached user info).
+    sessionStorage.removeItem('headers');
+    sessionStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('email');
+    localStorage.removeItem('name');
+    localStorage.removeItem('surname');
+    localStorage.removeItem('admin');
+    localStorage.removeItem('servicePersonnel');
+    localStorage.removeItem('visibility');
+    // Reset language to browser preference for the unauthenticated screens
+    const browserLang = navigator.language.split('-')[0] || 'en';
+    i18n.changeLanguage(browserLang);
     navigate('/', { replace: true }); // Redirect to login page
   };
 
@@ -167,13 +241,23 @@ const SidebarComponent = () => {
               {t("admin")}
             </MenuItem>
           )}
+          {(localStorage.getItem("admin") === 'true' || localStorage.getItem("servicePersonnel") === 'true') && (
+            <MenuItem
+              id='sidebar_defects'
+              active={activeTab === "defects"}
+              icon={<MdBuild />}
+              onClick={() => handleClick("defects")}
+            >
+              {t("defects")}
+            </MenuItem>
+          )}
           <MenuItem
             id='sidebar_calendar'
             active={activeTab === "calendar"}
             icon={<IoCalendarNumberOutline />}
             onClick={() => handleClick("calendar")}
           >
-            {t("calendar")}
+            {t("home")}
           </MenuItem>
           <MenuItem
             id='sidebar_bookings'
@@ -185,9 +269,18 @@ const SidebarComponent = () => {
             {t('bookings')}
           </MenuItem>
 
-          {/*Search*/}
+          <MenuItem
+            id='sidebar_favourites'
+            active={activeTab === 'favourites'}
+            icon={<FaStar />}
+            onClick={() => handleClick('favourites')}
+          >
+            {t('favourites')}
+          </MenuItem>
+
+          {/*Series*/}
           <SubMenu active={activeTab === 'series'} icon={<IoIosAlbums />} label={t('series')}>
-            <MenuItem id='sidebar_manageseries' icon={<IoIosCheckbox />} onClick={() => {navigate('/manageseries', { replace: true });}}>
+            <MenuItem id='sidebar_manageseries' icon={<IoIosAlbums />} onClick={() => {navigate('/manageseries', { replace: true });}}>
               {t('manage')}
             </MenuItem>
             <MenuItem id='sidebar_createseries' icon={<AiFillPlusCircle />} onClick={() => {navigate('/createseries', { replace: true });}}>
@@ -195,7 +288,7 @@ const SidebarComponent = () => {
             </MenuItem>
           </SubMenu> 
 
-          {/*Settings*/}
+          {/*Search*/}
           <SubMenu id='sidebar_search0' icon={<IoSearchSharp />}  label={t('search')}>
             <MenuItem id='sidebar_search' icon={<MeetingRoomIcon/>} onClick={
               () => handleClick('roomSearch')}
@@ -213,8 +306,25 @@ const SidebarComponent = () => {
             <MenuItem id='sidebar_colleagues' icon={<AiOutlineTeam />} onClick={() => handleClick('colleagues')}>
               {t('colleagues')}
             </MenuItem>
+            <MenuItem
+              id='sidebar_supportContacts'
+              active={activeTab === 'supportContacts'}
+              icon={<MdSupportAgent />}
+              onClick={() => handleClick('supportContacts')}
+            >
+              {t('supportContacts')}
+            </MenuItem>
+            <MenuItem
+              id='sidebar_carpark'
+              active={activeTab === 'carpark'}
+              icon={<MdLocalParking />}
+              onClick={() => handleClick('carpark')}
+            >
+              {t('carpark')}
+            </MenuItem>
           </SubMenu>
-
+          
+          {/*Settings*/}
           <SubMenu id='sidebar_settings0' icon={<IoIosSettings/>} label={t('settings')}>
             <MenuItem
               id='sidebar_language'
@@ -230,9 +340,28 @@ const SidebarComponent = () => {
                 () => handleClick('defaults')}>
                   {t('defaults')}
               </MenuItem>
+              <MenuItem 
+                id='sidebar_visibility' 
+                icon={<MdVisibility />} onClick={
+                () => handleClick('visibilityPrefs')}>
+                  {t('visibility')}
+              </MenuItem>
+            <MenuItem
+              id='sidebar_notifications'
+              icon={<IoMdNotifications />}
+              style={{ fontSize: '16px', fontWeight: 500 }}
+              onClick={() => handleClick('notifications')}
+            >
+              {t('notifications')}
+            </MenuItem>
             <MenuItem id='sidebar_changePassword' icon={<FaLock/>} onClick={() => handleClick('changePassword')}>
               {t('password')}
             </MenuItem>
+            {localStorage.getItem("admin") === 'true' && (
+              <MenuItem id='sidebar_mfaSettings' icon={<MdSecurity/>} onClick={() => handleClick('mfaSettings')}>
+                {t('mfaSettings')}
+              </MenuItem>
+            )}
           </SubMenu>
           
           <MenuItem id='sidebar_logout' icon={<CiLogout />} onClick={() => handleClick('logout')}>{t('logout')}</MenuItem>
@@ -242,6 +371,10 @@ const SidebarComponent = () => {
       <Defaults 
         isOpen={isDefaultsModalOpen}
         onClose={setIsDefaultsModalOpen.bind(null, false)}
+      />
+      <VisibilityPreferences 
+        isOpen={isVisibilityModalOpen}
+        onClose={setIsVisibilityModalOpen.bind(null, false)}
       />
       <ChangePassword
         isOpen={isChangePasswordModalOpen}
@@ -253,6 +386,15 @@ const SidebarComponent = () => {
         isOpen={isLogoutConfirmationOpen}
         onClose={handleCloseLogoutConfirmationModal}
         onConfirm={handleLogoutConfirmed}
+      />
+
+      <MfaSettings
+        isOpen={isMfaSettingsOpen}
+        onClose={() => setIsMfaSettingsOpen(false)}
+      />
+      <NotificationSettings
+        isOpen={isNotificationSettingsOpen}
+        onClose={() => setIsNotificationSettingsOpen(false)}
       />
     </div>
   );

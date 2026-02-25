@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaAddressBook, FaPlusMinus } from 'react-icons/fa6';
-import { FaBook } from 'react-icons/fa';
+import { FaBook, FaCog } from 'react-icons/fa';
 import './AdminPage.css'; // Import the CSS file for AdminPage
 import AddRoom from './Room/AddRoom';
 import DeleteRoom from './Room/DeleteRoom';
@@ -8,17 +8,23 @@ import EditRoom from './Room/EditRoom';
 import AddWorkstation from './Workstation/AddWorkstation';
 import EditWorkstation from './Workstation/EditWorkstation';
 import DeleteWorkstation from './Workstation/DeleteWorkstation';
-import AddEmployee from './UserManagement/AddEmployee';
-import DeleteEmployee from './UserManagement/DeleteEmployee';
-import EditEmployee from './UserManagement/EditEmployee';
+import AddUser from './UserManagement/AddUser';
+import DeleteUser from './UserManagement/DeleteUser';
+import EditUser from './UserManagement/EditUser';
+import DeactivateUser from './UserManagement/DeactivateUser';
 import OverviewBookings from './Bookings/OverviewBookings';
+import BookingSettings from './Bookings/BookingSettings';
 import { useTranslation } from 'react-i18next';
 import {BootstrapEmployeeDialog, BootstrapWorkstationDialog, BootstrapDialog } from '../Bootstrap';
 import LayoutPageAdmin from '../Templates/LayoutPageAdmin';
+import { getRequest } from '../RequestFunctions/RequestFunctions';
+import { toast } from 'react-toastify';
+import ParkingReview from './Parking/ParkingReview';
 
 const AdminPage = () => {
   const { t } = useTranslation();
-  const [showEmployeeButtons, setShowEmployeeButtons] = useState(false);
+  const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+  const [showUserButtons, setShowUserButtons] = useState(false);
   const [showWorkstationButtons, setShowWorkstationButtons] = useState(false);
   const [showBookingButtons, setShowBookingButtons] = useState(false);
   const [isAddRoomOpen, setIsAddRoomOpen] = useState(false);
@@ -27,15 +33,20 @@ const AdminPage = () => {
   const [isAddWorkstationOpen, setIsAddWorkstationOpen] = useState(false);
   const [isEditWorkstationOpen, setIsEditWorkstationOpen] = useState(false);
   const [isDeleteWorkstationOpen, setIsDeleteWorkstationOpen] = useState(false);
-  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
-  const [isEditEmployeeOpen, setIsEditEmployeeOpen] = useState(false);
-  const [isDeleteEmployeeOpen, setIsDeleteEmployeeOpen] = useState(false);
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isEditUserOpen, setIsEditUserOpen] = useState(false);
+  const [isDeactivateUserOpen, setIsDeactivateUserOpen] = useState(false);
+  const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
 
   const [isOverviewBookingsOpen, setIsOverviewBookingsOpen] = useState(false);
+  const [isParkingReviewOpen, setIsParkingReviewOpen] = useState(false);
+  const [pendingParkingCount, setPendingParkingCount] = useState(0);
+  const pendingParkingCountRef = useRef(0);
+  const [isBookingSettingsOpen, setIsBookingSettingsOpen] = useState(false);
 
-  const toggleEmployeeButtons = () => {
-    setShowEmployeeButtons(!showEmployeeButtons);
-    if (showEmployeeButtons === false) {
+  const toggleUserButtons = () => {
+    setShowUserButtons(!showUserButtons);
+    if (showUserButtons === false) {
       setShowWorkstationButtons(false);
       setShowBookingButtons(false);
     }
@@ -44,19 +55,19 @@ const AdminPage = () => {
   const toggleWorkstationButtons = () => {
     setShowWorkstationButtons(!showWorkstationButtons);
     if (showWorkstationButtons === false) {
-      setShowEmployeeButtons(false);
+      setShowUserButtons(false);
       setShowBookingButtons(false);
     }
   };
 
   const toggleBookingButtons = () => {
     setShowBookingButtons(!showBookingButtons);
-    setIsOverviewBookingsOpen(!isOverviewBookingsOpen);
     if (showBookingButtons === false) {
-      setShowEmployeeButtons(false);
+      setShowUserButtons(false);
       setShowWorkstationButtons(false);
     }
   };
+  const toggleBookingSettingsModal = () => setIsBookingSettingsOpen(!isBookingSettingsOpen);
   
   const toggleAddRoomModal = () => setIsAddRoomOpen(!isAddRoomOpen);
   const toggleDeleteRoomModal = () => setIsDeleteRoomOpen(!isDeleteRoomOpen);
@@ -64,9 +75,67 @@ const AdminPage = () => {
   const toggleAddWorkstationModal = () => setIsAddWorkstationOpen(!isAddWorkstationOpen);
   const toggleEditWorkstationModal = () => setIsEditWorkstationOpen(!isEditWorkstationOpen);
   const toggleDeleteWorkstationModal = () => setIsDeleteWorkstationOpen(!isDeleteWorkstationOpen);
-  const toggleAddEmployeeModal = () => setIsAddEmployeeOpen(!isAddEmployeeOpen);
-  const toggleEditEmployeeModal = () => setIsEditEmployeeOpen(!isEditEmployeeOpen);
-  const toggleDeleteEmployeeModal = () => setIsDeleteEmployeeOpen(!isDeleteEmployeeOpen);
+  const toggleAddUserModal = () => setIsAddUserOpen(!isAddUserOpen);
+  const toggleEditUserModal = () => setIsEditUserOpen(!isEditUserOpen);
+  const toggleDeactivateUserModal = () => setIsDeactivateUserOpen(!isDeactivateUserOpen);
+  const toggleDeleteUserModal = () => setIsDeleteUserOpen(!isDeleteUserOpen);
+  const toggleParkingReviewModal = () => setIsParkingReviewOpen(!isParkingReviewOpen);
+
+  const refreshPendingParkingCount = () => {
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/parking/review/pending/count`,
+      headers.current,
+      (count) => {
+        const nextCount = Number.isFinite(Number(count)) ? Number(count) : 0;
+        if (nextCount > pendingParkingCountRef.current) {
+          toast.info(t('parkingReviewPendingCount', { count: nextCount }));
+        }
+        pendingParkingCountRef.current = nextCount;
+        setPendingParkingCount(nextCount);
+      },
+      () => {}
+    );
+  };
+
+  useEffect(() => {
+    let timer = null;
+
+    const stopPolling = () => {
+      if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const startPolling = () => {
+      // Ensure no duplicate intervals
+      stopPolling();
+      if (document.visibilityState === 'visible') {
+        // Refresh immediately when becoming visible
+        refreshPendingParkingCount();
+        // Use a less aggressive polling interval (30 seconds)
+        timer = setInterval(refreshPendingParkingCount, 30000);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        startPolling();
+      } else {
+        stopPolling();
+      }
+    };
+
+    // Initial setup based on current visibility
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   return (
     <LayoutPageAdmin
@@ -75,7 +144,7 @@ const AdminPage = () => {
     >
       
       <div className='user-management-container'>
-        <button id='userManagement' className='user-management-button' onClick={toggleEmployeeButtons}>
+        <button id='userManagement' className='user-management-button' onClick={toggleUserButtons}>
           {t('userManagement')}
         </button>
         <FaAddressBook className='logo' />
@@ -92,16 +161,25 @@ const AdminPage = () => {
         </button>
         <FaBook className='logo' />
       </div>
+      <div className='manage-bookings-container'>
+        <button id='bookingSettings' className='manage-bookings-button' onClick={toggleBookingSettingsModal}>
+          {t("bookingSettings")}
+        </button>
+        <FaCog className='logo' />
+      </div>
     
-    <div className={`button-wrapper ${showEmployeeButtons ? 'visible' : ''}`}>
-      <button id='addEmployee' className='my-button' onClick={toggleAddEmployeeModal}>
-        {t('addEmployee')}
+    <div className={`button-wrapper ${showUserButtons ? 'visible' : ''}`}>
+      <button id='addUser' className='my-button' onClick={toggleAddUserModal}>
+        {t('addUser')}
       </button>
-      <button  id='deleteEmployee' className='my-button' onClick={toggleDeleteEmployeeModal}>
-        {t('deleteEmployee')}
+      <button id='editUser' className='my-button' onClick={toggleEditUserModal}>
+        {t('editUser')}
       </button>
-      <button id='editEmployee' className='my-button' onClick={toggleEditEmployeeModal}>
-        {t('editEmployee')}
+      <button id='deactivateReactivateUser' className='my-button' onClick={toggleDeactivateUserModal}>
+        {t('deactivateReactivateUser')}
+      </button>
+      <button id='deleteUser' className='my-button' onClick={toggleDeleteUserModal}>
+        {t('deleteUser')}
       </button>
     </div>
     <div className={`button-wrapper ${showWorkstationButtons ? 'visible' : ''}`}>
@@ -122,6 +200,14 @@ const AdminPage = () => {
       </button>
       <button id='editWorkstation' className='my-button' onClick={toggleEditWorkstationModal}>
         {t('editWorkstation')}
+      </button>
+    </div>
+    <div className={`button-wrapper ${showBookingButtons ? 'visible' : ''}`}>
+      <button id='overviewBooking' className='my-button' onClick={setIsOverviewBookingsOpen.bind(null, true)}>
+        {t('overviewBooking')}
+      </button>
+      <button id='parkingReview' className='my-button' onClick={toggleParkingReviewModal}>
+        {t('parkingReview')}{pendingParkingCount > 0 ? ` (${pendingParkingCount})` : ''}
       </button>
     </div>
 
@@ -145,20 +231,34 @@ const AdminPage = () => {
         <DeleteWorkstation isOpen={isDeleteWorkstationOpen} onClose={setIsDeleteWorkstationOpen.bind(null, !isDeleteWorkstationOpen)} />
       </BootstrapDialog>
 
-      <BootstrapWorkstationDialog onClose={setIsAddEmployeeOpen.bind(null, !isAddEmployeeOpen)} aria-labelledby='customized-dialog-title' open={isAddEmployeeOpen}>
-        <AddEmployee isOpen={isAddEmployeeOpen} onClose={setIsAddEmployeeOpen.bind(null, !isAddEmployeeOpen)} />
+      <BootstrapWorkstationDialog onClose={setIsAddUserOpen.bind(null, !isAddUserOpen)} aria-labelledby='customized-dialog-title' open={isAddUserOpen}>
+        <AddUser isOpen={isAddUserOpen} onClose={setIsAddUserOpen.bind(null, !isAddUserOpen)} />
       </BootstrapWorkstationDialog>
 
-      <BootstrapEmployeeDialog onClose={setIsEditEmployeeOpen.bind(null, !isEditEmployeeOpen)} aria-labelledby='customized-dialog-title' open={isEditEmployeeOpen}>
-        <EditEmployee isOpen={isEditEmployeeOpen} onClose={setIsEditEmployeeOpen.bind(null, !isEditEmployeeOpen)} />
+      <BootstrapEmployeeDialog onClose={setIsEditUserOpen.bind(null, !isEditUserOpen)} aria-labelledby='customized-dialog-title' open={isEditUserOpen}>
+        <EditUser isOpen={isEditUserOpen} onClose={setIsEditUserOpen.bind(null, !isEditUserOpen)} />
       </BootstrapEmployeeDialog>
 
-      <BootstrapEmployeeDialog onClose={setIsDeleteEmployeeOpen.bind(null, !isDeleteEmployeeOpen)} aria-labelledby='customized-dialog-title' open={isDeleteEmployeeOpen}>
-        <DeleteEmployee  onClose={setIsDeleteEmployeeOpen.bind(null, !isDeleteEmployeeOpen)} isOpen={isDeleteEmployeeOpen} />
+      <BootstrapEmployeeDialog onClose={setIsDeactivateUserOpen.bind(null, !isDeactivateUserOpen)} aria-labelledby='customized-dialog-title' open={isDeactivateUserOpen}>
+        <DeactivateUser isOpen={isDeactivateUserOpen} onClose={setIsDeactivateUserOpen.bind(null, !isDeactivateUserOpen)} />
+      </BootstrapEmployeeDialog>
+
+      <BootstrapEmployeeDialog onClose={setIsDeleteUserOpen.bind(null, !isDeleteUserOpen)} aria-labelledby='customized-dialog-title' open={isDeleteUserOpen}>
+        <DeleteUser onClose={setIsDeleteUserOpen.bind(null, !isDeleteUserOpen)} isOpen={isDeleteUserOpen} />
       </BootstrapEmployeeDialog>
 
       <BootstrapEmployeeDialog onClose={setIsOverviewBookingsOpen.bind(null, !isOverviewBookingsOpen)} aria-labelledby='customized-dialog-title' open={isOverviewBookingsOpen}>
         <OverviewBookings isOpen={isOverviewBookingsOpen} onClose={setIsOverviewBookingsOpen.bind(null, !isOverviewBookingsOpen)}/>
+      </BootstrapEmployeeDialog>
+
+      <ParkingReview
+        isOpen={isParkingReviewOpen}
+        onClose={toggleParkingReviewModal}
+        onChanged={refreshPendingParkingCount}
+      />
+
+      <BootstrapEmployeeDialog onClose={setIsBookingSettingsOpen.bind(null, !isBookingSettingsOpen)} aria-labelledby='customized-dialog-title' open={isBookingSettingsOpen}>
+        <BookingSettings isOpen={isBookingSettingsOpen} onClose={setIsBookingSettingsOpen.bind(null, !isBookingSettingsOpen)} />
       </BootstrapEmployeeDialog>
       
       </LayoutPageAdmin>

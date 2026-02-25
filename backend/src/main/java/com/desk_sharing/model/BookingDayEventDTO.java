@@ -1,0 +1,81 @@
+package com.desk_sharing.model;
+
+import java.sql.Date;
+import java.sql.Time;
+
+import com.desk_sharing.entities.Booking;
+import com.desk_sharing.entities.ParkingReservation;
+import com.desk_sharing.entities.ParkingReservationStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class BookingDayEventDTO {
+    private Long id;
+    private Integer userId;
+    private Date day;
+    private Time begin;
+    private Time end;
+    private Long roomId;
+    private String roomRemark;
+    private Long deskId;
+    private String deskRemark;
+    private String workspaceType;
+    private Long parkingId;
+    private String parkingType;
+    private String parkingStatus;
+    private String mode;
+
+    public BookingDayEventDTO(final Booking booking) {
+        this(
+            booking.getId(),
+            booking.getUser() != null ? booking.getUser().getId() : null,
+            booking.getDay(),
+            booking.getBegin(),
+            booking.getEnd(),
+            booking.getRoom() != null ? booking.getRoom().getId() : null,
+            booking.getRoom() != null ? booking.getRoom().getRemark() : null,
+            booking.getDesk() != null ? booking.getDesk().getId() : null,
+            booking.getDesk() != null ? booking.getDesk().getRemark() : null,
+            booking.getDesk() != null && booking.getDesk().getEquipment() != null
+                ? booking.getDesk().getEquipment().getEquipmentName()
+                : null,
+            null,
+            null,
+            null,
+            "desk"
+        );
+    }
+
+    private static Long parseSpotLabel(final String spotLabel) {
+        if (spotLabel == null) {
+            return null;
+        }
+        try {
+            return Long.valueOf(spotLabel.trim());
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    public BookingDayEventDTO(final ParkingReservation reservation) {
+        this(
+            reservation.getId(),
+            reservation.getUserId(),
+            reservation.getDay(),
+            reservation.getBegin(),
+            reservation.getEnd(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            parseSpotLabel(reservation.getSpotLabel()),
+            null,
+            (reservation.getStatus() == null ? ParkingReservationStatus.APPROVED : reservation.getStatus()).name(),
+            "parking"
+        );
+    }
+}

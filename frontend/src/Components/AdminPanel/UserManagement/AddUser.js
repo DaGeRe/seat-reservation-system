@@ -1,23 +1,36 @@
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, TextField, Checkbox } from '@mui/material';
 import {useRef, useState} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import LayoutModalAdmin from '../../Templates/LayoutModalAdmin';
+import isEmail from '../../misc/isEmail';
 
-export default function AddEmployee({ isOpen, onClose }) {
+export default function AddUser({ isOpen, onClose }) {
   const headers =  useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName ] = useState('');
   const [surname, setSurname] = useState('');
+  const [department, setDepartment] = useState('');
   //const [visibility, setVisibility] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('EMPLOYEE');
 
-  async function addEmployee(){
+  const handleRoleChange = (role, checked) => {
+    if (checked) {
+      setSelectedRole(role);
+    }
+  };
+
+  async function addUser(){
     if(!email || !password || !name || !surname){
         toast.error(t('fields_not_empty'));
+        return false;
+    }
+    // Validate email format
+    if(!isEmail(email.trim())){
+        toast.error(t('invalidEmail'));
         return false;
     }
     postRequest(
@@ -25,10 +38,10 @@ export default function AddEmployee({ isOpen, onClose }) {
       headers.current,
       (_) => {
         toast.success(t('userCreated'));
-        //addEmployeeModal();
+        //addUserModal();
       },
       () => {
-        console.log('Failed to create new employee in AddEmployee.js');
+        console.log('Failed to create new user in AddUser.js');
         toast.error(t('emailAlreadyTaken'));
       },
       JSON.stringify({
@@ -36,22 +49,25 @@ export default function AddEmployee({ isOpen, onClose }) {
         'password': password,
         'name': name,
         'surname': surname,
-        'admin': isAdmin,
+        'department': department,
+        'admin': selectedRole === 'ADMIN',
+        'employee': selectedRole === 'EMPLOYEE',
+        'servicePersonnel': selectedRole === 'SERVICE_PERSONNEL',
         'visibility': true,
       })
     );
   }
   return (
     <LayoutModalAdmin
-      title={t('addEmployee')}
+      title={t('addUser')}
       onClose={onClose}
       isOpen={isOpen}
-      submit={addEmployee}
+      submit={addUser}
       submitTxt={t('submit')}
       widthInPx='400'
     > 
       <br/><br/>
-      <FormControl id='addEmployee-setEmail' required={true} size="small" fullWidth variant="standard">
+      <FormControl id='addUser-setEmail' required={true} size="small" fullWidth variant="standard">
         <TextField
           id='standard-adornment-reason-mail'
             label={t('email')}
@@ -62,7 +78,7 @@ export default function AddEmployee({ isOpen, onClose }) {
         />
       </FormControl>
       <br/><br/>
-      <FormControl id='addEmployee-setPassword' required={true} size='small' fullWidth variant='standard'>
+      <FormControl id='addUser-setPassword' required={true} size='small' fullWidth variant='standard'>
         <TextField
             id='standard-adornment-reason-pw'
             label={t('password')}
@@ -73,7 +89,7 @@ export default function AddEmployee({ isOpen, onClose }) {
         />
       </FormControl>
       <br/><br/>
-      <FormControl id='addEmployee-setName' required={true} size="small" fullWidth variant="standard">
+      <FormControl id='addUser-setName' required={true} size="small" fullWidth variant="standard">
         <TextField
             id='standard-adornment-reason-firstname'
             label={t('name')}
@@ -84,7 +100,7 @@ export default function AddEmployee({ isOpen, onClose }) {
         />
       </FormControl>
       <br/><br/>
-      <FormControl id='addEmployee-setSurname' required={true} size='small' fullWidth variant='standard'>
+      <FormControl id='addUser-setSurname' required={true} size='small' fullWidth variant='standard'>
         <TextField
           id='standard-adornment-reason-surname'
           label={t('surname')}
@@ -95,21 +111,49 @@ export default function AddEmployee({ isOpen, onClose }) {
         />
       </FormControl>
       <br/><br/>
-      <FormControl id='addEmployee-isAdmin'>
-        <FormLabel id='addEmployee-isAdmin-label'>{t('admin')}?</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby='addEmployee-isAdmin-label'
-          value={isAdmin}
-          onChange={(e)=> setIsAdmin(e.target.value)}
-        >
-          <FormControlLabel id='radioAdmin_true' value='true' control={<Radio />} label={t('true')} />
-          <FormControlLabel id='radioAdmin_false' value='false' control={<Radio />} label={t('false')} />
-        
-        </RadioGroup>
+      <FormControl id='addUser-setDepartment' size='small' fullWidth variant='standard'>
+        <TextField
+          id='standard-adornment-reason-department'
+          label={t('department')}
+          size='small'
+          type={'text'}
+          value={department}
+          onChange={(e)=>setDepartment(e.target.value)}
+        />
+      </FormControl>
+      <br/><br/>
+      <FormControl id='addUser-roles'>
+        <FormLabel>{t('role')}</FormLabel>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={selectedRole === 'ADMIN'}
+              onChange={(e) => handleRoleChange('ADMIN', e.target.checked)}
+            />
+          }
+          label={t('admin')}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={selectedRole === 'SERVICE_PERSONNEL'}
+              onChange={(e) => handleRoleChange('SERVICE_PERSONNEL', e.target.checked)}
+            />
+          }
+          label={t('servicePersonnel')}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={selectedRole === 'EMPLOYEE'}
+              onChange={(e) => handleRoleChange('EMPLOYEE', e.target.checked)}
+            />
+          }
+          label={t('employee')}
+        />
       </FormControl>
       {/*<br></br>
-      <FormControl id='addEmployee-setVisibility'>
+      <FormControl id='addUser-setVisibility'>
         <FormLabel id='demo-row-radio-buttons-group-label'>{t('visibility')}</FormLabel>
         <RadioGroup
           row
