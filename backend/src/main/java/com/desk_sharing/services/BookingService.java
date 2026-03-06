@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -41,6 +42,8 @@ import com.desk_sharing.entities.UserEntity;
 @Service
 @AllArgsConstructor
 public class BookingService { 
+    private static final long BOOKING_RETENTION_DAYS = 90L;
+
     private final BookingRepository bookingRepository;
     
     private final RoomRepository roomRepository;
@@ -515,6 +518,25 @@ public class BookingService {
             bookingRepository.deleteAll(collect);
         }
 	}
+
+    @Transactional
+    @Scheduled(cron = "0 0 3 * * *")
+    /**
+     * Daily retention cleanup for desk bookings.
+     * Deletes bookings older than 90 days from the current date.
+     */
+    public void cleanupOldBookings() {
+        final Date cutoffDate = Date.valueOf(LocalDate.now().minusDays(BOOKING_RETENTION_DAYS));
+        final int deletedCount = bookingRepository.deleteBookingsOlderThan(cutoffDate);
+        if (deletedCount > 0) {
+            userService.logging(
+                "cleanupOldBookings deleted {} bookings older than {}",
+                deletedCount,
+                cutoffDate
+            );
+        }
+    }
+
     public Dictionary<Date, Integer> getAllBookingsForDates(final List<Date> days) {
         Dictionary<Date, Integer> slots= new Hashtable<>();
         // Every day of a month

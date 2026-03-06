@@ -148,6 +148,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	@Query(value="delete from bookings where series_id=:seriesId" , nativeQuery = true)
 	void deleteBookingsBySeriesId(@Param("seriesId") long seriesId);
 
+	@Modifying
+	@Query(value = "delete from bookings where day < :cutoffDate", nativeQuery = true)
+	int deleteBookingsOlderThan(@Param("cutoffDate") Date cutoffDate);
+
 	@Query(value="select * from bookings where desk_id=:deskId", nativeQuery = true)
 	List<Booking> getBookingsByDeskId(@Param("deskId") Long roomId);
 

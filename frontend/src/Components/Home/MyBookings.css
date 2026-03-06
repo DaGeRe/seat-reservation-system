@@ -26,6 +26,10 @@
   pointer-events: none;
 }
 
+.mybookings-event.mybookings-event--past::after {
+  content: none;
+}
+
 .mybookings-event .rbc-event-content {
   padding-right: 24px;
 }
