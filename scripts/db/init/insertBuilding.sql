@@ -1,20 +1,20 @@
 -- The building
 INSERT INTO buildings (address,name,ordering,remark,town,used) 
-SELECT 'Musterstraße 1','Mustergebäude', 1, 'Das Standardgebäude', 'Musterstadt', true
+SELECT 'Musterstraße 1','1 Bautznerstr. 19 a-b', 1, 'Das Standardgebäude', 'Musterstadt', true
 WHERE NOT EXISTS (
-    SELECT 1 FROM buildings WHERE buildings.name = 'Mustergebäude'
+    SELECT 1 FROM buildings WHERE buildings.name = '1 Bautznerstr. 19 a-b'
 );
 -- The floors
 INSERT into floors (name,name_of_img,ordering,remark,building_id)
-select 'Musteretage 1', 'Musteretage1.png', 1, 'Erste Etage', (select building_id from buildings where buildings.name='Mustergebäude')
+select 'EG', 'Musteretage1.png', 1, 'Erste Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
 WHERE NOT EXISTS (
-    SELECT 1 FROM floors WHERE floors.name = 'Musteretage 1'
+    SELECT 1 FROM floors WHERE floors.name = 'EG'
 ); 
 
 INSERT into floors (name,name_of_img,ordering,remark,building_id)
-select 'Musteretage 2', 'Musteretage2.png', 2, 'Zweite Etage', (select building_id from buildings where buildings.name='Mustergebäude')
+select '1. OG', 'Musteretage2.png', 2, 'Zweite Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
 WHERE NOT EXISTS (
-    SELECT 1 FROM floors WHERE floors.name = 'Musteretage 2'
+    SELECT 1 FROM floors WHERE floors.name = '1. OG'
 ); 
 
 -- rooms
@@ -24,7 +24,7 @@ from desks d
 join rooms r on r.room_id = d.room_id
 join floors f on f.floor_id = r.floor_id
 join buildings b on b.building_id = f.building_id
-where b.name = 'Mustergebäude'
+where b.name = '1 Bautznerstr. 19 a-b'
   and r.remark in (
       'Zimmer 1.1', 'Zimmer 1.2', 'Zimmer 1.3', 'Zimmer 1.4', 'Zimmer 1.5', 'Zimmer 1.6',
       'Zimmer 2.1', 'Zimmer 2.2', 'Zimmer 2.3', 'Zimmer 2.4', 'Zimmer 2.5', 'Zimmer 2.6'
@@ -34,7 +34,7 @@ delete r
 from rooms r
 join floors f on f.floor_id = r.floor_id
 join buildings b on b.building_id = f.building_id
-where b.name = 'Mustergebäude'
+where b.name = '1 Bautznerstr. 19 a-b'
   and r.remark in (
       'Zimmer 1.1', 'Zimmer 1.2', 'Zimmer 1.3', 'Zimmer 1.4', 'Zimmer 1.5', 'Zimmer 1.6',
       'Zimmer 2.1', 'Zimmer 2.2', 'Zimmer 2.3', 'Zimmer 2.4', 'Zimmer 2.5', 'Zimmer 2.6'
@@ -49,20 +49,20 @@ select
     rs.room_status_id,
     rt.room_type_id
 from (
-    select 'Zimmer 1.1' as remark, 9 as x, 5 as y, 'Musteretage 1' as floor_name
-    union all select 'Zimmer 1.2', 4, 32, 'Musteretage 1'
-    union all select 'Zimmer 1.3', 52, 72, 'Musteretage 1'
-    union all select 'Zimmer 1.4', 62, 72, 'Musteretage 1'
-    union all select 'Zimmer 1.5', 83, 91, 'Musteretage 1'
-    union all select 'Zimmer 1.6', 81, 20, 'Musteretage 1'
-    union all select 'Zimmer 2.1', 6, 71, 'Musteretage 2'
-    union all select 'Zimmer 2.2', 33, 70, 'Musteretage 2'
-    union all select 'Zimmer 2.3', 46, 70, 'Musteretage 2'
-    union all select 'Zimmer 2.4', 58, 70, 'Musteretage 2'
-    union all select 'Zimmer 2.5', 63, 90, 'Musteretage 2'
-    union all select 'Zimmer 2.6', 72, 90, 'Musteretage 2'
+    select 'Zimmer 1.1' as remark, 9 as x, 5 as y, 'EG' as floor_name
+    union all select 'Zimmer 1.2', 4, 32, 'EG'
+    union all select 'Zimmer 1.3', 52, 72, 'EG'
+    union all select 'Zimmer 1.4', 62, 72, 'EG'
+    union all select 'Zimmer 1.5', 83, 91, 'EG'
+    union all select 'Zimmer 1.6', 81, 20, 'EG'
+    union all select 'Zimmer 2.1', 6, 71, '1. OG'
+    union all select 'Zimmer 2.2', 33, 70, '1. OG'
+    union all select 'Zimmer 2.3', 46, 70, '1. OG'
+    union all select 'Zimmer 2.4', 56, 70, '1. OG'
+    union all select 'Zimmer 2.5', 63, 90, '1. OG'
+    union all select 'Zimmer 2.6', 72, 90, '1. OG'
 ) as new_rooms
-join buildings b on b.name = 'Mustergebäude'
+join buildings b on b.name = '1 Bautznerstr. 19 a-b'
 join floors f on f.building_id = b.building_id and f.name = new_rooms.floor_name
 join room_statuses rs on rs.room_status_name = 'enable'
 join room_types rt on rt.room_type_name = 'normal'
@@ -71,7 +71,7 @@ where not exists (
     from rooms existing_room
     join floors existing_floor on existing_floor.floor_id = existing_room.floor_id
     join buildings existing_building on existing_building.building_id = existing_floor.building_id
-    where existing_building.name = 'Mustergebäude'
+    where existing_building.name = '1 Bautznerstr. 19 a-b'
       and existing_room.remark = new_rooms.remark
 );
 
@@ -124,7 +124,7 @@ from (
 ) as new_desks
 join rooms r on r.remark = new_desks.room_remark
 join floors f on f.floor_id = r.floor_id
-join buildings b on b.building_id = f.building_id and b.name = 'Mustergebäude'
+join buildings b on b.building_id = f.building_id and b.name = '1 Bautznerstr. 19 a-b'
 join equipments e on e.equipment_name = 'withEquipment'
 where not exists (
     select 1
@@ -132,6 +132,6 @@ where not exists (
     join rooms existing_room on existing_room.room_id = existing_desk.room_id
     join floors existing_floor on existing_floor.floor_id = existing_room.floor_id
     join buildings existing_building on existing_building.building_id = existing_floor.building_id
-    where existing_building.name = 'Mustergebäude'
+    where existing_building.name = '1 Bautznerstr. 19 a-b'
       and existing_desk.remark = new_desks.remark
 );
