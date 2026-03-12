@@ -143,7 +143,7 @@ public class AdminController {
             System.err.println("deskId is null in AdminController.updateDesk()");
             return null;
         }
-        final Desk updatedDesk = deskService.updateDesk(deskId, desk.getEquipment(), desk.getRemark());
+        final Desk updatedDesk = deskService.updateDesk(deskId, desk.getEquipment(), desk.getRemark(), desk.getFixed());
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
 
@@ -167,6 +167,13 @@ public class AdminController {
         logger.info("createDesk( {} )", desk);
         Desk savedDesk = deskService.saveDesk(desk);
         return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
+    }
+
+    @PutMapping("desks/toggleFixed/{id}")
+    public ResponseEntity<Desk> toggleDeskFixed(@NonNull @PathVariable("id") final Long id) {
+        logger.info("toggleDeskFixed( {} )", id);
+        final Desk updatedDesk = deskService.toggleFixed(id);
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
     
     @PutMapping("rooms")

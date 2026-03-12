@@ -7,6 +7,7 @@ import DeleteRoom from './Room/DeleteRoom';
 import EditRoom from './Room/EditRoom';
 import AddWorkstation from './Workstation/AddWorkstation';
 import EditWorkstation from './Workstation/EditWorkstation';
+import HideShowFixedWorkstation from './Workstation/HideShowFixedWorkstation';
 import DeleteWorkstation from './Workstation/DeleteWorkstation';
 import AddUser from './UserManagement/AddUser';
 import DeleteUser from './UserManagement/DeleteUser';
@@ -32,6 +33,7 @@ const AdminPage = () => {
   const [isEditRoomOpen, setIsEditRoomOpen] = useState(false);
   const [isAddWorkstationOpen, setIsAddWorkstationOpen] = useState(false);
   const [isEditWorkstationOpen, setIsEditWorkstationOpen] = useState(false);
+  const [isHideShowFixedOpen, setIsHideShowFixedOpen] = useState(false);
   const [isDeleteWorkstationOpen, setIsDeleteWorkstationOpen] = useState(false);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
@@ -74,6 +76,7 @@ const AdminPage = () => {
   const toggleEditRoomModal = () => setIsEditRoomOpen(!isEditRoomOpen);
   const toggleAddWorkstationModal = () => setIsAddWorkstationOpen(!isAddWorkstationOpen);
   const toggleEditWorkstationModal = () => setIsEditWorkstationOpen(!isEditWorkstationOpen);
+  const toggleHideShowFixedModal = () => setIsHideShowFixedOpen(!isHideShowFixedOpen);
   const toggleDeleteWorkstationModal = () => setIsDeleteWorkstationOpen(!isDeleteWorkstationOpen);
   const toggleAddUserModal = () => setIsAddUserOpen(!isAddUserOpen);
   const toggleEditUserModal = () => setIsEditUserOpen(!isEditUserOpen);
@@ -201,6 +204,9 @@ const AdminPage = () => {
       <button id='editWorkstation' className='my-button' onClick={toggleEditWorkstationModal}>
         {t('editWorkstation')}
       </button>
+      <button id='hideShowFixed' className='my-button' onClick={toggleHideShowFixedModal}>
+        {t('hideShowFixed')}
+      </button>
     </div>
     <div className={`button-wrapper ${showBookingButtons ? 'visible' : ''}`}>
       <button id='overviewBooking' className='my-button' onClick={setIsOverviewBookingsOpen.bind(null, true)}>
@@ -225,6 +231,13 @@ const AdminPage = () => {
 
       <BootstrapDialog onClose={setIsEditWorkstationOpen.bind(null, !isEditWorkstationOpen)} aria-labelledby='customized-dialog-title' open={isEditWorkstationOpen}>
         <EditWorkstation isOpen={isEditWorkstationOpen}  onClose={setIsEditWorkstationOpen.bind(null, !isEditWorkstationOpen)}/>
+      </BootstrapDialog>
+
+      <BootstrapDialog onClose={setIsHideShowFixedOpen.bind(null, !isHideShowFixedOpen)} aria-labelledby='customized-dialog-title' open={isHideShowFixedOpen}>
+        <HideShowFixedWorkstation
+          isOpen={isHideShowFixedOpen}
+          onClose={setIsHideShowFixedOpen.bind(null, !isHideShowFixedOpen)}
+        />
       </BootstrapDialog>
       
       <BootstrapDialog onClose={setIsDeleteWorkstationOpen.bind(null, !isDeleteWorkstationOpen)} aria-labelledby='customized-dialog-title' open={isDeleteWorkstationOpen}>

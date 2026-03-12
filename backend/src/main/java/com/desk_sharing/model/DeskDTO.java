@@ -9,4 +9,5 @@ public class DeskDTO {
 	private String equipment;
 	private String remark;
 	private Long deskId;
+	private Boolean fixed;
 }

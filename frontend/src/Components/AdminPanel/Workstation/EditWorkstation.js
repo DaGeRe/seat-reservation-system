@@ -2,6 +2,7 @@ import {useState, useRef, useEffect} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {putRequest} from '../../RequestFunctions/RequestFunctions';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
@@ -16,6 +17,7 @@ export default function EditWorkstation({ isOpen, onClose }) {
   const [selectedDesk, setSelectedDesk] = useState('');
   const [equipment, setEquipment]= useState('');
   const [remark, setRemark]= useState('');
+  const [fixed, setFixed] = useState(false);
   const helpText = t('helpEditWorkstation');
 
   async function updateWorkstation() {
@@ -33,7 +35,8 @@ export default function EditWorkstation({ isOpen, onClose }) {
         JSON.stringify({
           'deskId': selectedDesk.id,
           'equipment': equipment.equipmentName,
-          'remark': remark
+          'remark': remark,
+          'fixed': Boolean(fixed)
         })
       );
     }
@@ -45,6 +48,7 @@ export default function EditWorkstation({ isOpen, onClose }) {
   useEffect(()=>{
     setEquipment(selectedDesk.equipment);
     setRemark(selectedDesk.remark);
+    setFixed(Boolean(selectedDesk.fixed));
   },[selectedDesk])
 
   /**
@@ -82,13 +86,27 @@ export default function EditWorkstation({ isOpen, onClose }) {
       <br></br><br></br>
       {
         selectedDesk && (
-          <WorkStationDefinition
-            t={t}
-            equipment={equipment}
-            setEquipment={setEquipment}
-            remark={remark}
-            setRemark={setRemark}
-          />
+          <>
+            <WorkStationDefinition
+              t={t}
+              equipment={equipment}
+              setEquipment={setEquipment}
+              remark={remark}
+              setRemark={setRemark}
+            />
+            <br/>
+            <FormControl required size='small' fullWidth sx={{ mt: 2 }}>
+              <InputLabel>{t('fixed')}</InputLabel>
+              <Select
+                value={fixed ? 'true' : 'false'}
+                label={t('fixed')}
+                onChange={(e) => setFixed(e.target.value === 'true')}
+              >
+                <MenuItem value='true'>{t('yes')}</MenuItem>
+                <MenuItem value='false'>{t('no')}</MenuItem>
+              </Select>
+            </FormControl>
+          </>
         )
       }
     </LayoutModalAdmin>

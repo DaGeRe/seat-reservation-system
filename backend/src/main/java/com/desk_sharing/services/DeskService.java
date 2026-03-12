@@ -47,6 +47,9 @@ public class DeskService {
         desk.setRoom(room);
         desk.setEquipment(equipmentService.getEquipmentByEquipmentName(deskDto.getEquipment()));
         desk.setRemark(deskDto.getRemark());
+        if (deskDto.getFixed() != null) {
+            desk.setFixed(deskDto.getFixed());
+        }
         final List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
         final Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
             .filter(d -> d.getDeskNumberInRoom() != null)
@@ -69,11 +72,21 @@ public class DeskService {
         return deskRepository.findByRoomId(roomId);
     }
 
-    public Desk updateDesk(@NonNull final Long deskId, String equipment, String remark) {
+    public Desk updateDesk(@NonNull final Long deskId, String equipment, String remark, Boolean fixed) {
         final Desk desk = getDeskById(deskId)
             .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.updateDesk : " + deskId));
         desk.setEquipment(equipmentService.getEquipmentByEquipmentName(equipment));
         desk.setRemark(remark);
+        if (fixed != null) {
+            desk.setFixed(fixed);
+        }
+        return deskRepository.save(desk);
+    }
+
+    public Desk toggleFixed(@NonNull final Long deskId) {
+        final Desk desk = getDeskById(deskId)
+            .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.toggleFixed : " + deskId));
+        desk.setFixed(!desk.isFixed());
         return deskRepository.save(desk);
     }
 
