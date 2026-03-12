@@ -16,11 +16,25 @@ import bookingPostRequest from '../../misc/bookingPostRequest.js';
 import ReportDefectModal from '../../Defects/ReportDefectModal';
 //import { buildFullDaySlots } from './buildFullDaySlots.js';
 
+const BOOKING_CONTEXT_KEY = 'bookingNavigationContext';
+
+const parseStoredBookingContext = () => {
+  try {
+    const parsed = JSON.parse(sessionStorage.getItem(BOOKING_CONTEXT_KEY) || 'null');
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
 const Booking = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const locationState = location.state && typeof location.state === 'object' ? location.state : {};
+  const storedContext = parseStoredBookingContext();
   const localizer = momentLocalizer(moment);
   const calendarFormats = {
     timeGutterFormat: (date, culture, loc) => loc.format(date, 'HH:mm', culture),
@@ -29,12 +43,17 @@ const Booking = () => {
     agendaTimeRangeFormat: ({ start, end }, culture, loc) =>
       `${loc.format(start, 'HH:mm', culture)} – ${loc.format(end, 'HH:mm', culture)}`,
   };
-  const { roomId, date, editBooking } = location.state || {};
+  const roomId = locationState.roomId ?? storedContext?.roomId ?? null;
+  const date = locationState.date ?? storedContext?.date ?? null;
+  const editBooking = locationState.editBooking || null;
   const isEditMode = Boolean(editBooking && editBooking.bookingId);
-  const initialDate = date ? new Date(date) : new Date();
+  const parsedDate = date ? new Date(date) : null;
+  const hasValidDate = parsedDate instanceof Date && !Number.isNaN(parsedDate.valueOf());
+  const initialDate = hasValidDate ? parsedDate : new Date();
+  const contextDateIso = hasValidDate ? parsedDate.toISOString() : null;
 
   //Safe selection of desks
-  const selectionKey = `bookingSelection:${roomId}:${date ? moment(date).format('YYYY-MM-DD') : ''}`;
+  const selectionKey = `bookingSelection:${roomId ?? 'none'}:${hasValidDate ? moment(parsedDate).format('YYYY-MM-DD') : ''}`;
 
   // States
   const [room, setRoom] = useState(null);
@@ -65,8 +84,15 @@ const Booking = () => {
   const maxEndTime = 22;
   const typography_sx = { margin: '5px', textAlign: 'center' };
 
+  useEffect(() => {
+    if (!roomId) return;
+    const contextPayload = contextDateIso ? { roomId, date: contextDateIso } : { roomId };
+    sessionStorage.setItem(BOOKING_CONTEXT_KEY, JSON.stringify(contextPayload));
+  }, [roomId, contextDateIso]);
+
   /** ----- API FETCH FUNCTIONS ----- */
   const fetchRoom = useCallback(() => {
+    if (!roomId) return;
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/rooms/${roomId}`,
       headers.current,
