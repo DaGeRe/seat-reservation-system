@@ -68,6 +68,7 @@ const Home = () => {
     }
   });
   const [rooms, setRooms] = useState([]);
+  const [desks, setDesks] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const lastRoomIdRef = useRef(null);
@@ -208,6 +209,14 @@ const Home = () => {
         console.log('Error fetching equipments:', errorCode);
       }
     );
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks`,
+      headers.current,
+      (data) => setDesks(Array.isArray(data) ? data : []),
+      (errorCode) => {
+        console.log('Error fetching desks:', errorCode);
+      }
+    );
   }, [headers]);
 
   useEffect(() => {
@@ -253,12 +262,20 @@ const Home = () => {
 
   const typeOptions = useMemo(() => {
     if (mode === 'desk') {
-      return equipments
+      const equipmentOptions = equipments
         .filter((equipment) => equipment?.equipmentName)
+        .filter((equipment) => String(equipment.equipmentName).trim().toLowerCase() !== 'unknown')
         .map((equipment) => ({
           value: `type:${equipment.equipmentName}`,
           label: t(equipment.equipmentName)
         }));
+      const deskFlagOptions = [
+        { value: 'type:flag:fixed', label: t('fixed') },
+        { value: 'type:flag:deskHeightAdjustable', label: t('deskFilterDeskHeightAdjustable') },
+        { value: 'type:flag:technologyWebcam', label: t('deskFilterTechnologyWebcam') },
+        { value: 'type:flag:technologyHeadset', label: t('deskFilterTechnologyHeadset') }
+      ];
+      return [...equipmentOptions, ...deskFlagOptions];
     }
     const dynamicTypes = dayParkingEvents
       .map((event) => String(event?.parkingType || '').toUpperCase())
@@ -284,7 +301,13 @@ const Home = () => {
   }, [mode, t]);
 
   const selectedFilters = useMemo(() => {
-    if (mode === 'desk') return selectedDeskFilters;
+    if (mode === 'desk') {
+      return selectedDeskFilters.filter((value) => {
+        if (!value.startsWith('room:') && !value.startsWith('type:')) return false;
+        const lower = String(value).toLowerCase();
+        return lower !== 'type:unknown';
+      });
+    }
     return selectedParkingFilters.filter(
       (value) => value.startsWith('type:') || value.startsWith('covered:')
     );
@@ -297,7 +320,12 @@ const Home = () => {
         ? event.target.value.split(',')
         : event.target.value;
     if (mode === 'desk') {
-      setSelectedDeskFilters(values);
+      setSelectedDeskFilters(
+        values.filter((value) => {
+          if (!value.startsWith('room:') && !value.startsWith('type:')) return false;
+          return String(value).toLowerCase() !== 'type:unknown';
+        })
+      );
     } else {
       setSelectedParkingFilters(
         values.filter((value) => value.startsWith('type:') || value.startsWith('covered:'))
@@ -328,6 +356,15 @@ const Home = () => {
   }, []);
 
   const dayEvents = useMemo(() => [...dayDeskEvents, ...dayParkingEvents], [dayDeskEvents, dayParkingEvents]);
+  const desksById = useMemo(() => {
+    const map = new Map();
+    desks.forEach((desk) => {
+      if (desk?.id != null) {
+        map.set(String(desk.id), desk);
+      }
+    });
+    return map;
+  }, [desks]);
 
   const filteredDayEvents = useMemo(() => {
     const selectedRoomSet = new Set(
@@ -364,7 +401,16 @@ const Home = () => {
           }
           const roomMatch = event.roomId && selectedRoomSet.has(String(event.roomId));
           const typeValue = event.workspaceType;
-          const typeMatch = typeValue && selectedTypeSet.has(typeValue);
+          const equipmentTypeMatch = typeValue && selectedTypeSet.has(typeValue);
+          const desk = desksById.get(String(event?.deskId ?? ''));
+          const fixedMatch = selectedTypeSet.has('flag:fixed') && desk?.fixed === true;
+          const heightAdjustableMatch =
+            selectedTypeSet.has('flag:deskHeightAdjustable') && desk?.deskHeightAdjustable === true;
+          const webcamMatch = selectedTypeSet.has('flag:technologyWebcam') && desk?.technologyWebcam === true;
+          const headsetMatch = selectedTypeSet.has('flag:technologyHeadset') && desk?.technologyHeadset === true;
+          const typeMatch = Boolean(
+            equipmentTypeMatch || fixedMatch || heightAdjustableMatch || webcamMatch || headsetMatch
+          );
           return roomMatch || typeMatch;
         }
 
@@ -377,7 +423,7 @@ const Home = () => {
         const coveredMatch = selectedCoveredSet.size === 0 || selectedCoveredSet.has(coveredValue);
         return typeMatch && coveredMatch;
       });
-  }, [dayEvents, mode, selectedFilters]);
+  }, [dayEvents, mode, selectedFilters, desksById]);
 
   const groupedDayEvents = useMemo(() => {
     const groups = timeBlocks.map((block) => ({ ...block, events: [] }));
