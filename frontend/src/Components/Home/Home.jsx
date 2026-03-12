@@ -21,7 +21,6 @@ const Home = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [now, setNow] = useState(moment());
   const [selectedDate, setSelectedDate] = useState(() => {
     const stored = sessionStorage.getItem('homeSelectedDate');
     if (stored) {
@@ -31,6 +30,16 @@ const Home = () => {
       }
     }
     return moment().startOf('day').toDate();
+  });
+  const [calendarDate, setCalendarDate] = useState(() => {
+    const stored = sessionStorage.getItem('homeCalendarDate');
+    if (stored) {
+      const parsed = new Date(stored);
+      if (!Number.isNaN(parsed.valueOf())) {
+        return moment(parsed).startOf('month').toDate();
+      }
+    }
+    return moment(selectedDate).startOf('month').toDate();
   });
   const [dayDeskEvents, setDayDeskEvents] = useState([]);
   const [dayParkingEvents, setDayParkingEvents] = useState([]);
@@ -103,18 +112,19 @@ const Home = () => {
         JSON.stringify(daysInMonth)  // Tage des Monats an den Server senden
       );
     },
-    [headers, t, setEvents, setNow, mode]  // Abhängigkeiten, die sich ändern könnten
+    [headers, t, setEvents, mode]  // Abhängigkeiten, die sich ändern könnten
   );
 
   // Call generateMonthDays when changes occur
   useEffect(() => {
-    generateMonthDays(now);
-  }, [t, generateMonthDays, now]);
+    generateMonthDays(calendarDate);
+  }, [t, generateMonthDays, calendarDate]);
 
   // Handle different month navigation
   const handleNavigate = (newDate, view) => {
-    if (view === 'month') {
-      generateMonthDays(newDate);
+    if (!newDate) return;
+    if (!view || view === 'month') {
+      setCalendarDate(moment(newDate).startOf('month').toDate());
     }
   };
 
@@ -207,13 +217,17 @@ const Home = () => {
     sessionStorage.setItem('homeSelectedDate', selectedDate.toISOString());
   }, [selectedDate]);
 
+  useEffect(() => {
+    sessionStorage.setItem('homeCalendarDate', calendarDate.toISOString());
+  }, [calendarDate]);
+
   const handleViewToggle = () => {
     setViewMode((prev) => (prev === 'calendar' ? 'floor' : 'calendar'));
   };
 
   const refreshCalendarCounts = useCallback(() => {
-    generateMonthDays(now);
-  }, [generateMonthDays, now]);
+    generateMonthDays(calendarDate);
+  }, [generateMonthDays, calendarDate]);
 
   const handleParkingReservationChange = useCallback(() => {
     fetchDayEvents();
@@ -469,6 +483,7 @@ const Home = () => {
           data-testid='abc'
           localizer={localizer}
           events={events}
+          date={calendarDate}
           startAccessor='start'
           endAccessor='end'
           views={['month']}
