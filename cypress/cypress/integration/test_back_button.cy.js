@@ -25,6 +25,29 @@ describe('Back button behavior', () => {
             .should('not.exist');
     });
 
+    it('renders back button on carpark and redirects to home', () => {
+        const flowDateIso = new Date().toISOString();
+
+        cy.login(Cypress.env('TEST_USER_MAIL'), Cypress.env('TEST_USER_PW'))
+            .url()
+            .should('include', '/home')
+            .window()
+            .then((win) => {
+                const currentState = win.history.state || {};
+                const nextIdx = typeof currentState.idx === 'number' ? currentState.idx + 1 : 1;
+                win.history.pushState(
+                    { usr: { date: flowDateIso }, key: `carpark-back-test-${Date.now()}`, idx: nextIdx },
+                    '',
+                    '/carpark'
+                );
+                win.dispatchEvent(new win.PopStateEvent('popstate'));
+            });
+
+        cy.location('pathname').should('eq', '/carpark');
+        cy.get('button#generic_back_button').should('be.visible').click();
+        cy.location('pathname').should('eq', '/home');
+    });
+
     it('renders back button in floor/desks flow and keeps context in sessionStorage', () => {
         const flowDateIso = new Date().toISOString();
 

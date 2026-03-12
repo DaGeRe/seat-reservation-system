@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 
 const SIDEBAR_DIRECT_ROUTES = new Set([
     '/admin',
-    '/carpark',
     '/colleagues',
     '/createseries',
     '/defects',
