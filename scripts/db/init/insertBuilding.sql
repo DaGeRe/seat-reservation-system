@@ -6,16 +6,27 @@ WHERE NOT EXISTS (
 );
 -- The floors
 INSERT into floors (name,name_of_img,ordering,remark,building_id)
-select 'EG', 'Musteretage1.png', 1, 'Erste Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
+select 'EG', '1-EG.png', 1, 'Erste Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
 WHERE NOT EXISTS (
     SELECT 1 FROM floors WHERE floors.name = 'EG'
 ); 
 
 INSERT into floors (name,name_of_img,ordering,remark,building_id)
-select '1. OG', 'Musteretage2.png', 2, 'Zweite Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
+select '1. OG', '1-1.png', 2, 'Zweite Etage', (select building_id from buildings where buildings.name='1 Bautznerstr. 19 a-b')
 WHERE NOT EXISTS (
     SELECT 1 FROM floors WHERE floors.name = '1. OG'
 ); 
+
+-- Keep image references in sync even if floors already exist.
+update floors f
+join buildings b on b.building_id = f.building_id
+set f.name_of_img = '1-eg.png'
+where b.name = '1 Bautznerstr. 19 a-b' and f.name = 'EG';
+
+update floors f
+join buildings b on b.building_id = f.building_id
+set f.name_of_img = '1-1.png'
+where b.name = '1 Bautznerstr. 19 a-b' and f.name = '1. OG';
 
 -- rooms
 -- Remove existing sample rooms/desks for these room names so coordinates and desk counts are replaced.
@@ -49,17 +60,17 @@ select
     rs.room_status_id,
     rt.room_type_id
 from (
-    select 'Zimmer 1.1' as remark, 9 as x, 5 as y, 'EG' as floor_name
-    union all select 'Zimmer 1.2', 4, 32, 'EG'
+    select 'Zimmer 1.1' as remark, 10 as x, 5 as y, 'EG' as floor_name
+    union all select 'Zimmer 1.2', 5, 32, 'EG'
     union all select 'Zimmer 1.3', 52, 72, 'EG'
     union all select 'Zimmer 1.4', 62, 72, 'EG'
-    union all select 'Zimmer 1.5', 83, 91, 'EG'
+    union all select 'Zimmer 1.5', 83, 90, 'EG'
     union all select 'Zimmer 1.6', 81, 20, 'EG'
     union all select 'Zimmer 2.1', 6, 71, '1. OG'
     union all select 'Zimmer 2.2', 33, 70, '1. OG'
     union all select 'Zimmer 2.3', 46, 70, '1. OG'
-    union all select 'Zimmer 2.4', 56, 70, '1. OG'
-    union all select 'Zimmer 2.5', 63, 90, '1. OG'
+    union all select 'Zimmer 2.4', 58, 70, '1. OG'
+    union all select 'Zimmer 2.5', 64, 90, '1. OG'
     union all select 'Zimmer 2.6', 72, 90, '1. OG'
 ) as new_rooms
 join buildings b on b.name = '1 Bautznerstr. 19 a-b'
