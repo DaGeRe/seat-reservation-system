@@ -192,8 +192,20 @@
     "addWorkstation": "Add Workstation",
     "deleteWorkstation": "Delete Workstation",
     "editWorkstation": "Edit Workstation",
+    "hideShowFixed": "Hide/Show Fixed",
+    "hideShowFixedDesk": "Hide/Show Fixed desk",
+    "hideShow": "Hide/Show",
+    "hide": "Hide",
+    "show": "Show",
+    "fixedToggleSuccess": "Fixed state updated.",
+    "fixedToggleFailed": "Failed to update fixed state.",
+    "deskVisibilityToggleSuccess": "Desk visibility updated.",
+    "deskVisibilityToggleFailed": "Failed to update desk visibility.",
+    "fixedDeskLoadFailed": "Failed to load desks for selected floor.",
+    "noDesksForSelectedFloor": "No desks found for selected floor.",
     "noWorkstationForThisRoom": "No workstation exists in this Room.",
     "status": "Status",
+    "fixed": "Fixed",
     "enable": "Enable",
     "disable": "Disable",
     "deskID": "Desk ID",
@@ -267,6 +279,9 @@
     ,"parkingsTitle":"Parkings"
     ,"filter":"Filter"
     ,"deskTypes":"Desk types"
+    ,"deskFilterDeskHeightAdjustable":"Desk height adjustable"
+    ,"deskFilterTechnologyWebcam":"Technology webcam"
+    ,"deskFilterTechnologyHeadset":"Technology headset"
     ,"parkingTypes":"Parking types"
     ,"switchToParking":"Switch to parking"
     ,"switchToDesk":"Switch to desk"

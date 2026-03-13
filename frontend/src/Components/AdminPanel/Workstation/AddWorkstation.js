@@ -1,6 +1,7 @@
 import React, {useRef} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import {roomToOption} from '../Room/RoomAndOption';
 import {postRequest} from '../../RequestFunctions/RequestFunctions';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
@@ -14,6 +15,7 @@ export default function AddWorkstation({ isOpen, onClose }) {
   const [room, setRoom]= React.useState('');
   const [equipment, setEquipment]= React.useState('');
   const [remark, setRemark]= React.useState('');
+  const [fixed, setFixed] = React.useState(false);
 
   const helpText = t('helpAddWorkstation');
 
@@ -39,7 +41,8 @@ export default function AddWorkstation({ isOpen, onClose }) {
       JSON.stringify({
         'roomId': roomId,
         'equipment': equipment.equipmentName,
-        'remark': remark
+        'remark': remark,
+        'fixed': Boolean(fixed)
       })
     );
   }
@@ -78,6 +81,18 @@ export default function AddWorkstation({ isOpen, onClose }) {
               remark={remark}
               setRemark={setRemark}
             />
+            <br/>
+            <FormControl required size='small' fullWidth sx={{ mt: 2 }}>
+              <InputLabel>{t('fixed')}</InputLabel>
+              <Select
+                value={fixed ? 'true' : 'false'}
+                label={t('fixed')}
+                onChange={(e) => setFixed(e.target.value === 'true')}
+              >
+                <MenuItem value='true'>{t('yes')}</MenuItem>
+                <MenuItem value='false'>{t('no')}</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         )
       }

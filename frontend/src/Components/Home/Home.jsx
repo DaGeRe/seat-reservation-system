@@ -17,11 +17,17 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import FloorImage from '../FloorImage/FloorImage.jsx';
 import CarparkView from '../Carpark/CarparkView.jsx';
 
+const PARKING_TYPE_VALUES = ['STANDARD', 'ACCESSIBLE', 'E_CHARGING_STATION', 'SPECIAL_CASE'];
+const toSentenceCase = (value) => {
+  const normalized = String(value || '').toLowerCase();
+  if (!normalized) return '';
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+};
+
 const Home = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [now, setNow] = useState(moment());
   const [selectedDate, setSelectedDate] = useState(() => {
     const stored = sessionStorage.getItem('homeSelectedDate');
     if (stored) {
@@ -31,6 +37,16 @@ const Home = () => {
       }
     }
     return moment().startOf('day').toDate();
+  });
+  const [calendarDate, setCalendarDate] = useState(() => {
+    const stored = sessionStorage.getItem('homeCalendarDate');
+    if (stored) {
+      const parsed = new Date(stored);
+      if (!Number.isNaN(parsed.valueOf())) {
+        return moment(parsed).startOf('month').toDate();
+      }
+    }
+    return moment(selectedDate).startOf('month').toDate();
   });
   const [dayDeskEvents, setDayDeskEvents] = useState([]);
   const [dayParkingEvents, setDayParkingEvents] = useState([]);
@@ -52,6 +68,7 @@ const Home = () => {
     }
   });
   const [rooms, setRooms] = useState([]);
+  const [desks, setDesks] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const lastRoomIdRef = useRef(null);
@@ -103,18 +120,19 @@ const Home = () => {
         JSON.stringify(daysInMonth)  // Tage des Monats an den Server senden
       );
     },
-    [headers, t, setEvents, setNow, mode]  // Abhängigkeiten, die sich ändern könnten
+    [headers, t, setEvents, mode]  // Abhängigkeiten, die sich ändern könnten
   );
 
   // Call generateMonthDays when changes occur
   useEffect(() => {
-    generateMonthDays(now);
-  }, [t, generateMonthDays, now]);
+    generateMonthDays(calendarDate);
+  }, [t, generateMonthDays, calendarDate]);
 
   // Handle different month navigation
   const handleNavigate = (newDate, view) => {
-    if (view === 'month') {
-      generateMonthDays(newDate);
+    if (!newDate) return;
+    if (!view || view === 'month') {
+      setCalendarDate(moment(newDate).startOf('month').toDate());
     }
   };
 
@@ -191,6 +209,14 @@ const Home = () => {
         console.log('Error fetching equipments:', errorCode);
       }
     );
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/desks`,
+      headers.current,
+      (data) => setDesks(Array.isArray(data) ? data : []),
+      (errorCode) => {
+        console.log('Error fetching desks:', errorCode);
+      }
+    );
   }, [headers]);
 
   useEffect(() => {
@@ -207,71 +233,196 @@ const Home = () => {
     sessionStorage.setItem('homeSelectedDate', selectedDate.toISOString());
   }, [selectedDate]);
 
+  useEffect(() => {
+    sessionStorage.setItem('homeCalendarDate', calendarDate.toISOString());
+  }, [calendarDate]);
+
   const handleViewToggle = () => {
     setViewMode((prev) => (prev === 'calendar' ? 'floor' : 'calendar'));
   };
 
   const refreshCalendarCounts = useCallback(() => {
-    generateMonthDays(now);
-  }, [generateMonthDays, now]);
+    generateMonthDays(calendarDate);
+  }, [generateMonthDays, calendarDate]);
 
   const handleParkingReservationChange = useCallback(() => {
     fetchDayEvents();
     refreshCalendarCounts();
   }, [fetchDayEvents, refreshCalendarCounts]);
 
+  const roomBuildingByRoomId = useMemo(() => {
+    const map = new Map();
+    rooms.forEach((room) => {
+      if (room?.id == null) return;
+      const buildingId = room?.floor?.building?.id;
+      if (buildingId == null) return;
+      map.set(String(room.id), String(buildingId));
+    });
+    return map;
+  }, [rooms]);
+
+  const sanitizeDeskFilterValues = useCallback((values) => {
+    const rawValues = Array.isArray(values) ? values : [];
+    const allowedValues = rawValues
+      .filter((value) => typeof value === 'string')
+      .filter((value) => {
+        if (value.startsWith('building:')) return true;
+        if (value.startsWith('room:')) return true;
+        if (value.startsWith('type:')) return String(value).toLowerCase() !== 'type:unknown';
+        return false;
+      });
+    const selectedBuildingSet = new Set(
+      allowedValues
+        .filter((value) => value.startsWith('building:'))
+        .map((value) => value.replace('building:', ''))
+        .filter((value) => value)
+    );
+    if (selectedBuildingSet.size === 0) {
+      return allowedValues.filter((value) => !value.startsWith('room:'));
+    }
+    return allowedValues.filter((value) => {
+      if (!value.startsWith('room:')) return true;
+      const roomId = value.replace('room:', '');
+      const buildingId = roomBuildingByRoomId.get(roomId);
+      return buildingId != null && selectedBuildingSet.has(buildingId);
+    });
+  }, [roomBuildingByRoomId]);
+
+  const selectedDeskFiltersSanitized = useMemo(
+    () => sanitizeDeskFilterValues(selectedDeskFilters),
+    [sanitizeDeskFilterValues, selectedDeskFilters]
+  );
+
+  useEffect(() => {
+    const sameLength = selectedDeskFilters.length === selectedDeskFiltersSanitized.length;
+    const sameValues = sameLength && selectedDeskFilters.every((value, idx) => value === selectedDeskFiltersSanitized[idx]);
+    if (!sameValues) {
+      setSelectedDeskFilters(selectedDeskFiltersSanitized);
+    }
+  }, [selectedDeskFilters, selectedDeskFiltersSanitized]);
+
+  const selectedBuildingIds = useMemo(
+    () => new Set(
+      selectedDeskFiltersSanitized
+        .filter((value) => value.startsWith('building:'))
+        .map((value) => value.replace('building:', ''))
+        .filter((value) => value)
+    ),
+    [selectedDeskFiltersSanitized]
+  );
+
+  const buildingOptions = useMemo(() => {
+    if (mode !== 'desk') return [];
+    const buildingMap = new Map();
+    rooms.forEach((room) => {
+      const building = room?.floor?.building;
+      if (building?.id == null) return;
+      const id = String(building.id);
+      const label = String(building?.name || id).trim() || id;
+      if (!buildingMap.has(id)) {
+        buildingMap.set(id, { value: `building:${id}`, label });
+      }
+    });
+    return Array.from(buildingMap.values()).sort((a, b) => a.label.localeCompare(b.label));
+  }, [mode, rooms]);
+
   const roomOptions = useMemo(() => {
     if (mode !== 'desk') return [];
+    if (selectedBuildingIds.size === 0) return [];
     return rooms
       .filter((room) => room?.id && room?.remark)
+      .filter((room) => {
+        const buildingId = room?.floor?.building?.id;
+        if (buildingId == null) return false;
+        return selectedBuildingIds.has(String(buildingId));
+      })
       .map((room) => ({
         value: `room:${room.id}`,
         label: room.remark
-      }));
-  }, [rooms, mode]);
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [rooms, mode, selectedBuildingIds]);
 
   const typeOptions = useMemo(() => {
     if (mode === 'desk') {
-      return equipments
+      const equipmentOptions = equipments
         .filter((equipment) => equipment?.equipmentName)
+        .filter((equipment) => String(equipment.equipmentName).trim().toLowerCase() !== 'unknown')
         .map((equipment) => ({
           value: `type:${equipment.equipmentName}`,
           label: t(equipment.equipmentName)
         }));
+      const deskFlagOptions = [
+        { value: 'type:flag:fixed', label: t('fixed') },
+        { value: 'type:flag:deskHeightAdjustable', label: t('deskFilterDeskHeightAdjustable') },
+        { value: 'type:flag:technologyWebcam', label: t('deskFilterTechnologyWebcam') },
+        { value: 'type:flag:technologyHeadset', label: t('deskFilterTechnologyHeadset') }
+      ];
+      return [...equipmentOptions, ...deskFlagOptions];
     }
-    return [];
-  }, [equipments, mode, t]);
+    const dynamicTypes = dayParkingEvents
+      .map((event) => String(event?.parkingType || '').toUpperCase())
+      .filter((value) => value);
+    const values = Array.from(new Set([...PARKING_TYPE_VALUES, ...dynamicTypes]));
+    const labelForType = (value) => {
+      if (value === 'STANDARD') return t('carparkStandard');
+      if (value === 'SPECIAL_CASE') return t('carparkSpecialCase');
+      return toSentenceCase(value.replaceAll('_', ' '));
+    };
+    return values.map((value) => ({
+      value: `type:${value}`,
+      label: labelForType(value)
+    }));
+  }, [dayParkingEvents, equipments, mode, t]);
+
+  const coveredOptions = useMemo(() => {
+    if (mode !== 'parking') return [];
+    return [
+      { value: 'covered:true', label: t('yes') },
+      { value: 'covered:false', label: t('no') }
+    ];
+  }, [mode, t]);
 
   const selectedFilters = useMemo(() => {
-    if (mode === 'desk') return selectedDeskFilters;
-    return selectedParkingFilters.filter((value) => value.startsWith('type:'));
-  }, [mode, selectedDeskFilters, selectedParkingFilters]);
+    if (mode === 'desk') {
+      return selectedDeskFiltersSanitized;
+    }
+    return selectedParkingFilters.filter(
+      (value) => value.startsWith('type:') || value.startsWith('covered:')
+    );
+  }, [mode, selectedDeskFiltersSanitized, selectedParkingFilters]);
 
 
-  const handleFilterChange = (event) => {
+  const handleFilterChange = useCallback((event) => {
     const values =
       typeof event.target.value === 'string'
         ? event.target.value.split(',')
         : event.target.value;
     if (mode === 'desk') {
-      setSelectedDeskFilters(values);
+      setSelectedDeskFilters(sanitizeDeskFilterValues(values));
     } else {
-      setSelectedParkingFilters(values.filter((value) => value.startsWith('type:')));
-    }
-  };
-
-  const toggleFilterValue = (value) => {
-    if (mode === 'desk') {
-      setSelectedDeskFilters((prev) =>
-        prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+      setSelectedParkingFilters(
+        values.filter((value) => value.startsWith('type:') || value.startsWith('covered:'))
       );
+    }
+  }, [mode, sanitizeDeskFilterValues]);
+
+  const toggleFilterValue = useCallback((value) => {
+    if (mode === 'desk') {
+      setSelectedDeskFilters((prev) => {
+        if (!value.startsWith('building:') && !value.startsWith('room:') && !value.startsWith('type:')) {
+          return prev;
+        }
+        const next = prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value];
+        return sanitizeDeskFilterValues(next);
+      });
     } else {
       setSelectedParkingFilters((prev) => {
-        if (!value.startsWith('type:')) return prev;
+        if (!value.startsWith('type:') && !value.startsWith('covered:')) return prev;
         return prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value];
       });
     }
-  };
+  }, [mode, sanitizeDeskFilterValues]);
 
   const timeBlocks = useMemo(() => {
     const blocks = [];
@@ -283,8 +434,22 @@ const Home = () => {
   }, []);
 
   const dayEvents = useMemo(() => [...dayDeskEvents, ...dayParkingEvents], [dayDeskEvents, dayParkingEvents]);
+  const desksById = useMemo(() => {
+    const map = new Map();
+    desks.forEach((desk) => {
+      if (desk?.id != null) {
+        map.set(String(desk.id), desk);
+      }
+    });
+    return map;
+  }, [desks]);
 
   const filteredDayEvents = useMemo(() => {
+    const selectedBuildingSet = new Set(
+      selectedFilters
+        .filter((value) => value.startsWith('building:'))
+        .map((value) => value.replace('building:', ''))
+    );
     const selectedRoomSet = new Set(
       selectedFilters
         .filter((value) => value.startsWith('room:'))
@@ -294,6 +459,11 @@ const Home = () => {
       selectedFilters
         .filter((value) => value.startsWith('type:'))
         .map((value) => value.replace('type:', ''))
+    );
+    const selectedCoveredSet = new Set(
+      selectedFilters
+        .filter((value) => value.startsWith('covered:'))
+        .map((value) => value.replace('covered:', ''))
     );
 
     return dayEvents
@@ -308,15 +478,42 @@ const Home = () => {
         return true;
       })
       .filter((event) => {
-        if (selectedRoomSet.size === 0 && selectedTypeSet.size === 0) {
+        if (mode === 'desk') {
+          const eventRoomId = event?.roomId == null ? null : String(event.roomId);
+          const eventBuildingId = eventRoomId == null ? null : roomBuildingByRoomId.get(eventRoomId);
+          const buildingMatch = selectedBuildingSet.size === 0
+            || (eventBuildingId != null && selectedBuildingSet.has(eventBuildingId));
+          if (!buildingMatch) {
+            return false;
+          }
+          if (selectedRoomSet.size === 0 && selectedTypeSet.size === 0) {
+            return true;
+          }
+          const roomMatch = eventRoomId != null && selectedRoomSet.has(eventRoomId);
+          const typeValue = event.workspaceType;
+          const equipmentTypeMatch = typeValue && selectedTypeSet.has(typeValue);
+          const desk = desksById.get(String(event?.deskId ?? ''));
+          const fixedMatch = selectedTypeSet.has('flag:fixed') && desk?.fixed === true;
+          const heightAdjustableMatch =
+            selectedTypeSet.has('flag:deskHeightAdjustable') && desk?.deskHeightAdjustable === true;
+          const webcamMatch = selectedTypeSet.has('flag:technologyWebcam') && desk?.technologyWebcam === true;
+          const headsetMatch = selectedTypeSet.has('flag:technologyHeadset') && desk?.technologyHeadset === true;
+          const typeMatch = Boolean(
+            equipmentTypeMatch || fixedMatch || heightAdjustableMatch || webcamMatch || headsetMatch
+          );
+          return roomMatch || typeMatch;
+        }
+
+        if (selectedTypeSet.size === 0 && selectedCoveredSet.size === 0) {
           return true;
         }
-        const roomMatch = event.roomId && selectedRoomSet.has(String(event.roomId));
-        const typeValue = mode === 'desk' ? event.workspaceType : event.parkingType;
-        const typeMatch = typeValue && selectedTypeSet.has(typeValue);
-        return roomMatch || typeMatch;
+        const parkingTypeValue = String(event?.parkingType || '').toUpperCase();
+        const typeMatch = selectedTypeSet.size === 0 || selectedTypeSet.has(parkingTypeValue);
+        const coveredValue = String(event?.parkingCovered === true);
+        const coveredMatch = selectedCoveredSet.size === 0 || selectedCoveredSet.has(coveredValue);
+        return typeMatch && coveredMatch;
       });
-  }, [dayEvents, mode, selectedFilters]);
+  }, [dayEvents, mode, selectedFilters, desksById, roomBuildingByRoomId]);
 
   const groupedDayEvents = useMemo(() => {
     const groups = timeBlocks.map((block) => ({ ...block, events: [] }));
@@ -469,6 +666,7 @@ const Home = () => {
           data-testid='abc'
           localizer={localizer}
           events={events}
+          date={calendarDate}
           startAccessor='start'
           endAccessor='end'
           views={['month']}
@@ -557,6 +755,11 @@ const Home = () => {
             renderValue={(selected) =>
               selected
                 .map((value) => {
+                  if (value.startsWith('building:')) {
+                    const buildingId = value.replace('building:', '');
+                    const building = buildingOptions.find((option) => option.value === value);
+                    return building ? building.label : buildingId;
+                  }
                   if (value.startsWith('room:')) {
                     const roomId = value.replace('room:', '');
                     const room = roomOptions.find((option) => option.value === value);
@@ -567,6 +770,10 @@ const Home = () => {
                     const type = typeOptions.find((option) => option.value === value);
                     return type ? type.label : typeValue;
                   }
+                  if (value.startsWith('covered:')) {
+                    const covered = coveredOptions.find((option) => option.value === value);
+                    return covered ? covered.label : value;
+                  }
                   return value;
                 })
                 .join(', ')
@@ -574,13 +781,24 @@ const Home = () => {
           >
             {mode === 'desk' && (
               <>
-                <ListSubheader>{t('rooms')}</ListSubheader>
-                {roomOptions.map((option) => (
+                <ListSubheader>{t('building')}</ListSubheader>
+                {buildingOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value} onClick={() => toggleFilterValue(option.value)}>
                     <Checkbox checked={selectedFilters.includes(option.value)} />
                     <ListItemText primary={option.label} />
                   </MenuItem>
                 ))}
+                {selectedBuildingIds.size > 0 && (
+                  <>
+                    <ListSubheader>{t('rooms')}</ListSubheader>
+                    {roomOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value} onClick={() => toggleFilterValue(option.value)}>
+                        <Checkbox checked={selectedFilters.includes(option.value)} />
+                        <ListItemText primary={option.label} />
+                      </MenuItem>
+                    ))}
+                  </>
+                )}
               </>
             )}
             <ListSubheader>
@@ -592,6 +810,17 @@ const Home = () => {
                 <ListItemText primary={option.label} />
               </MenuItem>
             ))}
+            {mode === 'parking' && (
+              <>
+                <ListSubheader>{t('carparkCovered')}</ListSubheader>
+                {coveredOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value} onClick={() => toggleFilterValue(option.value)}>
+                    <Checkbox checked={selectedFilters.includes(option.value)} />
+                    <ListItemText primary={option.label} />
+                  </MenuItem>
+                ))}
+              </>
+            )}
             </Select>
           </FormControl>
         </div>

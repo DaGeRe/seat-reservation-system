@@ -19,6 +19,9 @@ const BookingEvent = ({ event }) => (
   </div>
 );
 
+const isPastBookingDay = (bookingStart) =>
+  moment(bookingStart).startOf('day').isBefore(moment().startOf('day'));
+
 const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
@@ -246,6 +249,9 @@ const MyBookings = () => {
   const selectedDate = location.state?.date ? new Date(location.state.date) : null;
   const initialView = location.state?.view || defaultView?.viewModeName || 'week';
   const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
+  const isPastDayBooking = selectedBookingEvent
+    ? moment(selectedBookingEvent.start).startOf('day').isBefore(moment().startOf('day'))
+    : false;
 
   return (
     <LayoutPage
@@ -259,7 +265,7 @@ const MyBookings = () => {
             setSelectedBookingEvent(null);
             setTheBookingEvent(null);
           }}
-          submit={deleteBooking}
+          submit={isPastDayBooking ? null : deleteBooking}
           submitTxt={t('delete')}
           title={i18n.language === 'de' ? 'Diese Buchung entfernen' : 'Delete this booking'}
         >
@@ -272,29 +278,31 @@ const MyBookings = () => {
                 
                 {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
                 {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.desk && <p>{t('desk')}: {theBookingEvent.desk.remark}</p> }
-                <Button
-                  id="mybookings_edit_booking_btn"
-                  sx={{
-                    marginTop: '10px',
-                    padding: '8px 12px',
-                    backgroundColor: '#0b5f2a',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontSize: '14px',
-                    textTransform: 'none',
-                    '&:hover': { backgroundColor: '#b7e0c8' }
-                  }}
-                  variant="contained"
-                  onClick={editBooking}
-                  disabled={!theBookingEvent || theBookingEvent.id !== selectedBookingEvent?.id}
-                >
-                  {t('editBooking')}
-                </Button>
+                {!isPastDayBooking && (
+                  <Button
+                    id="mybookings_edit_booking_btn"
+                    sx={{
+                      marginTop: '10px',
+                      padding: '8px 12px',
+                      backgroundColor: '#0b5f2a',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '14px',
+                      textTransform: 'none',
+                      '&:hover': { backgroundColor: '#b7e0c8' }
+                    }}
+                    variant="contained"
+                    onClick={editBooking}
+                    disabled={!theBookingEvent || theBookingEvent.id !== selectedBookingEvent?.id}
+                  >
+                    {t('editBooking')}
+                  </Button>
+                )}
                 <Button
                   id="mybookings_export_ics_btn"
                   sx={{
                     marginTop: '10px',
-                    marginLeft: '10px',
+                    marginLeft: !isPastDayBooking ? '10px' : '0',
                     padding: '8px 12px',
                     backgroundColor: '#0b5f2a',
                     borderRadius: '8px',
@@ -337,12 +345,18 @@ const MyBookings = () => {
                 localizer={localizer}
                 formats={calendarFormats}
                 style={{ height: '100vh' }}
-                eventPropGetter={(event) => ({
-                  className: 'mybookings-event',
-                  style: {
-                    backgroundColor: "#3174ad",
-                  },
-                })}
+                eventPropGetter={(event) => {
+                  const eventClasses = ['mybookings-event'];
+                  if (isPastBookingDay(event.start)) {
+                    eventClasses.push('mybookings-event--past');
+                  }
+                  return {
+                    className: eventClasses.join(' '),
+                    style: {
+                      backgroundColor: "#3174ad",
+                    },
+                  };
+                }}
                 components={{ event: BookingEvent }}
                 events={events}
                 startAccessor='start'

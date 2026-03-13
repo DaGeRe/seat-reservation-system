@@ -135,6 +135,13 @@ public class AdminController {
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
+    @GetMapping("desks/roomAll/{id}")
+    public ResponseEntity<List<Desk>> getDeskByRoomIdIncludingHidden(@PathVariable("id") Long roomId) {
+        logger.info("getDeskByRoomIdIncludingHidden( {} )", roomId);
+        List<Desk> desks = deskService.getDeskByRoomIdIncludingHidden(roomId);
+        return new ResponseEntity<>(desks, HttpStatus.OK);
+    }
+
     @PutMapping("desks/updateDesk")
     public ResponseEntity<Desk> updateDesk(@RequestBody final DeskDTO desk) {
         logger.info("updateDesk( {} )", desk);
@@ -143,7 +150,7 @@ public class AdminController {
             System.err.println("deskId is null in AdminController.updateDesk()");
             return null;
         }
-        final Desk updatedDesk = deskService.updateDesk(deskId, desk.getEquipment(), desk.getRemark());
+        final Desk updatedDesk = deskService.updateDesk(deskId, desk.getEquipment(), desk.getRemark(), desk.getFixed());
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
 
@@ -167,6 +174,20 @@ public class AdminController {
         logger.info("createDesk( {} )", desk);
         Desk savedDesk = deskService.saveDesk(desk);
         return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
+    }
+
+    @PutMapping("desks/toggleFixed/{id}")
+    public ResponseEntity<Desk> toggleDeskFixed(@NonNull @PathVariable("id") final Long id) {
+        logger.info("toggleDeskFixed( {} )", id);
+        final Desk updatedDesk = deskService.toggleFixed(id);
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
+    }
+
+    @PutMapping("desks/toggleHidden/{id}")
+    public ResponseEntity<Desk> toggleDeskHidden(@NonNull @PathVariable("id") final Long id) {
+        logger.info("toggleDeskHidden( {} )", id);
+        final Desk updatedDesk = deskService.toggleHidden(id);
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
     
     @PutMapping("rooms")

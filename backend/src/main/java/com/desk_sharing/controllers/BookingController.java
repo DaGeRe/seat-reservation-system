@@ -30,6 +30,7 @@ import com.desk_sharing.model.BookingEditDTO;
 import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.BookingsForDeskDTO;
 import com.desk_sharing.model.BookingDayEventDTO;
+import com.desk_sharing.model.ColleagueBookingsDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
 
@@ -44,7 +45,7 @@ public class BookingController {
     private final BookingRepository bookingRepository;
 
     @PostMapping("getBookingsFromColleaguesOnDate/{date}")
-    public ResponseEntity<Map<String, List<BookingProjectionDTO>>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {
+    public ResponseEntity<List<ColleagueBookingsDTO>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {
         logger.info("getBookingsFromColleaguesOnDate( {} | {} )", emailStrings, date);
         return new ResponseEntity<>(bookingService.getBookingsFromColleaguesOnDate(emailStrings, date), HttpStatus.OK);
     }
