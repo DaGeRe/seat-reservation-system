@@ -25,6 +25,8 @@ import com.desk_sharing.repositories.BookingRepository;
 @AllArgsConstructor
 public class DeskService {
     public static final int SPECIAL_FEATURES_MAX_LENGTH = 120;
+    public static final String DEFAULT_WORKSTATION_TYPE = "Standard";
+    public static final int DEFAULT_MONITORS_QUANTITY = 1;
 
     private final DeskRepository deskRepository;
     private final BookingRepository bookingRepository;
@@ -34,12 +36,25 @@ public class DeskService {
 
     private String normalizeWorkstationType(String workstationType) {
         if (workstationType == null || workstationType.isBlank()) {
-            return "Standard";
+            return DEFAULT_WORKSTATION_TYPE;
         }
-        return Stream.of("Standard", "Silent", "Ergonomic", "Premium")
+        return Stream.of(DEFAULT_WORKSTATION_TYPE, "Silent", "Ergonomic", "Premium")
             .filter(allowed -> allowed.equalsIgnoreCase(workstationType.trim()))
             .findFirst()
-            .orElse("Standard");
+            .orElse(DEFAULT_WORKSTATION_TYPE);
+    }
+
+    private Integer normalizeMonitorsQuantity(Integer monitorsQuantity) {
+        if (monitorsQuantity == null) {
+            return DEFAULT_MONITORS_QUANTITY;
+        }
+        if (monitorsQuantity < 0) {
+            return 0;
+        }
+        if (monitorsQuantity > 3) {
+            return 3;
+        }
+        return monitorsQuantity;
     }
 
     private String normalizeSpecialFeatures(String specialFeatures) {
@@ -56,7 +71,7 @@ public class DeskService {
     private void applyDeskMetadata(Desk desk, DeskDTO deskDto) {
         desk.setRemark(deskDto.getRemark());
         desk.setWorkstationType(normalizeWorkstationType(deskDto.getWorkstationType()));
-        desk.setMonitorsQuantity(deskDto.getMonitorsQuantity() == null ? 0 : deskDto.getMonitorsQuantity());
+        desk.setMonitorsQuantity(normalizeMonitorsQuantity(deskDto.getMonitorsQuantity()));
         desk.setDeskHeightAdjustable(Boolean.TRUE.equals(deskDto.getDeskHeightAdjustable()));
         desk.setTechnologyDockingStation(Boolean.TRUE.equals(deskDto.getTechnologyDockingStation()));
         desk.setTechnologyWebcam(Boolean.TRUE.equals(deskDto.getTechnologyWebcam()));

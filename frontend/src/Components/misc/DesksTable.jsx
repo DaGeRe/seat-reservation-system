@@ -23,7 +23,7 @@ const DeskTable = ({
 
     const equipmentSummary = (desk) => {
         const hasSpecialFeatures = desk?.specialFeatures != null && String(desk.specialFeatures).trim() !== '';
-        const monitorCount = desk?.monitorsQuantity ?? 0;
+        const monitorCount = desk?.monitorsQuantity ?? 1;
         const labels = [
             t(`workstationType${desk?.workstationType || 'Standard'}`),
             `${monitorCount} ${t(monitorCount === 1 ? 'monitorSingular' : 'monitors')}`,

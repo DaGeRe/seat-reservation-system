@@ -17,7 +17,7 @@ export default function EditWorkstation({ isOpen, onClose }) {
   const [selectedDesk, setSelectedDesk] = useState('');
   const [remark, setRemark]= useState('');
   const [workstationType, setWorkstationType] = useState('Standard');
-  const [monitorsQuantity, setMonitorsQuantity] = useState(0);
+  const [monitorsQuantity, setMonitorsQuantity] = useState(1);
   const [deskHeightAdjustable, setDeskHeightAdjustable] = useState(false);
   const [technologyDockingStation, setTechnologyDockingStation] = useState(false);
   const [technologyWebcam, setTechnologyWebcam] = useState(false);
@@ -59,7 +59,7 @@ export default function EditWorkstation({ isOpen, onClose }) {
     if (!selectedDesk) return;
     setRemark(selectedDesk.remark || '');
     setWorkstationType(selectedDesk.workstationType || 'Standard');
-    setMonitorsQuantity(selectedDesk.monitorsQuantity ?? 0);
+    setMonitorsQuantity(selectedDesk.monitorsQuantity ?? 1);
     setDeskHeightAdjustable(Boolean(selectedDesk.deskHeightAdjustable));
     setTechnologyDockingStation(Boolean(selectedDesk.technologyDockingStation));
     setTechnologyWebcam(Boolean(selectedDesk.technologyWebcam));

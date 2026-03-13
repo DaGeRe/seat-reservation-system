@@ -15,7 +15,7 @@ export default function AddWorkstation({ isOpen, onClose }) {
   const [room, setRoom]= React.useState('');
   const [remark, setRemark]= React.useState('');
   const [workstationType, setWorkstationType] = React.useState('Standard');
-  const [monitorsQuantity, setMonitorsQuantity] = React.useState(0);
+  const [monitorsQuantity, setMonitorsQuantity] = React.useState(1);
   const [deskHeightAdjustable, setDeskHeightAdjustable] = React.useState(false);
   const [technologyDockingStation, setTechnologyDockingStation] = React.useState(false);
   const [technologyWebcam, setTechnologyWebcam] = React.useState(false);

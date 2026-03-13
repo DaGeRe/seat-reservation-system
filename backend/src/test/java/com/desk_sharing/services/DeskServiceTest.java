@@ -97,7 +97,7 @@ class DeskServiceTest {
         Desk saved = deskService.saveDesk(dto);
 
         assertThat(saved.getWorkstationType()).isEqualTo("Standard");
-        assertThat(saved.getMonitorsQuantity()).isEqualTo(0);
+        assertThat(saved.getMonitorsQuantity()).isEqualTo(1);
         assertThat(saved.getDeskHeightAdjustable()).isFalse();
         assertThat(saved.getTechnologyDockingStation()).isFalse();
         assertThat(saved.getTechnologyWebcam()).isFalse();

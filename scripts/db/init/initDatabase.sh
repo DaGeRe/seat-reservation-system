@@ -30,7 +30,6 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
         scripts/db/migration/parking_spot_features.sql \
         scripts/db/migration/workstation_equipment_fields.sql \
         scripts/db/migration/workstation_search_filters.sql \
-        scripts/db/migration/workstation_metadata_backfill.sql \
         scripts/db/migration/fixed_desks.sql \
         scripts/db/migration/hidden_desks.sql \
         scripts/db/migration/defect_management.sql \
@@ -50,6 +49,8 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     scripts/db/exec_db.sh init/insertRoomTypes.sql
     # Insert buzildings, floors, rooms and desks.
     scripts/db/exec_db.sh init/insertBuilding.sql
+    # Backfill workstation metadata for seeded desks after the desks exist.
+    scripts/db/exec_db.sh migration/workstation_metadata_backfill.sql
     # Insert test users: admins, employees, and service personnel.
     scripts/db/exec_db.sh init/insertTestUsers.sql
 else

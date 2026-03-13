@@ -147,6 +147,24 @@ public class SeriesService {
         return desks;
     }
 
+    private String workstationTypeOrDefault(Desk desk) {
+        final String workstationType = desk.getWorkstationType();
+        if (workstationType == null || workstationType.isBlank()) {
+            return DeskService.DEFAULT_WORKSTATION_TYPE;
+        }
+        return workstationType;
+    }
+
+    private int monitorCountOrDefault(Desk desk) {
+        return desk.getMonitorsQuantity() == null
+            ? DeskService.DEFAULT_MONITORS_QUANTITY
+            : desk.getMonitorsQuantity();
+    }
+
+    private boolean deskHeightAdjustableOrDefault(Desk desk) {
+        return Boolean.TRUE.equals(desk.getDeskHeightAdjustable());
+    }
+
     private List<Desk> applyWorkstationFilters(List<Desk> desks, WorkstationSearchFiltersDTO filters) {
         if (filters == null) {
             return desks;
@@ -171,9 +189,9 @@ public class SeriesService {
             : filters.getSpecialFeatures().stream().filter(v -> v != null).collect(Collectors.toSet());
 
         return desks.stream()
-            .filter(desk -> types.isEmpty() || types.contains(String.valueOf(desk.getWorkstationType())))
-            .filter(desk -> monitorCounts.isEmpty() || monitorCounts.contains(desk.getMonitorsQuantity()))
-            .filter(desk -> adjustableValues.isEmpty() || adjustableValues.contains(Boolean.TRUE.equals(desk.getDeskHeightAdjustable())))
+            .filter(desk -> types.isEmpty() || types.contains(workstationTypeOrDefault(desk)))
+            .filter(desk -> monitorCounts.isEmpty() || monitorCounts.contains(monitorCountOrDefault(desk)))
+            .filter(desk -> adjustableValues.isEmpty() || adjustableValues.contains(deskHeightAdjustableOrDefault(desk)))
             .filter(desk -> {
                 if (technologySelections.isEmpty()) {
                     return true;

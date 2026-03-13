@@ -86,7 +86,7 @@ export default function DeleteWorkstation({ onClose, isOpen }) {
           t={t}
           remark={selectedDesk.remark}
           workstationType={selectedDesk.workstationType || 'Standard'}
-          monitorsQuantity={selectedDesk.monitorsQuantity ?? 0}
+          monitorsQuantity={selectedDesk.monitorsQuantity ?? 1}
           deskHeightAdjustable={Boolean(selectedDesk.deskHeightAdjustable)}
           technologyDockingStation={Boolean(selectedDesk.technologyDockingStation)}
           technologyWebcam={Boolean(selectedDesk.technologyWebcam)}

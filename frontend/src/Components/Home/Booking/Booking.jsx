@@ -515,18 +515,20 @@ const Booking = () => {
     const quantity = desk?.monitorsQuantity;
     const size = desk?.monitorsSize;
     if (quantity == null && (size == null || String(size).trim() === '')) {
-      return FALLBACK_PLACEHOLDER;
+      return '1';
     }
     if (quantity != null && size != null && String(size).trim() !== '') {
       return `${quantity} x ${String(size).trim()}`;
     }
-    return showOrPlaceholder(quantity ?? size);
+    if (quantity != null) {
+      return showOrPlaceholder(quantity);
+    }
+    return showOrPlaceholder(size);
   };
 
   const deskTypeSummary = (desk) => {
     if (desk?.deskHeightAdjustable === true) return t('adjustable');
-    if (desk?.deskHeightAdjustable === false) return t('notAdjustable');
-    return FALLBACK_PLACEHOLDER;
+    return t('notAdjustable');
   };
 
   const technologySummary = (desk) => {
@@ -591,7 +593,7 @@ const Booking = () => {
                           )}
                         </>
                       )}
-                      <Typography variant="caption">{t('booking.tooltip.ergonomics')}: {showOrPlaceholder(desk?.workstationType)}</Typography>
+                      <Typography variant="caption">{t('booking.tooltip.ergonomics')}: {desk?.workstationType || 'Standard'}</Typography>
                       <Typography variant="caption">{t('booking.tooltip.monitors')}: {monitorSummary(desk)}</Typography>
                       <Typography variant="caption">{t('deskType')}: {deskTypeSummary(desk)}</Typography>
                       <Typography variant="caption">{t('booking.tooltip.technology')}: {technologySummary(desk)}</Typography>
