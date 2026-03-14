@@ -4,6 +4,7 @@ import i18n from '../../i18n';
 
 function clearAuthStorage() {
   try {
+    sessionStorage.removeItem('freeDesksAdvancedFilters');
     sessionStorage.removeItem('headers');
     sessionStorage.removeItem('accessToken');
   } catch {

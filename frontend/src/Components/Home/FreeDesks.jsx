@@ -17,7 +17,7 @@ import CreateTimePicker from '../misc/CreateTimePicker';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { toast } from 'react-toastify';
-import {postRequest, getRequest, putRequest} from '../RequestFunctions/RequestFunctions';
+import {postRequest, getRequest} from '../RequestFunctions/RequestFunctions';
 import {DeskTable} from '../misc/DesksTable';
 import bookingPostRequest from '../misc/bookingPostRequest';
 import LayoutPage from '../Templates/LayoutPage';
@@ -73,7 +73,6 @@ const FreeDesks = () => {
     const [reportDefectDeskId, setReportDefectDeskId] = useState(null);
     const [isReportDefectOpen, setIsReportDefectOpen] = useState(false);
     const [filters, setFilters] = useState(parseStoredFilters);
-    const [filterPreferencesLoaded, setFilterPreferencesLoaded] = useState(false);
 
     const roundUpToNextHalfHour = (d) => {
         const copy = new Date(d);
@@ -234,38 +233,11 @@ const FreeDesks = () => {
             () => {console.log('Error fetching buildings in fetchBuildings.js');}
         );
 
-        getRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/users/me/workstation-search-filters`,
-            headers.current,
-            (data) => {
-                const normalized = normalizeFilters(data || emptyFilters);
-                setFilters(normalized);
-                sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(normalized));
-                setFilterPreferencesLoaded(true);
-            },
-            () => {
-                setFilterPreferencesLoaded(true);
-            }
-        );
     }, []);
 
     useEffect(() => {
         sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
     }, [filters]);
-
-    useEffect(() => {
-        if (!filterPreferencesLoaded) return;
-        const timeoutId = window.setTimeout(() => {
-            putRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/users/me/workstation-search-filters`,
-                headers.current,
-                () => {},
-                () => {},
-                JSON.stringify(filters)
-            );
-        }, 250);
-        return () => window.clearTimeout(timeoutId);
-    }, [filterPreferencesLoaded, filters]);
 
     useEffect(() => {
         if (startTime > endTime) {

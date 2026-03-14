@@ -183,6 +183,7 @@ const SidebarComponent = () => {
 
   const handleLogoutConfirmed = () => {
     // Clear the user's session (auth + cached user info).
+    sessionStorage.removeItem('freeDesksAdvancedFilters');
     sessionStorage.removeItem('headers');
     sessionStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
