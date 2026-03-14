@@ -20,13 +20,6 @@ public class Desk {
     @ManyToOne(cascade =  { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
-    
-    // @Column(name = "equipment", nullable = false)
-    // private String equipment;
-
-    @ManyToOne(cascade =  { CascadeType.PERSIST })
-    @JoinColumn(name = "equipmentId", nullable = false)
-    private Equipment equipment;
 
     @Column(name = "remark", nullable = true)
     private String remark;
@@ -35,10 +28,6 @@ public class Desk {
     @Column(name = "deskNumberInRoom", nullable = true)
     private Long deskNumberInRoom;
 
-    /** Workstation identifier (e.g. A/B/C). */
-    @Column(name = "workstation_identifier", nullable = true)
-    private String workstationIdentifier;
-
     /** Workstation type: Normal / Silence / Ergonomic / Premium. */
     @Column(name = "workstation_type", nullable = true)
     private String workstationType;
@@ -46,10 +35,6 @@ public class Desk {
     /** Number of monitors at this workstation. */
     @Column(name = "monitors_quantity", nullable = true)
     private Integer monitorsQuantity;
-
-    /** Monitor size description, e.g. 24". */
-    @Column(name = "monitors_size", nullable = true)
-    private String monitorsSize;
 
     /** Whether the desk is height-adjustable. */
     @Column(name = "desk_height_adjustable", nullable = true)
@@ -69,7 +54,7 @@ public class Desk {
     @Column(name = "special_features", nullable = true, columnDefinition = "TEXT")
     private String specialFeatures;
 
-    @Column(name = "is_blocked", nullable = false)
+    @Column(name = "is_blocked", nullable = false, columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
     private boolean blocked = false;
 
     @Column(name = "blocked_reason_category", nullable = true, length = 30)
@@ -81,9 +66,9 @@ public class Desk {
     @Column(name = "blocked_by_defect_id", nullable = true)
     private Long blockedByDefectId;
 
-    @Column(name = "is_hidden", nullable = false)
+    @Column(name = "is_hidden", nullable = false, columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
     private boolean hidden = false;
 
-    @Column(name = "is_fixed", nullable = false)
+    @Column(name = "is_fixed", nullable = false, columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
     private boolean fixed = false;
 }

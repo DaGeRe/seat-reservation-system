@@ -686,27 +686,22 @@ const Booking = () => {
 
   const monitorSummary = (desk) => {
     const quantity = desk?.monitorsQuantity;
-    const size = desk?.monitorsSize;
-    if (quantity == null && (size == null || String(size).trim() === '')) {
-      return FALLBACK_PLACEHOLDER;
+    if (quantity == null) {
+      return '1';
     }
-    if (quantity != null && size != null && String(size).trim() !== '') {
-      return `${quantity} x ${String(size).trim()}`;
-    }
-    return showOrPlaceholder(quantity ?? size);
+    return showOrPlaceholder(quantity);
   };
 
   const deskTypeSummary = (desk) => {
-    if (desk?.deskHeightAdjustable === true) return 'yes';
-    if (desk?.deskHeightAdjustable === false) return 'no';
-    return FALLBACK_PLACEHOLDER;
+    if (desk?.deskHeightAdjustable === true) return t('adjustable');
+    return t('notAdjustable');
   };
 
   const technologySummary = (desk) => {
     const items = [];
-    if (desk?.technologyDockingStation === true) items.push('docking station');
-    if (desk?.technologyWebcam === true) items.push('webcam');
-    if (desk?.technologyHeadset === true) items.push('headset');
+    if (desk?.technologyDockingStation === true) items.push(t('technologyDockingStation'));
+    if (desk?.technologyWebcam === true) items.push(t('technologyWebcam'));
+    if (desk?.technologyHeadset === true) items.push(t('technologyHeadset'));
     return items.length ? items.join(', ') : FALLBACK_PLACEHOLDER;
   };
 
@@ -764,10 +759,9 @@ const Booking = () => {
                           )}
                         </>
                       )}
-                      <Typography variant="caption">{t('booking.tooltip.identifier')}: {showOrPlaceholder(desk?.workstationIdentifier)}</Typography>
-                      <Typography variant="caption">{t('booking.tooltip.type')}: {showOrPlaceholder(desk?.workstationType)}</Typography>
+                      <Typography variant="caption">{t('booking.tooltip.ergonomics')}: {desk?.workstationType || 'Standard'}</Typography>
                       <Typography variant="caption">{t('booking.tooltip.monitors')}: {monitorSummary(desk)}</Typography>
-                      <Typography variant="caption">{t('booking.tooltip.deskTypeHeightAdjustable')}: {deskTypeSummary(desk)}</Typography>
+                      <Typography variant="caption">{t('deskType')}: {deskTypeSummary(desk)}</Typography>
                       <Typography variant="caption">{t('booking.tooltip.technology')}: {technologySummary(desk)}</Typography>
                       <Typography variant="caption">{t('booking.tooltip.specialFeatures')}: {showOrPlaceholder(desk?.specialFeatures)}</Typography>
                     </Box>
@@ -778,6 +772,10 @@ const Booking = () => {
                       backgroundColor: desk.blocked
                         ? '#bdbdbd'
                         : desk.id === clickedDeskId ? '#ffdd00' : 'yellowgreen',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       height: '125px',
                       width: '140px',
                       borderRadius: '7px',
@@ -798,10 +796,9 @@ const Booking = () => {
                       sessionStorage.setItem(selectionKey, JSON.stringify({ deskId: desk.id }));
                     }}
                   >
-                    <Typography sx={typography_sx}>{desk.remark}</Typography>
-                    <Typography sx={typography_sx}>{t(desk.equipment.equipmentName)}</Typography>
+                    <Typography sx={{ ...typography_sx, margin: 0 }}>{desk.remark}</Typography>
                     {desk.blocked && (
-                      <Typography sx={{ ...typography_sx, fontSize: '0.7rem', color: '#d32f2f', fontWeight: 600 }}>
+                      <Typography sx={{ ...typography_sx, marginTop: '6px', fontSize: '0.7rem', color: '#d32f2f', fontWeight: 600 }}>
                         {t('defectBlocked')}
                       </Typography>
                     )}
