@@ -11,6 +11,7 @@ import LayoutModal from '../Templates/LayoutModal';
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { colorVars, semanticColors } from '../../theme';
 
 const BookingEvent = ({ event }) => (
   <div className="mybookings-event-content">
@@ -249,12 +250,12 @@ const MyBookings = () => {
                     sx={{
                       marginTop: '10px',
                       padding: '8px 12px',
-                      backgroundColor: '#0b5f2a',
+                      backgroundColor: colorVars.state.actionPositive,
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: colorVars.text.inverse,
                       fontSize: '14px',
                       textTransform: 'none',
-                      '&:hover': { backgroundColor: '#b7e0c8' }
+                      '&:hover': { backgroundColor: colorVars.border.success }
                     }}
                     variant="contained"
                     onClick={editBooking}
@@ -269,12 +270,12 @@ const MyBookings = () => {
                     marginTop: '10px',
                     marginLeft: !isPastDayBooking ? '10px' : '0',
                     padding: '8px 12px',
-                    backgroundColor: '#0b5f2a',
+                    backgroundColor: colorVars.state.actionPositive,
                     borderRadius: '8px',
-                    color: '#fff',
+                    color: colorVars.text.inverse,
                     fontSize: '14px',
                     textTransform: 'none',
-                    '&:hover': { backgroundColor: '#b7e0c8' }
+                    '&:hover': { backgroundColor: colorVars.border.success }
                   }}
                   variant="contained"
                   onClick={exportIcs}
@@ -294,13 +295,13 @@ const MyBookings = () => {
                   marginBottom: '10px',
                   marginLeft: '35px',
                   padding: '8px 12px',
-                  backgroundColor: '#0b5f2a',
+                  backgroundColor: colorVars.state.actionPositive,
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: colorVars.text.inverse,
                   fontSize: '14px',
                   textTransform: 'none',
                   alignSelf: 'flex-start',
-                  '&:hover': { backgroundColor: '#b7e0c8' }
+                  '&:hover': { backgroundColor: colorVars.border.success }
                 }}
                 onClick={() => navigate('/freedesks', { state: { date: currentDate } })}
               >
@@ -318,7 +319,7 @@ const MyBookings = () => {
                   return {
                     className: eventClasses.join(' '),
                     style: {
-                      backgroundColor: "#3174ad",
+                      backgroundColor: semanticColors.booking.event.mine,
                     },
                   };
                 }}
