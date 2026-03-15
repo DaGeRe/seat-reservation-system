@@ -187,6 +187,8 @@
     "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
     "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
     "continue": "Continue",
+    "otherFreeDesksForSelectedTimeSlots": "Other free desks for selected time slots",
+    "noFreeDesksForSelectedTimeSlotInBuilding": "No free desks are available for this time slot in this building.",
     "booked": "Booking saved successfully",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
