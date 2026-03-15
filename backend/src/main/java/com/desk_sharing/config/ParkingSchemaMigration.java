@@ -129,6 +129,8 @@ public class ParkingSchemaMigration {
         seedSpot("23", "SPECIAL_CASE");
         seedSpot("30", "ACCESSIBLE");
         seedSpot("29", "STANDARD");
+        seedSpot("28", "STANDARD", false);
+        seedSpot("27", "STANDARD", false);
         seedSpot("31", "STANDARD");
         seedSpot("32", "STANDARD");
         seedSpot("33", "STANDARD");
@@ -140,16 +142,26 @@ public class ParkingSchemaMigration {
         seedSpot("39", "STANDARD");
         seedSpot("40", "STANDARD");
         seedSpot("43", "STANDARD");
+        seedSpot("42", "STANDARD", false);
+        seedSpot("41", "STANDARD", false);
+        seedSpot("44", "STANDARD", false);
+        seedSpot("45", "STANDARD", false);
+        seedSpot("46", "STANDARD", false);
     }
 
     private void seedSpot(final String label, final String spotType) {
+        seedSpot(label, spotType, true);
+    }
+
+    private void seedSpot(final String label, final String spotType, final boolean active) {
         jdbcTemplate.update(
             "INSERT IGNORE INTO " + SPOTS_TABLE
                 + " (spot_label, display_label, spot_type, active, covered, manually_blocked, charging_kw)"
-                + " VALUES (?, ?, ?, 1, 0, 0, NULL)",
+                + " VALUES (?, ?, ?, ?, 0, 0, NULL)",
             label,
             label,
-            spotType
+            spotType,
+            active ? 1 : 0
         );
     }
 }

@@ -29,6 +29,7 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
         scripts/db/migration/parking_reservation_status.sql \
         scripts/db/migration/parking_spot_features.sql \
         scripts/db/migration/parking_spot_catalog.sql \
+        scripts/db/migration/parking_spot_candidates.sql \
         scripts/db/migration/workstation_equipment_fields.sql \
         scripts/db/migration/workstation_search_filters.sql \
         scripts/db/migration/fixed_desks.sql \
