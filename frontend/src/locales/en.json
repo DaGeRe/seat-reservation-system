@@ -1,5 +1,6 @@
 {
     "tokenInvalid": "Token invalid. Please login again.",
+    "warning": "Warning",
     "http401": "You are not authorized or your session has expired. Please log in again.",
     "http403": "You do not have permission to perform this action.",
     "http405": "The requested resource was not found.",
@@ -183,6 +184,9 @@
     "minimum": "Minimum booking duration is 2 hours",
     "maximum": "Maximum booking duration is 9 hours",
     "overlap": "This slot overlaps with another booking for this desk",
+    "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
+    "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
+    "continue": "Continue",
     "booked": "Booking saved successfully",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",

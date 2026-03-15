@@ -34,6 +34,8 @@ import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.BookingsForDeskDTO;
 import com.desk_sharing.model.BookingDayEventDTO;
 import com.desk_sharing.model.ColleagueBookingsDTO;
+import com.desk_sharing.model.BookingOverlapCheckRequestDTO;
+import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.UserService;
@@ -83,6 +85,25 @@ public class BookingController {
         logger.info("confirmBooking( {} )", bookingId);
         Booking updatedBooking = bookingService.confirmBooking(bookingId);
         return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
+    }
+
+    @PostMapping("/overlap-check")
+    public ResponseEntity<?> checkBookingOverlap(@RequestBody BookingOverlapCheckRequestDTO request) {
+        logger.info("checkBookingOverlap( {} )", request);
+        try {
+            if (request == null || request.getBookingId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            BookingOverlapCheckResponseDTO response = bookingService.checkConfirmedOverlapWithOtherDesk(
+                request.getBookingId(),
+                request.getIgnoreBookingId()
+            );
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            Map<String, String> body = new HashMap<>();
+            body.put("error", e.getReason() == null ? "Overlap check failed" : e.getReason());
+            return new ResponseEntity<>(body, e.getStatusCode());
+        }
     }
 
     @GetMapping("/{id}")
