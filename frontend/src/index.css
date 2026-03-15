@@ -16,8 +16,13 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url('./saxony.jpg') no-repeat;
-  background-size: cover;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #ffffff 50%,
+    #0082c4 50%,
+    #0082c4 100%
+  );
 }
 
 code {

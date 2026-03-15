@@ -23,13 +23,18 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 2px 0;
+  padding: 4px 6px;
+  background: var(--color-brand-primary);
+  border-radius: 6px;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
 }
 
 .home-add-booking-btn {
   background: var(--color-surface-paper);
-  color: var(--color-text-accent);
-  border: 1px solid var(--color-text-accent);
+  color: var(--color-brand-primary);
+  border: 1px solid var(--color-brand-primary);
   border-radius: 4px;
   padding: 2px 6px;
   font-size: 0.75rem;
@@ -38,23 +43,41 @@
 }
 
 .home-add-booking-btn:hover {
-  background: var(--color-surface-info);
+  background: var(--color-surface-calendar-control);
 }
 
 .home-bookings-sum {
   font-size: 0.75rem;
   line-height: 1.2;
   color: var(--color-text-inverse);
+  background: var(--color-brand-primary);
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rbc-month-view .rbc-event,
+.rbc-month-view .rbc-background-event {
+  background-color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+  padding: 0;
+}
+
+.rbc-month-view .rbc-event:focus,
+.rbc-month-view .rbc-background-event:focus {
+  outline: none;
 }
 
 .rbc-toolbar .rbc-btn-group button {
-  background: var(--color-surface-success);
-  border: 1px solid var(--color-border-success);
-  color: var(--color-state-action-positive);
+  background: var(--color-surface-calendar-control);
+  border: 1px solid var(--color-border-calendar-control);
+  color: var(--color-brand-primary);
 }
 
 .rbc-toolbar .rbc-btn-group button:hover {
-  background: var(--color-surface-success-hover);
+  background: var(--color-surface-calendar-control-hover);
 }
 
 .home-rbc-toolbar {
