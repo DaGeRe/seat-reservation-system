@@ -140,9 +140,11 @@ const formatSpotCategory = (spotCategory) => {
 
 const getSpotMetaFromDataset = (rect) => ({
   label: rect.dataset.spotLabel ?? '?',
+  displayLabel: rect.dataset.spotDisplayLabel || rect.dataset.spotLabel || '?',
   type: rect.dataset.spotType ?? 'unknown',
   spotCategory: rect.dataset.spotCategory ?? 'STANDARD',
   lit: rect.dataset.spotLit === 'true',
+  active: rect.dataset.spotActive !== 'false',
   accessible: rect.dataset.spotAccessible === 'true',
   special: rect.dataset.spotSpecial === 'true',
   covered: rect.dataset.spotCovered === 'true',
@@ -188,6 +190,8 @@ const CarparkView = ({
   const selectedRectRef = useRef(null);
   const svgRef = useRef(null);
   const headersRef = useRef(JSON.parse(sessionStorage.getItem('headers')));
+  const spotCatalogByLabelRef = useRef(new Map());
+  const spotLabelTextByLabelRef = useRef(new Map());
   const spotRectsByLabelRef = useRef(new Map());
   const initialTimeRangeRef = useRef(getDefaultTimeRange());
   const reservationStatusSnapshotRef = useRef(new Map());
@@ -222,6 +226,103 @@ const CarparkView = ({
   const allowSelectUnavailable = detailsVariant === 'modal';
   const isAdminUser = localStorage.getItem('admin') === 'true';
 
+  const applyInactiveSpotPresentation = useCallback((label, rect) => {
+    const labelText = spotLabelTextByLabelRef.current.get(label);
+    rect.classList.remove('carpark-status-available', 'carpark-status-pending', 'carpark-status-occupied', 'carpark-status-blocked');
+    rect.classList.add('carpark-status-inactive');
+    rect.dataset.spotActive = 'false';
+    rect.dataset.spotStatus = 'INACTIVE';
+    rect.dataset.spotSelectable = 'false';
+    rect.dataset.spotReservedByMe = 'false';
+    rect.dataset.spotReservationId = '';
+    rect.dataset.spotReservedBegin = '';
+    rect.dataset.spotReservedEnd = '';
+    rect.dataset.spotReservedByUser = '';
+    rect.setAttribute('tabindex', adminEditMode && isAdminUser ? '0' : '-1');
+    rect.setAttribute('role', adminEditMode && isAdminUser ? 'button' : 'img');
+    rect.style.cursor = adminEditMode && isAdminUser ? 'pointer' : 'default';
+    if (labelText) {
+      labelText.textContent = '';
+      labelText.style.display = 'none';
+    }
+  }, [adminEditMode, isAdminUser]);
+
+  const applyCatalogToMap = useCallback((spots) => {
+    const nextCatalog = new Map();
+    for (const spot of spots ?? []) {
+      const label = String(spot?.spotLabel ?? '').trim();
+      if (label) {
+        nextCatalog.set(label, spot);
+      }
+    }
+    spotCatalogByLabelRef.current = nextCatalog;
+
+    for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+      const catalogSpot = nextCatalog.get(label);
+      const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+      const labelText = spotLabelTextByLabelRef.current.get(label);
+      const displayLabel = String(catalogSpot?.displayLabel ?? (isActiveSpot ? label : '')).trim();
+
+      rect.dataset.spotActive = isActiveSpot ? 'true' : 'false';
+      rect.dataset.spotDisplayLabel = displayLabel;
+
+      if (catalogSpot?.spotType) {
+        rect.dataset.spotCategory = String(catalogSpot.spotType).toUpperCase();
+        rect.dataset.spotSpecial = String(catalogSpot.spotType).toUpperCase() === 'SPECIAL_CASE' ? 'true' : 'false';
+        rect.dataset.spotAccessible = String(catalogSpot.spotType).toUpperCase() === 'ACCESSIBLE' ? 'true' : 'false';
+      }
+      if (catalogSpot?.covered != null) {
+        rect.dataset.spotCovered = catalogSpot.covered === true ? 'true' : 'false';
+      }
+      if (catalogSpot?.manuallyBlocked != null) {
+        rect.dataset.spotManuallyBlocked = catalogSpot.manuallyBlocked === true ? 'true' : 'false';
+      }
+      rect.dataset.spotChargingKw = catalogSpot?.chargingKw == null ? '' : String(catalogSpot.chargingKw);
+
+      if (!isActiveSpot) {
+        applyInactiveSpotPresentation(label, rect);
+        continue;
+      }
+
+      rect.classList.remove('carpark-status-inactive');
+      rect.dataset.spotSelectable = rect.dataset.spotSpecial === 'true' ? 'false' : 'true';
+      rect.setAttribute('tabindex', rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? '0' : '-1');
+      rect.setAttribute('role', rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? 'button' : 'img');
+      rect.style.cursor = rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? 'pointer' : 'default';
+
+      if (labelText) {
+        labelText.textContent = displayLabel;
+        labelText.style.display = displayLabel ? '' : 'none';
+      }
+    }
+
+    if (selectedRectRef.current) {
+      setSelectedSpot(getSpotMetaFromDataset(selectedRectRef.current));
+    }
+  }, [adminEditMode, applyInactiveSpotPresentation, isAdminUser]);
+
+  const refreshSpotCatalog = useCallback((onDone) => {
+    if (!spotRectsByLabelRef.current.size) {
+      if (onDone) onDone();
+      return;
+    }
+    const includeInactive = isAdminUser && adminEditMode;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/parking/spots${includeInactive ? '?includeInactive=true' : ''}`;
+
+    getRequest(
+      url,
+      headersRef.current,
+      (data) => {
+        applyCatalogToMap(Array.isArray(data) ? data : []);
+        if (onDone) onDone();
+      },
+      () => {
+        // keep the existing map usable even if catalog refresh fails
+        if (onDone) onDone();
+      }
+    );
+  }, [adminEditMode, applyCatalogToMap, isAdminUser]);
+
   const clearSelection = useCallback(() => {
     if (selectedRectRef.current) {
       selectedRectRef.current.classList.remove('carpark-selected');
@@ -238,6 +339,8 @@ const CarparkView = ({
       cleanupRef.current = [];
       selectedRectRef.current = null;
       svgRef.current = null;
+      spotLabelTextByLabelRef.current = new Map();
+      spotCatalogByLabelRef.current = new Map();
       if (containerRef.current) containerRef.current.replaceChildren();
     };
 
@@ -282,12 +385,14 @@ const CarparkView = ({
         .carpark-status-pending { fill: #f9a825 !important; }
         .carpark-status-occupied { fill: #c62828 !important; }
         .carpark-status-blocked { fill: #9e9e9e !important; }
+        .carpark-status-inactive { fill: #ffffff !important; }
       `;
       defs.appendChild(style);
 
       const localCleanup = [];
       const allTextNodes = Array.from(svg.querySelectorAll('text'))
         .map((el) => ({
+          element: el,
           value: (el.textContent ?? '').trim(),
           x: parseFloatAttr(el, 'x', NaN),
           y: parseFloatAttr(el, 'y', NaN),
@@ -327,7 +432,9 @@ const CarparkView = ({
         const isAccessible = accessibleTexts.some((t) => isPointInRect(t.x, t.y, x, y, w, h));
 
         rect.dataset.spotLabel = spotLabel;
+        rect.dataset.spotDisplayLabel = spotLabel;
         rect.dataset.spotType = 'stall';
+        rect.dataset.spotActive = 'true';
         rect.dataset.spotLit = isLit ? 'true' : 'false';
         rect.dataset.spotAccessible = isAccessible ? 'true' : 'false';
         rect.dataset.spotSpecial = isSpecial ? 'true' : 'false';
@@ -345,6 +452,9 @@ const CarparkView = ({
         rect.dataset.spotReservedEnd = '';
         rect.dataset.spotReservedByUser = '';
         spotRectsByLabelRef.current.set(spotLabel, rect);
+        if (closest?.element) {
+          spotLabelTextByLabelRef.current.set(spotLabel, closest.element);
+        }
         rect.classList.add(isSpecial ? 'carpark-status-blocked' : 'carpark-status-available');
 
         rect.setAttribute('tabindex', isSelectable ? '0' : '-1');
@@ -437,6 +547,7 @@ const CarparkView = ({
       svgRef.current = svg;
       cleanupRef.current = localCleanup;
       containerRef.current?.appendChild(svg);
+      refreshSpotCatalog();
     };
 
     load().catch((err) => {
@@ -465,6 +576,7 @@ const CarparkView = ({
     for (const rect of spotRectsByLabelRef.current.values()) {
       rect.dataset.spotAdminEditMode = adminEditMode && isAdminUser ? 'true' : 'false';
     }
+    refreshSpotCatalog();
   }, [adminEditMode, isAdminUser]);
 
   const addPageNotification = useCallback((severity, message, notificationKey) => {
@@ -588,13 +700,15 @@ const CarparkView = ({
   }, [addPageNotification, i18n.language, t]);
 
   const spotForPanel = effectiveShowHover ? (selectedSpot ?? hoveredSpot) : selectedSpot;
+  const isActiveCatalogSpot = spotForPanel?.active !== false;
   const isSpecialSpot = spotForPanel?.special === true;
   const isManuallyBlockedSpot = spotForPanel?.manuallyBlocked === true;
-  const canAdminToggleBlock = Boolean(isAdminUser && adminEditMode && selectedSpot && !isSpecialSpot);
-  const isBlocked = spotForPanel?.status === 'BLOCKED' || isSpecialSpot;
-  const isPending = spotForPanel?.status === 'PENDING';
-  const isOccupied = spotForPanel?.status === 'OCCUPIED';
-  const isAvailable = spotForPanel?.status === 'AVAILABLE';
+  const canAdminToggleBlock = Boolean(isAdminUser && adminEditMode && selectedSpot && isActiveCatalogSpot && !isSpecialSpot);
+  const canAdminToggleActive = Boolean(isAdminUser && adminEditMode && selectedSpot && !isSpecialSpot);
+  const isBlocked = isActiveCatalogSpot && (spotForPanel?.status === 'BLOCKED' || isSpecialSpot);
+  const isPending = isActiveCatalogSpot && spotForPanel?.status === 'PENDING';
+  const isOccupied = isActiveCatalogSpot && spotForPanel?.status === 'OCCUPIED';
+  const isAvailable = isActiveCatalogSpot && spotForPanel?.status === 'AVAILABLE';
 
   const formatISODate = (d) => {
     const yyyy = d.getFullYear();
@@ -620,8 +734,22 @@ const CarparkView = ({
       return;
     }
 
-    const spotLabels = Array.from(spotRectsByLabelRef.current.keys());
+    const catalogActiveLabels = Array.from(spotCatalogByLabelRef.current.entries())
+      .filter(([, spot]) => spot?.active !== false)
+      .map(([label]) => label);
+    const spotLabels = catalogActiveLabels.length > 0
+      ? catalogActiveLabels
+      : Array.from(spotRectsByLabelRef.current.keys());
     const day = formatISODate(selectedDate);
+
+    if (spotLabels.length === 0) {
+      for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+        applyInactiveSpotPresentation(label, rect);
+      }
+      setIsRefreshing(false);
+      return;
+    }
+
     setIsRefreshing(true);
 
     postRequest(
@@ -634,7 +762,20 @@ const CarparkView = ({
         }
 
         for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
-          rect.classList.remove('carpark-status-available', 'carpark-status-pending', 'carpark-status-occupied', 'carpark-status-blocked');
+          const catalogSpot = spotCatalogByLabelRef.current.get(label);
+          const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+          if (!isActiveSpot) {
+            applyInactiveSpotPresentation(label, rect);
+            continue;
+          }
+
+          rect.classList.remove(
+            'carpark-status-available',
+            'carpark-status-pending',
+            'carpark-status-occupied',
+            'carpark-status-blocked',
+            'carpark-status-inactive'
+          );
 
           const row = statusByLabel.get(label);
           const status = row?.status ?? (label === '23' ? 'BLOCKED' : 'AVAILABLE');
@@ -687,7 +828,7 @@ const CarparkView = ({
 
   const reserveSelected = () => {
     if (adminEditMode) return;
-    if (!selectedSpot || selectedSpot.status !== 'AVAILABLE') return;
+    if (!selectedSpot || selectedSpot.active === false || selectedSpot.status !== 'AVAILABLE') return;
     const day = formatISODate(selectedDate);
 
     postRequest(
@@ -756,6 +897,29 @@ const CarparkView = ({
     );
   };
 
+  const setSpotActiveState = (active) => {
+    if (!isAdminUser || !adminEditMode || !selectedSpot?.label) return;
+    if (selectedSpot?.special) {
+      toast.warning(t('carparkEditModeSpecialCase'));
+      return;
+    }
+
+    const action = active ? 'activate' : 'deactivate';
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/parking/spots/${encodeURIComponent(selectedSpot.label)}/${action}`,
+      headersRef.current,
+      () => {
+        toast.success(t(active ? 'carparkSpotActivatedSuccess' : 'carparkSpotDeactivatedSuccess'));
+        refreshSpotCatalog(() => refreshAvailability());
+      },
+      (errorCode) => {
+        if (errorCode === 403) toast.error(t('http403'));
+        else toast.error(t('httpOther'));
+      },
+      {}
+    );
+  };
+
   const detailsBody = (
     <>
       {detailsVariant === 'panel' && !spotForPanel && (
@@ -766,10 +930,10 @@ const CarparkView = ({
       {spotForPanel && (
         <>
           <Typography variant="body1" sx={{ fontWeight: 700 }}>
-            {t('carparkSpot')} {spotForPanel.label}
+            {t('carparkSpot')} {spotForPanel.displayLabel || spotForPanel.label}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t(`carparkStatus_${spotForPanel.status}`)}
+            {spotForPanel.active === false ? t('carparkNotInLitSystem') : t(`carparkStatus_${spotForPanel.status}`)}
             {spotForPanel.reservedByMe ? ` (${t('carparkReservedByMe')})` : ''}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -809,6 +973,16 @@ const CarparkView = ({
               {isManuallyBlockedSpot ? t('carparkUnblockSpot') : t('carparkBlockSpot')}
             </Button>
           )}
+          {canAdminToggleActive && (
+            <Button
+              sx={{ mt: 2, ml: canAdminToggleBlock ? 1 : 0 }}
+              variant="outlined"
+              color={spotForPanel.active === false ? 'success' : 'warning'}
+              onClick={() => setSpotActiveState(spotForPanel.active === false)}
+            >
+              {spotForPanel.active === false ? t('carparkAddToLitSystem') : t('carparkRemoveFromLitSystem')}
+            </Button>
+          )}
           {selectedSpot && isAvailable && !adminEditMode && (
             <Button sx={{ mt: 2 }} variant="contained" onClick={reserveSelected}>
               {t('carparkReserve')}
@@ -827,6 +1001,8 @@ const CarparkView = ({
           <Typography variant="body2" color="text.secondary">
             {adminEditMode && isAdminUser
               ? t('carparkEditModeHint')
+              : !isActiveCatalogSpot
+              ? t('carparkNotInLitSystem')
               : isSpecialSpot
               ? t('carparkContactStaff')
               : isBlocked

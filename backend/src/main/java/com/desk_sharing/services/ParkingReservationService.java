@@ -496,7 +496,11 @@ public class ParkingReservationService {
     }
 
     public List<ParkingSpot> getParkingSpots(final boolean includeInactive) {
-        requireAdmin();
+        if (includeInactive) {
+            requireAdmin();
+        } else {
+            getCurrentUser();
+        }
         return includeInactive
             ? parkingSpotRepository.findAllByOrderBySpotLabelAsc()
             : parkingSpotRepository.findByActiveTrueOrderBySpotLabelAsc();
