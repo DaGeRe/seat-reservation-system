@@ -13,9 +13,10 @@ import {
     FormControl,
     IconButton,
     InputLabel,
-    ListItemText,
     Menu,
     MenuItem,
+    Paper,
+    Radio,
     Select,
     TextField,
     Typography,
@@ -108,8 +109,12 @@ const normalizePresetForComparison = (preset) => {
     });
 };
 
+const EXCLUSIVE_FILTER_KEYS = ['deskHeightAdjustable', 'specialFeatures'];
+
 const FreeDesks = () => {
     const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
+    const filterPanelRef = useRef(null);
+    const filterTriggerRefs = useRef({});
     const { t, i18n } = useTranslation();
     const valueForAllBuildings = useRef('0');
     const shouldPersistSelectedBuilding = useRef(parseStoredBuilding() !== null);
@@ -123,6 +128,7 @@ const FreeDesks = () => {
     const [filters, setFilters] = useState(parseStoredFilters);
     const [savedPresets, setSavedPresets] = useState([]);
     const [presetsMenuPosition, setPresetsMenuPosition] = useState(null);
+    const [openFilterPanel, setOpenFilterPanel] = useState(null);
     const [isSavePresetOpen, setIsSavePresetOpen] = useState(false);
     const [isReplacePresetOpen, setIsReplacePresetOpen] = useState(false);
     const [presetPendingReplace, setPresetPendingReplace] = useState(null);
@@ -210,6 +216,8 @@ const FreeDesks = () => {
         }
     };
 
+    const isExclusiveFilterCategory = (categoryKey) => EXCLUSIVE_FILTER_KEYS.includes(categoryKey);
+
     const renderSelectedValues = (categoryKey) => {
         const selectedValues = getSelectedValuesForCategory(categoryKey);
         if (!selectedValues.length) {
@@ -248,10 +256,6 @@ const FreeDesks = () => {
         });
     };
 
-    const keepFilterMenuOpen = (event) => {
-        event.preventDefault();
-    };
-
     const filterSelectConfigs = useMemo(() => ([
         { key: 'types', label: t('ergonomics') },
         { key: 'monitorCounts', label: t('monitors') },
@@ -261,6 +265,39 @@ const FreeDesks = () => {
     ]), [t]);
 
     const resetFilters = () => setFilters({ ...emptyFilters });
+
+    const closeFilterPanel = () => {
+        setOpenFilterPanel(null);
+    };
+
+    const toggleFilterPanel = (categoryKey, event) => {
+        const triggerRect = event.currentTarget.getBoundingClientRect();
+        const panelWidth = Math.max(Math.round(triggerRect.width), 220);
+        const panelLeft = Math.min(
+            Math.round(triggerRect.left),
+            Math.max(16, window.innerWidth - panelWidth - 16)
+        );
+        const panelTop = Math.round(triggerRect.bottom + 8);
+
+        setOpenFilterPanel((prev) => {
+            if (prev?.key === categoryKey) {
+                return null;
+            }
+            return {
+                key: categoryKey,
+                top: panelTop,
+                left: panelLeft,
+                width: panelWidth,
+            };
+        });
+    };
+
+    const handleFilterOptionClick = (categoryKey, encodedValue) => {
+        toggleFilterValue(categoryKey, encodedValue);
+        if (isExclusiveFilterCategory(categoryKey)) {
+            closeFilterPanel();
+        }
+    };
 
     const validatePresetName = (value) => {
         const trimmedValue = String(value || '').trim();
@@ -468,6 +505,41 @@ const FreeDesks = () => {
     }, [filters]);
 
     useEffect(() => {
+        if (!openFilterPanel) {
+            return undefined;
+        }
+
+        const handleDocumentMouseDown = (event) => {
+            const panelElement = filterPanelRef.current;
+            if (panelElement?.contains(event.target)) {
+                return;
+            }
+
+            const clickedTrigger = Object.values(filterTriggerRefs.current)
+                .filter(Boolean)
+                .some((triggerElement) => triggerElement.contains(event.target));
+
+            if (!clickedTrigger) {
+                closeFilterPanel();
+            }
+        };
+
+        const handleEscape = (event) => {
+            if (event.key === 'Escape') {
+                closeFilterPanel();
+            }
+        };
+
+        document.addEventListener('mousedown', handleDocumentMouseDown);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleDocumentMouseDown);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [openFilterPanel]);
+
+    useEffect(() => {
         if (!shouldPersistSelectedBuilding.current) {
             return;
         }
@@ -571,61 +643,91 @@ const FreeDesks = () => {
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 2 }}>
                     {filterSelectConfigs.map((config) => {
                         const selectedValues = getSelectedValuesForCategory(config.key);
+                        const isOpen = openFilterPanel?.key === config.key;
                         return (
-                            <FormControl
+                            <Box
                                 key={config.key}
                                 id={`freeDesks_${config.key}`}
                                 sx={{ minWidth: 170, flex: '1 1 170px' }}
-                                size='small'
                             >
-                                <InputLabel>{config.label}</InputLabel>
-                                <Select
-                                    multiple
-                                    value={selectedValues}
-                                    label={config.label}
-                                    onChange={() => {}}
-                                    renderValue={() => renderSelectedValues(config.key)}
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                maxHeight: 320,
-                                            },
-                                        },
+                                <Typography
+                                    variant='caption'
+                                    sx={{ display: 'block', color: 'text.secondary', marginBottom: 0.5, paddingX: 1 }}
+                                >
+                                    {config.label}
+                                </Typography>
+                                <Box
+                                    role='button'
+                                    tabIndex={0}
+                                    ref={(node) => {
+                                        filterTriggerRefs.current[config.key] = node;
+                                    }}
+                                    onClick={(event) => toggleFilterPanel(config.key, event)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter' || event.key === ' ') {
+                                            event.preventDefault();
+                                            toggleFilterPanel(config.key, event);
+                                        } else if (event.key === 'Escape' && isOpen) {
+                                            closeFilterPanel();
+                                        }
+                                    }}
+                                    sx={{
+                                        minHeight: 40,
+                                        border: '1px solid',
+                                        borderColor: isOpen ? 'primary.main' : 'rgba(0, 0, 0, 0.23)',
+                                        borderRadius: 1,
+                                        paddingX: 1.5,
+                                        paddingY: 1,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        gap: 1,
+                                        backgroundColor: 'background.paper',
+                                        cursor: 'pointer',
                                     }}
                                 >
-                                    {filterOptions[config.key].map((option) => (
-                                        <MenuItem
-                                            key={option.encoded}
-                                            value={option.encoded}
-                                            onMouseDown={keepFilterMenuOpen}
-                                            onClick={() => toggleFilterValue(config.key, option.encoded)}
-                                        >
-                                            <Checkbox checked={selectedValues.includes(option.encoded)} />
-                                            <ListItemText primary={option.label} />
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                    <Typography
+                                        variant='body2'
+                                        sx={{
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            color: selectedValues.length ? 'text.primary' : 'text.secondary',
+                                        }}
+                                    >
+                                        {renderSelectedValues(config.key)}
+                                    </Typography>
+                                    <KeyboardArrowDownIcon
+                                        sx={{
+                                            color: 'action.active',
+                                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                            transition: 'transform 120ms ease',
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
                         );
                     })}
-                    <Button id='freeDesks_resetFilters' variant='outlined' onClick={resetFilters}>
-                        {t('resetFilters')}
-                    </Button>
-                    <Button
-                        id='freeDesks_savedPresets'
-                        variant='contained'
-                        color='success'
-                        endIcon={<KeyboardArrowDownIcon />}
-                        onClick={(event) => {
-                            const rect = event.currentTarget.getBoundingClientRect();
-                            setPresetsMenuPosition({
-                                top: Math.round(rect.bottom + window.scrollY),
-                                left: Math.round(rect.left + window.scrollX),
-                            });
-                        }}
-                    >
-                        {t('savedPresets')}
-                    </Button>
+                    <Box sx={{ alignSelf: 'flex-end', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                        <Button id='freeDesks_resetFilters' variant='outlined' onClick={resetFilters}>
+                            {t('resetFilters')}
+                        </Button>
+                        <Button
+                            id='freeDesks_savedPresets'
+                            variant='contained'
+                            color='success'
+                            endIcon={<KeyboardArrowDownIcon />}
+                            onClick={(event) => {
+                                const rect = event.currentTarget.getBoundingClientRect();
+                                setPresetsMenuPosition({
+                                    top: Math.round(rect.bottom + window.scrollY),
+                                    left: Math.round(rect.left + window.scrollX),
+                                });
+                            }}
+                        >
+                            {t('savedPresets')}
+                        </Button>
+                    </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 2, gap: 2, flexWrap: 'wrap' }}>
                     <Typography id='freeDesks_spacesFound' variant='subtitle2'>
@@ -673,6 +775,51 @@ const FreeDesks = () => {
                 onClose={() => setIsReportDefectOpen(false)}
                 deskId={reportDefectDeskId}
             />
+            {openFilterPanel && (
+                <Paper
+                    ref={filterPanelRef}
+                    elevation={6}
+                    sx={{
+                        position: 'fixed',
+                        top: openFilterPanel.top,
+                        left: openFilterPanel.left,
+                        width: openFilterPanel.width,
+                        maxHeight: 320,
+                        overflowY: 'auto',
+                        zIndex: 1400,
+                        borderRadius: 1,
+                        paddingY: 0.5,
+                    }}
+                >
+                    {filterOptions[openFilterPanel.key].map((option) => {
+                        const selectedValues = getSelectedValuesForCategory(openFilterPanel.key);
+                        const isSelected = selectedValues.includes(option.encoded);
+                        const ControlComponent = isExclusiveFilterCategory(openFilterPanel.key) ? Radio : Checkbox;
+
+                        return (
+                            <Box
+                                key={option.encoded}
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => handleFilterOptionClick(openFilterPanel.key, option.encoded)}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    paddingX: 1.5,
+                                    paddingY: 0.75,
+                                    cursor: 'pointer',
+                                    '&:hover': {
+                                        backgroundColor: 'action.hover',
+                                    },
+                                }}
+                            >
+                                <ControlComponent checked={isSelected} size='small' sx={{ pointerEvents: 'none' }} />
+                                <Typography variant='body2'>{option.label}</Typography>
+                            </Box>
+                        );
+                    })}
+                </Paper>
+            )}
             <Menu
                 anchorReference='anchorPosition'
                 anchorPosition={presetsMenuPosition}
