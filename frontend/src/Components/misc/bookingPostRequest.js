@@ -1,5 +1,5 @@
 import { formatDate_yyyymmdd_to_ddmmyyyy } from './formatDate';
-import { postRequest, putRequest, deleteRequest } from '../RequestFunctions/RequestFunctions';
+import { postRequest, putRequest, deleteRequest, downloadRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 
@@ -34,63 +34,6 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
     if (typeof onStart === 'function') {
         onStart();
     }
-
-    const escapeIcsText = (text) => {
-        if (!text) return '';
-        return String(text)
-            .replace(/\\/g, '\\\\')
-            .replace(/\n/g, '\\n')
-            .replace(/;/g, '\\;')
-            .replace(/,/g, '\\,');
-    };
-
-    const normalizeTime = (timeValue) => {
-        if (!timeValue) return '000000';
-        const parts = String(timeValue).split(':');
-        const hours = (parts[0] || '00').padStart(2, '0');
-        const minutes = (parts[1] || '00').padStart(2, '0');
-        const seconds = (parts[2] || '00').padStart(2, '0');
-        return `${hours}${minutes}${seconds}`;
-    };
-
-    const formatIcsDateTime = (day, timeValue) => {
-        const dayPart = String(day || '').replace(/-/g, '');
-        return `${dayPart}T${normalizeTime(timeValue)}`;
-    };
-
-    const exportIcs = () => {
-        const dtstamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
-        const dtstart = formatIcsDateTime(bookingData.day, bookingData.begin);
-        const dtend = formatIcsDateTime(bookingData.day, bookingData.end);
-        const summary = `${t('desk')} ${deskRemark}`.trim();
-
-        const lines = [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//Desk Sharing Tool//Booking//EN',
-            'CALSCALE:GREGORIAN',
-            'BEGIN:VEVENT',
-            `UID:booking-${bookingData.userId}-${dtstart}@desksharing`,
-            `DTSTAMP:${dtstamp}`,
-            `DTSTART:${dtstart}`,
-            `DTEND:${dtend}`,
-            `SUMMARY:${escapeIcsText(summary)}`,
-            `DESCRIPTION:${escapeIcsText(`${t('desk')}: ${deskRemark}`)}`,
-            'END:VEVENT',
-            'END:VCALENDAR',
-        ];
-
-        const icsContent = lines.join('\r\n');
-        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-        const filename = `booking_${bookingData.day}.ics`;
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-    };
 
     postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
@@ -159,7 +102,17 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
                             </button>
                             <button
                                 type='button'
-                                onClick={() => exportIcs()}
+                                onClick={() => {
+                                    downloadRequest(
+                                        `${process.env.REACT_APP_BACKEND_URL}/bookings/${data.id}/ics`,
+                                        headers.current,
+                                        `booking-${data.id}.ics`,
+                                        () => {
+                                            console.log(`Failed to export booking ICS in ${name}`);
+                                            toast.error(t('httpOther'));
+                                        }
+                                    );
+                                }}
                             >
                                 {t('exportIcs')}
                             </button>
