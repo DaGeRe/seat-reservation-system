@@ -16,6 +16,7 @@ const CARPARK_SELECTED_DATE_KEY = 'carparkSelectedDate';
 const CARPARK_DEFAULT_DURATION_MINUTES = 120;
 const CARPARK_MIN_LEAD_MINUTES = 30;
 const CARPARK_OVERLAP_BUFFER_MINUTES = 30;
+const CARPARK_MIN_SELECTION_MINUTES = 120;
 const CARPARK_NOTIFICATION_STATE_VERSION = 'v3';
 const CARPARK_DECISION_NOTIFICATION_FALLBACK_WINDOW_MINUTES = 20;
 const CARPARK_RES_STATUS_SNAPSHOT_KEY = `carparkReservationStatusSnapshot_${CARPARK_NOTIFICATION_STATE_VERSION}`;
@@ -86,6 +87,18 @@ const parseCreatedAtValue = (createdAt) => {
 const formatTimeHHMM = (d) =>
   `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
+const minutesToTimeString = (totalMinutes) =>
+  `${String(Math.floor(totalMinutes / 60)).padStart(2, '0')}:${String(totalMinutes % 60).padStart(2, '0')}`;
+
+const parseTimeToMinutes = (timeValue) => {
+  if (!timeValue) return NaN;
+  const [hh, mm] = String(timeValue).split(':');
+  const hours = Number.parseInt(hh, 10);
+  const minutes = Number.parseInt(mm, 10);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return NaN;
+  return hours * 60 + minutes;
+};
+
 const formatISODateValue = (d) => {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -141,6 +154,74 @@ const getDefaultTimeRange = () => {
     startTime: formatTimeHHMM(start),
     endTime: formatTimeHHMM(end),
   };
+};
+
+const getDefaultTimeRangeForDate = (selectedDate) => {
+  if (!(selectedDate instanceof Date) || Number.isNaN(selectedDate.valueOf())) {
+    return getDefaultTimeRange();
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const targetDay = new Date(selectedDate);
+  targetDay.setHours(0, 0, 0, 0);
+
+  if (targetDay.getTime() !== today.getTime()) {
+    return {
+      startTime: '08:00',
+      endTime: '10:00',
+    };
+  }
+
+  const leadTime = roundUpToHalfHour(new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000));
+  const earliestMinutes = parseTimeToMinutes(formatTimeHHMM(leadTime));
+  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
+  const latestStartMinutes = (CARPARK_TIMELINE_END_HOUR * 60) - CARPARK_DEFAULT_DURATION_MINUTES;
+  const startMinutes = Math.min(Math.max(earliestMinutes, minMinutes), latestStartMinutes);
+
+  return {
+    startTime: minutesToTimeString(startMinutes),
+    endTime: minutesToTimeString(startMinutes + CARPARK_DEFAULT_DURATION_MINUTES),
+  };
+};
+
+const getEarliestAllowedStartMinutesForDate = (selectedDate) => {
+  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
+  if (!(selectedDate instanceof Date) || Number.isNaN(selectedDate.valueOf())) {
+    return minMinutes;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const targetDay = new Date(selectedDate);
+  targetDay.setHours(0, 0, 0, 0);
+  if (targetDay.getTime() !== today.getTime()) {
+    return minMinutes;
+  }
+
+  const leadTime = roundUpToHalfHour(new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000));
+  return Math.max(minMinutes, parseTimeToMinutes(formatTimeHHMM(leadTime)));
+};
+
+const sanitizeTimeRangeForDate = (selectedDate, startTime, endTime) => {
+  const startMinutes = parseTimeToMinutes(startTime);
+  const endMinutes = parseTimeToMinutes(endTime);
+  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
+  const maxMinutes = CARPARK_TIMELINE_END_HOUR * 60;
+  const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
+
+  if (
+    !Number.isFinite(startMinutes) ||
+    !Number.isFinite(endMinutes) ||
+    startMinutes < Math.max(minMinutes, earliestAllowedStartMinutes) ||
+    endMinutes > maxMinutes ||
+    endMinutes <= startMinutes ||
+    (endMinutes - startMinutes) < CARPARK_MIN_SELECTION_MINUTES
+  ) {
+    return getDefaultTimeRangeForDate(selectedDate);
+  }
+
+  return { startTime, endTime };
 };
 
 const parseFloatAttr = (el, name, fallback = 0) => {
@@ -270,17 +351,7 @@ const CarparkView = ({
   const spotCatalogByLabelRef = useRef(new Map());
   const spotLabelTextByLabelRef = useRef(new Map());
   const spotRectsByLabelRef = useRef(new Map());
-  const initialTimeRangeRef = useRef(getDefaultTimeRange());
-  const reservationStatusSnapshotRef = useRef(new Map());
-
-  const [selectedSpot, setSelectedSpot] = useState(null);
-  const [hoveredSpot, setHoveredSpot] = useState(null);
-  const [loadError, setLoadError] = useState('');
-  const [zoom, setZoom] = useState(1);
-  const [pageNotifications, setPageNotifications] = useState([]);
-  const [adminEditMode, setAdminEditMode] = useState(false);
-  const [dayParkingEvents, setDayParkingEvents] = useState([]);
-  const [internalDate, setInternalDate] = useState(() => {
+  const initialSelectedDate = (() => {
     const fromState = location.state?.date ? new Date(location.state.date) : null;
     if (fromState && !Number.isNaN(fromState.valueOf())) {
       return fromState;
@@ -293,7 +364,18 @@ const CarparkView = ({
       }
     }
     return new Date();
-  });
+  })();
+  const initialTimeRangeRef = useRef(getDefaultTimeRangeForDate(initialSelectedDate));
+  const reservationStatusSnapshotRef = useRef(new Map());
+
+  const [selectedSpot, setSelectedSpot] = useState(null);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
+  const [loadError, setLoadError] = useState('');
+  const [zoom, setZoom] = useState(1);
+  const [pageNotifications, setPageNotifications] = useState([]);
+  const [adminEditMode, setAdminEditMode] = useState(false);
+  const [dayParkingEvents, setDayParkingEvents] = useState([]);
+  const [internalDate, setInternalDate] = useState(initialSelectedDate);
   const [startTime, setStartTime] = useState(initialTimeRangeRef.current.startTime);
   const [endTime, setEndTime] = useState(initialTimeRangeRef.current.endTime);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -705,13 +787,7 @@ const CarparkView = ({
     refreshSpotCatalog(() => refreshAvailability());
   }, [adminEditMode, isAdminUser]);
 
-  const timelineSelectable = Boolean(
-    selectedSpot &&
-    selectedSpot.active !== false &&
-    !selectedSpot.special &&
-    !selectedSpot.manuallyBlocked &&
-    !adminEditMode
-  );
+  const timelineSelectable = !adminEditMode;
 
   const timelineReservationEvents = useMemo(() => {
     if (!selectedSpot?.label || !selectedDate || Number.isNaN(selectedDate.valueOf())) return [];
@@ -725,11 +801,12 @@ const CarparkView = ({
         if (!start || !end) return null;
         const visualStatus = parkingTimelineStatusFromReservation(event?.parkingStatus);
         const reservedByMe = String(event?.userId ?? '') === String(currentUserId ?? '');
+        const baseLabel = reservedByMe ? t('you') : t(`carparkStatus_${visualStatus}`);
         return {
           id: `parking-res-${event.id}`,
           start,
           end,
-          title: reservedByMe ? t('you') : t(`carparkStatus_${visualStatus}`),
+          title: `${formatTimeHHMM(start)} - ${formatTimeHHMM(end)} ${baseLabel}`,
           resource: {
             selection: false,
             status: visualStatus,
@@ -741,7 +818,7 @@ const CarparkView = ({
   }, [currentUserId, dayParkingEvents, selectedDate, selectedSpot?.label, t]);
 
   const timelineSelectionEvent = useMemo(() => {
-    if (!selectedSpot?.label || !selectedDate || Number.isNaN(selectedDate.valueOf()) || !startTime || !endTime) return null;
+    if (!selectedDate || Number.isNaN(selectedDate.valueOf()) || !startTime || !endTime) return null;
     const start = buildDateTimeForDay(selectedDate, startTime);
     const end = buildDateTimeForDay(selectedDate, endTime);
     if (!start || !end || end <= start) return null;
@@ -749,14 +826,14 @@ const CarparkView = ({
       id: 'parking-selection',
       start,
       end,
-      title: t('carparkSelectedRange'),
+      title: `${formatTimeHHMM(start)} - ${formatTimeHHMM(end)} ${t('carparkSelectedRange')}`,
       resource: {
         selection: true,
         status: 'SELECTION',
         reservedByMe: true,
       },
     };
-  }, [endTime, selectedDate, selectedSpot?.label, startTime, t]);
+  }, [endTime, selectedDate, startTime, t]);
 
   const timelineEvents = useMemo(() => (
     timelineSelectionEvent ? [...timelineReservationEvents, timelineSelectionEvent] : timelineReservationEvents
@@ -898,44 +975,64 @@ const CarparkView = ({
   };
 
   const timeToMinutes = (tStr) => {
-    if (!tStr) return NaN;
-    const [hh, mm] = tStr.split(':');
-    const h = Number.parseInt(hh, 10);
-    const m = Number.parseInt(mm, 10);
-    if (!Number.isFinite(h) || !Number.isFinite(m)) return NaN;
-    return h * 60 + m;
+    return parseTimeToMinutes(tStr);
   };
 
   const resetSelectedTimeRange = useCallback(() => {
-    const nextRange = getDefaultTimeRange();
+    const nextRange = getDefaultTimeRangeForDate(selectedDate);
     setStartTime(nextRange.startTime);
     setEndTime(nextRange.endTime);
-  }, []);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (!selectedDate || Number.isNaN(selectedDate.valueOf())) return;
+    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
+    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
+      setStartTime(normalizedRange.startTime);
+      setEndTime(normalizedRange.endTime);
+    }
+  }, [endTime, selectedDate, startTime]);
 
   const handleTimelineSelect = useCallback((slotInfo) => {
-    if (!selectedSpot) {
-      toast.warning(t('carparkSelectSpotFirst'));
-      return;
-    }
     if (!timelineSelectable || !slotInfo?.start || !slotInfo?.end) {
       return;
     }
 
     const nextStart = formatTimeHHMM(new Date(slotInfo.start));
     const nextEnd = formatTimeHHMM(new Date(slotInfo.end));
-    if (timeToMinutes(nextEnd) <= timeToMinutes(nextStart)) {
+    const nextStartMinutes = timeToMinutes(nextStart);
+    const nextEndMinutes = timeToMinutes(nextEnd);
+    if (nextEndMinutes <= nextStartMinutes) {
+      return;
+    }
+    if ((nextEndMinutes - nextStartMinutes) < CARPARK_MIN_SELECTION_MINUTES) {
+      toast.warning(t('minimum'));
+      return;
+    }
+    const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
+    if (nextStartMinutes < earliestAllowedStartMinutes) {
+      toast.warning(
+        t('leadTimeExceeded', {
+          value: CARPARK_MIN_LEAD_MINUTES,
+          next: minutesToTimeString(earliestAllowedStartMinutes),
+        })
+      );
+      return;
+    }
+    const hasBufferedOverlap = timelineReservationEvents.some((calendarEvent) => {
+      const eventStartMinutes = (calendarEvent.start.getHours() * 60) + calendarEvent.start.getMinutes();
+      const eventEndMinutes = (calendarEvent.end.getHours() * 60) + calendarEvent.end.getMinutes();
+      return nextStartMinutes < (eventEndMinutes + CARPARK_OVERLAP_BUFFER_MINUTES)
+        && nextEndMinutes > (eventStartMinutes - CARPARK_OVERLAP_BUFFER_MINUTES);
+    });
+    if (hasBufferedOverlap) {
+      toast.warning(t('overlap'));
       return;
     }
 
     setStartTime(nextStart);
     setEndTime(nextEnd);
-  }, [selectedSpot, t, timelineSelectable]);
-
-  const handleTimelineEventSelect = useCallback((calendarEvent) => {
-    if (!calendarEvent?.start || !calendarEvent?.end || calendarEvent?.resource?.selection) return;
-    setStartTime(formatTimeHHMM(new Date(calendarEvent.start)));
-    setEndTime(formatTimeHHMM(new Date(calendarEvent.end)));
-  }, []);
+  }, [selectedDate, t, timelineReservationEvents, timelineSelectable]);
 
   const timelineEventPropGetter = useCallback((calendarEvent) => {
     if (calendarEvent?.resource?.selection) {
@@ -962,8 +1059,14 @@ const CarparkView = ({
   const refreshAvailability = () => {
     if (!spotRectsByLabelRef.current || spotRectsByLabelRef.current.size === 0) return;
     if (!selectedDate || !startTime || !endTime) return;
-    if (timeToMinutes(endTime) <= timeToMinutes(startTime)) {
-      toast.warning(t('timerangeIsNotValid'));
+    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
+    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
+      setStartTime(normalizedRange.startTime);
+      setEndTime(normalizedRange.endTime);
+      return;
+    }
+    if ((timeToMinutes(endTime) - timeToMinutes(startTime)) < CARPARK_MIN_SELECTION_MINUTES) {
+      toast.warning(t('minimum'));
       return;
     }
 
@@ -1062,6 +1165,16 @@ const CarparkView = ({
   const reserveSelected = () => {
     if (adminEditMode) return;
     if (!selectedSpot || selectedSpot.active === false || selectedSpot.status !== 'AVAILABLE') return;
+    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
+    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
+      setStartTime(normalizedRange.startTime);
+      setEndTime(normalizedRange.endTime);
+      return;
+    }
+    if ((timeToMinutes(endTime) - timeToMinutes(startTime)) < CARPARK_MIN_SELECTION_MINUTES) {
+      toast.warning(t('minimum'));
+      return;
+    }
     const day = formatISODate(selectedDate);
 
     postRequest(
@@ -1311,53 +1424,9 @@ const CarparkView = ({
         </Paper>
       )}
 
-      <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mb: 1, flexWrap: 'wrap' }}>
-          <Box>
-            <Typography variant="h6">{t('carparkTimelineTitle')}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {selectedSpot
-                ? t('carparkTimelineHint', { spot: selectedSpot.displayLabel || selectedSpot.label })
-                : t('carparkSelectSpotFirst')}
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ height: detailsVariant === 'modal' ? 420 : 500 }}>
-          <Calendar
-            localizer={localizer}
-            events={timelineEvents}
-            startAccessor="start"
-            endAccessor="end"
-            views={['day']}
-            view="day"
-            toolbar={false}
-            date={selectedDate}
-            step={30}
-            timeslots={1}
-            selectable={timelineSelectable}
-            onSelectSlot={handleTimelineSelect}
-            onSelectEvent={handleTimelineEventSelect}
-            min={new Date(0, 0, 0, CARPARK_TIMELINE_START_HOUR, 0, 0)}
-            max={new Date(0, 0, 0, CARPARK_TIMELINE_END_HOUR, 0, 0)}
-            formats={timelineFormats}
-            eventPropGetter={timelineEventPropGetter}
-            messages={{
-              next: t('next'),
-              previous: t('back'),
-              today: t('today'),
-              month: t('month'),
-              week: t('week'),
-              day: t('day'),
-              agenda: t('agenda'),
-              noEventsInRange: t('noEventsInRange'),
-            }}
-          />
-        </Box>
-      </Paper>
-
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        <Box sx={{ flex: '1 1 720px', minWidth: 320 }}>
-          <Paper variant="outlined" sx={{ p: 1 }}>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <Box sx={{ flex: '1 1 820px', minWidth: 320, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Paper variant="outlined" sx={{ p: 1, width: '100%' }}>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', px: 1, py: 0.5 }}>
               <Typography variant="body2" sx={{ flex: 1 }}>
                 {t('carparkHintClick')}
@@ -1387,18 +1456,65 @@ const CarparkView = ({
               </Typography>
             )}
           </Paper>
-        </Box>
 
-        {detailsVariant === 'panel' && (
-          <Box sx={{ flex: '0 1 320px', minWidth: 280 }}>
+          {detailsVariant === 'panel' && (
             <Paper variant="outlined" sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('carparkDetails')}
               </Typography>
               {detailsBody}
             </Paper>
-          </Box>
-        )}
+          )}
+        </Box>
+        <Box sx={{ flex: '0 1 340px', minWidth: 280, display: 'flex' }}>
+          <Paper variant="outlined" sx={{ p: 2, width: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mb: 1, flexWrap: 'wrap' }}>
+              <Box>
+                <Typography variant="h6">{t('carparkTimelineTitle')}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedSpot
+                    ? t('carparkTimelineHint', { spot: selectedSpot.displayLabel || selectedSpot.label })
+                    : t('carparkTimelineHintNoSpot')}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Chip size="small" label={t('carparkSelectedRange')} sx={{ bgcolor: semanticColors.carpark.selected, color: colorVars.text.inverse }} />
+                <Chip size="small" label={t('carparkLegendPending')} sx={{ bgcolor: semanticColors.carpark.status.PENDING, color: colorVars.text.primary }} />
+                <Chip size="small" label={t('carparkLegendOccupied')} sx={{ bgcolor: semanticColors.carpark.status.OCCUPIED, color: colorVars.text.inverse }} />
+              </Box>
+            </Box>
+            <Box sx={{ height: detailsVariant === 'modal' ? 420 : 560 }}>
+              <Calendar
+                localizer={localizer}
+                events={timelineEvents}
+                startAccessor="start"
+                endAccessor="end"
+                views={['day']}
+                view="day"
+                toolbar={false}
+                date={selectedDate}
+                step={30}
+                timeslots={1}
+                selectable={timelineSelectable}
+                onSelectSlot={handleTimelineSelect}
+                min={new Date(0, 0, 0, CARPARK_TIMELINE_START_HOUR, 0, 0)}
+                max={new Date(0, 0, 0, CARPARK_TIMELINE_END_HOUR, 0, 0)}
+                formats={timelineFormats}
+                eventPropGetter={timelineEventPropGetter}
+                messages={{
+                  next: t('next'),
+                  previous: t('back'),
+                  today: t('today'),
+                  month: t('month'),
+                  week: t('week'),
+                  day: t('day'),
+                  agenda: t('agenda'),
+                  noEventsInRange: t('noEventsInRange'),
+                }}
+              />
+            </Box>
+          </Paper>
+        </Box>
       </Box>
 
       {detailsVariant === 'modal' && (
