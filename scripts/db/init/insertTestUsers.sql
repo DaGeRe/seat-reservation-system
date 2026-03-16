@@ -14,7 +14,7 @@ SELECT
     'One',
     0x1,
     (SELECT floor_id FROM floors WHERE floors.name='Musteretage 1'),
-    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='day'),
+    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='week'),
     'Department 1',
     TRUE
 WHERE NOT EXISTS (
@@ -70,7 +70,7 @@ SELECT
     'One',
     0x1,
     (SELECT floor_id FROM floors WHERE floors.name='Musteretage 1'),
-    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='day'),
+    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='week'),
     'Department 1',
     TRUE
 WHERE NOT EXISTS (
@@ -96,7 +96,7 @@ SELECT
     'Two',
     0x1,
     (SELECT floor_id FROM floors WHERE floors.name='Musteretage 1'),
-    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='day'),
+    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='week'),
     'Department 2',
     TRUE
 WHERE NOT EXISTS (
@@ -122,7 +122,7 @@ SELECT
     'Three',
     0x1,
     (SELECT floor_id FROM floors WHERE floors.name='Musteretage 1'),
-    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='day'),
+    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='week'),
     'Department 3',
     TRUE
 WHERE NOT EXISTS (
@@ -226,7 +226,7 @@ SELECT
     'Seven',
     0x1,
     (SELECT floor_id FROM floors WHERE floors.name='Musteretage 1'),
-    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='day'),
+    (SELECT view_mode_id FROM view_modes WHERE view_modes.view_mode_name='week'),
     'Department 7',
     TRUE
 WHERE NOT EXISTS (

@@ -28,6 +28,35 @@ const normalizeCalendarView = (view) => {
 const isPastBookingDay = (bookingStart) =>
   moment(bookingStart).startOf('day').isBefore(moment().startOf('day'));
 
+const bookingEquipmentSummary = (desk, t) => {
+  if (!desk) return '';
+
+  const hasSpecialFeatures = desk?.specialFeatures != null && String(desk.specialFeatures).trim() !== '';
+  const monitorCount = desk?.monitorsQuantity ?? 1;
+  const labels = [
+    t(`workstationType${desk?.workstationType || 'Standard'}`),
+    `${monitorCount} ${t(monitorCount === 1 ? 'monitorSingular' : 'monitors')}`,
+  ];
+
+  if (desk?.deskHeightAdjustable === true) {
+    labels.push(t('adjustableHeight'));
+  }
+  if (desk?.technologyDockingStation === true) {
+    labels.push(t('technologyDockingStation'));
+  }
+  if (desk?.technologyWebcam === true) {
+    labels.push(t('technologyWebcam'));
+  }
+  if (desk?.technologyHeadset === true) {
+    labels.push(t('technologyHeadset'));
+  }
+  if (hasSpecialFeatures) {
+    labels.push(`${t('specialFeatures')}: ${String(desk.specialFeatures).trim()}`);
+  }
+
+  return labels.join(', ');
+};
+
 const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
@@ -248,58 +277,105 @@ const MyBookings = () => {
             setSelectedBookingEvent(null);
             setTheBookingEvent(null);
           }}
-          submit={isPastDayBooking ? null : deleteBooking}
-          submitTxt={t('delete')}
-          title={i18n.language === 'de' ? 'Diese Buchung entfernen' : 'Delete this booking'}
+          closeTxt={t('cancel')}
+          title={t('booking')}
         >
           <div>
             {selectedBookingEvent && 
-              <div style={{ margin: '20px' }}>
-                <p>{t('day')}: {moment(selectedBookingEvent.start).format('DD.MM.YYYY')}</p>
-                <p>{t('start')}: {moment(selectedBookingEvent.start).format('HH:mm')}</p>
-                <p>{t('end')}: {moment(selectedBookingEvent.end).format('HH:mm')}</p>
-                
-                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.room && <p>{t('room')}: {theBookingEvent.room.remark}</p> }
-                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.desk && <p>{t('desk')}: {theBookingEvent.desk.remark}</p> }
-                {!isPastDayBooking && (
+              <div>
+                <div className="mybookings-details">
+                  <span className="mybookings-details-label">{t('day')}</span>
+                  <span className="mybookings-details-value">{moment(selectedBookingEvent.start).format('DD.MM.YYYY')}</span>
+                  <span className="mybookings-details-label">{t('start')}</span>
+                  <span className="mybookings-details-value">{moment(selectedBookingEvent.start).format('HH:mm')}</span>
+                  <span className="mybookings-details-label">{t('end')}</span>
+                  <span className="mybookings-details-value">{moment(selectedBookingEvent.end).format('HH:mm')}</span>
+                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.room?.floor?.building?.name && (
+                  <>
+                    <span className="mybookings-details-label">{t('building')}</span>
+                    <span className="mybookings-details-value">{theBookingEvent.room.floor.building.name}</span>
+                  </>
+                )}
+                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.room && (
+                  <>
+                    <span className="mybookings-details-label">{t('room')}</span>
+                    <span className="mybookings-details-value">{theBookingEvent.room.remark}</span>
+                  </>
+                )}
+                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.desk && (
+                  <>
+                    <span className="mybookings-details-label">{t('desk')}</span>
+                    <span className="mybookings-details-value">{theBookingEvent.desk.remark}</span>
+                  </>
+                )}
+                {theBookingEvent && theBookingEvent.id === selectedBookingEvent.id && theBookingEvent.desk && (
+                  <>
+                    <span className="mybookings-details-label">{t('equipment')}</span>
+                    <span className="mybookings-details-value">{bookingEquipmentSummary(theBookingEvent.desk, t)}</span>
+                  </>
+                )}
+                </div>
+                <div className="mybookings-actions">
                   <Button
-                    id="mybookings_edit_booking_btn"
+                    id="mybookings_export_ics_btn"
                     sx={{
-                      marginTop: '10px',
                       padding: '8px 12px',
-                      backgroundColor: colorVars.state.actionPositive,
+                      backgroundColor: colorVars.brand.accent,
                       borderRadius: '8px',
                       color: colorVars.text.inverse,
                       fontSize: '14px',
                       textTransform: 'none',
-                      '&:hover': { backgroundColor: colorVars.border.success }
+                      '&:hover': { backgroundColor: colorVars.brand.primaryPressed }
                     }}
                     variant="contained"
-                    onClick={editBooking}
-                    disabled={!theBookingEvent || theBookingEvent.id !== selectedBookingEvent?.id}
+                    onClick={exportIcs}
+                    disabled={!selectedBookingEvent}
                   >
-                    {t('editBooking')}
+                    {t('exportIcs')}
                   </Button>
-                )}
-                <Button
-                  id="mybookings_export_ics_btn"
-                  sx={{
-                    marginTop: '10px',
-                    marginLeft: !isPastDayBooking ? '10px' : '0',
-                    padding: '8px 12px',
-                    backgroundColor: colorVars.state.actionPositive,
-                    borderRadius: '8px',
-                    color: colorVars.text.inverse,
-                    fontSize: '14px',
-                    textTransform: 'none',
-                    '&:hover': { backgroundColor: colorVars.border.success }
-                  }}
-                  variant="contained"
-                  onClick={exportIcs}
-                  disabled={!selectedBookingEvent}
-                >
-                  {t('exportIcs')}
-                </Button>
+                  {!isPastDayBooking && (
+                    <Button
+                      id="mybookings_edit_booking_btn"
+                      sx={{
+                        padding: '8px 12px',
+                        backgroundColor: colorVars.brand.accent,
+                        borderRadius: '8px',
+                        color: colorVars.text.inverse,
+                        fontSize: '14px',
+                        textTransform: 'none',
+                        '&:hover': { backgroundColor: colorVars.brand.primaryPressed }
+                      }}
+                      variant="contained"
+                      onClick={editBooking}
+                      disabled={!theBookingEvent || theBookingEvent.id !== selectedBookingEvent?.id}
+                    >
+                      {t('editBooking')}
+                    </Button>
+                  )}
+                  {!isPastDayBooking && (
+                    <Button
+                      id="mybookings_cancel_booking_btn"
+                      sx={{
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        borderColor: colorVars.text.error,
+                        color: colorVars.text.error,
+                        fontSize: '14px',
+                        textTransform: 'none',
+                        '&:hover': {
+                          borderColor: colorVars.text.errorDark,
+                          backgroundColor: colorVars.surface.translucent,
+                        }
+                      }}
+                      variant="outlined"
+                      color="error"
+                      onClick={deleteBooking}
+                      disabled={!selectedBookingEvent}
+                    >
+                      {t('cancelBooking')}
+                    </Button>
+                  )}
+                </div>
               </div>
             } 
           </div>
@@ -312,13 +388,13 @@ const MyBookings = () => {
                   marginBottom: '10px',
                   marginLeft: '35px',
                   padding: '8px 12px',
-                  backgroundColor: colorVars.state.actionPositive,
+                  backgroundColor: colorVars.brand.accent,
                   borderRadius: '8px',
                   color: colorVars.text.inverse,
                   fontSize: '14px',
                   textTransform: 'none',
                   alignSelf: 'flex-start',
-                  '&:hover': { backgroundColor: colorVars.border.success }
+                  '&:hover': { backgroundColor: colorVars.brand.primaryPressed }
                 }}
                 onClick={() => navigate('/freedesks', { state: { date: currentDate } })}
               >

@@ -86,11 +86,11 @@ const Favourites = () => {
                   variant="contained"
                   onClick={() => goToBooking(room)}
                   sx={{
-                    backgroundColor: colorVars.brand.primary,
+                    backgroundColor: colorVars.brand.accent,
                     borderRadius: '8px',
                     color: colorVars.text.inverse,
                     px: 2.5,
-                    '&:hover': { backgroundColor: colorVars.brand.primaryCardHover },
+                    '&:hover': { backgroundColor: colorVars.brand.primaryPressed },
                   }}
                 >
                   {t('book')}

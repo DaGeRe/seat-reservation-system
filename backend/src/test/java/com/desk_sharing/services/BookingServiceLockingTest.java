@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +35,7 @@ import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
 import com.desk_sharing.repositories.ScheduledBlockingRepository;
+import com.desk_sharing.services.calendar.BookingNotificationEvent;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +65,8 @@ class BookingServiceLockingTest {
             11L,
             day,
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         final UserEntity currentUser = new UserEntity();
@@ -106,7 +109,8 @@ class BookingServiceLockingTest {
             11L,
             day,
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         final UserEntity currentUser = new UserEntity();
@@ -147,5 +151,63 @@ class BookingServiceLockingTest {
         final ArgumentCaptor<Booking> captor = ArgumentCaptor.forClass(Booking.class);
         verify(bookingRepository).save(captor.capture());
         assertThat(captor.getValue().isBookingInProgress()).isFalse();
+    }
+
+    @Test
+    void createBooking_keepsOwnDayLockForDraftBooking() {
+        final Date day = Date.valueOf(LocalDate.now().plusDays(1));
+        final BookingDTO dto = new BookingDTO(
+            null,
+            7,
+            10L,
+            11L,
+            day,
+            Time.valueOf("09:00:00"),
+            Time.valueOf("11:00:00"),
+            true
+        );
+
+        final UserEntity currentUser = new UserEntity();
+        currentUser.setId(7);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        final Room room = new Room();
+        room.setId(10L);
+        when(roomService.getRoomById(10L)).thenReturn(Optional.of(room));
+
+        final Desk desk = new Desk();
+        desk.setId(11L);
+        when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
+
+        when(bookingSettingsService.getCurrentSettings()).thenReturn(new BookingSettings(1L, 0, null, null));
+        when(scheduledBlockingRepository.findOverlapping(any(Long.class), anyList(), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Collections.emptyList());
+        when(bookingRepository.getAllBookingsForPreventDuplicates(10L, 11L, day, Time.valueOf("09:00:00"), Time.valueOf("11:00:00")))
+            .thenReturn(Collections.emptyList());
+
+        final BookingLock activeLock = new BookingLock();
+        activeLock.setUser(currentUser);
+        activeLock.setDesk(desk);
+        activeLock.setDay(day);
+        activeLock.setExpiresAt(LocalDateTime.now().plusMinutes(2));
+        when(bookingLockService.findActiveLock(11L, day)).thenReturn(Optional.of(activeLock));
+
+        final Booking savedBooking = new Booking(currentUser, room, desk, day, Time.valueOf("09:00:00"), Time.valueOf("11:00:00"));
+        savedBooking.setId(100L);
+        savedBooking.setBookingInProgress(true);
+        savedBooking.setLockExpiryTime(LocalDateTime.now().plusMinutes(Booking.LOCKEXPIRYTIMEOFFSET));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(savedBooking);
+
+        final Booking result = bookingService.createBooking(dto);
+
+        assertThat(result).isNotNull();
+        assertThat(result.isBookingInProgress()).isTrue();
+
+        final ArgumentCaptor<Booking> captor = ArgumentCaptor.forClass(Booking.class);
+        verify(bookingRepository).save(captor.capture());
+        assertThat(captor.getValue().isBookingInProgress()).isTrue();
+        assertThat(captor.getValue().getLockExpiryTime()).isNotNull();
+        verify(bookingLockService, never()).releaseLockForUser(11L, day, 7);
+        verify(eventPublisher, never()).publishEvent(any(BookingNotificationEvent.class));
     }
 }

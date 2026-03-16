@@ -50,7 +50,8 @@ class BookingServiceFixedDeskTest {
             11L,
             Date.valueOf(LocalDate.now().plusDays(1)),
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         UserEntity user = new UserEntity();

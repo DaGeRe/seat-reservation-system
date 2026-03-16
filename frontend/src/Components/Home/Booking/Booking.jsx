@@ -460,6 +460,7 @@ const Booking = () => {
             navigate('/home', { state: { booking }, replace: true });
           },
           {
+            deskDetails: desk,
             onCancel: releaseAlternativeLock,
             onError: releaseAlternativeLock,
             onFinish: () => {
@@ -658,6 +659,7 @@ const Booking = () => {
       begin: startMoment.format('HH:mm:ss'),
       end: endMoment.format('HH:mm:ss'),
     };
+    const selectedDesk = desks.find((desk) => desk.id === clickedDeskId) || null;
 
     if (!isEditMode) {
       setBookingPending(true);
@@ -676,7 +678,16 @@ const Booking = () => {
               navigate('/home', { state: { booking }, replace: true });
             },
             {
+              deskDetails: selectedDesk,
               onCancel: () => {
+                const lock = activeDeskLockRef.current;
+                clearLocalDeskLock();
+                clearDeskSelection();
+                if (lock?.deskId && lock?.day) {
+                  releaseDeskLockByPayload(lock);
+                }
+              },
+              onError: () => {
                 const lock = activeDeskLockRef.current;
                 clearLocalDeskLock();
                 clearDeskSelection();
@@ -729,8 +740,11 @@ const Booking = () => {
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
         headers.current,
         (data) => onSuccess(data),
-        () => onFail(),
-        JSON.stringify(dto)
+        (status, data) => onFail(status, data),
+        JSON.stringify({
+          ...dto,
+          bookingInProgress: true,
+        })
       );
     };
 
@@ -766,6 +780,7 @@ const Booking = () => {
       showDeskBookingConfirmation({
         t,
         deskRemark: clickedDeskRemark,
+        deskDetails: selectedDesk,
         bookingData: {
           day: newDay,
           begin: newBegin,
@@ -828,12 +843,49 @@ const Booking = () => {
               );
             },
             () => {
-              deleteBookingById(draft.id, () => {}, () => {});
-              setBookingPending(false);
+              showEditConfirmation(
+                false,
+                () => {
+                  confirmDraftBooking(
+                    draft.id,
+                    () => {
+                      deleteBookingById(
+                        editBooking.bookingId,
+                        () => {
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        },
+                        () => {
+                          toast.error(t('httpOther'));
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        }
+                      );
+                    },
+                    () => {
+                      toast.error(t('httpOther'));
+                      deleteBookingById(draft.id, () => {}, () => {});
+                      setBookingPending(false);
+                    }
+                  );
+                },
+                () => {
+                  deleteBookingById(
+                    draft.id,
+                    () => {
+                      setBookingPending(false);
+                    },
+                    () => {
+                      setBookingPending(false);
+                    }
+                  );
+                }
+              );
             }
           );
         },
-        () => {
+        (status, data) => {
+          console.log('Failed to create edit draft booking.', status, data);
           toast.error(t('httpOther'));
           setBookingPending(false);
         }
@@ -886,9 +938,37 @@ const Booking = () => {
                   );
                 },
                 () => {
-                  deleteBookingById(draft.id, () => {}, () => {});
-                  tryRestoreOld();
-                  setBookingPending(false);
+                  showEditConfirmation(
+                    false,
+                    () => {
+                      confirmDraftBooking(
+                        draft.id,
+                        () => {
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        },
+                        () => {
+                          tryRestoreOld();
+                          toast.error(t('httpOther'));
+                          deleteBookingById(draft.id, () => {}, () => {});
+                          setBookingPending(false);
+                        }
+                      );
+                    },
+                    () => {
+                      deleteBookingById(
+                        draft.id,
+                        () => {
+                          tryRestoreOld();
+                          setBookingPending(false);
+                        },
+                        () => {
+                          tryRestoreOld();
+                          setBookingPending(false);
+                        }
+                      );
+                    }
+                  );
                 }
               );
             },
@@ -1255,7 +1335,7 @@ const Booking = () => {
               sx={{
                 margin: '10px',
                 padding: '15px',
-                backgroundColor: colorVars.brand.primary,
+                backgroundColor: colorVars.brand.accent,
                 borderRadius: '8px',
                 color: colorVars.text.inverse,
                 fontSize: '16px',

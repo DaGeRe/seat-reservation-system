@@ -66,6 +66,7 @@
     "logoutConfirmation": "Sind Sie sicher, dass sie sich abmelden wollen?",
     "toLogout": "Abmelden",
     "cancel": "Abbrechen",
+    "confirm": "Bestaetigen",
 
     "previousPassword": "Vorheriges Passwort",
     "newPassword": "Neues Passwort",
@@ -112,8 +113,10 @@
     "bookDesk": "Büchertisch",
 
     "myBookings": "Meine Buchungen",
+    "booking": "Buchung",
     "edit": "Bearbeiten",
     "delete": "Entfernen",
+    "cancelBooking": "Buchung stornieren",
     "day": "Tag",
     "start": "Beginn",
     "end": "Ende",
@@ -188,6 +191,7 @@
     "bookingOverlapOtherDeskWarning": "Sie haben bereits eine andere Buchung in diesem Zeitraum an einem anderen Arbeitsplatz.",
     "bookingOverlapCheckFailed": "Die Prüfung auf andere überlappende Buchungen konnte nicht durchgeführt werden.",
     "continue": "Fortfahren",
+    "bookingConfirmationTitle": "Booking Confirmation for Arbeitsplatz {{desk}}",
     "currentlyBeingBooked": "Wird derzeit gebucht",
     "bookingLockExpired": "Die Arbeitsplatzsperre ist nach 3 Minuten abgelaufen. Bitte wählen Sie den Arbeitsplatz erneut.",
     "otherFreeDesksForSelectedTimeSlots": "Andere freie Arbeitsplaetze fuer den ausgewaehlten Zeitraum",

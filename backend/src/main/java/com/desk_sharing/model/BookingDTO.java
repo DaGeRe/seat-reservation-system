@@ -18,6 +18,7 @@ public class BookingDTO {
     private Date day;
     private Time begin;
     private Time end;
+    private Boolean bookingInProgress;
 
     public BookingDTO(final Booking booking) {
         this(
@@ -27,7 +28,8 @@ public class BookingDTO {
             booking.getDesk().getId(),
             booking.getDay(),
             booking.getBegin(),
-            booking.getEnd()
+            booking.getEnd(),
+            booking.isBookingInProgress()
         );
     };
     

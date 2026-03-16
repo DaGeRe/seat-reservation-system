@@ -616,6 +616,7 @@ const FreeDesks = () => {
                     t,
                     (_)=>{setRepaint(!repaint);},
                     {
+                        deskDetails: selectedDesk,
                         onCancel: releaseLock,
                         onError: releaseLock,
                     }

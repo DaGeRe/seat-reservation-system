@@ -24,7 +24,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 4px 6px;
-  background: var(--color-brand-primary);
+  background: var(--color-brand-accent);
   border-radius: 6px;
   width: 100%;
   min-height: 100%;
@@ -33,7 +33,7 @@
 
 .home-add-booking-btn {
   background: var(--color-surface-paper);
-  color: var(--color-brand-primary);
+  color: var(--color-text-primary);
   border: 1px solid var(--color-brand-primary);
   border-radius: 4px;
   padding: 2px 6px;
@@ -50,7 +50,7 @@
   font-size: 0.75rem;
   line-height: 1.2;
   color: var(--color-text-inverse);
-  background: var(--color-brand-primary);
+  background: var(--color-brand-accent);
   border-radius: 4px;
   padding: 2px 6px;
   display: block;
@@ -60,8 +60,8 @@
 
 .rbc-month-view .rbc-event,
 .rbc-month-view .rbc-background-event {
-  background-color: var(--color-brand-primary);
-  border-color: var(--color-brand-primary);
+  background-color: var(--color-brand-accent);
+  border-color: var(--color-brand-accent);
   padding: 0;
 }
 
@@ -138,7 +138,7 @@
 }
 
 .home-mode-toggle {
-  background-color: var(--color-brand-primary) !important;
+  background-color: var(--color-brand-accent) !important;
   color: var(--color-text-inverse) !important;
   width: 40px;
   height: 40px;
@@ -153,7 +153,7 @@
 }
 
 .home-mode-toggle:hover {
-  background-color: var(--color-brand-primary-hover-alt) !important;
+  background-color: var(--color-brand-primary-pressed) !important;
 }
 
 .home-mode-toggle:focus,
@@ -163,7 +163,7 @@
 }
 
 .home-view-toggle {
-  background-color: var(--color-brand-primary) !important;
+  background-color: var(--color-brand-accent) !important;
   color: var(--color-text-inverse) !important;
   width: 56px;
   height: 44px;
@@ -178,7 +178,7 @@
 }
 
 .home-view-toggle:hover {
-  background-color: var(--color-brand-primary-hover-alt) !important;
+  background-color: var(--color-brand-primary-pressed) !important;
 }
 
 .home-view-toggle:focus,

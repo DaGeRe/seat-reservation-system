@@ -66,6 +66,7 @@
     "logoutConfirmation": "Are you sure you want to logout?",
     "toLogout": "Logout",
     "cancel": "Cancel",
+    "confirm": "Confirm",
 
     "previousPassword": "Previous Password",
     "newPassword": "New Password",
@@ -111,8 +112,10 @@
     "bookDesk": "Book Desk",
 
     "myBookings": "My Bookings",
+    "booking": "Booking",
     "edit": "Edit",
     "delete": "Delete",
+    "cancelBooking": "Cancel Booking",
     "day": "Day",
     "start": "Start",
     "end": "End",
@@ -187,6 +190,7 @@
     "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
     "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
     "continue": "Continue",
+    "bookingConfirmationTitle": "Booking Confirmation for Arbeitsplatz {{desk}}",
     "currentlyBeingBooked": "Currently being booked",
     "bookingLockExpired": "Desk lock expired after 3 minutes. Please select a desk again.",
     "otherFreeDesksForSelectedTimeSlots": "Other free desks for selected time slots",

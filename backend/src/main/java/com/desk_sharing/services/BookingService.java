@@ -366,6 +366,7 @@ public class BookingService {
         if (bookingData == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing booking payload");
         }
+        final boolean createDraftBooking = Boolean.TRUE.equals(bookingData.getBookingInProgress());
 
         final UserEntity user = userService.getCurrentUser();
         final Long roomId = bookingData.getRoomId();
@@ -416,8 +417,12 @@ public class BookingService {
         }
 
         final Booking newBooking = new Booking(user, room, desk, bookingData.getDay(), bookingData.getBegin(), bookingData.getEnd());
-        newBooking.setBookingInProgress(false);
-        newBooking.setLockExpiryTime(null);
+        newBooking.setBookingInProgress(createDraftBooking);
+        newBooking.setLockExpiryTime(
+            createDraftBooking
+                ? LocalDateTime.now().plusMinutes(Booking.LOCKEXPIRYTIMEOFFSET)
+                : null
+        );
         if (newBooking.getCalendarUid() == null) {
             newBooking.setCalendarUid(java.util.UUID.randomUUID().toString());
             newBooking.setCalendarSequence(0);
@@ -425,8 +430,10 @@ public class BookingService {
 
         final Booking saved = addBooking(newBooking);
         if (saved != null) {
-            eventPublisher.publishEvent(new BookingNotificationEvent(saved.getId(), NotificationAction.CREATE));
-            bookingLockService.releaseLockForUser(saved.getDesk().getId(), saved.getDay(), user.getId());
+            if (!createDraftBooking) {
+                eventPublisher.publishEvent(new BookingNotificationEvent(saved.getId(), NotificationAction.CREATE));
+                bookingLockService.releaseLockForUser(saved.getDesk().getId(), saved.getDay(), user.getId());
+            }
         }
         return saved;
     }
