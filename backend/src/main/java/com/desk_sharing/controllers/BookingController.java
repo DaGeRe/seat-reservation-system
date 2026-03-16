@@ -2,8 +2,11 @@ package com.desk_sharing.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.Dictionary;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.BookingDTO;
@@ -31,8 +37,14 @@ import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.BookingsForDeskDTO;
 import com.desk_sharing.model.BookingDayEventDTO;
 import com.desk_sharing.model.ColleagueBookingsDTO;
+import com.desk_sharing.model.BookingOverlapCheckRequestDTO;
+import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
+import com.desk_sharing.model.ScheduledBlockingDeskDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
+import com.desk_sharing.services.UserService;
+import com.desk_sharing.services.calendar.BookingCalendarFormatter;
+import com.desk_sharing.services.calendar.CalendarNotificationService;
 
 import lombok.AllArgsConstructor;
 
@@ -43,6 +55,8 @@ public class BookingController {
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
     private final BookingService bookingService;
     private final BookingRepository bookingRepository;
+    private final UserService userService;
+    private final CalendarNotificationService calendarNotificationService;
 
     @PostMapping("getBookingsFromColleaguesOnDate/{date}")
     public ResponseEntity<List<ColleagueBookingsDTO>> getBookingsFromColleaguesOnDate(@RequestBody List<String> emailStrings, @PathVariable("date") Date date) {
@@ -88,12 +102,50 @@ public class BookingController {
         }
     }
 
+    @PostMapping("/overlap-check")
+    public ResponseEntity<?> checkBookingOverlap(@RequestBody BookingOverlapCheckRequestDTO request) {
+        logger.info("checkBookingOverlap( {} )", request);
+        try {
+            if (request == null || request.getBookingId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            BookingOverlapCheckResponseDTO response = bookingService.checkConfirmedOverlapWithOtherDesk(
+                request.getBookingId(),
+                request.getIgnoreBookingId()
+            );
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            Map<String, String> body = new HashMap<>();
+            body.put("error", e.getReason() == null ? "Overlap check failed" : e.getReason());
+            return new ResponseEntity<>(body, e.getStatusCode());
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@NonNull @PathVariable("id") Long id) {
         logger.info("getBookingById( {} )", id);
         Optional<Booking> booking = bookingService.getBookingById(id);
         return booking.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping(value = "/{id}/ics", produces = "text/calendar;charset=UTF-8")
+    public ResponseEntity<byte[]> exportBookingIcs(@NonNull @PathVariable("id") Long id) {
+        logger.info("exportBookingIcs( {} )", id);
+
+        final var currentUser = userService.getCurrentUser();
+        final Booking booking = bookingService.getBookingById(id)
+            .filter(value -> value.getUser() != null && value.getUser().getId() == currentUser.getId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final boolean german = BookingCalendarFormatter.isGermanLanguage(currentUser.getPreferredLanguage());
+        final byte[] body = calendarNotificationService.buildRequestIcsForExport(booking, german)
+            .getBytes(StandardCharsets.UTF_8);
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("text/calendar;charset=UTF-8"))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"booking-" + id + ".ics\"")
+            .body(body);
     }
 
     @PutMapping("/edit")
@@ -144,6 +196,25 @@ public class BookingController {
         return new ResponseEntity<>(bookingsForDeskDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/scheduled-blockings-for-desk/{id}")
+    public ResponseEntity<List<ScheduledBlockingDeskDTO>> getScheduledBlockingsForDesk(
+            @PathVariable("id") Long deskId,
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        logger.info("getScheduledBlockingsForDesk( {} )", deskId);
+        final LocalDateTime fromDateTime = parseOptionalDateTime(from, "from");
+        final LocalDateTime toDateTime = parseOptionalDateTime(to, "to");
+
+        if ((fromDateTime == null) != (toDateTime == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "from and to must be provided together");
+        }
+        if (fromDateTime != null && !toDateTime.isAfter(fromDateTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "to must be after from");
+        }
+
+        return new ResponseEntity<>(bookingService.findScheduledBlockingsForDesk(deskId, fromDateTime, toDateTime), HttpStatus.OK);
+    }
+
     @GetMapping("/date/{id}")
     public ResponseEntity<List<Booking>> getDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
         logger.info("getDateBookings( {}, {} )", desk_id, request);
@@ -180,6 +251,25 @@ public class BookingController {
             return new ResponseEntity<>(bookings, HttpStatus.OK);
         } catch (IllegalArgumentException | DateTimeParseException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private LocalDateTime parseOptionalDateTime(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        try {
+            return LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
+        } catch (DateTimeParseException firstError) {
+            try {
+                return OffsetDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME).toLocalDateTime();
+            } catch (DateTimeParseException ignored) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid " + fieldName + " format. Expected ISO date-time format."
+                );
+            }
         }
     }
 }

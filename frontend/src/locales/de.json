@@ -1,5 +1,6 @@
 {
     "tokenInvalid": "Token abgelaufen. Bitte melden Sie sich erneut an.",
+    "warning": "Warnung",
     "http401": "Sie sind nicht autorisiert oder die Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
     ,"http403": "Sie haben keine Berechtigung für diese Aktion."
     ,"http405": "Die angeforderte Ressource wurde nicht gefunden."
@@ -145,6 +146,29 @@
     "technologyHeadset": "Headset",
     "specialFeatures": "Besondere Merkmale",
     "advancedFilters": "Erweiterte Filter",
+    "savedPresets": "Gespeicherte Presets",
+    "saveCurrent": "Aktuelle speichern",
+    "savePreset": "Preset speichern",
+    "saveCurrentPresetTitle": "Aktuelles Preset speichern",
+    "presetName": "Preset-Name",
+    "noSavedPresets": "Noch keine gespeicherten Presets",
+    "replace": "Ersetzen",
+    "workstationPresetNameRequired": "Ein Preset-Name ist erforderlich.",
+    "workstationPresetNameTooLong": "Der Preset-Name darf hoechstens {{max}} Zeichen lang sein.",
+    "workstationPresetNameCounter": "{{count}} / {{max}} Zeichen",
+    "workstationPresetLimitReached": "Sie koennen bis zu {{max}} Presets speichern.",
+    "workstationPresetSaved": "Preset gespeichert.",
+    "workstationPresetReplaced": "Preset ersetzt.",
+    "workstationPresetRenamedFromDuplicate": "Preset mit dem neuen Namen aktualisiert.",
+    "workstationPresetDeleted": "Preset geloescht.",
+    "workstationPresetLoadFailed": "Gespeicherte Presets konnten nicht geladen werden.",
+    "workstationPresetSaveFailed": "Preset konnte nicht gespeichert werden.",
+    "workstationPresetDeleteFailed": "Preset konnte nicht geloescht werden.",
+    "workstationPresetReplaceTitle": "Preset ersetzen?",
+    "workstationPresetReplaceMessage": "Ein Preset mit dem Namen \"{{name}}\" existiert bereits. Ersetzen?",
+    "workstationPresetReplaceDuplicateContentMessage": "Ein Preset mit denselben Filtern existiert bereits als \"{{name}}\". Ersetzen und in \"{{newName}}\" umbenennen?",
+    "workstationPresetDeleteTitle": "Preset loeschen?",
+    "workstationPresetDeleteMessage": "Preset \"{{name}}\" loeschen?",
     "noFiltersApplied": "Keine Filter aktiv",
     "spacesFound": "{{count}} Plaetze gefunden",
     "resetFilters": "Filter zuruecksetzen",
@@ -161,11 +185,15 @@
     "minimum": "Aufenthaltsdauer mindestens 2 Stunden",
     "maximum": "Aufenthaltsdauer maximal 9 Stunden",
     "overlap": "Die Auswahl überschneidet sich mit einer anderen Buchung für diesen Arbeitsplatz",
+    "bookingOverlapOtherDeskWarning": "Sie haben bereits eine andere Buchung in diesem Zeitraum an einem anderen Arbeitsplatz.",
+    "bookingOverlapCheckFailed": "Die Prüfung auf andere überlappende Buchungen konnte nicht durchgeführt werden.",
+    "continue": "Fortfahren",
     "currentlyBeingBooked": "Wird derzeit gebucht",
     "bookingLockExpired": "Die Arbeitsplatzsperre ist nach 3 Minuten abgelaufen. Bitte wählen Sie den Arbeitsplatz erneut.",
     "otherFreeDesksForSelectedTimeSlots": "Andere freie Arbeitsplaetze fuer den ausgewaehlten Zeitraum",
     "noFreeDesksForSelectedTimeSlotInBuilding": "Fuer dieses Zeitfenster gibt es in diesem Gebaeude keine freien Arbeitsplaetze.",
     "booked": "Buchung erfolgreich",
+    "scheduledBlockingLabel": "Geplante Sperrung",
     "selectDeskMessage": "Bitte wählen Sie zuerst einen Arbeitsplatz",
     "blank": "Bitte wählen Sie zuerst einen Arbeitsplatz und Zeitraum vor der Buchung",
     "bookingTimeAlignmentError": "Bitte wählen Sie Start- und Endzeit im 30-Minuten-Raster (z. B. 08:00 oder 08:30).",
@@ -398,10 +426,15 @@
     ,"carparkReservedByUser":"Reserviert von"
     ,"carparkBlockSpot":"Platz sperren"
     ,"carparkUnblockSpot":"Platz entsperren"
-    ,"carparkEditModeHint":"Admin-Bearbeitungsmodus: Platz auswählen, um ihn zu sperren oder zu entsperren."
+    ,"carparkEditModeHint":"Admin-Bearbeitungsmodus: Platz auswählen, um ihn zu sperren, zu entsperren, zu LIT hinzuzufügen oder aus LIT zu entfernen."
     ,"carparkEditModeSpecialCase":"Dieser Sonderplatz kann nicht manuell geändert werden."
     ,"carparkSpotBlockedSuccess":"Parkplatz gesperrt."
     ,"carparkSpotUnblockedSuccess":"Parkplatz entsperrt."
+    ,"carparkAddToLitSystem":"Zu LIT hinzufügen"
+    ,"carparkRemoveFromLitSystem":"Aus LIT entfernen"
+    ,"carparkSpotActivatedSuccess":"Parkplatz dem LIT-System hinzugefügt."
+    ,"carparkSpotDeactivatedSuccess":"Parkplatz aus dem LIT-System entfernt."
+    ,"carparkNotInLitSystem":"Dieser Platz ist nicht im LIT-System."
     ,"carparkNotificationApproved":"Ihre Parkplatzanfrage für Platz {{spot}} am {{day}} ({{begin}} - {{end}}) wurde freigegeben."
     ,"carparkNotificationRejected":"Ihre Parkplatzanfrage für Platz {{spot}} am {{day}} ({{begin}} - {{end}}) wurde abgelehnt."
     ,"carparkNotificationReminder":"Erinnerung: Ihre Parkplatzreservierung für Platz {{spot}} beginnt in 30 Minuten ({{day}}, {{begin}} - {{end}})."
@@ -556,4 +589,25 @@
     ,"defectAllCategories":"Alle Kategorien"
     ,"defectAllUrgencies":"Alle Dringlichkeiten"
     ,"defectAllRooms":"Alle Räume"
+
+    ,"maintenanceCalendar":"Wartungskalender"
+    ,"scheduleBlocking":"Sperrung planen"
+    ,"blockingSum":"Sperrungssumme"
+    ,"scheduledBlockingCreated":"Sperrung erfolgreich geplant"
+    ,"scheduledBlockingCancelled":"Geplante Sperrung storniert"
+    ,"scheduledBlockingFailed":"Sperrung konnte nicht geplant werden"
+    ,"defectBlockedUntilTime":"Gesperrt bis {{datetime}}"
+    ,"maintenanceCalendarBtn":"Wartungskalender"
+    ,"backToMonthView":"Zurück zur Monatsansicht"
+    ,"scheduledBlockingOverlap":"Für diesen Zeitraum ist bereits eine Sperrung geplant"
+    ,"scheduledBlockingBookingConflict":"Dieser Arbeitsplatz hat im ausgewählten Zeitraum eine geplante Sperrung."
+    ,"scheduledBlockingSelectPeriod":"Klicken und ziehen Sie, um einen Sperrzeitraum auszuwählen"
+    ,"scheduledBlockingMinDuration":"Der Sperrzeitraum muss mindestens 1 Stunde betragen"
+    ,"scheduledBlockingPastDate":"Es kann keine Sperrung in der Vergangenheit geplant werden"
+    ,"cancelScheduledBlocking":"Geplante Sperrung stornieren"
+    ,"scheduledBlockingDetailsTitle":"Details zur geplanten Sperrung"
+    ,"scheduledBlockingCancelConfirmTitle":"Geplante Sperrung stornieren?"
+    ,"scheduledBlockingCancelConfirmText":"Möchten Sie diese geplante Sperrung wirklich stornieren?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Nur geplante Sperrungen können storniert werden."
+    ,"scheduledBlockingCancelFailed":"Geplante Sperrung konnte nicht storniert werden"
 }

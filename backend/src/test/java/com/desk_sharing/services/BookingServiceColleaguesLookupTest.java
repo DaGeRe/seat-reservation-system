@@ -6,6 +6,7 @@ import com.desk_sharing.model.ColleagueBookingsDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ class BookingServiceColleaguesLookupTest {
     @Mock private BookingRepository bookingRepository;
     @Mock private RoomRepository roomRepository;
     @Mock private DeskRepository deskRepository;
+    @Mock private ScheduledBlockingRepository scheduledBlockingRepository;
     @Mock private UserService userService;
     @Mock private RoomService roomService;
     @Mock private DeskService deskService;
@@ -53,6 +55,7 @@ class BookingServiceColleaguesLookupTest {
             eventPublisher,
             calendarNotificationService,
             bookingSettingsService,
+            scheduledBlockingRepository,
             bookingLockService
         );
     }

@@ -1,5 +1,6 @@
 {
     "tokenInvalid": "Token invalid. Please login again.",
+    "warning": "Warning",
     "http401": "You are not authorized or your session has expired. Please log in again.",
     "http403": "You do not have permission to perform this action.",
     "http405": "The requested resource was not found.",
@@ -144,6 +145,29 @@
     "technologyHeadset": "Headset",
     "specialFeatures": "Special features",
     "advancedFilters": "Advanced filters",
+    "savedPresets": "Saved presets",
+    "saveCurrent": "Save current",
+    "savePreset": "Save preset",
+    "saveCurrentPresetTitle": "Save current preset",
+    "presetName": "Preset name",
+    "noSavedPresets": "No saved presets yet",
+    "replace": "Replace",
+    "workstationPresetNameRequired": "Preset name is required.",
+    "workstationPresetNameTooLong": "Preset name must be {{max}} characters or fewer.",
+    "workstationPresetNameCounter": "{{count}} / {{max}} characters",
+    "workstationPresetLimitReached": "You can save up to {{max}} presets.",
+    "workstationPresetSaved": "Preset saved.",
+    "workstationPresetReplaced": "Preset replaced.",
+    "workstationPresetRenamedFromDuplicate": "Preset updated with the new name.",
+    "workstationPresetDeleted": "Preset deleted.",
+    "workstationPresetLoadFailed": "Saved presets could not be loaded.",
+    "workstationPresetSaveFailed": "Preset could not be saved.",
+    "workstationPresetDeleteFailed": "Preset could not be deleted.",
+    "workstationPresetReplaceTitle": "Replace preset?",
+    "workstationPresetReplaceMessage": "A preset named \"{{name}}\" already exists. Replace it?",
+    "workstationPresetReplaceDuplicateContentMessage": "A preset with the same filters already exists as \"{{name}}\". Replace it and rename it to \"{{newName}}\"?",
+    "workstationPresetDeleteTitle": "Delete preset?",
+    "workstationPresetDeleteMessage": "Delete preset \"{{name}}\"?",
     "noFiltersApplied": "No filters applied",
     "spacesFound": "{{count}} spaces found",
     "resetFilters": "Reset filters",
@@ -160,11 +184,15 @@
     "minimum": "Minimum booking duration is 2 hours",
     "maximum": "Maximum booking duration is 9 hours",
     "overlap": "This slot overlaps with another booking for this desk",
+    "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
+    "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
+    "continue": "Continue",
     "currentlyBeingBooked": "Currently being booked",
     "bookingLockExpired": "Desk lock expired after 3 minutes. Please select a desk again.",
     "otherFreeDesksForSelectedTimeSlots": "Other free desks for selected time slots",
     "noFreeDesksForSelectedTimeSlotInBuilding": "No free desks are available for this time slot in this building.",
     "booked": "Booking saved successfully",
+    "scheduledBlockingLabel": "Scheduled Blocking",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
     "bookingTimeAlignmentError": "Please choose start and end times on 30-minute boundaries (for example 08:00 or 08:30).",
@@ -397,10 +425,15 @@
     ,"carparkReservedByUser":"Reserved by"
     ,"carparkBlockSpot":"Block spot"
     ,"carparkUnblockSpot":"Unblock spot"
-    ,"carparkEditModeHint":"Admin edit mode: select a spot to block or unblock it."
+    ,"carparkEditModeHint":"Admin edit mode: select a spot to block, unblock, add to LIT, or remove from LIT."
     ,"carparkEditModeSpecialCase":"This special-case spot cannot be manually changed."
     ,"carparkSpotBlockedSuccess":"Parking spot blocked."
     ,"carparkSpotUnblockedSuccess":"Parking spot unblocked."
+    ,"carparkAddToLitSystem":"Add to LIT"
+    ,"carparkRemoveFromLitSystem":"Remove from LIT"
+    ,"carparkSpotActivatedSuccess":"Parking spot added to the LIT system."
+    ,"carparkSpotDeactivatedSuccess":"Parking spot removed from the LIT system."
+    ,"carparkNotInLitSystem":"This spot is not in the LIT system."
     ,"carparkNotificationApproved":"Your parking request for spot {{spot}} on {{day}} ({{begin}} - {{end}}) was approved."
     ,"carparkNotificationRejected":"Your parking request for spot {{spot}} on {{day}} ({{begin}} - {{end}}) was rejected."
     ,"carparkNotificationReminder":"Reminder: your parking reservation for spot {{spot}} starts in 30 minutes ({{day}}, {{begin}} - {{end}})."
@@ -556,5 +589,26 @@
     ,"defectAllCategories":"All Categories"
     ,"defectAllUrgencies":"All Urgencies"
     ,"defectAllRooms":"All Rooms"
+
+    ,"maintenanceCalendar":"Maintenance Calendar"
+    ,"scheduleBlocking":"Schedule Blocking"
+    ,"blockingSum":"Blocking sum"
+    ,"scheduledBlockingCreated":"Blocking scheduled successfully"
+    ,"scheduledBlockingCancelled":"Scheduled blocking cancelled"
+    ,"scheduledBlockingFailed":"Failed to schedule blocking"
+    ,"defectBlockedUntilTime":"Blocked until {{datetime}}"
+    ,"maintenanceCalendarBtn":"Maintenance Calendar"
+    ,"backToMonthView":"Back to month view"
+    ,"scheduledBlockingOverlap":"A blocking is already scheduled for this time period"
+    ,"scheduledBlockingBookingConflict":"This workstation currently has a scheduled block during the selected time."
+    ,"scheduledBlockingSelectPeriod":"Click and drag to select a blocking period"
+    ,"scheduledBlockingMinDuration":"Blocking period must be at least 1 hour"
+    ,"scheduledBlockingPastDate":"Cannot schedule a blocking in the past"
+    ,"cancelScheduledBlocking":"Cancel scheduled blocking"
+    ,"scheduledBlockingDetailsTitle":"Scheduled blocking details"
+    ,"scheduledBlockingCancelConfirmTitle":"Cancel scheduled blocking?"
+    ,"scheduledBlockingCancelConfirmText":"Are you sure you want to cancel this scheduled blocking?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Only scheduled blockings can be cancelled."
+    ,"scheduledBlockingCancelFailed":"Failed to cancel scheduled blocking"
 }
 

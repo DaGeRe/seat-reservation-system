@@ -9,6 +9,7 @@ import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import {DeskTable} from '../misc/DesksTable';
 import LayoutPage from '../Templates/LayoutPage';
 import ReportDefectModal from '../Defects/ReportDefectModal';
+import { colorVars } from '../../theme';
 
 /**
  * Interface to create series (=recurrent) bookings.
@@ -172,7 +173,15 @@ const CreateSeries = () => {
                 // This is needed because we want to remove desks that are not longer available.
                 setRepaint(!repaint);
             },
-            () => {console.log('Failed to create a new series in CreateSeries.js.');},
+            (status, errorData) => {
+                console.log('Failed to create a new series in CreateSeries.js.', status, errorData);
+                const backendError = errorData?.error || errorData?.message;
+                if (backendError) {
+                    toast.error(backendError);
+                } else {
+                    toast.error(t('httpOther'));
+                }
+            },
             JSON.stringify({
                 'id': 0,
                 'rangeDTO': {
@@ -317,9 +326,9 @@ const CreateSeries = () => {
                                 id='dates_label'
                             >
                                 <h3>{t('calculatedDates')}</h3>
-                                <div style={{ width: '100%', overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #ccc', padding: '10px' }}>
+                                <div style={{ width: '100%', overflowX: 'auto', whiteSpace: 'nowrap', border: `1px solid ${colorVars.border.muted}`, padding: '10px' }}>
                                     {dates.map((date, index) => ( (
-                                    <span key={index} style={{ display: "inline-block", padding: "10px", border: "1px solid #ddd", marginRight: "10px" }}>
+                                    <span key={index} style={{ display: "inline-block", padding: "10px", border: `1px solid ${colorVars.border.faint}`, marginRight: "10px" }}>
                                         {formatDate_yyyymmdd_to_ddmmyyyy(date)}
                                     </span>
                                 )))}

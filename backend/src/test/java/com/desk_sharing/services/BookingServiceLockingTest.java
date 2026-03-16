@@ -3,6 +3,7 @@ package com.desk_sharing.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,7 @@ import com.desk_sharing.model.BookingDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +48,7 @@ class BookingServiceLockingTest {
     @Mock ApplicationEventPublisher eventPublisher;
     @Mock CalendarNotificationService calendarNotificationService;
     @Mock BookingSettingsService bookingSettingsService;
+    @Mock ScheduledBlockingRepository scheduledBlockingRepository;
     @Mock BookingLockService bookingLockService;
 
     @InjectMocks BookingService bookingService;
@@ -76,6 +79,8 @@ class BookingServiceLockingTest {
         when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
 
         when(bookingSettingsService.getCurrentSettings()).thenReturn(new BookingSettings(1L, 0, null, null));
+        when(scheduledBlockingRepository.findOverlapping(any(Long.class), anyList(), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Collections.emptyList());
 
         final BookingLock activeLock = new BookingLock();
         final UserEntity lockOwner = new UserEntity();
@@ -117,6 +122,8 @@ class BookingServiceLockingTest {
         when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
 
         when(bookingSettingsService.getCurrentSettings()).thenReturn(new BookingSettings(1L, 0, null, null));
+        when(scheduledBlockingRepository.findOverlapping(any(Long.class), anyList(), any(LocalDateTime.class), any(LocalDateTime.class)))
+            .thenReturn(Collections.emptyList());
         when(bookingRepository.getAllBookingsForPreventDuplicates(10L, 11L, day, Time.valueOf("09:00:00"), Time.valueOf("11:00:00")))
             .thenReturn(Collections.emptyList());
 

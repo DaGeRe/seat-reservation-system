@@ -5,12 +5,13 @@ import { useTranslation } from 'react-i18next';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './MyBookings.css';
-import {getRequest, deleteRequest} from '../RequestFunctions/RequestFunctions';
+import { getRequest, deleteRequest, downloadRequest } from '../RequestFunctions/RequestFunctions';
 import LayoutPage from '../Templates/LayoutPage';
 import LayoutModal from '../Templates/LayoutModal';
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { colorVars, semanticColors } from '../../theme';
 
 const BookingEvent = ({ event }) => (
   <div className="mybookings-event-content">
@@ -18,6 +19,11 @@ const BookingEvent = ({ event }) => (
     {event.room && <div className="mybookings-event-room">{event.room}</div>}
   </div>
 );
+
+const normalizeCalendarView = (view) => {
+  const value = String(view || '').toLowerCase();
+  return ['day', 'week', 'month'].includes(value) ? value : null;
+};
 
 const isPastBookingDay = (bookingStart) =>
   moment(bookingStart).startOf('day').isBefore(moment().startOf('day'));
@@ -28,8 +34,8 @@ const MyBookings = () => {
   const [events, setEvents] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  // Defines which view is displayed per default. Either day, week or month.
-  const [defaultView, setDefaultView] = useState({ viewModeName: 'week' }); 
+  const locationView = normalizeCalendarView(location.state?.view);
+  const [currentView, setCurrentView] = useState(locationView);
   const [selectedBookingEvent, setSelectedBookingEvent] = useState(null);
   // The current booking object (with id, room, desk) 
   const [theBookingEvent, setTheBookingEvent] = useState(null);
@@ -88,10 +94,17 @@ const MyBookings = () => {
     getRequest(
         `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${userId}`,
         headers.current,
-        setDefaultView,
+        (viewMode) => {
+          const normalizedView = normalizeCalendarView(viewMode?.viewModeName) || 'week';
+          if (!locationView) {
+            setCurrentView(normalizedView);
+          }
+        },
         (errorCode) => { 
           console.log('Error fetching default view mode:', errorCode);
-          setDefaultView({ viewModeName: 'week' });
+          if (!locationView) {
+            setCurrentView('week');
+          }
           toast.error(t('httpOther'));          
         },
     );
@@ -99,7 +112,13 @@ const MyBookings = () => {
     /*else {
       toast.error('Error fetching default viewmode in FloorSelector.js');
     }*/
-  },[t]);
+  },[locationView, t]);
+
+  useEffect(() => {
+    if (locationView) {
+      setCurrentView(locationView);
+    }
+  }, [locationView]);
 
   useEffect(() => {
     moment.locale(i18n.language === 'en' ? 'en-gb' : i18n.language);
@@ -162,56 +181,21 @@ const MyBookings = () => {
     );
   };
 
-  const escapeIcsText = (text) => {
-    if (!text) return '';
-    return String(text)
-      .replace(/\\/g, '\\\\')
-      .replace(/\n/g, '\\n')
-      .replace(/;/g, '\\;')
-      .replace(/,/g, '\\,');
-  };
-
   const exportIcs = () => {
     if (!selectedBookingEvent) return;
-    const hasMatchingDetails = theBookingEvent?.id === selectedBookingEvent?.id;
-    const booking = hasMatchingDetails ? theBookingEvent : selectedBookingEvent;
-    const start = moment(selectedBookingEvent.start);
-    const end = moment(selectedBookingEvent.end);
-    const deskRemark = booking?.desk?.remark || selectedBookingEvent?.desk?.remark || '';
-    const roomRemark = booking?.room?.remark || selectedBookingEvent?.room || selectedBookingEvent?.desk?.room?.remark || '';
-    const summary = `${t('desk')} ${deskRemark}`.trim();
-    const uid = `booking-${booking?.id || selectedBookingEvent?.id || 'unknown'}@desksharing`;
-    const dtstamp = moment().utc().format('YYYYMMDDTHHmmss[Z]');
-    const dtstart = start.format('YYYYMMDDTHHmmss');
-    const dtend = end.format('YYYYMMDDTHHmmss');
+    const bookingId = theBookingEvent?.id === selectedBookingEvent?.id
+      ? theBookingEvent.id
+      : selectedBookingEvent.id;
 
-    const lines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Desk Sharing Tool//MyBookings//EN',
-      'CALSCALE:GREGORIAN',
-      'BEGIN:VEVENT',
-      `UID:${uid}`,
-      `DTSTAMP:${dtstamp}`,
-      `DTSTART:${dtstart}`,
-      `DTEND:${dtend}`,
-      `SUMMARY:${escapeIcsText(summary)}`,
-      roomRemark ? `LOCATION:${escapeIcsText(`${t('room')}: ${roomRemark}`)}` : null,
-      `DESCRIPTION:${escapeIcsText(`${t('desk')}: ${deskRemark}${roomRemark ? `, ${t('room')}: ${roomRemark}` : ''}`)}`,
-      'END:VEVENT',
-      'END:VCALENDAR',
-    ].filter(Boolean);
-
-    const icsContent = lines.join('\r\n');
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const filename = `booking_${start.format('YYYYMMDD')}.ics`;
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    downloadRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingId}/ics`,
+      headers.current,
+      `booking-${bookingId}.ics`,
+      () => {
+        console.log('Failed to export booking ICS');
+        toast.error(t('httpOther'));
+      }
+    );
   };
 
   const editBooking = () => {
@@ -247,7 +231,6 @@ const MyBookings = () => {
 
   // Get selected date and view from location state
   const selectedDate = location.state?.date ? new Date(location.state.date) : null;
-  const initialView = location.state?.view || defaultView?.viewModeName || 'week';
   const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
   const isPastDayBooking = selectedBookingEvent
     ? moment(selectedBookingEvent.start).startOf('day').isBefore(moment().startOf('day'))
@@ -284,12 +267,12 @@ const MyBookings = () => {
                     sx={{
                       marginTop: '10px',
                       padding: '8px 12px',
-                      backgroundColor: '#0b5f2a',
+                      backgroundColor: colorVars.state.actionPositive,
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: colorVars.text.inverse,
                       fontSize: '14px',
                       textTransform: 'none',
-                      '&:hover': { backgroundColor: '#b7e0c8' }
+                      '&:hover': { backgroundColor: colorVars.border.success }
                     }}
                     variant="contained"
                     onClick={editBooking}
@@ -304,12 +287,12 @@ const MyBookings = () => {
                     marginTop: '10px',
                     marginLeft: !isPastDayBooking ? '10px' : '0',
                     padding: '8px 12px',
-                    backgroundColor: '#0b5f2a',
+                    backgroundColor: colorVars.state.actionPositive,
                     borderRadius: '8px',
-                    color: '#fff',
+                    color: colorVars.text.inverse,
                     fontSize: '14px',
                     textTransform: 'none',
-                    '&:hover': { backgroundColor: '#b7e0c8' }
+                    '&:hover': { backgroundColor: colorVars.border.success }
                   }}
                   variant="contained"
                   onClick={exportIcs}
@@ -321,7 +304,7 @@ const MyBookings = () => {
             } 
           </div>
         </LayoutModal>
-          {initialView && (
+          {currentView && (
             <>
               <Button
                 id="mybookings_add_booking_btn"
@@ -329,13 +312,13 @@ const MyBookings = () => {
                   marginBottom: '10px',
                   marginLeft: '35px',
                   padding: '8px 12px',
-                  backgroundColor: '#0b5f2a',
+                  backgroundColor: colorVars.state.actionPositive,
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: colorVars.text.inverse,
                   fontSize: '14px',
                   textTransform: 'none',
                   alignSelf: 'flex-start',
-                  '&:hover': { backgroundColor: '#b7e0c8' }
+                  '&:hover': { backgroundColor: colorVars.border.success }
                 }}
                 onClick={() => navigate('/freedesks', { state: { date: currentDate } })}
               >
@@ -353,7 +336,7 @@ const MyBookings = () => {
                   return {
                     className: eventClasses.join(' '),
                     style: {
-                      backgroundColor: "#3174ad",
+                      backgroundColor: semanticColors.booking.event.mine,
                     },
                   };
                 }}
@@ -361,13 +344,13 @@ const MyBookings = () => {
                 events={events}
                 startAccessor='start'
                 endAccessor='end'
-                //defaultView='week'
-                defaultView={initialView}
+                view={currentView}
                 defaultDate={selectedDate || new Date()}
                 min={new Date(0, 0, 0, 6, 0, 0)} // 6 am
                 max={new Date(0, 0, 0, 22, 0, 0)} // 10 pm
                 popup={true}
                 onSelectEvent={handleEventSelect}
+                onView={setCurrentView}
                 onNavigate={(date) => setCurrentDate(date)}
                 messages={{
                   next: t('next'),

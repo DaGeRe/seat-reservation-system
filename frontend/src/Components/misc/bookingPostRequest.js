@@ -2,6 +2,107 @@ import { formatDate_yyyymmdd_to_ddmmyyyy } from './formatDate';
 import { postRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
+import { colorVars } from '../../theme';
+
+const overlapWarningBoxStyles = {
+    marginTop: '12px',
+    padding: '12px 14px',
+    borderRadius: '8px',
+    backgroundColor: colorVars.surface.warning,
+    border: `1px solid ${colorVars.border.warning}`,
+    textAlign: 'left',
+};
+
+const overlapWarningTitleStyles = {
+    margin: '0 0 4px 0',
+    fontWeight: 700,
+    color: colorVars.text.warning,
+};
+
+const overlapWarningTextStyles = {
+    margin: 0,
+    color: colorVars.text.warning,
+    lineHeight: 1.4,
+};
+
+function renderOverlapWarningBox(t) {
+    return (
+        <div style={overlapWarningBoxStyles}>
+            <p style={overlapWarningTitleStyles}>{t('warning')}</p>
+            <p style={overlapWarningTextStyles}>{t('bookingOverlapOtherDeskWarning')}</p>
+        </div>
+    );
+}
+
+export function checkDeskBookingOverlap(headers, bookingId, ignoreBookingId, t, onSuccess, onFail) {
+    postRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/overlap-check`,
+        headers.current,
+        (data) => {
+            onSuccess(Boolean(data?.hasOverlap));
+        },
+        (status, data) => {
+            toast.error(t('bookingOverlapCheckFailed'));
+            if (typeof onFail === 'function') {
+                onFail(status, data);
+            }
+        },
+        JSON.stringify({
+            bookingId,
+            ignoreBookingId: ignoreBookingId ?? null,
+        })
+    );
+}
+
+export function showDeskBookingConfirmation({
+    t,
+    deskRemark,
+    bookingData,
+    hasOverlap,
+    onConfirm,
+    onCancel,
+    title,
+}) {
+    confirmAlert({
+        closeOnEscape: false,
+        closeOnClickOutside: false,
+        customUI: ({ onClose }) => (
+            <div className='react-confirm-alert-body'>
+                <h1>{title || `${t('desk')} ${deskRemark}`}</h1>
+                <p>
+                    {t('date')} {formatDate_yyyymmdd_to_ddmmyyyy(bookingData.day)} {t('from')} {bookingData.begin} {t('to')} {bookingData.end}
+                </p>
+                {hasOverlap && (
+                    renderOverlapWarningBox(t)
+                )}
+                <div className='react-confirm-alert-button-group'>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            if (typeof onConfirm === 'function') {
+                                onConfirm();
+                            }
+                            onClose();
+                        }}
+                    >
+                        {hasOverlap ? t('continue') : t('yes')}
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            if (typeof onCancel === 'function') {
+                                onCancel();
+                            }
+                            onClose();
+                        }}
+                    >
+                        {hasOverlap ? t('cancel') : t('no')}
+                    </button>
+                </div>
+            </div>
+        )
+    });
+}
 
 function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBookingFunction, options = {}) {
     const { onStart, onFinish, onCancel, onError } = options || {};
@@ -32,6 +133,10 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
         actionInFlight = true;
         return true;
     };
+
+    if (typeof onStart === 'function') {
+        onStart();
+    }
 
     const escapeIcsText = (text) => {
         if (!text) return '';
@@ -87,10 +192,6 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
             JSON.stringify(bookingData)
         );
     };
-
-    if (typeof onStart === 'function') {
-        onStart();
-    }
 
     const exportIcs = () => {
         const dtstamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
@@ -169,5 +270,6 @@ function bookingPostRequest(name, bookingData, deskRemark, headers, t, postBooki
             </div>
         )
     });
-};
+}
+
 export default bookingPostRequest;

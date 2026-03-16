@@ -4,15 +4,20 @@ import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.BookingLock;
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
+import com.desk_sharing.entities.ScheduledBlocking;
+import com.desk_sharing.entities.ScheduledBlockingStatus;
 import com.desk_sharing.entities.VisibilityMode;
 import com.desk_sharing.model.BookingDTO;
 import com.desk_sharing.model.BookingEditDTO;
 import com.desk_sharing.model.BookingProjectionDTO;
 import com.desk_sharing.model.BookingDayEventDTO;
 import com.desk_sharing.model.ColleagueBookingsDTO;
+import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
+import com.desk_sharing.model.ScheduledBlockingDeskDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.services.BookingSettingsService;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
 import com.desk_sharing.services.calendar.BookingNotificationEvent;
@@ -44,6 +49,10 @@ import com.desk_sharing.entities.UserEntity;
 @AllArgsConstructor
 public class BookingService { 
     private static final long BOOKING_RETENTION_DAYS = 90L;
+    private static final List<ScheduledBlockingStatus> BOOKING_BLOCKING_STATUSES = List.of(
+        ScheduledBlockingStatus.SCHEDULED,
+        ScheduledBlockingStatus.ACTIVE
+    );
 
     private final BookingRepository bookingRepository;
     
@@ -60,6 +69,7 @@ public class BookingService {
     private final ApplicationEventPublisher eventPublisher;
     private final CalendarNotificationService calendarNotificationService;
     private final BookingSettingsService bookingSettingsService;
+    private final ScheduledBlockingRepository scheduledBlockingRepository;
     private final BookingLockService bookingLockService;
 
     /**
@@ -313,6 +323,34 @@ public class BookingService {
         }
     }
 
+    private void validateNoScheduledBlockingOverlap(
+        final Long deskId,
+        final Date day,
+        final java.sql.Time begin,
+        final java.sql.Time end
+    ) {
+        if (deskId == null || day == null || begin == null || end == null) {
+            return;
+        }
+
+        final LocalDateTime bookingStart = LocalDateTime.of(day.toLocalDate(), begin.toLocalTime());
+        final LocalDateTime bookingEnd = LocalDateTime.of(day.toLocalDate(), end.toLocalTime());
+
+        final List<ScheduledBlocking> overlaps = scheduledBlockingRepository.findOverlapping(
+            deskId,
+            BOOKING_BLOCKING_STATUSES,
+            bookingStart,
+            bookingEnd
+        );
+
+        if (!overlaps.isEmpty()) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "This workstation has a scheduled block during the selected time and cannot be booked."
+            );
+        }
+    }
+
     /**
      * Create and save a new room.
      * The new room is defined by roomDTO.
@@ -354,6 +392,7 @@ public class BookingService {
         
         // Backend validation: do not trust frontend/UI for booking rules
         validateBookingTimes(bookingData.getDay(), bookingData.getBegin(), bookingData.getEnd(), bookingSettingsService.getCurrentSettings());
+        validateNoScheduledBlockingOverlap(bookingData.getDeskId(), bookingData.getDay(), bookingData.getBegin(), bookingData.getEnd());
 
         final Optional<BookingLock> activeLockOpt = bookingLockService.findActiveLock(bookingData.getDeskId(), bookingData.getDay());
         if (activeLockOpt.isPresent()) {
@@ -434,6 +473,23 @@ public class BookingService {
         return bookingRepository.findByDeskId(desk_id);
     }
 
+    public List<ScheduledBlockingDeskDTO> findScheduledBlockingsForDesk(Long deskId) {
+        return findScheduledBlockingsForDesk(deskId, null, null);
+    }
+
+    public List<ScheduledBlockingDeskDTO> findScheduledBlockingsForDesk(Long deskId, LocalDateTime from, LocalDateTime to) {
+        final List<ScheduledBlocking> blockings;
+        if (from != null && to != null) {
+            blockings = scheduledBlockingRepository.findOverlapping(deskId, BOOKING_BLOCKING_STATUSES, from, to);
+        } else {
+            blockings = scheduledBlockingRepository.findByDeskIdAndStatusIn(deskId, BOOKING_BLOCKING_STATUSES);
+        }
+
+        return blockings.stream()
+            .map(ScheduledBlockingDeskDTO::new)
+            .toList();
+    }
+
     public List<Booking> findByDeskIdAndDay(Long deskId, Date day) {
         List<Booking> bookings = bookingRepository.findByDeskIdAndDay(deskId, day);
         return bookings;
@@ -458,6 +514,27 @@ public class BookingService {
         return bookings.stream().map(BookingDayEventDTO::new).toList();
     }
 
+    public BookingOverlapCheckResponseDTO checkConfirmedOverlapWithOtherDesk(final long bookingId, final Long ignoreBookingId) {
+        final Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+
+        if (booking.getUser() == null || booking.getDesk() == null || booking.getDay() == null
+            || booking.getBegin() == null || booking.getEnd() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking is missing overlap-check data");
+        }
+
+        final List<Booking> overlaps = bookingRepository.findConfirmedOverlapsForUserOtherDesk(
+            booking.getUser().getId(),
+            booking.getDesk().getId(),
+            booking.getId(),
+            ignoreBookingId,
+            booking.getDay(),
+            booking.getBegin(),
+            booking.getEnd()
+        );
+        return new BookingOverlapCheckResponseDTO(overlaps != null && !overlaps.isEmpty());
+    }
+
 	@Transactional
 	public Booking editBookingTimings(final BookingEditDTO booking) {
         final Long bookingId = booking.getId();
@@ -477,6 +554,12 @@ public class BookingService {
 
             // Backend validation: do not trust frontend/UI for booking rules
             validateBookingTimes(bookingById.get().getDay(), booking.getBegin(), booking.getEnd(), bookingSettingsService.getCurrentSettings());
+            validateNoScheduledBlockingOverlap(
+                bookingById.get().getDesk().getId(),
+                bookingById.get().getDay(),
+                booking.getBegin(),
+                booking.getEnd()
+            );
 
             Booking booking2 = bookingById.get();
             booking2.setBegin(booking.getBegin());
@@ -502,10 +585,18 @@ public class BookingService {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"This workstation is not available for booking.");
 			}
-			if (booking.getDesk() != null && booking.getDesk().isBlocked()) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"This workstation was blocked due to a defect since your booking started. Cannot confirm.");
-			}
+            if (booking.getDesk() != null && booking.getDesk().isBlocked()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "This workstation was blocked due to a defect since your booking started. Cannot confirm.");
+            }
+            if (booking.getDesk() != null) {
+                validateNoScheduledBlockingOverlap(
+                    booking.getDesk().getId(),
+                    booking.getDay(),
+                    booking.getBegin(),
+                    booking.getEnd()
+                );
+            }
             final UserEntity currentUser = userService.getCurrentUser();
             final Optional<BookingLock> activeLockOpt = bookingLockService.findActiveLock(
                 booking.getDesk().getId(),

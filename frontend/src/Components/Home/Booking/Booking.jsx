@@ -17,15 +17,15 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { confirmAlert } from 'react-confirm-alert';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import CloseIcon from '@mui/icons-material/Close';
 
 import LayoutPage from '../../Templates/LayoutPage.jsx';
-import { getRequest, postRequest, deleteRequest } from '../../RequestFunctions/RequestFunctions';
-import bookingPostRequest from '../../misc/bookingPostRequest.js';
+import { getRequest, postRequest, putRequest, deleteRequest } from '../../RequestFunctions/RequestFunctions';
+import bookingPostRequest, { checkDeskBookingOverlap, showDeskBookingConfirmation } from '../../misc/bookingPostRequest.js';
 import ReportDefectModal from '../../Defects/ReportDefectModal';
 import { DeskTable } from '../../misc/DesksTable.jsx';
+import { colorVars, semanticColors } from '../../../theme';
 //import { buildFullDaySlots } from './buildFullDaySlots.js';
 
 const BOOKING_CONTEXT_KEY = 'bookingNavigationContext';
@@ -86,6 +86,8 @@ const Booking = () => {
   const [desks, setDesks] = useState([]);
   const [events, setEvents] = useState([]);
   const [event, setEvent] = useState({});
+  const [calendarDate, setCalendarDate] = useState(initialDate);
+  const [calendarView, setCalendarView] = useState('day');
   const [isBookingPending, setIsBookingPending] = useState(false);
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const [clickedDeskRemark, setClickedDeskRemark] = useState('');
@@ -179,6 +181,9 @@ const Booking = () => {
 
   const acquireDeskLockAndSelect = useCallback((desk) => {
     if (!desk?.id) return;
+    const targetDay = (calendarDate instanceof Date && !Number.isNaN(calendarDate.valueOf()))
+      ? moment(calendarDate).format('YYYY-MM-DD')
+      : bookingDay;
 
     const acquire = () => {
       postRequest(
@@ -187,7 +192,7 @@ const Booking = () => {
         (data) => {
           const lockPayload = {
             deskId: desk.id,
-            day: bookingDay,
+            day: targetDay,
             expiresAt: data?.expiresAt || new Date(Date.now() + 3 * 60 * 1000).toISOString(),
           };
           setActiveDeskLock(lockPayload);
@@ -205,19 +210,19 @@ const Booking = () => {
         },
         JSON.stringify({
           deskId: desk.id,
-          day: bookingDay,
+          day: targetDay,
         })
       );
     };
 
     const currentLock = activeDeskLockRef.current;
-    if (currentLock && (currentLock.deskId !== desk.id || currentLock.day !== bookingDay)) {
+    if (currentLock && (currentLock.deskId !== desk.id || currentLock.day !== targetDay)) {
       clearLocalDeskLock();
       releaseDeskLockByPayload(currentLock, acquire);
       return;
     }
     acquire();
-  }, [armDeskLockExpiry, bookingDay, clearLocalDeskLock, releaseDeskLockByPayload, selectionKey, t]);
+  }, [armDeskLockExpiry, bookingDay, calendarDate, clearLocalDeskLock, releaseDeskLockByPayload, selectionKey, t]);
 
   const ensureDeskLockForDay = useCallback((deskId, day, onSuccess, onFail) => {
     if (!deskId || !day) {
@@ -478,6 +483,13 @@ const Booking = () => {
 
   const loadBookings = useCallback(() => {
     if (!clickedDeskId) return;
+    const baseDate = calendarDate instanceof Date && !Number.isNaN(calendarDate.valueOf())
+      ? calendarDate
+      : new Date();
+    const rangeStart = moment(baseDate).startOf(calendarView === 'week' ? 'week' : 'day');
+    const rangeEnd = moment(baseDate).endOf(calendarView === 'week' ? 'week' : 'day');
+    const from = rangeStart.format('YYYY-MM-DDTHH:mm:ss');
+    const to = rangeEnd.format('YYYY-MM-DDTHH:mm:ss');
 
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
@@ -498,19 +510,41 @@ const Booking = () => {
           id: b.booking_id,
         }));
 
-        if (isEditMode && editBooking?.deskId === clickedDeskId) {
-          const editStart = new Date(`${editBooking.day}T${editBooking.begin}`);
-          const editEnd = new Date(`${editBooking.day}T${editBooking.end}`);
-          const editSelection = { start: editStart, end: editEnd, id: 1 };
-          setEvents([...bookingEvents, editSelection]);
-          setEvent(editSelection);
-        } else {
-          setEvents(bookingEvents);
-        }
+        const applyCalendarEvents = (scheduledBlockingEvents = []) => {
+          const mergedEvents = [...bookingEvents, ...scheduledBlockingEvents];
+          if (isEditMode && editBooking?.deskId === clickedDeskId) {
+            const editStart = new Date(`${editBooking.day}T${editBooking.begin}`);
+            const editEnd = new Date(`${editBooking.day}T${editBooking.end}`);
+            const editSelection = { start: editStart, end: editEnd, id: 1 };
+            setEvents([...mergedEvents, editSelection]);
+            setEvent(editSelection);
+          } else {
+            setEvents(mergedEvents);
+            setEvent({});
+          }
+        };
+
+        getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/bookings/scheduled-blockings-for-desk/${clickedDeskId}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+          headers.current,
+          (scheduledBlockings) => {
+            const scheduledBlockingEvents = (Array.isArray(scheduledBlockings) ? scheduledBlockings : []).map((blocking) => ({
+              start: new Date(blocking.startDateTime),
+              end: new Date(blocking.endDateTime),
+              title: t('scheduledBlockingLabel'),
+              id: `scheduled-blocking-${blocking.id}`,
+              isScheduledBlocking: true,
+            }));
+            applyCalendarEvents(scheduledBlockingEvents);
+          },
+          () => {
+            applyCalendarEvents([]);
+          }
+        );
       },
       () => console.error('Failed to fetch bookings')
     );
-  }, [clickedDeskId, editBooking, isEditMode, t]);
+  }, [calendarDate, calendarView, clickedDeskId, editBooking, isEditMode, t]);
 
   const selectSlot = useCallback((slotData, currentEventId) => {
     if (!slotData) return;
@@ -570,14 +604,15 @@ const Booking = () => {
       return true;
     });
 
-    const isOverlap = updatedEvents.some(
+    const overlappingEvents = updatedEvents.filter(
       (e) =>
         (e.start <= startTime && startTime < e.end) ||
         (e.start < endTime && endTime <= e.end) ||
         (startTime <= e.start && e.end <= endTime)
     );
-    if (isOverlap) {
-      toast.warning(t('overlap'));
+    if (overlappingEvents.length > 0) {
+      const overlapsScheduledBlocking = overlappingEvents.some((e) => e?.isScheduledBlocking);
+      toast.warning(overlapsScheduledBlocking ? t('scheduledBlockingBookingConflict') : t('overlap'));
       openAlternativeDeskDialogForSlot(startTime, endTime);
       return;
     }
@@ -689,40 +724,112 @@ const Booking = () => {
       end: originalEnd,
     };
 
-    const createBookingEntry = (dto, onSuccess, onFail) => {
+    const createDraftBooking = (dto, onSuccess, onFail) => {
       postRequest(
         `${process.env.REACT_APP_BACKEND_URL}/bookings`,
         headers.current,
         (data) => onSuccess(data),
-        (status, data) => onFail(status, data),
+        () => onFail(),
         JSON.stringify(dto)
       );
     };
 
+    const confirmDraftBooking = (draftBookingId, onSuccess, onFail) => {
+      putRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/confirm/${draftBookingId}`,
+        headers.current,
+        (dat) => onSuccess(dat),
+        () => onFail()
+      );
+    };
+
+    const deleteBookingById = (bookingId, onSuccess, onFail) => {
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingId}`,
+        headers.current,
+        () => onSuccess(),
+        () => onFail()
+      );
+    };
+
     const tryRestoreOld = () => {
-      createBookingEntry(
+      createDraftBooking(
         oldBookingDTO,
-        () => {},
+        (draft) => {
+          confirmDraftBooking(draft.id, () => {}, () => {});
+        },
         () => {}
       );
     };
 
+    const showEditConfirmation = (hasOverlap, onContinue, onCancel) => {
+      showDeskBookingConfirmation({
+        t,
+        deskRemark: clickedDeskRemark,
+        bookingData: {
+          day: newDay,
+          begin: newBegin,
+          end: newEnd,
+        },
+        hasOverlap,
+        onConfirm: onContinue,
+        onCancel,
+        title: t('editBooking'),
+      });
+    };
+
     const handleCreateThenDelete = () => {
-      createBookingEntry(
+      createDraftBooking(
         bookingDTO,
-        () => {
-          deleteRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/bookings/${editBooking.bookingId}`,
-            headers.current,
-            () => {
-              clearLocalDeskLock();
-              setBookingPending(false);
-              navigate('/mybookings', { replace: true });
+        (draft) => {
+          checkDeskBookingOverlap(
+            headers,
+            draft.id,
+            editBooking.bookingId,
+            t,
+            (hasOverlap) => {
+              showEditConfirmation(
+                hasOverlap,
+                () => {
+                  confirmDraftBooking(
+                    draft.id,
+                    () => {
+                      deleteBookingById(
+                        editBooking.bookingId,
+                        () => {
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        },
+                        () => {
+                          toast.error(t('httpOther'));
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        }
+                      );
+                    },
+                    () => {
+                      toast.error(t('httpOther'));
+                      deleteBookingById(draft.id, () => {}, () => {});
+                      setBookingPending(false);
+                    }
+                  );
+                },
+                () => {
+                  deleteBookingById(
+                    draft.id,
+                    () => {
+                      setBookingPending(false);
+                    },
+                    () => {
+                      setBookingPending(false);
+                    }
+                  );
+                }
+              );
             },
             () => {
-              toast.error(t('httpOther'));
+              deleteBookingById(draft.id, () => {}, () => {});
               setBookingPending(false);
-              navigate('/mybookings', { replace: true });
             }
           );
         },
@@ -734,16 +841,56 @@ const Booking = () => {
     };
 
     const handleDeleteThenCreate = () => {
-      deleteRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/bookings/${editBooking.bookingId}`,
-        headers.current,
+      deleteBookingById(
+        editBooking.bookingId,
         () => {
-          createBookingEntry(
+          createDraftBooking(
             bookingDTO,
-            () => {
-              clearLocalDeskLock();
-              setBookingPending(false);
-              navigate('/mybookings', { replace: true });
+            (draft) => {
+              checkDeskBookingOverlap(
+                headers,
+                draft.id,
+                editBooking.bookingId,
+                t,
+                (hasOverlap) => {
+                  showEditConfirmation(
+                    hasOverlap,
+                    () => {
+                      confirmDraftBooking(
+                        draft.id,
+                        () => {
+                          setBookingPending(false);
+                          navigate('/mybookings', { replace: true });
+                        },
+                        () => {
+                          tryRestoreOld();
+                          toast.error(t('httpOther'));
+                          deleteBookingById(draft.id, () => {}, () => {});
+                          setBookingPending(false);
+                        }
+                      );
+                    },
+                    () => {
+                      deleteBookingById(
+                        draft.id,
+                        () => {
+                          tryRestoreOld();
+                          setBookingPending(false);
+                        },
+                        () => {
+                          tryRestoreOld();
+                          setBookingPending(false);
+                        }
+                      );
+                    }
+                  );
+                },
+                () => {
+                  deleteBookingById(draft.id, () => {}, () => {});
+                  tryRestoreOld();
+                  setBookingPending(false);
+                }
+              );
             },
             () => {
               tryRestoreOld();
@@ -765,37 +912,22 @@ const Booking = () => {
       (moment(newBegin, 'HH:mm:ss').isSameOrBefore(moment(originalEnd, 'HH:mm:ss')) &&
         moment(newEnd, 'HH:mm:ss').isSameOrAfter(moment(originalBegin, 'HH:mm:ss')));
 
-    confirmAlert({
-      title: t('editBooking'),
-      message: `${t('date')} ${newDay} ${t('from')} ${newBegin} ${t('to')} ${newEnd}`,
-      buttons: [
-        {
-          label: t('yes'),
-          onClick: () => {
-            if (bookingPendingRef.current) return;
-            setBookingPending(true);
-            ensureDeskLockForDay(
-              clickedDeskId,
-              bookingDTO.day,
-              () => {
-                if (overlapsOld) {
-                  handleDeleteThenCreate();
-                } else {
-                  handleCreateThenDelete();
-                }
-              },
-              () => {
-                setBookingPending(false);
-              }
-            );
-          },
-        },
-        {
-          label: t('no'),
-          onClick: () => {},
-        },
-      ],
-    });
+    if (bookingPendingRef.current) return;
+    setBookingPending(true);
+    ensureDeskLockForDay(
+      clickedDeskId,
+      bookingDTO.day,
+      () => {
+        if (overlapsOld) {
+          handleDeleteThenCreate();
+        } else {
+          handleCreateThenDelete();
+        }
+      },
+      () => {
+        setBookingPending(false);
+      }
+    );
   };
   /** ----- EFFECTS ----- */
   // Fetch room once
@@ -966,7 +1098,7 @@ const Booking = () => {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
                       {desk.blocked && (
                         <>
-                          <Typography variant="caption" sx={{ fontWeight: 700, color: '#ff9800' }}>
+                          <Typography variant="caption" sx={{ fontWeight: 700, color: semanticColors.defects.urgency.MEDIUM }}>
                             {t('defectBlocked')}
                           </Typography>
                           {desk.blockedReasonCategory && (
@@ -974,11 +1106,15 @@ const Booking = () => {
                               {t('defectBlockedReason', { reason: desk.blockedReasonCategory.replace(/_/g, ' ') })}
                             </Typography>
                           )}
-                          {desk.blockedEstimatedEndDate && (
+                          {desk.blockedEndDateTime ? (
+                            <Typography variant="caption">
+                              {t('defectBlockedUntilTime', { datetime: new Date(desk.blockedEndDateTime).toLocaleString() })}
+                            </Typography>
+                          ) : desk.blockedEstimatedEndDate ? (
                             <Typography variant="caption">
                               {t('defectBlockedUntil', { date: desk.blockedEstimatedEndDate })}
                             </Typography>
-                          )}
+                          ) : null}
                         </>
                       )}
                       <Typography variant="caption">{t('booking.tooltip.ergonomics')}: {desk?.workstationType || 'Standard'}</Typography>
@@ -992,8 +1128,8 @@ const Booking = () => {
                   <Box
                     sx={{
                       backgroundColor: desk.blocked
-                        ? '#bdbdbd'
-                        : desk.id === clickedDeskId ? '#ffdd00' : 'yellowgreen',
+                        ? semanticColors.booking.desk.blocked
+                        : desk.id === clickedDeskId ? semanticColors.booking.desk.selected : semanticColors.booking.desk.available,
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
@@ -1004,9 +1140,9 @@ const Booking = () => {
                       padding: '5px',
                       cursor: desk.blocked ? 'not-allowed' : 'pointer',
                       opacity: desk.blocked ? 0.6 : 1,
-                      boxShadow: '0px 0px 5px rgba(0,0,0,0.2)',
+                      boxShadow: colorVars.shadow.desk,
                       transition: desk.id === clickedDeskId ? '0.25s' : 'box-shadow 0.3s',
-                      '&:hover': { boxShadow: desk.blocked ? undefined : '0px 0px 10px rgba(0,0,0,0.4)' },
+                      '&:hover': { boxShadow: desk.blocked ? undefined : colorVars.shadow.deskHover },
                     }}
                     onClick={() => {
                       if (desk.blocked) {
@@ -1027,7 +1163,7 @@ const Booking = () => {
                   >
                     <Typography sx={{ ...typography_sx, margin: 0 }}>{desk.remark}</Typography>
                     {desk.blocked && (
-                      <Typography sx={{ ...typography_sx, marginTop: '6px', fontSize: '0.7rem', color: '#d32f2f', fontWeight: 600 }}>
+                      <Typography sx={{ ...typography_sx, marginTop: '6px', fontSize: '0.7rem', color: colorVars.text.error, fontWeight: 600 }}>
                         {t('defectBlocked')}
                       </Typography>
                     )}
@@ -1047,7 +1183,7 @@ const Booking = () => {
               <IconButton
                 onClick={toggleFavourite}
                 aria-label="toggle-favourite"
-                sx={{ color: isFavourite ? '#ffb300' : '#9e9e9e', fontSize: '22px' }}
+                sx={{ color: isFavourite ? semanticColors.booking.favourite.active : semanticColors.booking.favourite.inactive, fontSize: '22px' }}
               >
                 {isFavourite ? <FaStar /> : <FaRegStar />}
               </IconButton>
@@ -1082,16 +1218,23 @@ const Booking = () => {
             startAccessor="start"
             endAccessor="end"
             views={['day', 'week']}
+            view={calendarView}
+            date={calendarDate}
             defaultView="day"
             defaultDate={initialDate}
+            onView={(nextView) => setCalendarView(nextView)}
+            onNavigate={(nextDate) => setCalendarDate(nextDate)}
             onSelectSlot={(data) => (clickedDeskId ? selectSlot(data, event.id) : toast.warning(t('selectDeskMessage')))}
             selectable
             min={new Date(0, 0, 0, minStartTime, 0, 0)}
             max={new Date(0, 0, 0, maxEndTime, 0, 0)}
             formats={calendarFormats}
-            eventPropGetter={(event) => ({
+            eventPropGetter={(calendarEvent) => ({
               style: {
-                backgroundColor: events.some((e) => e.id === event.id) ? 'grey' : '#008444',
+                backgroundColor: calendarEvent?.isScheduledBlocking
+                  ? colorVars.state.neutralDark
+                  : (calendarEvent?.id === 1 ? colorVars.brand.primary : colorVars.state.neutralGrey),
+                border: calendarEvent?.isScheduledBlocking ? `1px solid ${colorVars.text.error}` : undefined,
               },
             })}
             messages={{
@@ -1112,15 +1255,15 @@ const Booking = () => {
               sx={{
                 margin: '10px',
                 padding: '15px',
-                backgroundColor: '#008444',
+                backgroundColor: colorVars.brand.primary,
                 borderRadius: '8px',
-                color: '#fff',
+                color: colorVars.text.inverse,
                 fontSize: '16px',
                 textAlign: 'center',
                 transition: 'all 0.5s',
                 '&.Mui-disabled': {
-                  backgroundColor: '#7a7a7a',
-                  color: '#fff',
+                  backgroundColor: colorVars.state.neutralMid,
+                  color: colorVars.text.inverse,
                   opacity: 0.8,
                 },
               }}
@@ -1136,13 +1279,13 @@ const Booking = () => {
                 sx={{
                   margin: '10px',
                   padding: '15px',
-                  backgroundColor: '#d32f2f',
+                  backgroundColor: colorVars.text.error,
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: colorVars.text.inverse,
                   fontSize: '16px',
                   textAlign: 'center',
                   transition: 'all 0.5s',
-                  '&:hover': { backgroundColor: '#b71c1c' },
+                  '&:hover': { backgroundColor: colorVars.text.errorDark },
                 }}
                 onClick={() => {
                   const desk = desks.find(d => d.id === clickedDeskId);
