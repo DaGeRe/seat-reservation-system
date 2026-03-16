@@ -39,6 +39,7 @@ class BookingServiceColleaguesLookupTest {
     @Mock private ApplicationEventPublisher eventPublisher;
     @Mock private CalendarNotificationService calendarNotificationService;
     @Mock private BookingSettingsService bookingSettingsService;
+    @Mock private BookingLockService bookingLockService;
 
     private BookingService bookingService;
 
@@ -54,7 +55,8 @@ class BookingServiceColleaguesLookupTest {
             eventPublisher,
             calendarNotificationService,
             bookingSettingsService,
-            scheduledBlockingRepository
+            scheduledBlockingRepository,
+            bookingLockService
         );
     }
 

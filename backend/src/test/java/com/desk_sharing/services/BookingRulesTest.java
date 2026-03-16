@@ -8,7 +8,9 @@ import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
+import com.desk_sharing.services.BookingLockService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,15 +39,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BookingRulesTest {
 
-    @Mock BookingRepository bookingRepository;
-    @Mock RoomRepository roomRepository;
-    @Mock DeskRepository deskRepository;
-    @Mock UserService userService;
-    @Mock RoomService roomService;
-    @Mock DeskService deskService;
-    @Mock ApplicationEventPublisher eventPublisher;
-    @Mock CalendarNotificationService calendarNotificationService;
-    @Mock BookingSettingsService bookingSettingsService;
+    @Mock private BookingRepository bookingRepository;
+    @Mock private RoomRepository roomRepository;
+    @Mock private DeskRepository deskRepository;
+    @Mock private UserService userService;
+    @Mock private RoomService roomService;
+    @Mock private DeskService deskService;
+    @Mock private ApplicationEventPublisher eventPublisher;
+    @Mock private CalendarNotificationService calendarNotificationService;
+    @Mock private BookingSettingsService bookingSettingsService;
+    @Mock private ScheduledBlockingRepository scheduledBlockingRepository;
+    @Mock private BookingLockService bookingLockService;
 
     @InjectMocks
     private BookingService bookingService;
