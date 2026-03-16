@@ -37,7 +37,7 @@ public class BookingLockService {
     private Desk loadBookableDeskForUpdate(Long deskId) {
         final Desk desk = deskRepository.findByIdForUpdate(deskId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Desk not found"));
-        if (desk.isHidden() || desk.isFixed()) {
+        if (desk.isHidden()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This workstation is not available for booking.");
         }
         if (desk.isBlocked()) {
