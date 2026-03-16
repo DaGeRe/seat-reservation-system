@@ -3,6 +3,8 @@ package com.desk_sharing.services;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -11,12 +13,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Series;
+import com.desk_sharing.entities.ScheduledBlockingStatus;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RangeDTO;
@@ -26,6 +31,7 @@ import com.desk_sharing.model.WorkstationSearchRequestDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 //import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.repositories.UserRepository;
 
@@ -35,10 +41,16 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class SeriesService {
+    private static final List<ScheduledBlockingStatus> SERIES_BLOCKING_STATUSES = List.of(
+        ScheduledBlockingStatus.SCHEDULED,
+        ScheduledBlockingStatus.ACTIVE
+    );
+
     private final SeriesRepository seriesRepository;
     private final DeskRepository deskRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final ScheduledBlockingRepository scheduledBlockingRepository;
 
 
     /**
@@ -123,12 +135,14 @@ public class SeriesService {
      * @return  A list of desks that are available at each date for the specified timerange.
      */
     public List<Desk> getDesksForDatesAndTimes(DatesAndTimesDTO datesAndTimesDTO) {
+        final Time startTime = timestringToTime(datesAndTimesDTO.getStartTime());
+        final Time endTime = timestringToTime(datesAndTimesDTO.getEndTime());
         final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
             datesAndTimesDTO.getDates(), 
-            timestringToTime(datesAndTimesDTO.getStartTime()),
-            timestringToTime(datesAndTimesDTO.getEndTime())
+            startTime,
+            endTime
         );
-        return desks;
+        return filterOutDesksWithScheduledBlockingConflicts(desks, datesAndTimesDTO.getDates(), startTime, endTime);
     }
 
     /**
@@ -138,13 +152,15 @@ public class SeriesService {
      * @return  A list of desks that are available at each date for the specified timerange for the specified building.
      */
     public List<Desk> desksForBuildingAndDatesAndTimes(Long building_id, DatesAndTimesDTO datesAndTimesDTO) {
+        final Time startTime = timestringToTime(datesAndTimesDTO.getStartTime());
+        final Time endTime = timestringToTime(datesAndTimesDTO.getEndTime());
         final List<Desk> desks = deskRepository.desksForBuildingAndDatesAndTimes(
             building_id,
             datesAndTimesDTO.getDates(), 
-            timestringToTime(datesAndTimesDTO.getStartTime()),
-            timestringToTime(datesAndTimesDTO.getEndTime())
+            startTime,
+            endTime
         );
-        return desks;
+        return filterOutDesksWithScheduledBlockingConflicts(desks, datesAndTimesDTO.getDates(), startTime, endTime);
     }
 
     private String workstationTypeOrDefault(Desk desk) {
@@ -232,12 +248,22 @@ public class SeriesService {
         return applyWorkstationFilters(desks, requestDTO.getFilters());
     }
 
+    @Transactional
     public boolean createSeries(@RequestBody SeriesDTO seriesDTO) {
         UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
         if (userEntity == null) {
-            System.err.println("user not found in createSeries");
-            return false;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found for series creation");
         }
+
+        final Time seriesStart = timestringToTime(seriesDTO.getRangeDTO().getStartTime());
+        final Time seriesEnd = timestringToTime(seriesDTO.getRangeDTO().getEndTime());
+        final List<Date> dates = seriesDTO.getDates();
+        final Long deskId = seriesDTO.getDesk() == null ? null : seriesDTO.getDesk().getId();
+        if (deskId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk is required for series creation");
+        }
+
+        validateNoScheduledBlockingOverlapForSeries(deskId, dates, seriesStart, seriesEnd);
 
         Series newSeries = new Series(-1L, 
             userEntity, 
@@ -245,16 +271,14 @@ public class SeriesService {
             seriesDTO.getDesk(), 
             datestringToDate(seriesDTO.getRangeDTO().getStartDate()), 
             datestringToDate(seriesDTO.getRangeDTO().getEndDate()), 
-            timestringToTime(seriesDTO.getRangeDTO().getStartTime()), 
-            timestringToTime(seriesDTO.getRangeDTO().getEndTime()), 
+            seriesStart,
+            seriesEnd,
             seriesDTO.getRangeDTO().getFrequency(),
             seriesDTO.getRangeDTO().getDayOfTheWeek()
         );
         
         // Save the series.
         final Series finalSeries = seriesRepository.save(newSeries);
-        // Dates of bookings.
-        final List<Date> dates = seriesDTO.getDates();
 
         final List<Booking> bookings = dates.stream().map(date -> {
             return new Booking(
@@ -262,8 +286,8 @@ public class SeriesService {
                 seriesDTO.getRoom(),
                 seriesDTO.getDesk(),
                 date,
-                timestringToTime(seriesDTO.getRangeDTO().getStartTime()),
-                timestringToTime(seriesDTO.getRangeDTO().getEndTime()),
+                seriesStart,
+                seriesEnd,
                 finalSeries
             );
         }).toList();
@@ -273,6 +297,59 @@ public class SeriesService {
         }
         bookingRepository.saveAll(bookings);
         return true;
+    }
+
+    private List<Desk> filterOutDesksWithScheduledBlockingConflicts(
+            final List<Desk> desks,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (desks == null || desks.isEmpty()) {
+            return List.of();
+        }
+
+        return desks.stream()
+            .filter(desk -> !hasScheduledBlockingOverlap(desk.getId(), dates, startTime, endTime))
+            .toList();
+    }
+
+    private void validateNoScheduledBlockingOverlapForSeries(
+            final Long deskId,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (hasScheduledBlockingOverlap(deskId, dates, startTime, endTime)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "This workstation has a scheduled block during at least one selected series occurrence."
+            );
+        }
+    }
+
+    private boolean hasScheduledBlockingOverlap(
+            final Long deskId,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (deskId == null || dates == null || dates.isEmpty() || startTime == null || endTime == null) {
+            return false;
+        }
+
+        final LocalTime startLocalTime = startTime.toLocalTime();
+        final LocalTime endLocalTime = endTime.toLocalTime();
+
+        return dates.stream().anyMatch(date -> {
+            final LocalDate day = date.toLocalDate();
+            final LocalDateTime startDateTime = LocalDateTime.of(day, startLocalTime);
+            final LocalDateTime endDateTime = LocalDateTime.of(day, endLocalTime);
+
+            return scheduledBlockingRepository.existsByDeskIdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+                deskId,
+                SERIES_BLOCKING_STATUSES,
+                endDateTime,
+                startDateTime
+            );
+        });
     }
 
     /**

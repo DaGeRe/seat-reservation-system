@@ -190,6 +190,7 @@
     "otherFreeDesksForSelectedTimeSlots": "Other free desks for selected time slots",
     "noFreeDesksForSelectedTimeSlotInBuilding": "No free desks are available for this time slot in this building.",
     "booked": "Booking saved successfully",
+    "scheduledBlockingLabel": "Scheduled Blocking",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
     "bookingTimeAlignmentError": "Please choose start and end times on 30-minute boundaries (for example 08:00 or 08:30).",
@@ -586,5 +587,26 @@
     ,"defectAllCategories":"All Categories"
     ,"defectAllUrgencies":"All Urgencies"
     ,"defectAllRooms":"All Rooms"
+
+    ,"maintenanceCalendar":"Maintenance Calendar"
+    ,"scheduleBlocking":"Schedule Blocking"
+    ,"blockingSum":"Blocking sum"
+    ,"scheduledBlockingCreated":"Blocking scheduled successfully"
+    ,"scheduledBlockingCancelled":"Scheduled blocking cancelled"
+    ,"scheduledBlockingFailed":"Failed to schedule blocking"
+    ,"defectBlockedUntilTime":"Blocked until {{datetime}}"
+    ,"maintenanceCalendarBtn":"Maintenance Calendar"
+    ,"backToMonthView":"Back to month view"
+    ,"scheduledBlockingOverlap":"A blocking is already scheduled for this time period"
+    ,"scheduledBlockingBookingConflict":"This workstation currently has a scheduled block during the selected time."
+    ,"scheduledBlockingSelectPeriod":"Click and drag to select a blocking period"
+    ,"scheduledBlockingMinDuration":"Blocking period must be at least 1 hour"
+    ,"scheduledBlockingPastDate":"Cannot schedule a blocking in the past"
+    ,"cancelScheduledBlocking":"Cancel scheduled blocking"
+    ,"scheduledBlockingDetailsTitle":"Scheduled blocking details"
+    ,"scheduledBlockingCancelConfirmTitle":"Cancel scheduled blocking?"
+    ,"scheduledBlockingCancelConfirmText":"Are you sure you want to cancel this scheduled blocking?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Only scheduled blockings can be cancelled."
+    ,"scheduledBlockingCancelFailed":"Failed to cancel scheduled blocking"
 }
 

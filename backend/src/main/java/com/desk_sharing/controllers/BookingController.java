@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.model.BookingDTO;
@@ -36,6 +39,7 @@ import com.desk_sharing.model.BookingDayEventDTO;
 import com.desk_sharing.model.ColleagueBookingsDTO;
 import com.desk_sharing.model.BookingOverlapCheckRequestDTO;
 import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
+import com.desk_sharing.model.ScheduledBlockingDeskDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.services.BookingService;
 import com.desk_sharing.services.UserService;
@@ -181,6 +185,25 @@ public class BookingController {
         return new ResponseEntity<>(bookingsForDeskDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/scheduled-blockings-for-desk/{id}")
+    public ResponseEntity<List<ScheduledBlockingDeskDTO>> getScheduledBlockingsForDesk(
+            @PathVariable("id") Long deskId,
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        logger.info("getScheduledBlockingsForDesk( {} )", deskId);
+        final LocalDateTime fromDateTime = parseOptionalDateTime(from, "from");
+        final LocalDateTime toDateTime = parseOptionalDateTime(to, "to");
+
+        if ((fromDateTime == null) != (toDateTime == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "from and to must be provided together");
+        }
+        if (fromDateTime != null && !toDateTime.isAfter(fromDateTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "to must be after from");
+        }
+
+        return new ResponseEntity<>(bookingService.findScheduledBlockingsForDesk(deskId, fromDateTime, toDateTime), HttpStatus.OK);
+    }
+
     @GetMapping("/date/{id}")
     public ResponseEntity<List<Booking>> getDateBookings(@PathVariable("id") Long desk_id, @RequestBody Map<String, String> request) {
         logger.info("getDateBookings( {}, {} )", desk_id, request);
@@ -217,6 +240,25 @@ public class BookingController {
             return new ResponseEntity<>(bookings, HttpStatus.OK);
         } catch (IllegalArgumentException | DateTimeParseException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private LocalDateTime parseOptionalDateTime(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        try {
+            return LocalDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME);
+        } catch (DateTimeParseException firstError) {
+            try {
+                return OffsetDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME).toLocalDateTime();
+            } catch (DateTimeParseException ignored) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid " + fieldName + " format. Expected ISO date-time format."
+                );
+            }
         }
     }
 }

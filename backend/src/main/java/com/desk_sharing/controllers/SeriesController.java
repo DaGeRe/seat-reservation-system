@@ -15,10 +15,13 @@ import com.desk_sharing.services.SeriesService;
 import lombok.AllArgsConstructor;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,9 +79,18 @@ public class SeriesController {
     };
 
     @PostMapping
-    public ResponseEntity<Boolean> createSeries(@RequestBody SeriesDTO seriesDto) {
+    public ResponseEntity<?> createSeries(@RequestBody SeriesDTO seriesDto) {
         logger.info("createSeries( {} )", seriesDto);
-        return new ResponseEntity<Boolean>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+        } catch (ResponseStatusException ex) {
+            final Map<String, String> body = new HashMap<>();
+            body.put("error", ex.getReason() == null ? "Series creation failed" : ex.getReason());
+            if (ex.getStatusCode() == HttpStatus.CONFLICT) {
+                body.put("code", "SCHEDULED_BLOCKING_CONFLICT");
+            }
+            return new ResponseEntity<>(body, ex.getStatusCode());
+        }
     }
     
     @GetMapping("/{email}")

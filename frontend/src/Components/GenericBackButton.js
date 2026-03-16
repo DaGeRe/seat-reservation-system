@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { colorVars } from '../theme';
 
-const GenericBackButton = () => {
+const GenericBackButton = ({ onBack = null }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { pathname } = useLocation();
@@ -12,6 +12,10 @@ const GenericBackButton = () => {
     const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
 
     function back() {
+        if (typeof onBack === 'function') {
+            onBack();
+            return;
+        }
         if (normalizedPathname === '/carpark') {
             navigate('/home', { replace: true });
             return;

@@ -36,6 +36,7 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
         scripts/db/migration/fixed_desks.sql \
         scripts/db/migration/hidden_desks.sql \
         scripts/db/migration/defect_management.sql \
+        scripts/db/migration/scheduled_blockings.sql \
         scripts/db/migration/user_language_preference.sql; do
         if [ -f "$migration" ]; then
             rel_path="${migration#scripts/db/}"
