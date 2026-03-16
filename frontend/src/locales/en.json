@@ -113,6 +113,7 @@
 
     "myBookings": "My Bookings",
     "booking": "Booking",
+    "bookingDetails": "Booking Details",
     "edit": "Edit",
     "delete": "Delete",
     "cancelBooking": "Cancel Booking",
@@ -190,7 +191,7 @@
     "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
     "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
     "continue": "Continue",
-    "bookingConfirmationTitle": "Booking Confirmation for Arbeitsplatz {{desk}}",
+    "bookingConfirmationTitle": "Booking Confirmation for {{desk}}",
     "currentlyBeingBooked": "Currently being booked",
     "bookingLockExpired": "Desk lock expired after 3 minutes. Please select a desk again.",
     "otherFreeDesksForSelectedTimeSlots": "Other free desks for selected time slots",

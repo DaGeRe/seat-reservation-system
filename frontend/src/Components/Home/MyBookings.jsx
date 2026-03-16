@@ -278,7 +278,7 @@ const MyBookings = () => {
             setTheBookingEvent(null);
           }}
           closeTxt={t('cancel')}
-          title={t('booking')}
+          title={t('bookingDetails')}
         >
           <div>
             {selectedBookingEvent && 
@@ -321,7 +321,7 @@ const MyBookings = () => {
                     sx={{
                       padding: '8px 12px',
                       backgroundColor: colorVars.brand.accent,
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: colorVars.text.inverse,
                       fontSize: '14px',
                       textTransform: 'none',
@@ -339,7 +339,7 @@ const MyBookings = () => {
                       sx={{
                         padding: '8px 12px',
                         backgroundColor: colorVars.brand.accent,
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         color: colorVars.text.inverse,
                         fontSize: '14px',
                         textTransform: 'none',
@@ -357,7 +357,7 @@ const MyBookings = () => {
                       id="mybookings_cancel_booking_btn"
                       sx={{
                         padding: '8px 12px',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         borderColor: colorVars.text.error,
                         color: colorVars.text.error,
                         fontSize: '14px',
