@@ -106,6 +106,10 @@ public class DeskService {
             .orElseThrow(() -> new EntityNotFoundException("Room not found in DeskService.saveDesk : " + roomId));
         desk.setRoom(room);
         applyDeskMetadata(desk, deskDto);
+        if (desk.isFixed()) {
+            // New fixed desks start hidden by default.
+            desk.setHidden(true);
+        }
         final List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
         final Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
             .filter(d -> d.getDeskNumberInRoom() != null)
@@ -117,7 +121,7 @@ public class DeskService {
     }
 
     public List<Desk> getAllDesks() {
-        return deskRepository.findByHiddenFalseAndFixedFalse();
+        return deskRepository.findByHiddenFalse();
     }
 
     public Optional<Desk> getDeskById(@NonNull final Long id) {
@@ -125,7 +129,7 @@ public class DeskService {
     }
 
     public List<Desk> getDeskByRoomId(Long roomId) {
-        return deskRepository.findByRoomIdAndHiddenFalseAndFixedFalse(roomId);
+        return deskRepository.findByRoomIdAndHiddenFalse(roomId);
     }
 
     public List<Desk> getDeskByRoomIdIncludingHidden(Long roomId) {
@@ -135,20 +139,37 @@ public class DeskService {
     public Desk updateDesk(@NonNull final Long deskId, DeskDTO deskDto) {
         final Desk desk = getDeskById(deskId)
             .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.updateDesk : " + deskId));
+        final boolean wasFixed = desk.isFixed();
         applyDeskMetadata(desk, deskDto);
+        if (!wasFixed && desk.isFixed()) {
+            // Transition false -> true: fixed defaults to hidden.
+            desk.setHidden(true);
+        } else if (wasFixed && !desk.isFixed()) {
+            // Transition true -> false: unhide to avoid leaving non-fixed desks inaccessible.
+            desk.setHidden(false);
+        }
         return deskRepository.save(desk);
     }
 
     public Desk toggleFixed(@NonNull final Long deskId) {
         final Desk desk = getDeskById(deskId)
             .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.toggleFixed : " + deskId));
-        desk.setFixed(!desk.isFixed());
+        final boolean nowFixed = !desk.isFixed();
+        desk.setFixed(nowFixed);
+        if (nowFixed) {
+            desk.setHidden(true);
+        } else {
+            desk.setHidden(false);
+        }
         return deskRepository.save(desk);
     }
 
     public Desk toggleHidden(@NonNull final Long deskId) {
         final Desk desk = getDeskById(deskId)
             .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.toggleHidden : " + deskId));
+        if (!desk.isFixed()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only fixed workstations can be hidden or shown.");
+        }
         desk.setHidden(!desk.isHidden());
         return deskRepository.save(desk);
     }

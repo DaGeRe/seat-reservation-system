@@ -383,7 +383,7 @@ public class BookingService {
         final Desk desk = deskRepository.findByIdForUpdate(deskId)
             .orElseThrow(() -> new IllegalArgumentException("Desk not found with id: " + bookingData.getDeskId()));
 
-        if (desk.isHidden() || desk.isFixed()) {
+        if (desk.isHidden()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This workstation is not available for booking.");
         }
 
@@ -588,10 +588,10 @@ public class BookingService {
             if (!booking.isBookingInProgress()) {
                 return booking;
             }
-			if (booking.getDesk() != null && (booking.getDesk().isHidden() || booking.getDesk().isFixed())) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"This workstation is not available for booking.");
-			}
+                if (booking.getDesk() != null && booking.getDesk().isHidden()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "This workstation is not available for booking.");
+                }
             if (booking.getDesk() != null && booking.getDesk().isBlocked()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "This workstation was blocked due to a defect since your booking started. Cannot confirm.");
@@ -705,7 +705,7 @@ public class BookingService {
             slots.put(day, 0);
             // Ever enabled room
             for (Room room : rooms) {
-                List<Desk> desks = deskRepository.findByRoomIdAndHiddenFalseAndFixedFalse(room.getId());
+                List<Desk> desks = deskRepository.findByRoomIdAndHiddenFalse(room.getId());
                 // Every desk in a room
                 for (Desk desk : desks) {
                     LocalTime time = LocalTime.of(6, 0, 0);
