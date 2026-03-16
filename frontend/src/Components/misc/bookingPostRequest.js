@@ -1,6 +1,5 @@
 import { formatDate_yyyymmdd_to_ddmmyyyy } from './formatDate';
 import { deleteRequest, postRequest, putRequest } from '../RequestFunctions/RequestFunctions';
-import { deleteRequest, postRequest, putRequest } from '../RequestFunctions/RequestFunctions';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import { colorVars } from '../../theme';

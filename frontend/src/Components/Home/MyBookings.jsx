@@ -57,35 +57,6 @@ const bookingEquipmentSummary = (desk, t) => {
   return labels.join(', ');
 };
 
-const bookingEquipmentSummary = (desk, t) => {
-  if (!desk) return '';
-
-  const hasSpecialFeatures = desk?.specialFeatures != null && String(desk.specialFeatures).trim() !== '';
-  const monitorCount = desk?.monitorsQuantity ?? 1;
-  const labels = [
-    t(`workstationType${desk?.workstationType || 'Standard'}`),
-    `${monitorCount} ${t(monitorCount === 1 ? 'monitorSingular' : 'monitors')}`,
-  ];
-
-  if (desk?.deskHeightAdjustable === true) {
-    labels.push(t('adjustableHeight'));
-  }
-  if (desk?.technologyDockingStation === true) {
-    labels.push(t('technologyDockingStation'));
-  }
-  if (desk?.technologyWebcam === true) {
-    labels.push(t('technologyWebcam'));
-  }
-  if (desk?.technologyHeadset === true) {
-    labels.push(t('technologyHeadset'));
-  }
-  if (hasSpecialFeatures) {
-    labels.push(`${t('specialFeatures')}: ${String(desk.specialFeatures).trim()}`);
-  }
-
-  return labels.join(', ');
-};
-
 const MyBookings = () => {
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const { t, i18n } = useTranslation();
@@ -346,7 +317,6 @@ const MyBookings = () => {
                 </div>
                 <div className="mybookings-actions">
                   <Button
-                    id="mybookings_export_ics_btn"
                     id="mybookings_export_ics_btn"
                     sx={{
                       padding: '8px 12px',
