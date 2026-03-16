@@ -47,6 +47,7 @@ class DeskServiceTest {
         Desk saved = deskService.saveDesk(dto);
 
         assertThat(saved.isFixed()).isTrue();
+        assertThat(saved.isHidden()).isTrue();
         assertThat(saved.getDeskNumberInRoom()).isEqualTo(1L);
     }
 
@@ -62,29 +63,30 @@ class DeskServiceTest {
         Desk saved = deskService.saveDesk(dto);
 
         assertThat(saved.isFixed()).isFalse();
+        assertThat(saved.isHidden()).isFalse();
         assertThat(saved.getDeskNumberInRoom()).isEqualTo(1L);
     }
 
     @Test
     void getAllDesks_returnsOnlyVisibleDesks() {
         Desk visible = desk(1L, false);
-        when(deskRepository.findByHiddenFalseAndFixedFalse()).thenReturn(List.of(visible));
+        when(deskRepository.findByHiddenFalse()).thenReturn(List.of(visible));
 
         List<Desk> result = deskService.getAllDesks();
 
         assertThat(result).containsExactly(visible);
-        verify(deskRepository).findByHiddenFalseAndFixedFalse();
+        verify(deskRepository).findByHiddenFalse();
     }
 
     @Test
     void getDeskByRoomId_returnsOnlyVisibleDesks() {
         Desk visible = desk(2L, false);
-        when(deskRepository.findByRoomIdAndHiddenFalseAndFixedFalse(10L)).thenReturn(List.of(visible));
+        when(deskRepository.findByRoomIdAndHiddenFalse(10L)).thenReturn(List.of(visible));
 
         List<Desk> result = deskService.getDeskByRoomId(10L);
 
         assertThat(result).containsExactly(visible);
-        verify(deskRepository).findByRoomIdAndHiddenFalseAndFixedFalse(10L);
+        verify(deskRepository).findByRoomIdAndHiddenFalse(10L);
     }
 
     @Test
@@ -134,6 +136,42 @@ class DeskServiceTest {
     }
 
     @Test
+    void updateDesk_setsHiddenTrue_whenFixedTurnsTrue() {
+        Desk existingDesk = desk(8L, false);
+        existingDesk.setFixed(false);
+        existingDesk.setRemark("Old");
+
+        DeskDTO dto = new DeskDTO();
+        dto.setDeskId(8L);
+        dto.setRemark("New");
+        dto.setFixed(true);
+
+        when(deskRepository.findById(8L)).thenReturn(Optional.of(existingDesk));
+        when(deskRepository.save(any(Desk.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Desk updated = deskService.updateDesk(8L, dto);
+
+        assertThat(updated.isFixed()).isTrue();
+        assertThat(updated.isHidden()).isTrue();
+    }
+
+    @Test
+    void toggleFixed_setsHiddenAccordingly() {
+        Desk d = desk(9L, false);
+        d.setFixed(false);
+        when(deskRepository.findById(9L)).thenReturn(Optional.of(d));
+        when(deskRepository.save(any(Desk.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Desk updatedToFixed = deskService.toggleFixed(9L);
+        assertThat(updatedToFixed.isFixed()).isTrue();
+        assertThat(updatedToFixed.isHidden()).isTrue();
+
+        Desk updatedToNotFixed = deskService.toggleFixed(9L);
+        assertThat(updatedToNotFixed.isFixed()).isFalse();
+        assertThat(updatedToNotFixed.isHidden()).isFalse();
+    }
+
+    @Test
     void getDeskByRoomIdIncludingHidden_returnsAllDesks() {
         Desk visible = desk(2L, false);
         Desk hidden = desk(3L, true);
@@ -148,6 +186,7 @@ class DeskServiceTest {
     @Test
     void toggleHidden_switchesDeskVisibility() {
         Desk d = desk(7L, false);
+        d.setFixed(true);
         when(deskRepository.findById(7L)).thenReturn(Optional.of(d));
         when(deskRepository.save(any(Desk.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -155,6 +194,17 @@ class DeskServiceTest {
 
         assertThat(updated.isHidden()).isTrue();
         verify(deskRepository).save(d);
+    }
+
+    @Test
+    void toggleHidden_rejectsNonFixedDesk() {
+        Desk d = desk(12L, false);
+        d.setFixed(false);
+        when(deskRepository.findById(12L)).thenReturn(Optional.of(d));
+
+        assertThatThrownBy(() -> deskService.toggleHidden(12L))
+            .isInstanceOf(ResponseStatusException.class)
+            .hasMessageContaining("Only fixed workstations can be hidden or shown.");
     }
 
     private static DeskDTO deskDto(Long roomId, String remark, Boolean fixed) {
