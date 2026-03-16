@@ -28,6 +28,7 @@ const SIDEBAR_DIRECT_ROUTES = new Set([
  * @param withSidebar If true the sidebar is displayed.
  * @param withPaddingX If true around the content is an padding in x direction. 
  * @param actionElement Optional element (icon/button) displayed next to the title (right aligned).
+ * @param onGenericBack Optional callback invoked when generic back button is clicked.
  * @param children The content of the page.
  */
 const ROUTES_REQUIRING_BUTTON_NAVIGATION = new Set([
@@ -35,7 +36,16 @@ const ROUTES_REQUIRING_BUTTON_NAVIGATION = new Set([
     '/floor',
 ]);
 
-const LayoutPage = ({ title, helpText, useGenericBackButton = false, withSidebar = true, withPaddingX = false, actionElement = null, children }) => {
+const LayoutPage = ({
+    title,
+    helpText,
+    useGenericBackButton = false,
+    withSidebar = true,
+    withPaddingX = false,
+    actionElement = null,
+    onGenericBack = null,
+    children
+}) => {
     const location = useLocation();
     const { pathname, state } = location;
     const normalizedPathname = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
@@ -61,7 +71,7 @@ const LayoutPage = ({ title, helpText, useGenericBackButton = false, withSidebar
                 <Divider sx={LayoutPage_theme.divider} />
                 <br/>
                 {helpText !== '' && <InfoModal text={helpText}/>}
-                {shouldShowBackButton && <GenericBackButton/>}
+                {shouldShowBackButton && <GenericBackButton onBack={onGenericBack} />}
                 <Box sx={withPaddingX ? LayoutPage_theme.innerContent_padding : LayoutPage_theme.innerContent}>
                     {children}
                 </Box>

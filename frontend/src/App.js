@@ -23,6 +23,7 @@ import SupportContacts from './Components/Home/SupportContacts';
 import JwtHeartbeat from './Components/misc/JwtHearbeat';
 import CarparkOverview from './Components/Carpark/CarparkOverview';
 import DefectDashboard from './Components/Defects/DefectDashboard';
+import MaintenanceCalendar from './Components/Defects/MaintenanceCalendar';
 import './i18n';
 
 function AppRoutes() {
@@ -70,6 +71,10 @@ function AppRoutes() {
         <Route
           path="/defects"
           element={isAuthenticated && canAccessDefects ? <DefectDashboard /> : <Navigate to={isAuthenticated ? "/home" : "/"} replace />}
+        />
+        <Route
+          path="/maintenance-calendar"
+          element={isAuthenticated && canAccessDefects ? <MaintenanceCalendar /> : <Navigate to={isAuthenticated ? "/home" : "/"} replace />}
         />
         <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/"} replace />} />
       </Routes>

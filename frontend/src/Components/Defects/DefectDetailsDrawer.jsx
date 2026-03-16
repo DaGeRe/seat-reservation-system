@@ -5,7 +5,9 @@ import {
   DialogTitle, DialogContent, DialogActions, Paper
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getRequest, postRequest, putRequest, deleteRequest } from '../RequestFunctions/RequestFunctions';
 import {
@@ -16,6 +18,7 @@ import { colorVars } from '../../theme';
 
 const DefectDetailsDrawer = ({ defect, open, onClose, onUpdate }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
@@ -292,6 +295,23 @@ const DefectDetailsDrawer = ({ defect, open, onClose, onUpdate }) => {
               </Button>
             </Box>
           ) : null}
+
+          {defect.status !== 'RESOLVED' && (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<CalendarMonthIcon />}
+              sx={{ mb: 2 }}
+              onClick={() => {
+                onClose();
+                navigate('/maintenance-calendar', {
+                  state: { defectId: defect.id, deskId: defect.desk?.id }
+                });
+              }}
+            >
+              {t('maintenanceCalendarBtn')}
+            </Button>
+          )}
 
           <Divider sx={{ my: 2 }} />
 

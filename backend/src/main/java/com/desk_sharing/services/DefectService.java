@@ -22,6 +22,7 @@ import com.desk_sharing.repositories.DefectInternalNoteRepository;
 import com.desk_sharing.repositories.DefectRepository;
 import com.desk_sharing.repositories.DeskRepository;
 import com.desk_sharing.repositories.RoleRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.repositories.UserRepository;
 import com.desk_sharing.services.calendar.CalendarNotificationService;
 
@@ -40,6 +41,7 @@ public class DefectService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BookingRepository bookingRepository;
+    private final ScheduledBlockingRepository scheduledBlockingRepository;
     private final CalendarNotificationService calendarNotificationService;
     private final DefectNotificationService defectNotificationService;
     private final UserService userService;
@@ -185,7 +187,30 @@ public class DefectService {
                 desk.setBlockedReasonCategory(null);
                 desk.setBlockedEstimatedEndDate(null);
                 desk.setBlockedByDefectId(null);
+                desk.setBlockedEndDateTime(null);
+                desk.setBlockedByScheduledBlockingId(null);
                 deskRepository.save(desk);
+            }
+
+            // Cancel all scheduled/active blockings for this defect
+            List<ScheduledBlocking> scheduledBlockings = scheduledBlockingRepository
+                    .findByDefectIdAndStatusIn(defect.getId(),
+                            List.of(ScheduledBlockingStatus.SCHEDULED, ScheduledBlockingStatus.ACTIVE));
+            for (ScheduledBlocking sb : scheduledBlockings) {
+                if (sb.getStatus() == ScheduledBlockingStatus.ACTIVE) {
+                    Desk sbDesk = sb.getDesk();
+                    if (sbDesk.isBlocked() && sb.getId().equals(sbDesk.getBlockedByScheduledBlockingId())) {
+                        sbDesk.setBlocked(false);
+                        sbDesk.setBlockedReasonCategory(null);
+                        sbDesk.setBlockedEstimatedEndDate(null);
+                        sbDesk.setBlockedByDefectId(null);
+                        sbDesk.setBlockedEndDateTime(null);
+                        sbDesk.setBlockedByScheduledBlockingId(null);
+                        deskRepository.save(sbDesk);
+                    }
+                }
+                sb.setStatus(ScheduledBlockingStatus.CANCELLED);
+                scheduledBlockingRepository.save(sb);
             }
         }
 
@@ -256,6 +281,8 @@ public class DefectService {
         desk.setBlockedReasonCategory(defect.getCategory().name());
         desk.setBlockedEstimatedEndDate(estimatedEnd);
         desk.setBlockedByDefectId(defect.getId());
+        desk.setBlockedEndDateTime(null);
+        desk.setBlockedByScheduledBlockingId(null);
         deskRepository.save(desk);
 
         return defect;
@@ -286,6 +313,8 @@ public class DefectService {
         desk.setBlockedReasonCategory(null);
         desk.setBlockedEstimatedEndDate(null);
         desk.setBlockedByDefectId(null);
+        desk.setBlockedEndDateTime(null);
+        desk.setBlockedByScheduledBlockingId(null);
         deskRepository.save(desk);
         return defect;
     }

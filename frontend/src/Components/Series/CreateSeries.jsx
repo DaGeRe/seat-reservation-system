@@ -173,7 +173,15 @@ const CreateSeries = () => {
                 // This is needed because we want to remove desks that are not longer available.
                 setRepaint(!repaint);
             },
-            () => {console.log('Failed to create a new series in CreateSeries.js.');},
+            (status, errorData) => {
+                console.log('Failed to create a new series in CreateSeries.js.', status, errorData);
+                const backendError = errorData?.error || errorData?.message;
+                if (backendError) {
+                    toast.error(backendError);
+                } else {
+                    toast.error(t('httpOther'));
+                }
+            },
             JSON.stringify({
                 'id': 0,
                 'rangeDTO': {

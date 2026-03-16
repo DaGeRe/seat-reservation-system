@@ -1,5 +1,6 @@
 package com.desk_sharing.entities;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -65,6 +66,12 @@ public class Desk {
 
     @Column(name = "blocked_by_defect_id", nullable = true)
     private Long blockedByDefectId;
+
+    @Column(name = "blocked_end_date_time", nullable = true)
+    private LocalDateTime blockedEndDateTime;
+
+    @Column(name = "blocked_by_scheduled_blocking_id", nullable = true)
+    private Long blockedByScheduledBlockingId;
 
     @Column(name = "is_hidden", nullable = false, columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
     private boolean hidden = false;

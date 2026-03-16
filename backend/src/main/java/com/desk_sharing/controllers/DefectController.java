@@ -1,5 +1,8 @@
 package com.desk_sharing.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import com.desk_sharing.entities.Defect;
 import com.desk_sharing.entities.DefectInternalNote;
+import com.desk_sharing.entities.ScheduledBlocking;
 import com.desk_sharing.model.DefectBlockDTO;
 import com.desk_sharing.model.DefectCreateDTO;
 import com.desk_sharing.model.DefectNoteDTO;
 import com.desk_sharing.model.DefectStatusUpdateDTO;
+import com.desk_sharing.model.ScheduledBlockingCreateDTO;
 import com.desk_sharing.services.DefectService;
 import com.desk_sharing.services.FutureBookingsConflictException;
+import com.desk_sharing.services.ScheduledBlockingService;
 
 import lombok.AllArgsConstructor;
 
@@ -27,6 +33,7 @@ import lombok.AllArgsConstructor;
 public class DefectController {
 
     private final DefectService defectService;
+    private final ScheduledBlockingService scheduledBlockingService;
 
     @PostMapping
     public ResponseEntity<?> createDefect(@RequestBody DefectCreateDTO dto) {
@@ -139,5 +146,68 @@ public class DefectController {
                                            @PathVariable Long noteId) {
         defectService.deleteNote(id, noteId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/scheduled-blockings")
+    @PreAuthorize("hasRole('SERVICE_PERSONNEL') or hasRole('ADMIN')")
+    public ResponseEntity<List<ScheduledBlocking>> listScheduledBlockings(@PathVariable Long id) {
+        return ResponseEntity.ok(scheduledBlockingService.listByDefect(id));
+    }
+
+    @GetMapping("/{id}/scheduled-blockings/counts")
+    @PreAuthorize("hasRole('SERVICE_PERSONNEL') or hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Long>> getScheduledBlockingCounts(
+            @PathVariable Long id,
+            @RequestParam int year,
+            @RequestParam int month) {
+        return ResponseEntity.ok(scheduledBlockingService.getBlockingCountsForMonth(id, year, month));
+    }
+
+    @PostMapping("/{id}/scheduled-blockings")
+    @PreAuthorize("hasRole('SERVICE_PERSONNEL') or hasRole('ADMIN')")
+    public ResponseEntity<?> createScheduledBlocking(@PathVariable Long id,
+                                                      @RequestBody ScheduledBlockingCreateDTO dto) {
+        try {
+            LocalDateTime start = parseDateTime(dto.getStartDateTime(), "startDateTime");
+            LocalDateTime end = parseDateTime(dto.getEndDateTime(), "endDateTime");
+
+            ScheduledBlocking sb = scheduledBlockingService.createScheduledBlocking(
+                    id, start, end, dto.getCancelFutureBookings());
+            return new ResponseEntity<>(sb, HttpStatus.CREATED);
+        } catch (FutureBookingsConflictException ex) {
+            Map<String, Object> body = new HashMap<>();
+            body.put("code", "FUTURE_BOOKINGS_EXIST");
+            body.put("error", "Desk has future bookings during the blocking period.");
+            body.put("futureBookingCount", ex.getFutureBookingCount());
+            return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+        } catch (org.springframework.web.server.ResponseStatusException ex) {
+            if (ex.getStatusCode() == HttpStatus.CONFLICT) {
+                Map<String, Object> body = new HashMap<>();
+                body.put("error", ex.getReason());
+                return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+            }
+            throw ex;
+        }
+    }
+
+    @DeleteMapping("/{id}/scheduled-blockings/{blockingId}")
+    @PreAuthorize("hasRole('SERVICE_PERSONNEL') or hasRole('ADMIN')")
+    public ResponseEntity<Void> cancelScheduledBlocking(@PathVariable Long id,
+                                                         @PathVariable Long blockingId) {
+        scheduledBlockingService.cancelScheduledBlocking(id, blockingId);
+        return ResponseEntity.noContent().build();
+    }
+
+    private LocalDateTime parseDateTime(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, fieldName + " is required");
+        }
+        try {
+            return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (DateTimeParseException e) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid " + fieldName + " format. Expected ISO format (e.g. 2025-03-16T09:00:00)");
+        }
     }
 }

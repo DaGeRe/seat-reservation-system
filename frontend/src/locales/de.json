@@ -191,6 +191,7 @@
     "otherFreeDesksForSelectedTimeSlots": "Andere freie Arbeitsplaetze fuer den ausgewaehlten Zeitraum",
     "noFreeDesksForSelectedTimeSlotInBuilding": "Fuer dieses Zeitfenster gibt es in diesem Gebaeude keine freien Arbeitsplaetze.",
     "booked": "Buchung erfolgreich",
+    "scheduledBlockingLabel": "Geplante Sperrung",
     "selectDeskMessage": "Bitte wählen Sie zuerst einen Arbeitsplatz",
     "blank": "Bitte wählen Sie zuerst einen Arbeitsplatz und Zeitraum vor der Buchung",
     "bookingTimeAlignmentError": "Bitte wählen Sie Start- und Endzeit im 30-Minuten-Raster (z. B. 08:00 oder 08:30).",
@@ -586,4 +587,25 @@
     ,"defectAllCategories":"Alle Kategorien"
     ,"defectAllUrgencies":"Alle Dringlichkeiten"
     ,"defectAllRooms":"Alle Räume"
+
+    ,"maintenanceCalendar":"Wartungskalender"
+    ,"scheduleBlocking":"Sperrung planen"
+    ,"blockingSum":"Sperrungssumme"
+    ,"scheduledBlockingCreated":"Sperrung erfolgreich geplant"
+    ,"scheduledBlockingCancelled":"Geplante Sperrung storniert"
+    ,"scheduledBlockingFailed":"Sperrung konnte nicht geplant werden"
+    ,"defectBlockedUntilTime":"Gesperrt bis {{datetime}}"
+    ,"maintenanceCalendarBtn":"Wartungskalender"
+    ,"backToMonthView":"Zurück zur Monatsansicht"
+    ,"scheduledBlockingOverlap":"Für diesen Zeitraum ist bereits eine Sperrung geplant"
+    ,"scheduledBlockingBookingConflict":"Dieser Arbeitsplatz hat im ausgewählten Zeitraum eine geplante Sperrung."
+    ,"scheduledBlockingSelectPeriod":"Klicken und ziehen Sie, um einen Sperrzeitraum auszuwählen"
+    ,"scheduledBlockingMinDuration":"Der Sperrzeitraum muss mindestens 1 Stunde betragen"
+    ,"scheduledBlockingPastDate":"Es kann keine Sperrung in der Vergangenheit geplant werden"
+    ,"cancelScheduledBlocking":"Geplante Sperrung stornieren"
+    ,"scheduledBlockingDetailsTitle":"Details zur geplanten Sperrung"
+    ,"scheduledBlockingCancelConfirmTitle":"Geplante Sperrung stornieren?"
+    ,"scheduledBlockingCancelConfirmText":"Möchten Sie diese geplante Sperrung wirklich stornieren?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Nur geplante Sperrungen können storniert werden."
+    ,"scheduledBlockingCancelFailed":"Geplante Sperrung konnte nicht storniert werden"
 }

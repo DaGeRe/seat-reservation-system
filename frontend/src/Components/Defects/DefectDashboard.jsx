@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Box, ToggleButton, ToggleButtonGroup, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getRequest, putRequest } from '../RequestFunctions/RequestFunctions';
 import LayoutPage from '../Templates/LayoutPage';
 import DefectFilters from './DefectFilters';
@@ -11,6 +12,8 @@ import DefectDetailsDrawer from './DefectDetailsDrawer';
 
 const DefectDashboard = () => {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const headers = useRef(JSON.parse(sessionStorage.getItem('headers')));
   const [defects, setDefects] = useState([]);
   const [desks, setDesks] = useState([]);
@@ -105,6 +108,38 @@ const DefectDashboard = () => {
   useEffect(() => { fetchDesks(); }, [fetchDesks]);
   useEffect(() => { fetchRooms(); }, [fetchRooms]);
   useEffect(() => { fetchMyActiveAssignmentsCount(); }, [fetchMyActiveAssignmentsCount]);
+
+  useEffect(() => {
+    const openDefectId = location.state?.openDefectId;
+    if (openDefectId == null) {
+      return;
+    }
+
+    const clearOpenDefectState = () => {
+      navigate('/defects', { replace: true, state: null });
+    };
+
+    const matchingDefect = defects.find((d) => String(d?.id) === String(openDefectId));
+    if (matchingDefect) {
+      setSelectedDefect(matchingDefect);
+      setDrawerOpen(true);
+      clearOpenDefectState();
+      return;
+    }
+
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/defects/${openDefectId}`,
+      headers.current,
+      (defect) => {
+        setSelectedDefect(defect);
+        setDrawerOpen(true);
+        clearOpenDefectState();
+      },
+      () => {
+        clearOpenDefectState();
+      }
+    );
+  }, [defects, location.state, navigate]);
 
   const handleSelect = (defect) => {
     setSelectedDefect(defect);

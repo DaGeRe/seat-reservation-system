@@ -85,6 +85,8 @@ const Booking = () => {
   const [desks, setDesks] = useState([]);
   const [events, setEvents] = useState([]);
   const [event, setEvent] = useState({});
+  const [calendarDate, setCalendarDate] = useState(initialDate);
+  const [calendarView, setCalendarView] = useState('day');
   const [isBookingPending, setIsBookingPending] = useState(false);
   const [clickedDeskId, setClickedDeskId] = useState(null);
   const [clickedDeskRemark, setClickedDeskRemark] = useState('');
@@ -292,6 +294,13 @@ const Booking = () => {
 
   const loadBookings = useCallback(() => {
     if (!clickedDeskId) return;
+    const baseDate = calendarDate instanceof Date && !Number.isNaN(calendarDate.valueOf())
+      ? calendarDate
+      : new Date();
+    const rangeStart = moment(baseDate).startOf(calendarView === 'week' ? 'week' : 'day');
+    const rangeEnd = moment(baseDate).endOf(calendarView === 'week' ? 'week' : 'day');
+    const from = rangeStart.format('YYYY-MM-DDTHH:mm:ss');
+    const to = rangeEnd.format('YYYY-MM-DDTHH:mm:ss');
 
     getRequest(
       `${process.env.REACT_APP_BACKEND_URL}/bookings/bookingsForDesk/${clickedDeskId}`,
@@ -312,19 +321,41 @@ const Booking = () => {
           id: b.booking_id,
         }));
 
-        if (isEditMode && editBooking?.deskId === clickedDeskId) {
-          const editStart = new Date(`${editBooking.day}T${editBooking.begin}`);
-          const editEnd = new Date(`${editBooking.day}T${editBooking.end}`);
-          const editSelection = { start: editStart, end: editEnd, id: 1 };
-          setEvents([...bookingEvents, editSelection]);
-          setEvent(editSelection);
-        } else {
-          setEvents(bookingEvents);
-        }
+        const applyCalendarEvents = (scheduledBlockingEvents = []) => {
+          const mergedEvents = [...bookingEvents, ...scheduledBlockingEvents];
+          if (isEditMode && editBooking?.deskId === clickedDeskId) {
+            const editStart = new Date(`${editBooking.day}T${editBooking.begin}`);
+            const editEnd = new Date(`${editBooking.day}T${editBooking.end}`);
+            const editSelection = { start: editStart, end: editEnd, id: 1 };
+            setEvents([...mergedEvents, editSelection]);
+            setEvent(editSelection);
+          } else {
+            setEvents(mergedEvents);
+            setEvent({});
+          }
+        };
+
+        getRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/bookings/scheduled-blockings-for-desk/${clickedDeskId}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+          headers.current,
+          (scheduledBlockings) => {
+            const scheduledBlockingEvents = (Array.isArray(scheduledBlockings) ? scheduledBlockings : []).map((blocking) => ({
+              start: new Date(blocking.startDateTime),
+              end: new Date(blocking.endDateTime),
+              title: t('scheduledBlockingLabel'),
+              id: `scheduled-blocking-${blocking.id}`,
+              isScheduledBlocking: true,
+            }));
+            applyCalendarEvents(scheduledBlockingEvents);
+          },
+          () => {
+            applyCalendarEvents([]);
+          }
+        );
       },
       () => console.error('Failed to fetch bookings')
     );
-  }, [clickedDeskId, editBooking, isEditMode, t]);
+  }, [calendarDate, calendarView, clickedDeskId, editBooking, isEditMode, t]);
 
   const selectSlot = useCallback((slotData, currentEventId) => {
     if (!slotData) return;
@@ -384,14 +415,15 @@ const Booking = () => {
       return true;
     });
 
-    const isOverlap = updatedEvents.some(
+    const overlappingEvents = updatedEvents.filter(
       (e) =>
         (e.start <= startTime && startTime < e.end) ||
         (e.start < endTime && endTime <= e.end) ||
         (startTime <= e.start && e.end <= endTime)
     );
-    if (isOverlap) {
-      toast.warning(t('overlap'));
+    if (overlappingEvents.length > 0) {
+      const overlapsScheduledBlocking = overlappingEvents.some((e) => e?.isScheduledBlocking);
+      toast.warning(overlapsScheduledBlocking ? t('scheduledBlockingBookingConflict') : t('overlap'));
       openAlternativeDeskDialogForSlot(startTime, endTime);
       return;
     }
@@ -843,11 +875,15 @@ const Booking = () => {
                               {t('defectBlockedReason', { reason: desk.blockedReasonCategory.replace(/_/g, ' ') })}
                             </Typography>
                           )}
-                          {desk.blockedEstimatedEndDate && (
+                          {desk.blockedEndDateTime ? (
+                            <Typography variant="caption">
+                              {t('defectBlockedUntilTime', { datetime: new Date(desk.blockedEndDateTime).toLocaleString() })}
+                            </Typography>
+                          ) : desk.blockedEstimatedEndDate ? (
                             <Typography variant="caption">
                               {t('defectBlockedUntil', { date: desk.blockedEstimatedEndDate })}
                             </Typography>
-                          )}
+                          ) : null}
                         </>
                       )}
                       <Typography variant="caption">{t('booking.tooltip.ergonomics')}: {desk?.workstationType || 'Standard'}</Typography>
@@ -944,16 +980,23 @@ const Booking = () => {
             startAccessor="start"
             endAccessor="end"
             views={['day', 'week']}
+            view={calendarView}
+            date={calendarDate}
             defaultView="day"
             defaultDate={initialDate}
+            onView={(nextView) => setCalendarView(nextView)}
+            onNavigate={(nextDate) => setCalendarDate(nextDate)}
             onSelectSlot={(data) => (clickedDeskId ? selectSlot(data, event.id) : toast.warning(t('selectDeskMessage')))}
             selectable
             min={new Date(0, 0, 0, minStartTime, 0, 0)}
             max={new Date(0, 0, 0, maxEndTime, 0, 0)}
             formats={calendarFormats}
-            eventPropGetter={(event) => ({
+            eventPropGetter={(calendarEvent) => ({
               style: {
-                backgroundColor: events.some((e) => e.id === event.id) ? colorVars.state.neutralGrey : colorVars.brand.primary,
+                backgroundColor: calendarEvent?.isScheduledBlocking
+                  ? colorVars.state.neutralDark
+                  : (calendarEvent?.id === 1 ? colorVars.brand.primary : colorVars.state.neutralGrey),
+                border: calendarEvent?.isScheduledBlocking ? `1px solid ${colorVars.text.error}` : undefined,
               },
             })}
             messages={{
