@@ -1,10 +1,7 @@
 package com.desk_sharing.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -22,9 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.BookingSettings;
+import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.BookingDTO;
@@ -78,6 +75,7 @@ class BookingServiceFixedDeskTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(roomService.getRoomById(10L)).thenReturn(Optional.of(room));
         when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
+
         assertThatThrownBy(() -> bookingService.createBooking(dto))
             .isInstanceOf(ResponseStatusException.class)
             .hasMessageContaining("not available");
@@ -92,105 +90,8 @@ class BookingServiceFixedDeskTest {
             11L,
             Date.valueOf(LocalDate.now().plusDays(1)),
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
-        );
-
-        UserEntity user = new UserEntity();
-        user.setId(7);
-
-        Room room = new Room();
-        room.setId(10L);
-
-        Desk desk = new Desk();
-        desk.setId(11L);
-        desk.setFixed(true);
-        desk.setHidden(true);
-
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(roomService.getRoomById(10L)).thenReturn(Optional.of(room));
-        when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
-        when(bookingSettingsService.getCurrentSettings()).thenReturn(new BookingSettings(1L, 0, null, null));
-        when(scheduledBlockingRepository.findOverlapping(any(), anyList(), any(), any())).thenReturn(java.util.List.of());
-        when(bookingLockService.findActiveLock(11L, dto.getDay())).thenReturn(Optional.empty());
-        when(bookingRepository.getAllBookingsForPreventDuplicates(
-            dto.getRoomId(),
-            dto.getDeskId(),
-            dto.getDay(),
-            dto.getBegin(),
-            dto.getEnd()
-        )).thenReturn(java.util.List.of());
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> {
-            Booking booking = invocation.getArgument(0);
-            booking.setId(123L);
-            return booking;
-        });
-
-        Booking saved = bookingService.createBooking(dto);
-
-        assertThat(saved).isNotNull();
-        assertThat(saved.getId()).isEqualTo(123L);
-        assertThat(saved.getDesk().isFixed()).isTrue();
-    }
-
-    @Test
-    void createBooking_allowsVisibleFixedDesk() {
-        BookingDTO dto = new BookingDTO(
-            null,
-            7,
-            10L,
-            11L,
-            Date.valueOf(LocalDate.now().plusDays(1)),
-            Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
-        );
-
-        UserEntity user = new UserEntity();
-        user.setId(7);
-
-        Room room = new Room();
-        room.setId(10L);
-
-        Desk desk = new Desk();
-        desk.setId(11L);
-        desk.setFixed(true);
-        desk.setHidden(false);
-
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(roomService.getRoomById(10L)).thenReturn(Optional.of(room));
-        when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
-        when(bookingSettingsService.getCurrentSettings()).thenReturn(new BookingSettings(1L, 0, null, null));
-        when(scheduledBlockingRepository.findOverlapping(any(), anyList(), any(), any())).thenReturn(java.util.List.of());
-        when(bookingLockService.findActiveLock(11L, dto.getDay())).thenReturn(Optional.empty());
-        when(bookingRepository.getAllBookingsForPreventDuplicates(
-            dto.getRoomId(),
-            dto.getDeskId(),
-            dto.getDay(),
-            dto.getBegin(),
-            dto.getEnd()
-        )).thenReturn(java.util.List.of());
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> {
-            Booking booking = invocation.getArgument(0);
-            booking.setId(123L);
-            return booking;
-        });
-
-        Booking saved = bookingService.createBooking(dto);
-
-        assertThat(saved).isNotNull();
-        assertThat(saved.getId()).isEqualTo(123L);
-        assertThat(saved.getDesk().isFixed()).isTrue();
-    }
-
-    @Test
-    void createBooking_allowsVisibleFixedDesk() {
-        BookingDTO dto = new BookingDTO(
-            null,
-            7,
-            10L,
-            11L,
-            Date.valueOf(LocalDate.now().plusDays(1)),
-            Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         UserEntity user = new UserEntity();
