@@ -91,7 +91,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * This method is used in /admin to find all bookings.
      * @return  Every booking.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -107,7 +109,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param email   The email address of the user.
      * @return  All bookings that are done by the user identified by email.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -124,7 +128,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param date   The date as string.
      * @return  All bookings for an date..
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -141,7 +147,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param deskRemark    The remark of the desk in question.
      * @return  All bookings of the desk identified by deskRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -158,7 +166,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param roomRemark    The remark for the room in question.
      * @return  All bookings in the room identified by roomRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ " from bookings " 
 		+ " left join series on bookings.series_id=series.series_id "
 		+ " join desks on bookings.desk_id=desks.desk_id "

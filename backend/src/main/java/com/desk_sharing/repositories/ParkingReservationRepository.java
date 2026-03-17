@@ -70,6 +70,12 @@ public interface ParkingReservationRepository extends JpaRepository<ParkingReser
 
     List<ParkingReservation> findByStatusOrderByCreatedAtAsc(ParkingReservationStatus status);
 
+    @Query(value = "SELECT * FROM parking_reservations "
+            + "WHERE reservation_status IS NULL OR reservation_status = 'APPROVED' "
+            + "ORDER BY created_at ASC",
+            nativeQuery = true)
+    List<ParkingReservation> findApprovedIncludingLegacyNullOrderByCreatedAtAsc();
+
     long countByStatus(ParkingReservationStatus status);
 
     List<ParkingReservation> findByUserId(int userId);
