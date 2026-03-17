@@ -13,10 +13,8 @@ import { colorVars, semanticColors } from '../../theme';
 
 const CARPARK_SVG_URL = '/Assets/carpark_overview_ready.svg';
 const CARPARK_SELECTED_DATE_KEY = 'carparkSelectedDate';
-const CARPARK_DEFAULT_DURATION_MINUTES = 120;
 const CARPARK_MIN_LEAD_MINUTES = 30;
 const CARPARK_OVERLAP_BUFFER_MINUTES = 30;
-const CARPARK_MIN_SELECTION_MINUTES = 120;
 const CARPARK_NOTIFICATION_STATE_VERSION = 'v3';
 const CARPARK_DECISION_NOTIFICATION_FALLBACK_WINDOW_MINUTES = 20;
 const CARPARK_RES_STATUS_SNAPSHOT_KEY = `carparkReservationStatusSnapshot_${CARPARK_NOTIFICATION_STATE_VERSION}`;
@@ -153,45 +151,6 @@ const roundUpToHalfHour = (d) => {
   return rounded;
 };
 
-const getDefaultTimeRange = () => {
-  const leadTime = new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000);
-  const start = roundUpToHalfHour(leadTime);
-  const end = new Date(start.getTime() + CARPARK_DEFAULT_DURATION_MINUTES * 60 * 1000);
-  return {
-    startTime: formatTimeHHMM(start),
-    endTime: formatTimeHHMM(end),
-  };
-};
-
-const getDefaultTimeRangeForDate = (selectedDate) => {
-  if (!(selectedDate instanceof Date) || Number.isNaN(selectedDate.valueOf())) {
-    return getDefaultTimeRange();
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const targetDay = new Date(selectedDate);
-  targetDay.setHours(0, 0, 0, 0);
-
-  if (targetDay.getTime() !== today.getTime()) {
-    return {
-      startTime: '08:00',
-      endTime: '10:00',
-    };
-  }
-
-  const leadTime = roundUpToHalfHour(new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000));
-  const earliestMinutes = parseTimeToMinutes(formatTimeHHMM(leadTime));
-  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
-  const latestStartMinutes = (CARPARK_TIMELINE_END_HOUR * 60) - CARPARK_DEFAULT_DURATION_MINUTES;
-  const startMinutes = Math.min(Math.max(earliestMinutes, minMinutes), latestStartMinutes);
-
-  return {
-    startTime: minutesToTimeString(startMinutes),
-    endTime: minutesToTimeString(startMinutes + CARPARK_DEFAULT_DURATION_MINUTES),
-  };
-};
-
 const getEarliestAllowedStartMinutesForDate = (selectedDate) => {
   const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
   if (!(selectedDate instanceof Date) || Number.isNaN(selectedDate.valueOf())) {
@@ -210,26 +169,38 @@ const getEarliestAllowedStartMinutesForDate = (selectedDate) => {
   return Math.max(minMinutes, parseTimeToMinutes(formatTimeHHMM(leadTime)));
 };
 
-const sanitizeTimeRangeForDate = (selectedDate, startTime, endTime) => {
+const isValidTimeRangeForDate = (selectedDate, startTime, endTime) => {
   const startMinutes = parseTimeToMinutes(startTime);
   const endMinutes = parseTimeToMinutes(endTime);
   const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
   const maxMinutes = CARPARK_TIMELINE_END_HOUR * 60;
   const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
 
-  if (
-    !Number.isFinite(startMinutes) ||
-    !Number.isFinite(endMinutes) ||
-    startMinutes < Math.max(minMinutes, earliestAllowedStartMinutes) ||
-    endMinutes > maxMinutes ||
-    endMinutes <= startMinutes ||
-    (endMinutes - startMinutes) < CARPARK_MIN_SELECTION_MINUTES
-  ) {
-    return getDefaultTimeRangeForDate(selectedDate);
-  }
-
-  return { startTime, endTime };
+  return (
+    Number.isFinite(startMinutes)
+    && Number.isFinite(endMinutes)
+    && startMinutes >= Math.max(minMinutes, earliestAllowedStartMinutes)
+    && endMinutes <= maxMinutes
+    && endMinutes > startMinutes
+  );
 };
+
+const parseTimeRangeMinutes = (startTime, endTime) => {
+  const startMinutes = parseTimeToMinutes(startTime);
+  const endMinutes = parseTimeToMinutes(endTime);
+  if (!Number.isFinite(startMinutes) || !Number.isFinite(endMinutes) || endMinutes <= startMinutes) {
+    return null;
+  }
+  return { startMinutes, endMinutes };
+};
+
+const hasTimeRangeOverlap = (timelineReservationEvents, startMinutes, endMinutes) =>
+  timelineReservationEvents.some((calendarEvent) => {
+    const eventStartMinutes = (calendarEvent.start.getHours() * 60) + calendarEvent.start.getMinutes();
+    const eventEndMinutes = (calendarEvent.end.getHours() * 60) + calendarEvent.end.getMinutes();
+    return startMinutes < (eventEndMinutes + CARPARK_OVERLAP_BUFFER_MINUTES)
+      && endMinutes > (eventStartMinutes - CARPARK_OVERLAP_BUFFER_MINUTES);
+  });
 
 const parseFloatAttr = (el, name, fallback = 0) => {
   const raw = el.getAttribute(name);
@@ -396,7 +367,6 @@ const CarparkView = ({
     }
     return new Date();
   })();
-  const initialTimeRangeRef = useRef(getDefaultTimeRangeForDate(initialSelectedDate));
   const reservationStatusSnapshotRef = useRef(new Map());
   const pendingRouteSpotLabelRef = useRef('');
   const lastAppliedRouteKeyRef = useRef('');
@@ -410,8 +380,8 @@ const CarparkView = ({
   const [dayParkingEvents, setDayParkingEvents] = useState([]);
   const [hasExplicitTimeSelection, setHasExplicitTimeSelection] = useState(false);
   const [internalDate, setInternalDate] = useState(initialSelectedDate);
-  const [startTime, setStartTime] = useState(initialTimeRangeRef.current.startTime);
-  const [endTime, setEndTime] = useState(initialTimeRangeRef.current.endTime);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [svgReady, setSvgReady] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
@@ -864,9 +834,8 @@ const CarparkView = ({
         setEndTime(requestedEndTime);
         setHasExplicitTimeSelection(true);
       } else {
-        const nextRange = getDefaultTimeRangeForDate(hasRouteDate ? nextDate : selectedDate);
-        setStartTime(nextRange.startTime);
-        setEndTime(nextRange.endTime);
+        setStartTime('');
+        setEndTime('');
         setHasExplicitTimeSelection(false);
       }
     }
@@ -1114,11 +1083,10 @@ const CarparkView = ({
   };
 
   const resetSelectedTimeRange = useCallback(() => {
-    const nextRange = getDefaultTimeRangeForDate(selectedDate);
-    setStartTime(nextRange.startTime);
-    setEndTime(nextRange.endTime);
+    setStartTime('');
+    setEndTime('');
     setHasExplicitTimeSelection(false);
-  }, [selectedDate]);
+  }, []);
 
   const toggleFavourite = useCallback(() => {
     if (!currentUserId || !selectedSpot?.label) return;
@@ -1151,13 +1119,12 @@ const CarparkView = ({
   }, [currentUserId, isFavourite, refreshFavouriteStatus, selectedSpot?.label, t]);
 
   useEffect(() => {
-    if (!selectedDate || Number.isNaN(selectedDate.valueOf())) return;
-    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
-    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
-      setStartTime(normalizedRange.startTime);
-      setEndTime(normalizedRange.endTime);
-    }
-  }, [endTime, selectedDate, startTime]);
+    if (!hasExplicitTimeSelection) return;
+    if (isValidTimeRangeForDate(selectedDate, startTime, endTime)) return;
+    setStartTime('');
+    setEndTime('');
+    setHasExplicitTimeSelection(false);
+  }, [endTime, hasExplicitTimeSelection, selectedDate, startTime]);
 
   const handleTimelineSelect = useCallback((slotInfo) => {
     if (!timelineSelectable || !slotInfo?.start || !slotInfo?.end) {
@@ -1171,10 +1138,6 @@ const CarparkView = ({
     if (nextEndMinutes <= nextStartMinutes) {
       return;
     }
-    if ((nextEndMinutes - nextStartMinutes) < CARPARK_MIN_SELECTION_MINUTES) {
-      toast.warning(t('minimum'));
-      return;
-    }
     const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
     if (nextStartMinutes < earliestAllowedStartMinutes) {
       toast.warning(
@@ -1185,12 +1148,7 @@ const CarparkView = ({
       );
       return;
     }
-    const hasBufferedOverlap = timelineReservationEvents.some((calendarEvent) => {
-      const eventStartMinutes = (calendarEvent.start.getHours() * 60) + calendarEvent.start.getMinutes();
-      const eventEndMinutes = (calendarEvent.end.getHours() * 60) + calendarEvent.end.getMinutes();
-      return nextStartMinutes < (eventEndMinutes + CARPARK_OVERLAP_BUFFER_MINUTES)
-        && nextEndMinutes > (eventStartMinutes - CARPARK_OVERLAP_BUFFER_MINUTES);
-    });
+    const hasBufferedOverlap = hasTimeRangeOverlap(timelineReservationEvents, nextStartMinutes, nextEndMinutes);
     if (hasBufferedOverlap) {
       toast.warning(t('overlap'));
       return;
@@ -1225,15 +1183,43 @@ const CarparkView = ({
 
   const refreshAvailability = () => {
     if (!spotRectsByLabelRef.current || spotRectsByLabelRef.current.size === 0) return;
-    if (!selectedDate || !startTime || !endTime) return;
-    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
-    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
-      setStartTime(normalizedRange.startTime);
-      setEndTime(normalizedRange.endTime);
-      return;
-    }
-    if ((timeToMinutes(endTime) - timeToMinutes(startTime)) < CARPARK_MIN_SELECTION_MINUTES) {
-      toast.warning(t('minimum'));
+    const hasValidExplicitRange = hasExplicitTimeSelection && isValidTimeRangeForDate(selectedDate, startTime, endTime);
+    if (!hasValidExplicitRange) {
+      for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+        const catalogSpot = spotCatalogByLabelRef.current.get(label);
+        const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+        if (!isActiveSpot) {
+          applyInactiveSpotPresentation(label, rect);
+          continue;
+        }
+
+        rect.classList.remove(
+          'carpark-status-available',
+          'carpark-status-pending',
+          'carpark-status-occupied',
+          'carpark-status-blocked',
+          'carpark-status-inactive'
+        );
+
+        const spotCategory = String(
+          catalogSpot?.spotType ?? rect.dataset.spotCategory ?? defaultSpotCategory(label, label === '23', label === '30')
+        ).toUpperCase();
+        const defaultStatus = spotCategory === 'SPECIAL_CASE' ? 'BLOCKED' : 'AVAILABLE';
+        rect.dataset.spotStatus = defaultStatus;
+        rect.dataset.spotCategory = spotCategory;
+        rect.dataset.spotSpecial = spotCategory === 'SPECIAL_CASE' ? 'true' : 'false';
+        rect.dataset.spotAccessible = spotCategory === 'ACCESSIBLE' ? 'true' : 'false';
+        rect.dataset.spotReservedByMe = 'false';
+        rect.dataset.spotReservationId = '';
+        rect.dataset.spotReservedBegin = '';
+        rect.dataset.spotReservedEnd = '';
+        rect.dataset.spotReservedByUser = '';
+
+        if (defaultStatus === 'AVAILABLE') rect.classList.add('carpark-status-available');
+        if (defaultStatus === 'BLOCKED') rect.classList.add('carpark-status-blocked');
+      }
+
+      if (selectedRectRef.current) setSelectedSpot(getSpotMetaFromDataset(selectedRectRef.current));
       return;
     }
 
@@ -1327,19 +1313,22 @@ const CarparkView = ({
     const interval = setInterval(() => refreshAvailability(), 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, startTime, endTime]);
+  }, [selectedDate, startTime, endTime, hasExplicitTimeSelection]);
 
   const reserveSelected = () => {
     if (adminEditMode) return;
     if (!selectedSpot || selectedSpot.active === false || selectedSpot.status !== 'AVAILABLE') return;
-    const normalizedRange = sanitizeTimeRangeForDate(selectedDate, startTime, endTime);
-    if (normalizedRange.startTime !== startTime || normalizedRange.endTime !== endTime) {
-      setStartTime(normalizedRange.startTime);
-      setEndTime(normalizedRange.endTime);
+    if (!(hasExplicitTimeSelection && isValidTimeRangeForDate(selectedDate, startTime, endTime))) {
+      toast.warning(t('selectDateTimeFirst'));
       return;
     }
-    if ((timeToMinutes(endTime) - timeToMinutes(startTime)) < CARPARK_MIN_SELECTION_MINUTES) {
-      toast.warning(t('minimum'));
+    const selectedRangeMinutes = parseTimeRangeMinutes(startTime, endTime);
+    if (!selectedRangeMinutes) {
+      toast.warning(t('selectDateTimeFirst'));
+      return;
+    }
+    if (hasTimeRangeOverlap(timelineReservationEvents, selectedRangeMinutes.startMinutes, selectedRangeMinutes.endMinutes)) {
+      toast.warning(t('overlap'));
       return;
     }
     const day = formatISODate(selectedDate);
