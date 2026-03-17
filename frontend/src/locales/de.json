@@ -195,6 +195,7 @@
     "maximum": "Aufenthaltsdauer maximal 9 Stunden",
     "overlap": "Die Auswahl überschneidet sich mit einer anderen Buchung für diesen Arbeitsplatz",
     "bookingOverlapOtherDeskWarning": "Sie haben bereits eine andere Buchung in diesem Zeitraum an einem anderen Arbeitsplatz.",
+    "conflictingDates": "Konflikttermine",
     "bookingOverlapCheckFailed": "Die Prüfung auf andere überlappende Buchungen konnte nicht durchgeführt werden.",
     "continue": "Fortfahren",
     "bookingConfirmationTitle": "Buchungsbestaetigung fuer {{desk}}",
@@ -300,6 +301,7 @@
     "agenda": "Agenda",
     "noEventsInRange": "In diesem Bereich liegen keine Buchungen vor",
     "date": "Datum",
+    "dates": "Daten",
     "time": "Zeit",
     "event": "Buchung",
     "toDate": "Zu einem bestimmten Datum",
@@ -381,6 +383,7 @@
     ,"startDateBiggerThanStartDate":"Start des Datumsintervalls darf nicht größer als Ende sein."
     ,"startTimeBiggerThanStartTime":"Start des Zeitintervalls darf nicht größer als Ende sein."
     ,"seriesDurationTooLong":"Die Dauer der Serienbuchung ist zu groß."
+    ,"seriesBookingConfirmationTitle":"Serienbuchungsbestaetigung fuer {{desk}}"
     ,"noDesksForRange":"Für die angegebene Zeitspanne/Gebäude konnte kein Arbeitsplatz gefunden werden."
     ,"noDesksForCurrentSelection":"Keine Arbeitsplätze passen zur aktuellen Auswahl."
     ,"datePassed": "Dieses Datum liegt in der Vergangenheit."

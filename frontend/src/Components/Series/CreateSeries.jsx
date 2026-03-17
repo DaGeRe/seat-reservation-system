@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { postRequest, getRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
 import CreateTimePicker from '../misc/CreateTimePicker';
+import { exportSeriesIcsFiles, showDeskBookingConfirmation } from '../misc/bookingPostRequest';
 import { toast } from 'react-toastify';
 import { formatDate_yyyymmdd_to_ddmmyyyy } from '../misc/formatDate';
 import {DeskTable} from '../misc/DesksTable';
@@ -255,11 +256,7 @@ const CreateSeries = () => {
      * Create an series object on the backend side.
      * @param {*} desk The desk object for which an series shall be created.
      */
-    function addSeries(desk) {
-        if (!hasCompleteTimeframe) {
-            toast.warning(t('selectDateTimeFirst'));
-            return;
-        }
+    function submitSeries(desk) {
         postRequest(
             `${process.env.REACT_APP_BACKEND_URL}/series`,
             headers.current,
@@ -294,7 +291,63 @@ const CreateSeries = () => {
                 'email':localStorage.getItem('email')
             })
         );
-    };
+    }
+
+    function addSeries(desk) {
+        if (!hasCompleteTimeframe) {
+            toast.warning(t('selectDateTimeFirst'));
+            return;
+        }
+
+        if (!Array.isArray(dates) || dates.length === 0) {
+            toast.warning(t('noDesksForCurrentSelection'));
+            return;
+        }
+
+        const openSeriesConfirmation = (hasOverlap = false, conflictingDates = []) => {
+            const confirmationBookingData = {
+                day: dates[0],
+                begin: startTime,
+                end: endTime,
+            };
+            showDeskBookingConfirmation({
+                t,
+                title: t('seriesBookingConfirmationTitle', { desk: desk.remark }),
+                deskRemark: desk.remark,
+                deskDetails: desk,
+                bookingData: confirmationBookingData,
+                bookingDates: dates,
+                hasOverlap,
+                conflictingDates,
+                showExportIcs: true,
+                onExportIcs: () => exportSeriesIcsFiles({
+                    bookingDates: dates,
+                    bookingData: confirmationBookingData,
+                    deskRemark: desk.remark,
+                    t,
+                }),
+                onConfirm: () => submitSeries(desk),
+                onCancel: () => {},
+            });
+        };
+
+        postRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/series/overlap-check`,
+            headers.current,
+            (data) => {
+                openSeriesConfirmation(Boolean(data?.hasOverlap), data?.conflictingDates || []);
+            },
+            () => {
+                openSeriesConfirmation(false);
+            },
+            JSON.stringify({
+                deskId: desk.id,
+                dates,
+                startTime,
+                endTime,
+            })
+        );
+    }
 
     function CreateContent() {
         return (
