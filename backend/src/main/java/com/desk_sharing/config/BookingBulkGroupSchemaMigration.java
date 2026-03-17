@@ -21,47 +21,67 @@ public class BookingBulkGroupSchemaMigration {
 
     @EventListener(ApplicationReadyEvent.class)
     public void ensureBulkGroupColumn() {
-        try {
-            final Integer tableExists = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM information_schema.TABLES "
-                    + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?",
-                Integer.class,
-                TABLE_NAME
-            );
-            if (tableExists == null || tableExists == 0) {
-                logger.info("Booking bulk-group schema migration skipped: table '{}' not found yet.", TABLE_NAME);
-                return;
-            }
+        if (!tableExists(TABLE_NAME)) {
+            logger.info("Booking bulk-group schema migration skipped: table '{}' not found yet.", TABLE_NAME);
+            return;
+        }
 
-            final Integer columnExists = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM information_schema.COLUMNS "
-                    + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?",
-                Integer.class,
-                TABLE_NAME,
-                COLUMN_NAME
-            );
-            if (columnExists == null || columnExists == 0) {
+        try {
+            if (!columnExists(TABLE_NAME, COLUMN_NAME)) {
                 jdbcTemplate.execute(
                     "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME + " VARCHAR(36) NULL"
                 );
                 logger.info("Booking bulk-group schema migration added '{}.{}'.", TABLE_NAME, COLUMN_NAME);
             }
 
-            final Integer indexExists = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM information_schema.STATISTICS "
-                    + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?",
-                Integer.class,
-                TABLE_NAME,
-                INDEX_NAME
-            );
-            if (indexExists == null || indexExists == 0) {
+            if (!indexExists(TABLE_NAME, INDEX_NAME)) {
                 jdbcTemplate.execute(
                     "CREATE INDEX " + INDEX_NAME + " ON " + TABLE_NAME + " (" + COLUMN_NAME + ")"
                 );
                 logger.info("Booking bulk-group schema migration added index '{}'.", INDEX_NAME);
             }
+
+            if (!columnExists(TABLE_NAME, COLUMN_NAME)) {
+                throw new IllegalStateException("Missing required column '" + TABLE_NAME + "." + COLUMN_NAME + "'");
+            }
+            if (!indexExists(TABLE_NAME, INDEX_NAME)) {
+                throw new IllegalStateException("Missing required index '" + INDEX_NAME + "'");
+            }
         } catch (Exception ex) {
             logger.error("Booking bulk-group schema migration failed.", ex);
+            throw new IllegalStateException("Booking bulk-group schema migration failed", ex);
         }
+    }
+
+    private boolean tableExists(final String tableName) {
+        final Integer result = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM information_schema.TABLES "
+                + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?",
+            Integer.class,
+            tableName
+        );
+        return result != null && result > 0;
+    }
+
+    private boolean columnExists(final String tableName, final String columnName) {
+        final Integer result = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM information_schema.COLUMNS "
+                + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+            Integer.class,
+            tableName,
+            columnName
+        );
+        return result != null && result > 0;
+    }
+
+    private boolean indexExists(final String tableName, final String indexName) {
+        final Integer result = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM information_schema.STATISTICS "
+                + "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?",
+            Integer.class,
+            tableName,
+            indexName
+        );
+        return result != null && result > 0;
     }
 }
