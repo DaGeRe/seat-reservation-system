@@ -54,6 +54,7 @@
     "parking": "Parking",
     "parkingComingSoon": "Parking favourites coming soon.",
     "favouritesParkingEmpty": "You have no parking favourites yet. Star a parking spot to save it.",
+    "favouritesParkingSpotName": "Parking Spot {{spot}}",
     "favouritesAvailable": "Available",
     "favouritesUnavailable": "Occupied",
     "loading": "Loading",
@@ -209,6 +210,7 @@
     "scheduledBlockingLabel": "Scheduled Blocking",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
+    "selectDateTimeFirst": "Please select a date and time first.",
     "bookingTimeAlignmentError": "Please choose start and end times on 30-minute boundaries (for example 08:00 or 08:30).",
     "deskUpdate": "Desk updated successfully",
     "deskUpdateFailed": "Desk updated was not successfully",
@@ -379,6 +381,7 @@
     ,"startTimeBiggerThanStartTime":"Start time must not be greater than the end time."
     ,"seriesDurationTooLong":"The duration of the series booking is too long."
     ,"noDesksForRange":"For the specified time range and building no desk is available."
+    ,"noDesksForCurrentSelection":"No desks match the current selection."
     ,"datePassed": "This date has passed."
     ,"timePassed": "This time has already passed."
 

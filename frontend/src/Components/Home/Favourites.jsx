@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Chip,
   Divider,
@@ -356,34 +355,36 @@ const Favourites = () => {
               sx={isTimeframeActive ? getCardStyles(isAvailable) : { borderRadius: 2, boxShadow: colorVars.shadow.card }}
             >
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-                <Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
                   <Typography variant="h6">{room.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     {room.building}{room.building && room.floor ? ' · ' : ''}{room.floor}
                   </Typography>
                 </Box>
-                {isTimeframeActive && getStatusChip(isAvailable)}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, flexShrink: 0 }}>
+                  {isTimeframeActive && getStatusChip(isAvailable)}
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Button
+                      variant="contained"
+                      onClick={() => goToRoomBooking(room)}
+                      sx={{
+                        backgroundColor: colorVars.brand.accent,
+                        borderRadius: '8px',
+                        color: colorVars.text.inverse,
+                        px: 2.5,
+                        '&:hover': { backgroundColor: colorVars.brand.primaryPressed },
+                      }}
+                    >
+                      {t('book')}
+                    </Button>
+                    <Tooltip title={t('removeFavourite')}>
+                      <IconButton color="warning" onClick={() => removeRoomFavourite(room.roomId)}>
+                        <FaStar />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </Box>
               </CardContent>
-              <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => goToRoomBooking(room)}
-                  sx={{
-                    backgroundColor: colorVars.brand.accent,
-                    borderRadius: '8px',
-                    color: colorVars.text.inverse,
-                    px: 2.5,
-                    '&:hover': { backgroundColor: colorVars.brand.primaryPressed },
-                  }}
-                >
-                  {t('book')}
-                </Button>
-                <Tooltip title={t('removeFavourite')}>
-                  <IconButton color="warning" onClick={() => removeRoomFavourite(room.roomId)}>
-                    <FaStar />
-                  </IconButton>
-                </Tooltip>
-              </CardActions>
             </Card>
           );
         })}
@@ -412,8 +413,10 @@ const Favourites = () => {
               sx={isTimeframeActive ? getCardStyles(isAvailable) : { borderRadius: 2, boxShadow: colorVars.shadow.card }}
             >
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-                <Box>
-                  <Typography variant="h6">{parking.displayLabel || parking.spotLabel}</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
+                  <Typography variant="h6">
+                    {t('favouritesParkingSpotName', { spot: parking.displayLabel || parking.spotLabel })}
+                  </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {t('carparkType')}: {formatSpotType(parking.spotType, t)} · {t('carparkCovered')}: {parking.covered ? t('carparkYes') : t('carparkNo')}
                   </Typography>
@@ -423,28 +426,30 @@ const Favourites = () => {
                     </Typography>
                   )}
                 </Box>
-                {isTimeframeActive && getStatusChip(isAvailable)}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, flexShrink: 0 }}>
+                  {isTimeframeActive && getStatusChip(isAvailable)}
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Button
+                      variant="contained"
+                      onClick={() => goToParkingBooking(parking)}
+                      sx={{
+                        backgroundColor: colorVars.brand.accent,
+                        borderRadius: '8px',
+                        color: colorVars.text.inverse,
+                        px: 2.5,
+                        '&:hover': { backgroundColor: colorVars.brand.primaryPressed },
+                      }}
+                    >
+                      {t('book')}
+                    </Button>
+                    <Tooltip title={t('removeFavourite')}>
+                      <IconButton color="warning" onClick={() => removeParkingFavourite(parking.spotLabel)}>
+                        <FaStar />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </Box>
               </CardContent>
-              <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => goToParkingBooking(parking)}
-                  sx={{
-                    backgroundColor: colorVars.brand.accent,
-                    borderRadius: '8px',
-                    color: colorVars.text.inverse,
-                    px: 2.5,
-                    '&:hover': { backgroundColor: colorVars.brand.primaryPressed },
-                  }}
-                >
-                  {t('book')}
-                </Button>
-                <Tooltip title={t('removeFavourite')}>
-                  <IconButton color="warning" onClick={() => removeParkingFavourite(parking.spotLabel)}>
-                    <FaStar />
-                  </IconButton>
-                </Tooltip>
-              </CardActions>
             </Card>
           );
         })}

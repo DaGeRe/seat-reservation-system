@@ -14,7 +14,22 @@ const CreateDatePicker = ({
     size='medium',
 }) => {
     return (
-        <FormControl id='createDatePicker_formControl' required={required} fullWidth>
+        <FormControl
+            id='createDatePicker_formControl'
+            required={required}
+            fullWidth
+            sx={{
+                '& .react-datepicker-wrapper': {
+                    width: '100%',
+                },
+                '& .react-datepicker__input-container': {
+                    width: '100%',
+                },
+                '& .react-datepicker-popper': {
+                    zIndex: 1600,
+                },
+            }}
+        >
             <DatePicker
                 disabled={disabledFunc()}
                 selected={date}
@@ -25,6 +40,7 @@ const CreateDatePicker = ({
                 showWeekNumbers
                 isClearable={clearable}
                 required={required}
+                popperPlacement='bottom-start'
                 customInput={
                     <TextField
                         label={label}
