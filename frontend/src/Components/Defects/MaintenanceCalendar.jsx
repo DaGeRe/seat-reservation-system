@@ -423,7 +423,7 @@ const MaintenanceCalendar = () => {
               sx={{
                 margin: '10px',
                 padding: '15px',
-                backgroundColor: colorVars.brand.primary,
+                backgroundColor: colorVars.brand.accent,
                 borderRadius: '8px',
                 color: colorVars.text.inverse,
                 fontSize: '16px',

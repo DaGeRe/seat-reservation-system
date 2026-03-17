@@ -19,7 +19,7 @@
 .edit-rooms-button,
 .manage-bookings-button,
 .download-statistics-button {
-  background-color: var(--color-brand-primary);
+  background-color: var(--color-brand-accent);
   color: var(--color-text-inverse);
   padding: 15px 20px;
   width: 240px;
@@ -38,7 +38,7 @@
 .edit-rooms-button:hover,
 .manage-bookings-button:hover,
 .download-statistics-button:hover {
-  background-color: var(--color-brand-primary-hover);
+  background-color: var(--color-brand-primary-pressed);
 }
 
 /* Icon styles */
@@ -99,7 +99,7 @@
   }
 
 .my-button {
-  background-color: var(--color-brand-primary);
+  background-color: var(--color-brand-accent);
   color: var(--color-text-inverse);
   padding: 10px 20px;
   border: none;
@@ -108,7 +108,7 @@
   margin-bottom: 5px;
 }
 .employee-button {
-  background-color: var(--color-brand-primary);
+  background-color: var(--color-brand-accent);
   color: var(--color-text-inverse);
   padding: 10px 20px;
   border: none;
@@ -118,7 +118,7 @@
 }
 
 .workstation-button {
-  background-color: var(--color-brand-primary);
+  background-color: var(--color-brand-accent);
   color: var(--color-text-inverse);
   padding: 10px 20px;
   border: none;
@@ -128,7 +128,7 @@
 }
 
 .employee-button:hover {
-  background-color: var(--color-brand-primary-hover);
+  background-color: var(--color-brand-primary-pressed);
 }
 
   
@@ -139,7 +139,7 @@
 
   
   .workstation-button:hover {
-    background-color: var(--color-brand-primary-hover);
+    background-color: var(--color-brand-primary-pressed);
   }
 
   .booking-button-wrapper {
@@ -160,7 +160,7 @@
   }
   
   .booking-button {
-    background-color: var(--color-brand-primary);
+    background-color: var(--color-brand-accent);
     color: var(--color-text-inverse);
     padding: 10px 20px;
     border: none;
@@ -170,7 +170,7 @@
   }
   
   .booking-button:hover {
-    background-color: var(--color-brand-primary-hover);
+    background-color: var(--color-brand-primary-pressed);
   }
 
   .bottom-container{
