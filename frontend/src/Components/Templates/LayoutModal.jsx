@@ -10,9 +10,10 @@ import { useTranslation } from 'react-i18next';
  * @param widthInPx The amount of pixels for the width of the modal. If not provided the width is 'auto'.
  * @param children The content of the modal.  
  */
-const LayoutModal = ({isOpen, onClose, title, submit, submitTxt='', widthInPx='', children}) => {
+const LayoutModal = ({isOpen, onClose, title, submit, submitTxt='', closeTxt='', widthInPx='', children}) => {
     const { t } = useTranslation();
     submitTxt = submitTxt === '' ? t('submit') : submitTxt;
+    closeTxt = closeTxt === '' ? t('cancel') : closeTxt;
     return (
         <Dialog 
             open={isOpen} 
@@ -30,11 +31,11 @@ const LayoutModal = ({isOpen, onClose, title, submit, submitTxt='', widthInPx=''
                 {children}
             </DialogContent>
             <DialogActions>
-            <Button id='modal_close' onClick={onClose} color='primary'>
-                {t('cancel')}
+            <Button id='modal_close' onClick={onClose} color='primary' variant='outlined'>
+                {closeTxt}
             </Button>
             {submit && 
-                <Button id='modal_submit' color='primary' onClick={submit} autoFocus>
+                <Button id='modal_submit' color='primary' variant='contained' onClick={submit} autoFocus>
                     {submitTxt}
                 </Button>
             }

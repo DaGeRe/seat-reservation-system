@@ -22,6 +22,12 @@ const Defaults = ({ isOpen, onClose }) => {
     const [views, setViews] = useState([]);
     const [defaultFloor, setDefaultFloor] = useState('');
     const { t, i18n } = useTranslation();
+    const findWeekViewId = (viewModes) => {
+        const weekView = (Array.isArray(viewModes) ? viewModes : []).find(
+            (view) => String(view?.viewModeName || '').toLowerCase() === 'week'
+        );
+        return weekView?.viewModeId ?? '';
+    };
     const handleChildData = (data) => {
         setDefaultFloor(data);
     };
@@ -31,7 +37,10 @@ const Defaults = ({ isOpen, onClose }) => {
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/defaults/getViewModes`, 
             headers.current,
-            setViews,
+            (data) => {
+                setViews(data);
+                setDefaultViewId((current) => current || findWeekViewId(data));
+            },
             () => {
                 console.log('Failed to fetch viewModes in Defaults.jsx.');
             }
@@ -47,9 +56,10 @@ const Defaults = ({ isOpen, onClose }) => {
         getRequest(
             `${process.env.REACT_APP_BACKEND_URL}/defaults/getDefaultViewForUserId/${localStorage.getItem('userId')}`,
             headers.current,
-            defaultView => setDefaultViewId(defaultView.viewModeId),
+            defaultView => setDefaultViewId(defaultView?.viewModeId || findWeekViewId(views)),
             () => {
             console.log('Error fetching default building and floor in FloorSelector.js');
+            setDefaultViewId(findWeekViewId(views));
             }
         );
     },[views]);

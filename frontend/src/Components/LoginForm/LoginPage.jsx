@@ -228,7 +228,7 @@ const LoginPage = () => {
       <Box sx={styles.mfaWrapper_sx}>
         <Box sx={{ ...styles.box, ...styles.centeredBox }}>
           <h1 style={styles.h1}>{t('mfaRequired')}</h1>
-          <img src={'/Assets/flag.png'} alt='Flag' className='flag-image' />
+          <img src={'/Assets/LIT_logo.png'} alt='LIT logo' className='flag-image' />
           <MdSecurity size={40} color={colorVars.brand.primary} />
           <Typography variant="body2" sx={{ mb: 2, textAlign: 'center' }}>
             {t('mfaCodeLabel')}
@@ -294,7 +294,7 @@ const LoginPage = () => {
       <Box sx={styles.box}>
         <h1 style={styles.h1}>{t('login')}</h1>
         <br/>
-        <img src={'/Assets/flag.png'} alt='Flag' className='flag-image' />
+        <img src={'/Assets/LIT_logo.png'} alt='LIT logo' className='flag-image' />
         <form
           onSubmit={(e)=>{
               // Prevent page reload. 

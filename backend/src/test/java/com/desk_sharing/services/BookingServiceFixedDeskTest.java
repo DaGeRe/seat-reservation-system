@@ -19,9 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.BookingSettings;
+import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.BookingDTO;
@@ -57,7 +57,8 @@ class BookingServiceFixedDeskTest {
             11L,
             Date.valueOf(LocalDate.now().plusDays(1)),
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         UserEntity user = new UserEntity();
@@ -74,6 +75,7 @@ class BookingServiceFixedDeskTest {
         when(userService.getCurrentUser()).thenReturn(user);
         when(roomService.getRoomById(10L)).thenReturn(Optional.of(room));
         when(deskRepository.findByIdForUpdate(11L)).thenReturn(Optional.of(desk));
+
         assertThatThrownBy(() -> bookingService.createBooking(dto))
             .isInstanceOf(ResponseStatusException.class)
             .hasMessageContaining("not available");
@@ -88,7 +90,8 @@ class BookingServiceFixedDeskTest {
             11L,
             Date.valueOf(LocalDate.now().plusDays(1)),
             Time.valueOf("09:00:00"),
-            Time.valueOf("11:00:00")
+            Time.valueOf("11:00:00"),
+            null
         );
 
         UserEntity user = new UserEntity();

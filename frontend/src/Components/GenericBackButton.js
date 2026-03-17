@@ -24,7 +24,7 @@ const GenericBackButton = ({ onBack = null }) => {
     }
 
     const StyledButton = styled(Button)({
-        backgroundColor: colorVars.brand.primary,
+        backgroundColor: colorVars.brand.accent,
         color: colorVars.text.inverse,
         position: 'fixed',
         top: '10px',

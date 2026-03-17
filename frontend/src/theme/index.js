@@ -6,14 +6,14 @@ const rawColors = {
     dark: '#000000',
   },
   brand: {
-    primary: '#0082c4',
+    primary: '#4da8d6',
     primaryHover: '#006fa7',
     primaryHoverAlt: '#00689d',
     primaryPressed: '#00567f',
     primaryCardHover: '#0077b4',
-    gradientMid: '#4da8d6',
-    gradientGold: '#4da8d6',
-    accent: '#4da8d6',
+    gradientMid: '#0082c4',
+    gradientGold: '#0082c4',
+    accent: '#0082c4',
     sidebarActive: '#00689d',
     sidebarActiveText: '#ffffff',
     react: '#61dafb',
@@ -39,7 +39,7 @@ const rawColors = {
     body: '#333333',
     inverse: '#ffffff',
     muted: '#1f1f1f',
-    accent: '#0082c4',
+    accent: '#4da8d6',
     warning: '#8a3b00',
     error: '#d32f2f',
     errorDark: '#b71c1c',
@@ -57,7 +57,7 @@ const rawColors = {
   },
   state: {
     favouriteActive: '#ffb300',
-    tableHeader: '#0082c4',
+    tableHeader: '#4da8d6',
     actionPositive: '#69be28',
     neutralGrey: '#808080',
     neutral: '#9e9e9e',
@@ -65,6 +65,7 @@ const rawColors = {
     neutralDark: '#757575',
     deskBlocked: '#bdbdbd',
     deskAvailable: '#69be28',
+    deskSelected: '#ecd018ff',
     carparkHover: '#90caf9',
     carparkSelected: '#1976d2',
     carparkAvailable: '#69be28',
@@ -72,18 +73,18 @@ const rawColors = {
     carparkOccupied: '#c62828',
     carparkBlocked: '#9e9e9e',
     carparkInactive: '#ffffff',
-    calendarMine: '#0082c4',
+    calendarMine: '#4da8d6',
     calendarMinePending: '#f9a825',
     calendarPendingOther: '#c9c9c9',
-    defectLow: '#4caf50',
+    defectLow: '#69be28',
     defectMedium: '#ff9800',
     defectHigh: '#f44336',
     defectCritical: '#b71c1c',
     defectNew: '#1976d2',
     defectInProgress: '#ed6c02',
-    defectResolved: '#2e7d32',
+    defectResolved: '#69be28',
     mapDefault: '#0000ff',
-    mapSelected: '#008000',
+    mapSelected: '#69be28',
     mapDelete: '#ff0000',
   },
 };
@@ -159,6 +160,7 @@ const cssVariables = {
   '--color-state-neutral-dark': rawColors.state.neutralDark,
   '--color-state-desk-blocked': rawColors.state.deskBlocked,
   '--color-state-desk-available': rawColors.state.deskAvailable,
+  '--color-state-desk-selected': rawColors.state.deskSelected,
   '--color-state-carpark-hover': rawColors.state.carparkHover,
   '--color-state-carpark-selected': rawColors.state.carparkSelected,
   '--color-state-carpark-available': rawColors.state.carparkAvailable,
@@ -265,6 +267,7 @@ export const colorVars = {
     neutralDark: varRef('--color-state-neutral-dark'),
     deskBlocked: varRef('--color-state-desk-blocked'),
     deskAvailable: varRef('--color-state-desk-available'),
+    deskSelected: varRef('--color-state-desk-selected'),
     carparkHover: varRef('--color-state-carpark-hover'),
     carparkSelected: varRef('--color-state-carpark-selected'),
     carparkAvailable: varRef('--color-state-carpark-available'),
@@ -309,7 +312,7 @@ export const semanticColors = {
     desk: {
       blocked: varRef('--color-state-desk-blocked'),
       available: varRef('--color-state-desk-available'),
-      selected: varRef('--color-brand-accent'),
+      selected: varRef('--color-state-desk-selected'),
     },
     event: {
       mine: varRef('--color-state-calendar-mine'),
@@ -370,10 +373,10 @@ export const appColorTokens = {
 export const appTheme = createTheme({
   palette: {
     primary: {
-      main: rawColors.brand.primary,
+      main: rawColors.brand.accent,
     },
     secondary: {
-      main: rawColors.brand.accent,
+      main: rawColors.brand.primary,
     },
     success: {
       main: rawColors.state.actionPositive,
@@ -397,6 +400,45 @@ export const appTheme = createTheme({
     fontFamily: "'Source Sans Pro', sans-serif",
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        textPrimary: {
+          color: rawColors.brand.accent,
+          '&:hover': {
+            backgroundColor: alpha(rawColors.brand.primary, 0.18),
+          },
+        },
+        outlinedPrimary: {
+          color: rawColors.brand.accent,
+          borderColor: rawColors.brand.accent,
+          '&:hover': {
+            borderColor: rawColors.brand.primaryPressed,
+            backgroundColor: alpha(rawColors.brand.primary, 0.12),
+          },
+        },
+        containedPrimary: {
+          backgroundColor: rawColors.brand.accent,
+          color: rawColors.base.light,
+          '&:hover': {
+            backgroundColor: rawColors.brand.primaryPressed,
+          },
+        },
+        containedSuccess: {
+          backgroundColor: rawColors.brand.accent,
+          color: rawColors.base.light,
+          '&:hover': {
+            backgroundColor: rawColors.brand.primaryPressed,
+          },
+        },
+        containedWarning: {
+          backgroundColor: rawColors.brand.accent,
+          color: rawColors.base.light,
+          '&:hover': {
+            backgroundColor: rawColors.brand.primaryPressed,
+          },
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         ':root': cssVariables,
