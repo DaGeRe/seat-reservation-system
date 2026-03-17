@@ -611,7 +611,7 @@ public class ParkingReservationService {
 
     public List<ParkingBookingProjectionDTO> getAllApprovedReservationsForAdmin() {
         requireAdmin();
-        return parkingReservationRepository.findByStatusOrderByCreatedAtAsc(ParkingReservationStatus.APPROVED).stream()
+        return parkingReservationRepository.findApprovedIncludingLegacyNullOrderByCreatedAtAsc().stream()
             .map(reservation -> {
                 final UserEntity user = userRepository.findById(reservation.getUserId()).orElse(null);
                 final String email = user != null ? user.getEmail() : "unknown";

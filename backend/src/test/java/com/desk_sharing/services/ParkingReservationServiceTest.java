@@ -414,6 +414,45 @@ class ParkingReservationServiceTest {
     }
 
     @Test
+    void getAllApprovedReservationsForAdmin_includesLegacyNullStatusReservations() {
+        ParkingReservationService service = new ParkingReservationService(
+            parkingReservationRepository, parkingSpotRepository, userRepository, parkingNotificationService);
+        authenticateAs(9, "admin@example.com", true);
+
+        ParkingReservation legacyApproved = new ParkingReservation();
+        legacyApproved.setId(11L);
+        legacyApproved.setUserId(42);
+        legacyApproved.setSpotLabel("12");
+        legacyApproved.setDay(Date.valueOf(LocalDate.now().plusDays(1)));
+        legacyApproved.setBegin(Time.valueOf("09:00:00"));
+        legacyApproved.setEnd(Time.valueOf("10:00:00"));
+        legacyApproved.setStatus(null);
+
+        UserEntity bookingUser = new UserEntity();
+        bookingUser.setId(42);
+        bookingUser.setEmail("user@example.com");
+        bookingUser.setName("Ada");
+        bookingUser.setSurname("Lovelace");
+        bookingUser.setDepartment("Engineering");
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        bookingUser.setRoles(List.of(role));
+
+        when(parkingReservationRepository.findApprovedIncludingLegacyNullOrderByCreatedAtAsc())
+            .thenReturn(List.of(legacyApproved));
+        when(userRepository.findById(42)).thenReturn(java.util.Optional.of(bookingUser));
+
+        assertThat(service.getAllApprovedReservationsForAdmin())
+            .hasSize(1)
+            .first()
+            .satisfies(dto -> {
+                assertThat(dto.getId()).isEqualTo(11L);
+                assertThat(dto.getSpotLabel()).isEqualTo("12");
+                assertThat(dto.getEmail()).isEqualTo("user@example.com");
+            });
+    }
+
+    @Test
     void getReservationsForDate_throwsBadRequestOnNullDay() {
         ParkingReservationService service = new ParkingReservationService(
             parkingReservationRepository, parkingSpotRepository, userRepository, parkingNotificationService);
