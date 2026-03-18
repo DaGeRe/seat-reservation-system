@@ -5,16 +5,20 @@ import {
   DialogTitle, DialogContent, DialogActions, Paper
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getRequest, postRequest, putRequest, deleteRequest } from '../RequestFunctions/RequestFunctions';
 import {
   buildLocationLabel, CATEGORY_LABELS, URGENCY_LABELS,
   STATUS_LABELS, URGENCY_COLORS
 } from './defectUtils';
+import { colorVars } from '../../theme';
 
 const DefectDetailsDrawer = ({ defect, open, onClose, onUpdate }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const headers = JSON.parse(sessionStorage.getItem('headers'));
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
@@ -198,7 +202,7 @@ const DefectDetailsDrawer = ({ defect, open, onClose, onUpdate }) => {
             <Chip label={t(STATUS_LABELS[defect.status])} size="small"
               color={defect.status === 'NEW' ? 'info' : defect.status === 'IN_PROGRESS' ? 'warning' : 'success'} />
             <Chip label={t(URGENCY_LABELS[defect.urgency])} size="small"
-              sx={{ backgroundColor: URGENCY_COLORS[defect.urgency], color: '#fff' }} />
+              sx={{ backgroundColor: URGENCY_COLORS[defect.urgency], color: colorVars.text.inverse }} />
             <Chip label={t(CATEGORY_LABELS[defect.category])} size="small" variant="outlined" />
           </Box>
 
@@ -291,6 +295,24 @@ const DefectDetailsDrawer = ({ defect, open, onClose, onUpdate }) => {
               </Button>
             </Box>
           ) : null}
+
+          {defect.status !== 'RESOLVED' && (
+            <Button
+              id="defect_open_maintenance_calendar"
+              variant="outlined"
+              size="small"
+              startIcon={<CalendarMonthIcon />}
+              sx={{ mb: 2 }}
+              onClick={() => {
+                onClose();
+                navigate('/maintenance-calendar', {
+                  state: { defectId: defect.id, deskId: defect.desk?.id }
+                });
+              }}
+            >
+              {t('maintenanceCalendarBtn')}
+            </Button>
+          )}
 
           <Divider sx={{ my: 2 }} />
 

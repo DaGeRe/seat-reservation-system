@@ -1,5 +1,6 @@
 {
     "tokenInvalid": "Token abgelaufen. Bitte melden Sie sich erneut an.",
+    "warning": "Warnung",
     "http401": "Sie sind nicht autorisiert oder die Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
     ,"http403": "Sie haben keine Berechtigung für diese Aktion."
     ,"http405": "Die angeforderte Ressource wurde nicht gefunden."
@@ -26,6 +27,15 @@
     "bookings": "Buchungen",
     "series": "Serienbuchung",
     "seriesId": "Serien Id",
+    "createSeriesTitle": "Erstellen von Serienbuchungen",
+    "createSeriesHelp": "Wählen Sie optional Startdatum, Enddatum, Startzeit und Endzeit aus. Sobald alle vier Angaben gesetzt sind, werden die Serientermine berechnet.<br/>Legen Sie im Anschluss Frequenz, Gebäude und bei Bedarf den Wochentag fest.<br/>In der unteren Tabelle können Sie dann einen passenden Arbeitsplatz für die Serienbuchung auswählen.",
+    "createSeriesSuccess": "Serienbuchungen von {{startDate}} bis {{endDate}} wurden erfolgreich erstellt.",
+    "createSeriesError": "Serienbuchungen von {{startDate}} bis {{endDate}} konnten nicht erstellt werden.",
+    "manageSeriesTitle": "Verwalten von Serienbuchungen",
+    "manageSeriesHelp": "Die Übersicht zu all Ihren getätigten Serienbuchungen, inklusive der Möglichkeit diese zu löschen.",
+    "manageSeriesDeleteConfirm": "Mit dieser Serie werden alle zugehörigen Buchungen gelöscht.",
+    "manageSeriesEmpty": "Für den aktuellen Benutzer wurde keine Serienbuchung gefunden.",
+    "seriesDeleted": "Serienbuchung wurde erfolgreich gelöscht.",
     "settings": "Einstellungen",
     "settingsUpdated": "Einstellungen erfolgreich aktualisiert.",
     "settingsUpdatedFail": "Einstellungen konnten nicht aktualisiert werden.",   
@@ -43,7 +53,7 @@
     "you": "Du",
     "visibilityHelper": "Wählen Sie aus, wie Ihr Name anderen Nutzern angezeigt wird.",
     "favourites": "Favoriten",
-    "favouritesHelper": "Speichere häufig genutzte Räume. Klick zum Buchen; Stern zum Entfernen.",
+    "favouritesHelper": "Speichere häufig genutzte Räume und Parkplätze. Optional kannst du Datum und Zeitraum wählen, um die Verfügbarkeit vor dem Öffnen der Buchungsansicht zu sehen.",
     "addFavourite": "Zu Favoriten hinzugefügt",
     "removeFavourite": "Aus Favoriten entfernt",
     "favouritesEmpty": "Noch keine Favoriten. Markiere einen Raum mit dem Stern.",
@@ -52,6 +62,10 @@
     "rooms": "Räume",
     "parking": "Parken",
     "parkingComingSoon": "Parkplatz-Favoriten folgen bald.",
+    "favouritesParkingSpotName": "Parkplatz {{spot}}",
+    "favouritesParkingEmpty": "Du hast noch keine Parkplatz-Favoriten. Markiere einen Parkplatz mit dem Stern.",
+    "favouritesAvailable": "Verfügbar",
+    "favouritesUnavailable": "Belegt",
     "loading": "Lade",
     "roomSection": "Räume",
     "parkingSection": "Parkplätze (bald verfügbar)",
@@ -65,6 +79,7 @@
     "logoutConfirmation": "Sind Sie sicher, dass sie sich abmelden wollen?",
     "toLogout": "Abmelden",
     "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
 
     "previousPassword": "Vorheriges Passwort",
     "newPassword": "Neues Passwort",
@@ -100,6 +115,7 @@
     "silence": "Ruhebereich",
 
     "availableDesks": "Verfügbare Arbeitsplätze",
+    "availableDesksInRoom": "Verfügbare Arbeitsplätze in {{room}}",
     "noAvailableDesks": "Keine Arbeitsplätze für diesen Raum verfügbar",
     "book": "Buchen",
 
@@ -111,8 +127,12 @@
     "bookDesk": "Büchertisch",
 
     "myBookings": "Meine Buchungen",
+    "booking": "Buchung",
+    "bookingDetails": "Buchungsdetails",
+    "bookingDetails": "Buchungsdetails",
     "edit": "Bearbeiten",
     "delete": "Entfernen",
+    "cancelBooking": "Buchung stornieren",
     "day": "Tag",
     "start": "Beginn",
     "end": "Ende",
@@ -123,8 +143,55 @@
     "defaultFloor": "Std. Etage",
     "defaultView": "Std. Ansicht",
     "building": "Gebäude",
+    "defaultBuilding": "Std. Gebäude",
     "type": "Art",
-    "equipment": "Austattung",
+    "ergonomics": "Ergonomie",
+    "equipment": "Ausstattung",
+    "workstationType": "Ergonomie",
+    "workstationTypeStandard": "Standard",
+    "workstationTypeSilent": "Still",
+    "workstationTypeErgonomic": "Ergonomisch",
+    "workstationTypePremium": "Premium",
+    "monitorSingular": "Monitor",
+    "monitors": "Monitore",
+    "deskType": "Tischtyp",
+    "adjustable": "Hoehenverstellbar",
+    "notAdjustable": "Nicht hoehenverstellbar",
+    "adjustableHeight": "Hoehenverstellbar",
+    "notAdjustableHeight": "Nicht hoehenverstellbar",
+    "technology": "Technik",
+    "technologyDockingStation": "Dockingstation",
+    "technologyWebcam": "Webcam",
+    "technologyHeadset": "Headset",
+    "specialFeatures": "Besondere Merkmale",
+    "advancedFilters": "Erweiterte Filter",
+    "savedPresets": "Gespeicherte Presets",
+    "saveCurrent": "Aktuelle speichern",
+    "savePreset": "Preset speichern",
+    "saveCurrentPresetTitle": "Aktuelles Preset speichern",
+    "presetName": "Preset-Name",
+    "noSavedPresets": "Noch keine gespeicherten Presets",
+    "replace": "Ersetzen",
+    "workstationPresetNameRequired": "Ein Preset-Name ist erforderlich.",
+    "workstationPresetNameTooLong": "Der Preset-Name darf hoechstens {{max}} Zeichen lang sein.",
+    "workstationPresetNameCounter": "{{count}} / {{max}} Zeichen",
+    "workstationPresetLimitReached": "Sie koennen bis zu {{max}} Presets speichern.",
+    "workstationPresetSaved": "Preset gespeichert.",
+    "workstationPresetReplaced": "Preset ersetzt.",
+    "workstationPresetRenamedFromDuplicate": "Preset mit dem neuen Namen aktualisiert.",
+    "workstationPresetDeleted": "Preset geloescht.",
+    "workstationPresetLoadFailed": "Gespeicherte Presets konnten nicht geladen werden.",
+    "workstationPresetSaveFailed": "Preset konnte nicht gespeichert werden.",
+    "workstationPresetDeleteFailed": "Preset konnte nicht geloescht werden.",
+    "workstationPresetReplaceTitle": "Preset ersetzen?",
+    "workstationPresetReplaceMessage": "Ein Preset mit dem Namen \"{{name}}\" existiert bereits. Ersetzen?",
+    "workstationPresetReplaceDuplicateContentMessage": "Ein Preset mit denselben Filtern existiert bereits als \"{{name}}\". Ersetzen und in \"{{newName}}\" umbenennen?",
+    "workstationPresetDeleteTitle": "Preset loeschen?",
+    "workstationPresetDeleteMessage": "Preset \"{{name}}\" loeschen?",
+    "noFiltersApplied": "Keine Filter aktiv",
+    "spacesFound": "{{count}} Plaetze gefunden",
+    "roomsFound": "{{count}} Raeume gefunden",
+    "resetFilters": "Filter zuruecksetzen",
     "choose": "Wählen Sie eine Buchung aus",
     "editBookingTime": "Buchungszeit bearbeiten",
     "deleteBookingMessage": "Sind Sie sicher, dass Sie diese Buchung entfernen möchten?",
@@ -138,9 +205,25 @@
     "minimum": "Aufenthaltsdauer mindestens 2 Stunden",
     "maximum": "Aufenthaltsdauer maximal 9 Stunden",
     "overlap": "Die Auswahl überschneidet sich mit einer anderen Buchung für diesen Arbeitsplatz",
+    "bookingOverlapOtherDeskWarning": "Sie haben bereits eine andere Buchung in diesem Zeitraum an einem anderen Arbeitsplatz.",
+    "conflictingDates": "Konflikttermine",
+    "bookingOverlapCheckFailed": "Die Prüfung auf andere überlappende Buchungen konnte nicht durchgeführt werden.",
+    "continue": "Fortfahren",
+    "bookingConfirmationTitle": "Buchungsbestaetigung fuer {{desk}}",
+    "currentlyBeingBooked": "Wird derzeit gebucht",
+    "bookingLockExpired": "Die Arbeitsplatzsperre ist nach 3 Minuten abgelaufen. Bitte wählen Sie den Arbeitsplatz erneut.",
+    "otherFreeDesksForSelectedTimeSlots": "Naechste Arbeitsplaetze von {{start}} bis {{end}}",
+    "otherDesksWithSameEquipementForSelectedTimeSlots": "Naechste Arbeitsplaetze mit gleicher Ausstattung von {{start}} bis {{end}}",
+    "closestPreferredDesksForSelectedTimeSlots": "Naechste bevorzugte Arbeitsplaetze von {{start}} bis {{end}}",
+    "noFreeDesksForSelectedTimeSlotInBuilding": "Fuer dieses Zeitfenster gibt es in diesem Gebaeude keine freien Arbeitsplaetze.",
+    "noFreeDesksWithSameEquipmentForSelectedTimeSlotInBuilding": "Fuer dieses Zeitfenster gibt es in diesem Gebaeude keine freien Arbeitsplaetze mit gleicher Ausstattung.",
+    "noFreeDesksInFavoriteRoomsForSelectedTimeSlot": "Fuer dieses Zeitfenster gibt es in den favorisierten Raeumen keine freien Arbeitsplaetze.",
+    "noFavoriteRooms": "Keine favorisierten Raeume.",
     "booked": "Buchung erfolgreich",
+    "scheduledBlockingLabel": "Geplante Sperrung",
     "selectDeskMessage": "Bitte wählen Sie zuerst einen Arbeitsplatz",
     "blank": "Bitte wählen Sie zuerst einen Arbeitsplatz und Zeitraum vor der Buchung",
+    "selectDateTimeFirst": "Bitte wählen Sie zuerst Datum und Uhrzeit aus.",
     "bookingTimeAlignmentError": "Bitte wählen Sie Start- und Endzeit im 30-Minuten-Raster (z. B. 08:00 oder 08:30).",
     "deskUpdate": "Arbeitsplatz erfolgreich aktualisiert",
     "deskUpdateFailed": "Arbeitsplatz konnte nicht aktualisiert werden",
@@ -148,6 +231,10 @@
     "deskCreated": "Arbeitsplatz erfolgreich erstellt",
     "roomStatus": "Status des Zimmers erfolgreich aktualisiert",
     "roomRemark": "Bemerkungen zum Raum",
+    "roomSearchTitle": "Raumsuche",
+    "roomSearchHelp": "Für eine allgemeine Übersicht wählen Sie die Mindestanzahl an Arbeitsplätzen aus und schauen Sie in der unten stehenden Tabelle nach einem passenden Raum.<br/>Wenn Sie zusätzlich Tag, Startzeit und Endzeit auswählen, wird die Liste auf Räume gefiltert, die in diesem Zeitraum frei sind.",
+    "roomSearchMinDesksTooltip": "Die Mindestanzahl der Arbeitsplätze im Raum",
+    "roomSearchMinDesksLabel": "Mindestanzahl der Arbeitsplätze",
     "deskRemark": "Bemerkungen zum Arbeitsplatz",
     "roomCreated": "Raum wurde erstellt",
     "roomDeleted": "Raum wurde gelöscht",
@@ -192,21 +279,30 @@
     "addWorkstation": "Arbeitsplatz Hinzufügen",
     "deleteWorkstation": "Arbeitsplatz Entfernen",
     "editWorkstation": "Arbeitsplatz Bearbeiten",
+    "hideShowFixed": "Fixed ein-/ausblenden",
+    "hideShowFixedDesk": "Fixed-Desk ein-/ausblenden",
+    "hideShow": "Ein-/Ausblenden",
+    "hide": "Ausblenden",
+    "show": "Einblenden",
+    "fixedToggleSuccess": "Fixed-Status aktualisiert.",
+    "fixedToggleFailed": "Fixed-Status konnte nicht aktualisiert werden.",
+    "deskVisibilityToggleSuccess": "Sichtbarkeit des Arbeitsplatzes aktualisiert.",
+    "deskVisibilityToggleFailed": "Sichtbarkeit des Arbeitsplatzes konnte nicht aktualisiert werden.",
+    "fixedDeskLoadFailed": "Arbeitsplaetze fuer die ausgewaehlte Etage konnten nicht geladen werden.",
+    "noDesksForSelectedFloor": "Keine Arbeitsplaetze fuer die ausgewaehlte Etage gefunden.",
     "noWorkstationForThisRoom": "Es existiert kein Arbeitsplatz in diesem Raum.",
     "status": "Status",
+    "fixed": "Fixiert",
     "enable": "Aktivieren",
     "disable": "Deaktivieren",
     "deskID": "Tisch ID",
     "selectRoom": "Zimmer auswählen",
     "selectDesk": "Tisch auswählen",
     "deskNotFound": "Tisch nicht gefunden",
-    "withEquipment": "Mit Austattung",
-    "withoutEquipment": "Ohne Austattung",
-    "unknown": "Unbekannt",
     
     "deleteBooking": "Buchung Entfernen",
-    "editBooking": "Buchung Bearbeiten",
-    "exportIcs": "Als ICS exportieren",
+    "editBooking": "Bearbeiten",
+    "exportIcs": "ICS exportieren",
     "overviewBooking": "Buchungsübersicht",
     "search": "Suchen",
     "roomID": "Tisch ID",
@@ -220,6 +316,7 @@
     "agenda": "Agenda",
     "noEventsInRange": "In diesem Bereich liegen keine Buchungen vor",
     "date": "Datum",
+    "dates": "Daten",
     "time": "Zeit",
     "event": "Buchung",
     "toDate": "Zu einem bestimmten Datum",
@@ -250,10 +347,48 @@
     "helpAddRoom":"Bitte wählen Sie einen Ort für ein neues Büro auf der Karte und klicken Sie darauf.<br/>Anschließend geben Sie alle nötigen Informationen ein und wählen <strong>Einreichen</strong>."
     ,"helpChooseRoom":"Bitte wählen Sie ein existierendes Büro aus und klicken hierauf."
     ,"helpCreateBooking":"Bitte wählen Sie zuerst ein Arbeitsplatz und dann eine Zeitspanne aus. Klicken Sie anschließend <strong>Buchen</strong>."
-    ,"booking.tooltip.identifier":"Kennung"
-    ,"booking.tooltip.type":"Typ"
+    ,"helpCreateRoomBooking":"Bitte wählen Sie Datum und Zeitraum aus, um alle buchbaren Arbeitsplaetze in diesem Raum gemeinsam zu buchen."
+    ,"deskBookingMode":"Arbeitsplatz"
+    ,"roomBookingMode":"Raum"
+    ,"bookRoom":"Raum buchen"
+    ,"bulkGroupId":"Sammelgruppe"
+    ,"roomBulkBookingTitle":"Raumbuchung"
+    ,"roomBulkBookingHelper":"Buchen Sie alle buchbaren Arbeitsplaetze in {{room}} auf einmal."
+    ,"roomBulkIncludedDesks":"Enthalten"
+    ,"roomBulkConflictedDesks":"Konflikte"
+    ,"roomBulkExcludedDesks":"Ausgeschlossene Arbeitsplaetze"
+    ,"roomBulkSelectPeriodHint":"Waehlen Sie einen gueltigen Zeitraum aus, um die Raumbuchung vorzuschauen."
+    ,"roomBulkNoEligibleDesks":"In diesem Raum gibt es aktuell keine buchbaren Arbeitsplaetze fuer die Sammelbuchung."
+    ,"roomBulkHasConflicts":"Einige Arbeitsplaetze in diesem Raum sind fuer den ausgewaehlten Zeitraum nicht verfuegbar. Sie koennen die enthaltenen Arbeitsplaetze trotzdem buchen."
+    ,"roomBulkBookAll":"Arbeitsplaetze buchen"
+    ,"roomBulkNoIncludedDesks":"Aktuell sind keine Arbeitsplaetze enthalten."
+    ,"roomBulkConflictSection":"Konflikte"
+    ,"roomBulkNoConflicts":"Keine Konflikte fuer den ausgewaehlten Zeitraum."
+    ,"roomBulkExcludedSection":"Ausgeschlossen"
+    ,"roomBulkNoExcludedDesks":"Keine Arbeitsplaetze ausgeschlossen."
+    ,"roomBulkConfirmTitle":"Raumbuchung bestaetigen"
+    ,"roomBulkConfirmRoom":"Raum: {{room}}"
+    ,"roomBulkConfirmDateTime":"Zeit: {{day}} {{begin}} - {{end}}"
+    ,"roomBulkConfirmSummary":"Enthalten: {{included}}, Konflikte: {{conflicted}}, ausgeschlossen: {{excluded}}."
+    ,"roomBulkBookingOwnerNote":"Dabei werden normale Arbeitsplatzbuchungen unter Ihrem Admin-Konto erstellt."
+    ,"roomBulkConfirmAction":"Raumbuchung bestaetigen"
+    ,"roomBulkBookingSuccess":"{{count}} Arbeitsplaetze wurden erfolgreich gebucht."
+    ,"roomBulkStatusBookable":"Buchbar"
+    ,"roomBulkStatusHidden":"Versteckt"
+    ,"roomBulkStatusBlocked":"Gesperrt"
+    ,"roomBulkStatusLockedByOther":"Von anderem Nutzer gesperrt"
+    ,"roomBulkStatusBookingConflict":"Buchungskonflikt"
+    ,"roomBulkStatusScheduledBlocking":"Geplante Sperrung"
+    ,"roomBulkStatusUnknown":"Unbekannt"
+    ,"roomBulkReasonBookable":"Bereit zur Buchung."
+    ,"roomBulkReasonHidden":"Versteckte Arbeitsplaetze werden bei der Raumbuchung ausgeschlossen."
+    ,"roomBulkReasonBlocked":"Gesperrte Arbeitsplaetze werden bei der Raumbuchung ausgeschlossen."
+    ,"roomBulkReasonLockedByOther":"Ein anderer Nutzer bucht diesen Arbeitsplatz gerade."
+    ,"roomBulkReasonBookingConflict":"Fuer diesen Arbeitsplatz gibt es bereits eine Buchung im ausgewaehlten Zeitraum."
+    ,"roomBulkReasonScheduledBlocking":"Fuer diesen Arbeitsplatz gibt es eine geplante Sperrung im ausgewaehlten Zeitraum."
+    ,"roomBulkReasonUnknown":"Status nicht verfuegbar."
+    ,"booking.tooltip.ergonomics":"Ergonomie"
     ,"booking.tooltip.monitors":"Monitore"
-    ,"booking.tooltip.deskTypeHeightAdjustable":"Tischtyp (hoehenverstellbar)"
     ,"booking.tooltip.technology":"Technik"
     ,"booking.tooltip.specialFeatures":"Besondere Merkmale"
     ,"helpDeleteRoom":"Klicken Sie auf den jeweiligen Raum um diesen zu löschen."
@@ -263,10 +398,14 @@
     ,"bookingsSum":"Buchungen Gesamt"
     ,"noMatchingBookingsForSelectedFilter":"Keine passenden Buchungen fuer den ausgewaehlten Filter."
     ,"filters":"Filter"
+    ,"maxNumberFiltersSelected":"Maximale Anzahl an Filtern ausgewaehlt ({{max}})."
     ,"desksTitle":"Arbeitsplaetze"
     ,"parkingsTitle":"Parkplaetze"
     ,"filter":"Filter"
-    ,"deskTypes":"Arbeitsplatztypen"
+    ,"deskTypes":"Ergonomie"
+    ,"deskFilterDeskHeightAdjustable":"Hoehenverstellbar"
+    ,"deskFilterTechnologyWebcam":"Webcam"
+    ,"deskFilterTechnologyHeadset":"Headset"
     ,"parkingTypes":"Parkplatztypen"
     ,"switchToParking":"Zu Parkplatz wechseln"
     ,"switchToDesk":"Zu Arbeitsplatz wechseln"
@@ -299,7 +438,9 @@
     ,"startDateBiggerThanStartDate":"Start des Datumsintervalls darf nicht größer als Ende sein."
     ,"startTimeBiggerThanStartTime":"Start des Zeitintervalls darf nicht größer als Ende sein."
     ,"seriesDurationTooLong":"Die Dauer der Serienbuchung ist zu groß."
+    ,"seriesBookingConfirmationTitle":"Serienbuchungsbestaetigung fuer {{desk}}"
     ,"noDesksForRange":"Für die angegebene Zeitspanne/Gebäude konnte kein Arbeitsplatz gefunden werden."
+    ,"noDesksForCurrentSelection":"Keine Arbeitsplätze passen zur aktuellen Auswahl."
     ,"datePassed": "Dieses Datum liegt in der Vergangenheit."
     ,"timePassed": "Diese Uhrzeit liegt bereits in der Vergangenheit."
     
@@ -325,10 +466,18 @@
     ,"carparkRefresh":"Aktualisieren"
     ,"carparkDetails":"Details"
     ,"carparkNoSelection":"Kein Parkplatz ausgewählt."
+    ,"carparkSelectSpotFirst":"Wählen Sie zuerst einen Parkplatz aus, um einen Zeitraum festzulegen."
     ,"carparkSpot":"Platz"
+    ,"carparkTimelineTitle":"Zeitauswahl"
+    ,"carparkTimelineHintNoSpot":"Ziehen Sie im Zeitplan, um einen Zeitraum zu wählen, und wählen Sie danach einen Parkplatz aus."
+    ,"carparkTimelineHint":"Ziehen Sie im Zeitplan, um das Reservierungsfenster für Platz {{spot}} festzulegen."
+    ,"carparkSelectedRange":"Ausgewählter Zeitraum"
     ,"carparkTypeStall":"Markierter Platz"
     ,"carparkTypeEmpty":"Unmarkierter Platz"
     ,"carparkStandard":"Standard"
+    ,"carparkMotorcycle":"Motorrad"
+    ,"carparkAccessible":"Barrierefrei"
+    ,"carparkEChargingStation":"E-Ladestation"
     ,"carparkSpecialCase":"Sonderfall"
     ,"carparkContactStaff":"Bitte wenden Sie sich an das Personal, um diesen Platz zu reservieren."
     ,"carparkReserve":"Reservieren"
@@ -359,12 +508,22 @@
     ,"carparkChargingKw":"kW"
     ,"carparkReservedTime":"Reservierte Zeit"
     ,"carparkReservedByUser":"Reserviert von"
+    ,"carparkJustification":"Begründung"
+    ,"carparkJustificationPlaceholder":"Beschreiben Sie, warum Sie diese Parkplatzreservierung benötigen."
+    ,"carparkJustificationHelper":"{{count}}/{{max}} Zeichen. Mindestens {{min}} erforderlich."
+    ,"carparkJustificationMinError":"Die Begründung muss mindestens {{min}} Zeichen lang sein."
+    ,"carparkJustificationMaxError":"Die Begründung darf höchstens {{max}} Zeichen lang sein."
     ,"carparkBlockSpot":"Platz sperren"
     ,"carparkUnblockSpot":"Platz entsperren"
-    ,"carparkEditModeHint":"Admin-Bearbeitungsmodus: Platz auswählen, um ihn zu sperren oder zu entsperren."
+    ,"carparkEditModeHint":"Admin-Bearbeitungsmodus: Platz auswählen, um ihn zu sperren, zu entsperren, zu LIT hinzuzufügen oder aus LIT zu entfernen."
     ,"carparkEditModeSpecialCase":"Dieser Sonderplatz kann nicht manuell geändert werden."
     ,"carparkSpotBlockedSuccess":"Parkplatz gesperrt."
     ,"carparkSpotUnblockedSuccess":"Parkplatz entsperrt."
+    ,"carparkAddToLitSystem":"Zu LIT hinzufügen"
+    ,"carparkRemoveFromLitSystem":"Aus LIT entfernen"
+    ,"carparkSpotActivatedSuccess":"Parkplatz dem LIT-System hinzugefügt."
+    ,"carparkSpotDeactivatedSuccess":"Parkplatz aus dem LIT-System entfernt."
+    ,"carparkNotInLitSystem":"Dieser Platz ist nicht im LIT-System."
     ,"carparkNotificationApproved":"Ihre Parkplatzanfrage für Platz {{spot}} am {{day}} ({{begin}} - {{end}}) wurde freigegeben."
     ,"carparkNotificationRejected":"Ihre Parkplatzanfrage für Platz {{spot}} am {{day}} ({{begin}} - {{end}}) wurde abgelehnt."
     ,"carparkNotificationReminder":"Erinnerung: Ihre Parkplatzreservierung für Platz {{spot}} beginnt in 30 Minuten ({{day}}, {{begin}} - {{end}})."
@@ -379,6 +538,9 @@
     ,"parkingReviewRejected":"Parkplatz-Anfrage abgelehnt."
     ,"parkingReviewPendingCount":"{{count}} Parkplatz-Anfrage(n) warten auf Prüfung."
 
+    ,"justification":"Begründung"
+    ,"viewJustification":"Begründung ansehen"
+    ,"noJustificationAvailable":"Keine Begründung vorhanden."
     ,"ERROR_USER_NOT_FOUND_IN_AD":"Nutzer wurde nicht im AD gefunden."
     ,"ERROR_USER_NOT_FOUND_IN_DAO":"Nutzer wurde nicht in lokaled DB gefunden."
     ,"ERROR_WRONG_PW":"Falsches Passwort."
@@ -519,4 +681,61 @@
     ,"defectAllCategories":"Alle Kategorien"
     ,"defectAllUrgencies":"Alle Dringlichkeiten"
     ,"defectAllRooms":"Alle Räume"
+
+    ,"bookingViewDesks":"Schreibtischbuchungen"
+    ,"bookingViewParkings":"Parkplatzbuchungen"
+    ,"bookingViewRequests":"Parkplatz-Anfragen"
+    ,"filterName":"Name"
+    ,"filterRole":"Rolle"
+    ,"filterDepartment":"Abteilung"
+    ,"spotNumber":"Platznummer"
+    ,"cancelBooking":"Buchung stornieren"
+    ,"updatePeriod":"Zeitraum ändern"
+    ,"cancelBookingJustification":"Begründung für die Stornierung"
+    ,"cancelBookingConfirm":"Stornierung bestätigen"
+    ,"cancelBookingSuccess":"Buchung erfolgreich storniert"
+    ,"editBookingConfirm":"Änderungen speichern"
+    ,"editBookingJustification":"Begründung für die Änderungen"
+    ,"editBookingSuccess":"Änderungen erfolgreich gespeichert"
+    ,"periodSection":"Zeitraum"
+    ,"assignmentSection":"Zuordnung"
+    ,"reassignBooking":"Neu zuweisen"
+    ,"reassignConfirm":"Neuzuweisung bestätigen"
+    ,"reassignJustification":"Begründung für die Neuzuweisung"
+    ,"reassignSuccess":"Buchung erfolgreich neu zugewiesen"
+    ,"currentAssignment":"Aktuelle Zuordnung"
+    ,"newAssignment":"Neue Zuordnung"
+    ,"noAvailableParkingSpots":"Keine verfügbaren Parkplätze gefunden"
+    ,"noBookingsFound":"Keine Buchungen gefunden"
+    ,"bulkApprove":"Sammelgenehmigung"
+    ,"bulkApproveSuccess":"{{count}} Anfrage(n) erfolgreich genehmigt"
+    ,"bulkApproveFailed":"{{count}} Anfrage(n) konnten nicht genehmigt werden"
+    ,"clearFilters":"Filter zurücksetzen"
+    ,"resultsShown":"Ergebnisse: {{count}}"
+    ,"bookingManagementOverviewHelper":"Schreibtisch- und Parkplatzbuchungen verwalten."
+    ,"bookingManagementDeskHelper":"Bestätigte Schreibtischbuchungen anzeigen und verwalten."
+    ,"bookingManagementParkingHelper":"Genehmigte Parkplatzbuchungen anzeigen und verwalten."
+    ,"bookingManagementRequestsHelper":"Offene Parkplatz-Anfragen prüfen und bearbeiten."
+    ,"timeRangeInvalid":"Die Endzeit muss nach der Startzeit liegen."
+
+    ,"maintenanceCalendar":"Wartungskalender"
+    ,"scheduleBlocking":"Sperrung planen"
+    ,"blockingSum":"Sperrungssumme"
+    ,"scheduledBlockingCreated":"Sperrung erfolgreich geplant"
+    ,"scheduledBlockingCancelled":"Geplante Sperrung storniert"
+    ,"scheduledBlockingFailed":"Sperrung konnte nicht geplant werden"
+    ,"defectBlockedUntilTime":"Gesperrt bis {{datetime}}"
+    ,"maintenanceCalendarBtn":"Wartungskalender"
+    ,"backToMonthView":"Zurück zur Monatsansicht"
+    ,"scheduledBlockingOverlap":"Für diesen Zeitraum ist bereits eine Sperrung geplant"
+    ,"scheduledBlockingBookingConflict":"Dieser Arbeitsplatz hat im ausgewählten Zeitraum eine geplante Sperrung."
+    ,"scheduledBlockingSelectPeriod":"Klicken und ziehen Sie, um einen Sperrzeitraum auszuwählen"
+    ,"scheduledBlockingMinDuration":"Der Sperrzeitraum muss mindestens 1 Stunde betragen"
+    ,"scheduledBlockingPastDate":"Es kann keine Sperrung in der Vergangenheit geplant werden"
+    ,"cancelScheduledBlocking":"Geplante Sperrung stornieren"
+    ,"scheduledBlockingDetailsTitle":"Details zur geplanten Sperrung"
+    ,"scheduledBlockingCancelConfirmTitle":"Geplante Sperrung stornieren?"
+    ,"scheduledBlockingCancelConfirmText":"Möchten Sie diese geplante Sperrung wirklich stornieren?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Nur geplante Sperrungen können storniert werden."
+    ,"scheduledBlockingCancelFailed":"Geplante Sperrung konnte nicht storniert werden"
 }

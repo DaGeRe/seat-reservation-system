@@ -3,11 +3,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,9 @@ import com.desk_sharing.services.UserService;
 import com.desk_sharing.entities.VisibilityMode;
 import com.desk_sharing.model.NotificationPreferencesDTO;
 import com.desk_sharing.model.UserLanguagePreferenceDTO;
+import com.desk_sharing.model.WorkstationSearchFiltersDTO;
+import com.desk_sharing.model.WorkstationSearchPresetDTO;
+import com.desk_sharing.model.WorkstationSearchPresetUpsertDTO;
 
 import lombok.AllArgsConstructor;
 
@@ -148,5 +153,52 @@ public class UserController {
         }
         String language = userService.updateCurrentUserPreferredLanguage(request.getLanguage());
         return ResponseEntity.ok(new UserLanguagePreferenceDTO(language));
+    }
+
+    @GetMapping("/me/workstation-search-filters")
+    public ResponseEntity<WorkstationSearchFiltersDTO> getWorkstationSearchFilters() {
+        return ResponseEntity.ok(userService.getCurrentUserWorkstationSearchFilters());
+    }
+
+    @PutMapping("/me/workstation-search-filters")
+    public ResponseEntity<WorkstationSearchFiltersDTO> updateWorkstationSearchFilters(
+        @RequestBody WorkstationSearchFiltersDTO request
+    ) {
+        if (request == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userService.updateCurrentUserWorkstationSearchFilters(request));
+    }
+
+    @GetMapping("/me/workstation-search-presets")
+    public ResponseEntity<List<WorkstationSearchPresetDTO>> getWorkstationSearchPresets() {
+        return ResponseEntity.ok(userService.getCurrentUserWorkstationSearchPresets());
+    }
+
+    @PostMapping("/me/workstation-search-presets")
+    public ResponseEntity<WorkstationSearchPresetDTO> createWorkstationSearchPreset(
+        @RequestBody WorkstationSearchPresetUpsertDTO request
+    ) {
+        if (request == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userService.createCurrentUserWorkstationSearchPreset(request));
+    }
+
+    @PutMapping("/me/workstation-search-presets/{presetId}")
+    public ResponseEntity<WorkstationSearchPresetDTO> updateWorkstationSearchPreset(
+        @PathVariable("presetId") String presetId,
+        @RequestBody WorkstationSearchPresetUpsertDTO request
+    ) {
+        if (request == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(userService.updateCurrentUserWorkstationSearchPreset(presetId, request));
+    }
+
+    @DeleteMapping("/me/workstation-search-presets/{presetId}")
+    public ResponseEntity<Void> deleteWorkstationSearchPreset(@PathVariable("presetId") String presetId) {
+        userService.deleteCurrentUserWorkstationSearchPreset(presetId);
+        return ResponseEntity.noContent().build();
     }
 }

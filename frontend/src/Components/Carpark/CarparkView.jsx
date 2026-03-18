@@ -1,16 +1,21 @@
-import { Alert, Box, Button, Chip, Divider, Paper, Typography, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Box, Button, Checkbox, Chip, Divider, FormControl, IconButton, InputLabel, ListItemText, ListSubheader, MenuItem, Paper, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 import { getRequest, postRequest, deleteRequest } from '../RequestFunctions/RequestFunctions';
 import CreateDatePicker from '../misc/CreateDatePicker';
-import CreateTimePicker from '../misc/CreateTimePicker';
+import { colorVars, semanticColors } from '../../theme';
 
 const CARPARK_SVG_URL = '/Assets/carpark_overview_ready.svg';
 const CARPARK_SELECTED_DATE_KEY = 'carparkSelectedDate';
-const CARPARK_DEFAULT_DURATION_MINUTES = 120;
+const CARPARK_MAP_FILTER_STORAGE_KEY = 'carparkMapFilters';
+const CARPARK_JUSTIFICATION_MIN_LENGTH = 20;
+const CARPARK_JUSTIFICATION_MAX_LENGTH = 500;
 const CARPARK_MIN_LEAD_MINUTES = 30;
 const CARPARK_OVERLAP_BUFFER_MINUTES = 30;
 const CARPARK_NOTIFICATION_STATE_VERSION = 'v3';
@@ -18,6 +23,20 @@ const CARPARK_DECISION_NOTIFICATION_FALLBACK_WINDOW_MINUTES = 20;
 const CARPARK_RES_STATUS_SNAPSHOT_KEY = `carparkReservationStatusSnapshot_${CARPARK_NOTIFICATION_STATE_VERSION}`;
 const CARPARK_NOTIFIED_STATUS_KEY = `carparkNotifiedReservationStatus_${CARPARK_NOTIFICATION_STATE_VERSION}`;
 const CARPARK_NOTIFIED_REMINDERS_KEY = `carparkNotifiedReservationReminders_${CARPARK_NOTIFICATION_STATE_VERSION}`;
+const CARPARK_TIMELINE_START_HOUR = 6;
+const CARPARK_TIMELINE_END_HOUR = 22;
+const CARPARK_CANDIDATE_SPOTS = [
+  { label: '28', x: 590, y: 110, width: 70, height: 130 },
+  { label: '27', x: 660, y: 110, width: 70, height: 130 },
+  { label: '46', x: -495, y: 378, width: 70, height: 130 },
+  { label: '45', x: -425, y: 378, width: 70, height: 130 },
+  { label: '44', x: -355, y: 378, width: 70, height: 130 },
+  { label: '42', x: -215, y: 378, width: 70, height: 130 },
+  { label: '41', x: -145, y: 378, width: 70, height: 130 },
+];
+const CARPARK_CANDIDATE_SPOT_LABEL_BY_RECT_KEY = new Map(
+  CARPARK_CANDIDATE_SPOTS.map(({ label, x, y, width, height }) => [`${x}:${y}:${width}:${height}`, label])
+);
 
 const readSessionJson = (key, fallback) => {
   try {
@@ -69,6 +88,57 @@ const parseCreatedAtValue = (createdAt) => {
 const formatTimeHHMM = (d) =>
   `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
+const minutesToTimeString = (totalMinutes) =>
+  `${String(Math.floor(totalMinutes / 60)).padStart(2, '0')}:${String(totalMinutes % 60).padStart(2, '0')}`;
+
+const parseTimeToMinutes = (timeValue) => {
+  if (!timeValue) return NaN;
+  const [hh, mm] = String(timeValue).split(':');
+  const hours = Number.parseInt(hh, 10);
+  const minutes = Number.parseInt(mm, 10);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return NaN;
+  return hours * 60 + minutes;
+};
+
+const formatISODateValue = (d) => {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const formatDayPathValue = (d) => {
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${dd}.${mm}.${yyyy}`;
+};
+
+const normalizeTimeValue = (raw) => {
+  if (typeof raw !== 'string') return '';
+  return raw.length === 5 ? `${raw}:00` : raw;
+};
+
+const toShortTimeValue = (raw) => {
+  if (typeof raw !== 'string') return '';
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  return trimmed.length >= 5 ? trimmed.slice(0, 5) : trimmed;
+};
+
+const buildDateTimeForDay = (day, timeValue) => {
+  if (!(day instanceof Date) || Number.isNaN(day.valueOf()) || !timeValue) return null;
+  const parsed = new Date(`${formatISODateValue(day)}T${normalizeTimeValue(timeValue)}`);
+  return Number.isNaN(parsed.valueOf()) ? null : parsed;
+};
+
+const parkingTimelineStatusFromReservation = (rawStatus) => {
+  const status = String(rawStatus || '').toUpperCase();
+  if (status === 'PENDING') return 'PENDING';
+  if (status === 'REJECTED') return 'BLOCKED';
+  return 'OCCUPIED';
+};
+
 const roundUpToHalfHour = (d) => {
   const rounded = new Date(d);
   rounded.setSeconds(0, 0);
@@ -84,20 +154,104 @@ const roundUpToHalfHour = (d) => {
   return rounded;
 };
 
-const getDefaultTimeRange = () => {
-  const leadTime = new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000);
-  const start = roundUpToHalfHour(leadTime);
-  const end = new Date(start.getTime() + CARPARK_DEFAULT_DURATION_MINUTES * 60 * 1000);
-  return {
-    startTime: formatTimeHHMM(start),
-    endTime: formatTimeHHMM(end),
-  };
+const getEarliestAllowedStartMinutesForDate = (selectedDate) => {
+  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
+  if (!(selectedDate instanceof Date) || Number.isNaN(selectedDate.valueOf())) {
+    return minMinutes;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const targetDay = new Date(selectedDate);
+  targetDay.setHours(0, 0, 0, 0);
+  if (targetDay.getTime() !== today.getTime()) {
+    return minMinutes;
+  }
+
+  const leadTime = roundUpToHalfHour(new Date(Date.now() + CARPARK_MIN_LEAD_MINUTES * 60 * 1000));
+  return Math.max(minMinutes, parseTimeToMinutes(formatTimeHHMM(leadTime)));
 };
+
+const isValidTimeRangeForDate = (selectedDate, startTime, endTime) => {
+  const startMinutes = parseTimeToMinutes(startTime);
+  const endMinutes = parseTimeToMinutes(endTime);
+  const minMinutes = CARPARK_TIMELINE_START_HOUR * 60;
+  const maxMinutes = CARPARK_TIMELINE_END_HOUR * 60;
+  const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
+
+  return (
+    Number.isFinite(startMinutes)
+    && Number.isFinite(endMinutes)
+    && startMinutes >= Math.max(minMinutes, earliestAllowedStartMinutes)
+    && endMinutes <= maxMinutes
+    && endMinutes > startMinutes
+  );
+};
+
+const parseTimeRangeMinutes = (startTime, endTime) => {
+  const startMinutes = parseTimeToMinutes(startTime);
+  const endMinutes = parseTimeToMinutes(endTime);
+  if (!Number.isFinite(startMinutes) || !Number.isFinite(endMinutes) || endMinutes <= startMinutes) {
+    return null;
+  }
+  return { startMinutes, endMinutes };
+};
+
+const hasTimeRangeOverlap = (timelineReservationEvents, startMinutes, endMinutes) =>
+  timelineReservationEvents.some((calendarEvent) => {
+    const eventStartMinutes = (calendarEvent.start.getHours() * 60) + calendarEvent.start.getMinutes();
+    const eventEndMinutes = (calendarEvent.end.getHours() * 60) + calendarEvent.end.getMinutes();
+    return startMinutes < (eventEndMinutes + CARPARK_OVERLAP_BUFFER_MINUTES)
+      && endMinutes > (eventStartMinutes - CARPARK_OVERLAP_BUFFER_MINUTES);
+  });
 
 const parseFloatAttr = (el, name, fallback = 0) => {
   const raw = el.getAttribute(name);
   const parsed = raw == null ? NaN : Number.parseFloat(raw);
   return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const getRectKey = (x, y, width, height) => `${x}:${y}:${width}:${height}`;
+
+const getCandidateSpotLabelForRect = (rect) =>
+  CARPARK_CANDIDATE_SPOT_LABEL_BY_RECT_KEY.get(
+    getRectKey(
+      parseFloatAttr(rect, 'x'),
+      parseFloatAttr(rect, 'y'),
+      parseFloatAttr(rect, 'width'),
+      parseFloatAttr(rect, 'height')
+    )
+  ) ?? null;
+
+const createGeneratedSpotLabel = (doc, svg, rect, spotLabel) => {
+  const x = parseFloatAttr(rect, 'x');
+  const y = parseFloatAttr(rect, 'y');
+  const width = parseFloatAttr(rect, 'width');
+  const labelText = doc.createElementNS(svg.namespaceURI, 'text');
+  labelText.textContent = spotLabel;
+  labelText.setAttribute('x', String(x + width / 2));
+  labelText.setAttribute('y', String(y <= 200 ? y - 6 : y - 8));
+  labelText.setAttribute('text-anchor', 'middle');
+  labelText.setAttribute('class', 'font label small');
+  labelText.style.pointerEvents = 'none';
+  rect.parentNode?.appendChild(labelText);
+  return labelText;
+};
+
+const createGeneratedSpotIcon = (doc, svg, rect) => {
+  const x = parseFloatAttr(rect, 'x');
+  const y = parseFloatAttr(rect, 'y');
+  const width = parseFloatAttr(rect, 'width');
+  const height = parseFloatAttr(rect, 'height');
+  const iconText = doc.createElementNS(svg.namespaceURI, 'text');
+  iconText.setAttribute('x', String(x + width / 2));
+  iconText.setAttribute('y', String(y + height / 2));
+  iconText.setAttribute('text-anchor', 'middle');
+  iconText.setAttribute('dominant-baseline', 'middle');
+  iconText.setAttribute('class', 'font label small');
+  iconText.style.pointerEvents = 'none';
+  rect.parentNode?.appendChild(iconText);
+  return iconText;
 };
 
 const isPointInRect = (x, y, rectX, rectY, rectW, rectH) =>
@@ -133,16 +287,63 @@ const defaultSpotCategory = (spotLabel, isSpecial, isAccessible) => {
 const formatSpotCategory = (spotCategory) => {
   const value = String(spotCategory || 'STANDARD').toUpperCase();
   if (value === 'SPECIAL_CASE') return 'special case';
+  if (value === 'MOTORCYCLE') return 'motorcycle';
   if (value === 'ACCESSIBLE') return 'accessible';
   if (value === 'E_CHARGING_STATION') return 'e-charging station';
   return 'standard';
 };
 
+const toSentenceCase = (value) => {
+  const normalized = String(value || '').trim().toLowerCase().replaceAll('_', ' ');
+  return normalized ? normalized.charAt(0).toUpperCase() + normalized.slice(1) : '';
+};
+
+const normalizeMapFilters = (filters) => {
+  const values = typeof filters === 'string' ? filters.split(',').filter(Boolean) : filters;
+  return Array.isArray(values)
+    ? [...new Set(values.filter((value) => typeof value === 'string').filter((value) => value.startsWith('type:') || value.startsWith('covered:')))]
+    : [];
+};
+
+const doesSpotMatchMapFilters = (spotCategory, covered, selectedMapFilters) => {
+  const typeFilters = new Set(
+    normalizeMapFilters(selectedMapFilters)
+      .filter((value) => value.startsWith('type:'))
+      .map((value) => value.replace('type:', '').toUpperCase())
+  );
+  const coveredFilters = new Set(
+    normalizeMapFilters(selectedMapFilters)
+      .filter((value) => value.startsWith('covered:'))
+      .map((value) => value.replace('covered:', ''))
+  );
+
+  const typeMatch = typeFilters.size === 0 || typeFilters.has(String(spotCategory || 'STANDARD').toUpperCase());
+  const coveredMatch = coveredFilters.size === 0 || coveredFilters.has(String(covered === true));
+  return typeMatch && coveredMatch;
+};
+
+const getSpotIconConfig = (spotCategory, isActive) => {
+  if (!isActive) return { text: '', fill: '#000000', fontSize: '28px', fontWeight: '700' };
+  const value = String(spotCategory || 'STANDARD').toUpperCase();
+  if (value === 'SPECIAL_CASE') {
+    return { text: 'S', fill: '#000000', fontSize: '32px', fontWeight: '700' };
+  }
+  if (value === 'ACCESSIBLE') {
+    return { text: '\u267F', fill: '#1565c0', fontSize: '42px', fontWeight: '400' };
+  }
+  if (value === 'STANDARD') {
+    return { text: 'LIT', fill: '#000000', fontSize: '26px', fontWeight: '700' };
+  }
+  return { text: '', fill: '#000000', fontSize: '28px', fontWeight: '700' };
+};
+
 const getSpotMetaFromDataset = (rect) => ({
   label: rect.dataset.spotLabel ?? '?',
+  displayLabel: rect.dataset.spotDisplayLabel || rect.dataset.spotLabel || '?',
   type: rect.dataset.spotType ?? 'unknown',
   spotCategory: rect.dataset.spotCategory ?? 'STANDARD',
   lit: rect.dataset.spotLit === 'true',
+  active: rect.dataset.spotActive !== 'false',
   accessible: rect.dataset.spotAccessible === 'true',
   special: rect.dataset.spotSpecial === 'true',
   covered: rect.dataset.spotCovered === 'true',
@@ -155,6 +356,7 @@ const getSpotMetaFromDataset = (rect) => ({
   reservedBegin: rect.dataset.spotReservedBegin || null,
   reservedEnd: rect.dataset.spotReservedEnd || null,
   reservedByUser: rect.dataset.spotReservedByUser || null,
+  reservedJustification: rect.dataset.spotReservedJustification || null,
 });
 
 const isSpotSelectableForCurrentUser = (rect) => {
@@ -162,15 +364,8 @@ const isSpotSelectableForCurrentUser = (rect) => {
     rect?.dataset?.spotAdminEditMode === 'true' && localStorage.getItem('admin') === 'true';
   if (adminEditModeActive) return true;
 
-  const isSelectable = rect?.dataset?.spotSelectable !== 'false';
-  if (!isSelectable) return false;
-
   const status = rect?.dataset?.spotStatus ?? 'UNKNOWN';
-  const reservedByMe = rect?.dataset?.spotReservedByMe === 'true';
-
-  if (status === 'AVAILABLE') return true;
-  if ((status === 'PENDING' || status === 'OCCUPIED' || status === 'BLOCKED') && reservedByMe) return true;
-  return false;
+  return status !== 'INACTIVE' && status !== 'FILTERED_OUT';
 };
 
 const CarparkView = ({
@@ -187,18 +382,14 @@ const CarparkView = ({
   const cleanupRef = useRef([]);
   const selectedRectRef = useRef(null);
   const svgRef = useRef(null);
+  const timelineContainerRef = useRef(null);
+  const timelineSelectionDragRef = useRef(false);
   const headersRef = useRef(JSON.parse(sessionStorage.getItem('headers')));
+  const spotCatalogByLabelRef = useRef(new Map());
+  const spotLabelTextByLabelRef = useRef(new Map());
+  const spotIconTextByLabelRef = useRef(new Map());
   const spotRectsByLabelRef = useRef(new Map());
-  const initialTimeRangeRef = useRef(getDefaultTimeRange());
-  const reservationStatusSnapshotRef = useRef(new Map());
-
-  const [selectedSpot, setSelectedSpot] = useState(null);
-  const [hoveredSpot, setHoveredSpot] = useState(null);
-  const [loadError, setLoadError] = useState('');
-  const [zoom, setZoom] = useState(1);
-  const [pageNotifications, setPageNotifications] = useState([]);
-  const [adminEditMode, setAdminEditMode] = useState(false);
-  const [internalDate, setInternalDate] = useState(() => {
+  const initialSelectedDate = (() => {
     const fromState = location.state?.date ? new Date(location.state.date) : null;
     if (fromState && !Number.isNaN(fromState.valueOf())) {
       return fromState;
@@ -211,16 +402,213 @@ const CarparkView = ({
       }
     }
     return new Date();
-  });
-  const [startTime, setStartTime] = useState(initialTimeRangeRef.current.startTime);
-  const [endTime, setEndTime] = useState(initialTimeRangeRef.current.endTime);
+  })();
+  const reservationStatusSnapshotRef = useRef(new Map());
+  const pendingRouteSpotLabelRef = useRef('');
+  const lastAppliedRouteKeyRef = useRef('');
+
+  const [selectedSpot, setSelectedSpot] = useState(null);
+  const [hoveredSpot, setHoveredSpot] = useState(null);
+  const [loadError, setLoadError] = useState('');
+  const [zoom, setZoom] = useState(1);
+  const [pageNotifications, setPageNotifications] = useState([]);
+  const [adminEditMode, setAdminEditMode] = useState(false);
+  const [dayParkingEvents, setDayParkingEvents] = useState([]);
+  const [hasExplicitTimeSelection, setHasExplicitTimeSelection] = useState(false);
+  const [hideTimelineSelectionOverlay, setHideTimelineSelectionOverlay] = useState(false);
+  const [internalDate, setInternalDate] = useState(initialSelectedDate);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [svgReady, setSvgReady] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
+  const [justification, setJustification] = useState('');
 
   const effectiveShowHover = showHoverDetails ?? detailsVariant === 'panel';
   const selectedDate = controlledSelectedDate ?? internalDate;
   const setSelectedDate = onSelectedDateChange ?? setInternalDate;
   const allowSelectUnavailable = detailsVariant === 'modal';
   const isAdminUser = localStorage.getItem('admin') === 'true';
+  const currentUserId = localStorage.getItem('userId');
+  const localizer = momentLocalizer(moment);
+  const requestedSpotLabel = String(location.state?.spotLabel || '').trim();
+  const mapFilterStorageKey = useMemo(() => namespacedCarparkKey(CARPARK_MAP_FILTER_STORAGE_KEY), []);
+  const timelineFormats = useMemo(() => ({
+    timeGutterFormat: (date, culture, loc) => loc.format(date, 'HH:mm', culture),
+    eventTimeRangeFormat: ({ start, end }, culture, loc) =>
+      `${loc.format(start, 'HH:mm', culture)} - ${loc.format(end, 'HH:mm', culture)}`,
+  }), []);
+  const parkingTypeFilterOptions = useMemo(() => ([
+    { value: 'type:STANDARD', label: t('carparkStandard') },
+    { value: 'type:MOTORCYCLE', label: t('carparkMotorcycle') },
+    { value: 'type:ACCESSIBLE', label: t('carparkAccessible') },
+    { value: 'type:E_CHARGING_STATION', label: t('carparkEChargingStation') },
+    { value: 'type:SPECIAL_CASE', label: t('carparkSpecialCase') },
+  ]), [t]);
+  const coveredFilterOptions = useMemo(() => ([
+    { value: 'covered:true', label: t('yes') },
+    { value: 'covered:false', label: t('no') },
+  ]), [t]);
+  const [selectedMapFilters, setSelectedMapFilters] = useState(() =>
+    normalizeMapFilters(readSessionJson(mapFilterStorageKey, []))
+  );
+
+  const applyInactiveSpotPresentation = useCallback((label, rect) => {
+    const labelText = spotLabelTextByLabelRef.current.get(label);
+    const iconText = spotIconTextByLabelRef.current.get(label);
+    rect.classList.remove('carpark-status-available', 'carpark-status-pending', 'carpark-status-occupied', 'carpark-status-blocked');
+    rect.classList.add('carpark-status-inactive');
+    rect.dataset.spotActive = 'false';
+    rect.dataset.spotDisplayLabel = '';
+    rect.dataset.spotStatus = 'INACTIVE';
+    rect.dataset.spotSelectable = 'false';
+    rect.dataset.spotReservedByMe = 'false';
+    rect.dataset.spotReservationId = '';
+    rect.dataset.spotReservedBegin = '';
+    rect.dataset.spotReservedEnd = '';
+    rect.dataset.spotReservedByUser = '';
+    rect.dataset.spotReservedJustification = '';
+    rect.setAttribute('tabindex', adminEditMode && isAdminUser ? '0' : '-1');
+    rect.setAttribute('role', adminEditMode && isAdminUser ? 'button' : 'img');
+    rect.style.cursor = adminEditMode && isAdminUser ? 'pointer' : 'default';
+    if (labelText) {
+      labelText.textContent = '';
+      labelText.style.display = 'none';
+    }
+    if (iconText) {
+      iconText.textContent = '';
+      iconText.style.display = 'none';
+    }
+  }, [adminEditMode, isAdminUser]);
+
+  const applyFilteredOutSpotPresentation = useCallback((label, rect) => {
+    const labelText = spotLabelTextByLabelRef.current.get(label);
+    const iconText = spotIconTextByLabelRef.current.get(label);
+    const displayLabel = rect.dataset.spotDisplayLabel || rect.dataset.spotLabel || label;
+
+    rect.classList.remove('carpark-status-available', 'carpark-status-pending', 'carpark-status-occupied', 'carpark-status-blocked');
+    rect.classList.add('carpark-status-inactive');
+    rect.dataset.spotStatus = 'FILTERED_OUT';
+    rect.dataset.spotSelectable = 'false';
+    rect.dataset.spotReservedByMe = 'false';
+    rect.dataset.spotReservationId = '';
+    rect.dataset.spotReservedBegin = '';
+    rect.dataset.spotReservedEnd = '';
+    rect.dataset.spotReservedByUser = '';
+    rect.dataset.spotReservedJustification = '';
+    rect.setAttribute('tabindex', '-1');
+    rect.setAttribute('role', 'img');
+    rect.style.cursor = 'default';
+
+    if (labelText) {
+      labelText.textContent = displayLabel;
+      labelText.style.display = displayLabel ? '' : 'none';
+    }
+    if (iconText) {
+      iconText.textContent = '';
+      iconText.style.display = 'none';
+    }
+  }, []);
+
+  const applyCatalogToMap = useCallback((spots) => {
+    const nextCatalog = new Map();
+    for (const spot of spots ?? []) {
+      const label = String(spot?.spotLabel ?? '').trim();
+      if (label) {
+        nextCatalog.set(label, spot);
+      }
+    }
+    spotCatalogByLabelRef.current = nextCatalog;
+
+    for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+      const catalogSpot = nextCatalog.get(label);
+      const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+      const labelText = spotLabelTextByLabelRef.current.get(label);
+      const iconText = spotIconTextByLabelRef.current.get(label);
+      const displayLabel = String(catalogSpot?.displayLabel ?? (isActiveSpot ? label : '')).trim();
+
+      rect.dataset.spotActive = isActiveSpot ? 'true' : 'false';
+      rect.dataset.spotDisplayLabel = displayLabel;
+
+      if (catalogSpot?.spotType) {
+        rect.dataset.spotCategory = String(catalogSpot.spotType).toUpperCase();
+        rect.dataset.spotSpecial = String(catalogSpot.spotType).toUpperCase() === 'SPECIAL_CASE' ? 'true' : 'false';
+        rect.dataset.spotAccessible = String(catalogSpot.spotType).toUpperCase() === 'ACCESSIBLE' ? 'true' : 'false';
+      }
+      if (catalogSpot?.covered != null) {
+        rect.dataset.spotCovered = catalogSpot.covered === true ? 'true' : 'false';
+      }
+      if (catalogSpot?.manuallyBlocked != null) {
+        rect.dataset.spotManuallyBlocked = catalogSpot.manuallyBlocked === true ? 'true' : 'false';
+      }
+      rect.dataset.spotChargingKw = catalogSpot?.chargingKw == null ? '' : String(catalogSpot.chargingKw);
+
+      if (!isActiveSpot) {
+        applyInactiveSpotPresentation(label, rect);
+        continue;
+      }
+
+      if (!doesSpotMatchMapFilters(rect.dataset.spotCategory, rect.dataset.spotCovered === 'true', selectedMapFilters)) {
+        applyFilteredOutSpotPresentation(label, rect);
+        continue;
+      }
+
+      rect.classList.remove('carpark-status-inactive');
+      rect.dataset.spotSelectable = 'true';
+      rect.setAttribute('tabindex', rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? '0' : '-1');
+      rect.setAttribute('role', rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? 'button' : 'img');
+      rect.style.cursor = rect.dataset.spotSelectable === 'true' || (adminEditMode && isAdminUser) ? 'pointer' : 'default';
+
+      if (labelText) {
+        labelText.textContent = displayLabel;
+        labelText.style.display = displayLabel ? '' : 'none';
+      }
+      if (iconText) {
+        const iconConfig = getSpotIconConfig(rect.dataset.spotCategory, isActiveSpot);
+        iconText.textContent = iconConfig.text;
+        iconText.style.display = iconConfig.text ? '' : 'none';
+        iconText.style.fill = iconConfig.fill;
+        iconText.style.fontSize = iconConfig.fontSize;
+        iconText.style.fontWeight = iconConfig.fontWeight;
+      }
+    }
+
+    if (selectedRectRef.current) {
+      const selectedCategory = selectedRectRef.current.dataset.spotCategory;
+      const selectedCovered = selectedRectRef.current.dataset.spotCovered === 'true';
+      const selectedActive = selectedRectRef.current.dataset.spotActive !== 'false';
+      if (!selectedActive || !doesSpotMatchMapFilters(selectedCategory, selectedCovered, selectedMapFilters)) {
+        selectedRectRef.current.classList.remove('carpark-selected');
+        selectedRectRef.current = null;
+        setSelectedSpot(null);
+        setHoveredSpot(null);
+      } else {
+        setSelectedSpot(getSpotMetaFromDataset(selectedRectRef.current));
+      }
+    }
+  }, [adminEditMode, applyFilteredOutSpotPresentation, applyInactiveSpotPresentation, isAdminUser, selectedMapFilters]);
+
+  const refreshSpotCatalog = useCallback((onDone) => {
+    if (!spotRectsByLabelRef.current.size) {
+      if (onDone) onDone();
+      return;
+    }
+    const includeInactive = isAdminUser && adminEditMode;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/parking/spots${includeInactive ? '?includeInactive=true' : ''}`;
+
+    getRequest(
+      url,
+      headersRef.current,
+      (data) => {
+        applyCatalogToMap(Array.isArray(data) ? data : []);
+        if (onDone) onDone();
+      },
+      () => {
+        // keep the existing map usable even if catalog refresh fails
+        if (onDone) onDone();
+      }
+    );
+  }, [adminEditMode, applyCatalogToMap, isAdminUser]);
 
   const clearSelection = useCallback(() => {
     if (selectedRectRef.current) {
@@ -230,6 +618,27 @@ const CarparkView = ({
     setSelectedSpot(null);
   }, []);
 
+  const applySelectedRect = useCallback((rect) => {
+    if (!rect || !isSpotSelectableForCurrentUser(rect)) return false;
+    const adminEditModeActive = rect.dataset.spotAdminEditMode === 'true' && localStorage.getItem('admin') === 'true';
+    const status = rect.dataset.spotStatus;
+    if (!adminEditModeActive && status === 'INACTIVE') return false;
+    if (selectedRectRef.current && selectedRectRef.current !== rect) {
+      selectedRectRef.current.classList.remove('carpark-selected');
+    }
+    selectedRectRef.current = rect;
+    rect.classList.add('carpark-selected');
+    setSelectedSpot(getSpotMetaFromDataset(rect));
+    return true;
+  }, []);
+
+  const selectSpotByLabel = useCallback((spotLabel) => {
+    const normalizedLabel = String(spotLabel || '').trim();
+    if (!normalizedLabel) return false;
+    const rect = spotRectsByLabelRef.current.get(normalizedLabel);
+    return applySelectedRect(rect);
+  }, [applySelectedRect]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -238,6 +647,10 @@ const CarparkView = ({
       cleanupRef.current = [];
       selectedRectRef.current = null;
       svgRef.current = null;
+      spotLabelTextByLabelRef.current = new Map();
+      spotIconTextByLabelRef.current = new Map();
+      spotCatalogByLabelRef.current = new Map();
+      setSvgReady(false);
       if (containerRef.current) containerRef.current.replaceChildren();
     };
 
@@ -275,19 +688,21 @@ const CarparkView = ({
       const style = doc.createElementNS(svg.namespaceURI, 'style');
       style.textContent = `
         .carpark-spot { cursor: pointer; }
-        .carpark-spot.carpark-hover { fill: #90caf9 !important; }
-        .carpark-spot.carpark-selected { fill: #1976d2 !important; }
+        .carpark-spot.carpark-hover { fill: ${semanticColors.carpark.hover} !important; }
+        .carpark-spot.carpark-selected { fill: ${semanticColors.carpark.selected} !important; }
         .carpark-spot:focus { outline: none; }
-        .carpark-status-available { fill: #2e7d32 !important; }
-        .carpark-status-pending { fill: #f9a825 !important; }
-        .carpark-status-occupied { fill: #c62828 !important; }
-        .carpark-status-blocked { fill: #9e9e9e !important; }
+        .carpark-status-available { fill: ${semanticColors.carpark.status.AVAILABLE} !important; }
+        .carpark-status-pending { fill: ${semanticColors.carpark.status.PENDING} !important; }
+        .carpark-status-occupied { fill: ${semanticColors.carpark.status.OCCUPIED} !important; }
+        .carpark-status-blocked { fill: ${semanticColors.carpark.status.BLOCKED} !important; }
+        .carpark-status-inactive { fill: ${semanticColors.carpark.status.INACTIVE} !important; }
       `;
       defs.appendChild(style);
 
       const localCleanup = [];
       const allTextNodes = Array.from(svg.querySelectorAll('text'))
         .map((el) => ({
+          element: el,
           value: (el.textContent ?? '').trim(),
           x: parseFloatAttr(el, 'x', NaN),
           y: parseFloatAttr(el, 'y', NaN),
@@ -300,11 +715,19 @@ const CarparkView = ({
         (t) => t.value.includes('♿') || t.value.includes('â™ż')
       );
 
-      // Only "stall" rectangles are selectable/hoverable (blank "empty" spots are view-only).
-      const spotRects = Array.from(svg.querySelectorAll('rect.stall')).filter((rect) => {
+      for (const litText of litTexts) {
+        litText.element.style.display = 'none';
+      }
+      for (const accessibleText of accessibleTexts) {
+        accessibleText.element.style.display = 'none';
+      }
+
+      const spotRects = Array.from(svg.querySelectorAll('rect')).filter((rect) => {
         const w = parseFloatAttr(rect, 'width');
         const h = parseFloatAttr(rect, 'height');
-        return w >= 40 && h >= 40;
+        if (w < 40 || h < 40) return false;
+        if (rect.classList.contains('stall')) return true;
+        return rect.classList.contains('empty') && Boolean(getCandidateSpotLabelForRect(rect));
       });
       spotRectsByLabelRef.current = new Map();
       for (let idx = 0; idx < spotRects.length; idx += 1) {
@@ -318,16 +741,21 @@ const CarparkView = ({
         const cx = x + w / 2;
         const cy = y + h / 2;
 
-        const closest = getClosestNumericLabel(labelTexts, cx, cy);
-        const spotLabel = closest?.value ?? `${idx + 1}`;
+        const candidateSpotLabel = getCandidateSpotLabelForRect(rect);
+        const isCandidateSpot = Boolean(candidateSpotLabel);
+        const closest = isCandidateSpot ? null : getClosestNumericLabel(labelTexts, cx, cy);
+        const spotLabel = candidateSpotLabel ?? closest?.value ?? `${idx + 1}`;
         const isSpecial = spotLabel === '23';
-        const isSelectable = !isSpecial;
+        const isInitiallyActive = !isCandidateSpot;
+        const isSelectable = isInitiallyActive;
 
-        const isLit = litTexts.some((t) => isPointInRect(t.x, t.y, x, y, w, h));
+        const isLit = false;
         const isAccessible = accessibleTexts.some((t) => isPointInRect(t.x, t.y, x, y, w, h));
 
         rect.dataset.spotLabel = spotLabel;
-        rect.dataset.spotType = 'stall';
+        rect.dataset.spotDisplayLabel = isInitiallyActive ? spotLabel : '';
+        rect.dataset.spotType = isCandidateSpot ? 'candidate' : 'stall';
+        rect.dataset.spotActive = isInitiallyActive ? 'true' : 'false';
         rect.dataset.spotLit = isLit ? 'true' : 'false';
         rect.dataset.spotAccessible = isAccessible ? 'true' : 'false';
         rect.dataset.spotSpecial = isSpecial ? 'true' : 'false';
@@ -337,15 +765,32 @@ const CarparkView = ({
         rect.dataset.spotChargingKw = '';
         rect.dataset.spotSelectable = isSelectable ? 'true' : 'false';
         rect.dataset.spotAdminEditMode = 'false';
-        // Default to AVAILABLE so the UI is usable even before the first availability refresh completes.
-        rect.dataset.spotStatus = isSpecial ? 'BLOCKED' : 'AVAILABLE';
+        rect.dataset.spotStatus = isInitiallyActive ? (isSpecial ? 'BLOCKED' : 'AVAILABLE') : 'INACTIVE';
         rect.dataset.spotReservedByMe = 'false';
         rect.dataset.spotReservationId = '';
         rect.dataset.spotReservedBegin = '';
         rect.dataset.spotReservedEnd = '';
         rect.dataset.spotReservedByUser = '';
+        rect.dataset.spotReservedJustification = '';
         spotRectsByLabelRef.current.set(spotLabel, rect);
-        rect.classList.add(isSpecial ? 'carpark-status-blocked' : 'carpark-status-available');
+        if (isCandidateSpot) {
+          const generatedLabel = createGeneratedSpotLabel(doc, svg, rect, spotLabel);
+          generatedLabel.style.display = 'none';
+          spotLabelTextByLabelRef.current.set(spotLabel, generatedLabel);
+        } else if (closest?.element) {
+          spotLabelTextByLabelRef.current.set(spotLabel, closest.element);
+        }
+        const generatedIcon = createGeneratedSpotIcon(doc, svg, rect);
+        const initialIconConfig = getSpotIconConfig(rect.dataset.spotCategory, isInitiallyActive);
+        generatedIcon.textContent = initialIconConfig.text;
+        generatedIcon.style.display = initialIconConfig.text ? '' : 'none';
+        generatedIcon.style.fill = initialIconConfig.fill;
+        generatedIcon.style.fontSize = initialIconConfig.fontSize;
+        generatedIcon.style.fontWeight = initialIconConfig.fontWeight;
+        spotIconTextByLabelRef.current.set(spotLabel, generatedIcon);
+        rect.classList.add(
+          isInitiallyActive ? (isSpecial ? 'carpark-status-blocked' : 'carpark-status-available') : 'carpark-status-inactive'
+        );
 
         rect.setAttribute('tabindex', isSelectable ? '0' : '-1');
         rect.setAttribute('role', isSelectable ? 'button' : 'img');
@@ -358,17 +803,7 @@ const CarparkView = ({
         );
 
         const setSelectedRect = () => {
-          if (!isSpotSelectableForCurrentUser(rect)) return;
-          const adminEditModeActive = rect.dataset.spotAdminEditMode === 'true' && localStorage.getItem('admin') === 'true';
-          const status = rect.dataset.spotStatus;
-          if (!adminEditModeActive && !allowSelectUnavailable && status && status !== 'AVAILABLE') return;
-          if (!adminEditModeActive && status === 'BLOCKED') return;
-          if (selectedRectRef.current && selectedRectRef.current !== rect) {
-            selectedRectRef.current.classList.remove('carpark-selected');
-          }
-          selectedRectRef.current = rect;
-          rect.classList.add('carpark-selected');
-          setSelectedSpot(getSpotMetaFromDataset(rect));
+          applySelectedRect(rect);
         };
 
         const onMouseEnter = () => {
@@ -436,7 +871,13 @@ const CarparkView = ({
 
       svgRef.current = svg;
       cleanupRef.current = localCleanup;
-      containerRef.current?.appendChild(svg);
+      refreshSpotCatalog(() => {
+        if (!cancelled) {
+          containerRef.current?.appendChild(svg);
+          setSvgReady(true);
+          refreshAvailability();
+        }
+      });
     };
 
     load().catch((err) => {
@@ -448,7 +889,7 @@ const CarparkView = ({
       cancelled = true;
       cleanupCurrent();
     };
-  }, [effectiveShowHover, allowSelectUnavailable, clearSelection]);
+  }, [applySelectedRect, effectiveShowHover, allowSelectUnavailable, clearSelection]);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -462,10 +903,158 @@ const CarparkView = ({
   }, [selectedDate]);
 
   useEffect(() => {
+    writeSessionJson(mapFilterStorageKey, selectedMapFilters);
+  }, [mapFilterStorageKey, selectedMapFilters]);
+
+  useEffect(() => {
+    if (!svgReady || !requestedSpotLabel) return;
+    if (pendingRouteSpotLabelRef.current === requestedSpotLabel) return;
+    if (selectSpotByLabel(requestedSpotLabel)) {
+      pendingRouteSpotLabelRef.current = requestedSpotLabel;
+    }
+  }, [requestedSpotLabel, selectSpotByLabel, svgReady]);
+
+  useEffect(() => {
+    if (lastAppliedRouteKeyRef.current === location.key) {
+      return;
+    }
+    lastAppliedRouteKeyRef.current = location.key;
+
+    const nextDate = location.state?.date ? new Date(location.state.date) : null;
+    const hasRouteDate = nextDate instanceof Date && !Number.isNaN(nextDate.valueOf());
+    const requestedRange = location.state?.preferredTimeRange;
+    const requestedStartTime = toShortTimeValue(requestedRange?.startTime);
+    const requestedEndTime = toShortTimeValue(requestedRange?.endTime);
+    const shouldApplyExplicitTimeSelection = location.state?.applyExplicitTimeSelection === true;
+
+    if (hasRouteDate) {
+      setSelectedDate(nextDate);
+    }
+
+    if (location.state && Object.prototype.hasOwnProperty.call(location.state, 'applyExplicitTimeSelection')) {
+      if (shouldApplyExplicitTimeSelection && requestedStartTime && requestedEndTime) {
+        setStartTime(requestedStartTime);
+        setEndTime(requestedEndTime);
+        setHasExplicitTimeSelection(true);
+        setHideTimelineSelectionOverlay(false);
+      } else {
+        setStartTime('');
+        setEndTime('');
+        setHasExplicitTimeSelection(false);
+        setHideTimelineSelectionOverlay(false);
+      }
+    }
+
+    if (requestedSpotLabel) {
+      pendingRouteSpotLabelRef.current = '';
+    }
+  }, [location.key, requestedSpotLabel, selectedDate, setSelectedDate]);
+
+  useEffect(() => {
+    moment.locale(i18n.language === 'en' ? 'en-gb' : i18n.language);
+  }, [i18n.language]);
+
+  const refreshFavouriteStatus = useCallback(() => {
+    if (!currentUserId || !selectedSpot?.label) {
+      setIsFavourite(false);
+      return;
+    }
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/favourites/${currentUserId}/parking/${encodeURIComponent(selectedSpot.label)}/isFavourite`,
+      headersRef.current,
+      (res) => setIsFavourite(Boolean(res)),
+      () => setIsFavourite(false)
+    );
+  }, [currentUserId, selectedSpot?.label]);
+
+  useEffect(() => {
+    refreshFavouriteStatus();
+  }, [refreshFavouriteStatus]);
+
+  const refreshDayParkingEvents = useCallback(() => {
+    if (!selectedDate || Number.isNaN(selectedDate.valueOf())) {
+      setDayParkingEvents([]);
+      return;
+    }
+
+    getRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/parking/day/${formatDayPathValue(selectedDate)}`,
+      headersRef.current,
+      (data) => setDayParkingEvents(Array.isArray(data) ? data : []),
+      () => setDayParkingEvents([])
+    );
+  }, [selectedDate]);
+
+  useEffect(() => {
+    refreshDayParkingEvents();
+  }, [refreshDayParkingEvents]);
+
+  useEffect(() => {
     for (const rect of spotRectsByLabelRef.current.values()) {
       rect.dataset.spotAdminEditMode = adminEditMode && isAdminUser ? 'true' : 'false';
     }
+    refreshSpotCatalog(() => refreshAvailability());
   }, [adminEditMode, isAdminUser]);
+
+  const timelineSelectable = !adminEditMode;
+
+  const timelineReservationEvents = useMemo(() => {
+    if (!selectedSpot?.label || !selectedDate || Number.isNaN(selectedDate.valueOf())) return [];
+
+    return dayParkingEvents
+      .filter((event) => String(event?.mode || '').toLowerCase() === 'parking')
+      .filter((event) => String(event?.parkingId ?? '') === String(selectedSpot.label))
+      .map((event) => {
+        const start = buildDateTimeForDay(selectedDate, event?.begin);
+        const end = buildDateTimeForDay(selectedDate, event?.end);
+        if (!start || !end) return null;
+        const visualStatus = parkingTimelineStatusFromReservation(event?.parkingStatus);
+        const reservedByMe = String(event?.userId ?? '') === String(currentUserId ?? '');
+        const baseLabel = reservedByMe ? t('you') : t(`carparkStatus_${visualStatus}`);
+        return {
+          id: `parking-res-${event.id}`,
+          start,
+          end,
+          title: baseLabel,
+          resource: {
+            selection: false,
+            status: visualStatus,
+            reservedByMe,
+            reservationId: event.id,
+          },
+        };
+      })
+      .filter(Boolean);
+  }, [currentUserId, dayParkingEvents, selectedDate, selectedSpot?.label, t]);
+
+  const timelineSelectionEvent = useMemo(() => {
+    if (
+      !hasExplicitTimeSelection
+      || hideTimelineSelectionOverlay
+      || !selectedDate
+      || Number.isNaN(selectedDate.valueOf())
+      || !startTime
+      || !endTime
+    ) return null;
+    const start = buildDateTimeForDay(selectedDate, startTime);
+    const end = buildDateTimeForDay(selectedDate, endTime);
+    if (!start || !end || end <= start) return null;
+    return {
+      id: 'parking-selection',
+      start,
+      end,
+      title: '',
+      resource: {
+        selection: true,
+        status: 'SELECTION',
+        reservedByMe: true,
+      },
+    };
+  }, [endTime, hasExplicitTimeSelection, hideTimelineSelectionOverlay, selectedDate, startTime]);
+
+  const timelineEvents = useMemo(() => (
+    timelineSelectionEvent ? [...timelineReservationEvents, timelineSelectionEvent] : timelineReservationEvents
+  ), [timelineReservationEvents, timelineSelectionEvent]);
 
   const addPageNotification = useCallback((severity, message, notificationKey) => {
     if (!message) return;
@@ -588,40 +1177,226 @@ const CarparkView = ({
   }, [addPageNotification, i18n.language, t]);
 
   const spotForPanel = effectiveShowHover ? (selectedSpot ?? hoveredSpot) : selectedSpot;
+  const isActiveCatalogSpot = spotForPanel?.active !== false;
   const isSpecialSpot = spotForPanel?.special === true;
   const isManuallyBlockedSpot = spotForPanel?.manuallyBlocked === true;
-  const canAdminToggleBlock = Boolean(isAdminUser && adminEditMode && selectedSpot && !isSpecialSpot);
-  const isBlocked = spotForPanel?.status === 'BLOCKED' || isSpecialSpot;
-  const isPending = spotForPanel?.status === 'PENDING';
-  const isOccupied = spotForPanel?.status === 'OCCUPIED';
-  const isAvailable = spotForPanel?.status === 'AVAILABLE';
+  const canAdminToggleBlock = Boolean(isAdminUser && adminEditMode && selectedSpot && isActiveCatalogSpot && !isSpecialSpot);
+  const canAdminToggleActive = Boolean(isAdminUser && adminEditMode && selectedSpot);
+  const isBlocked = isActiveCatalogSpot && (spotForPanel?.status === 'BLOCKED' || isSpecialSpot);
+  const isPending = isActiveCatalogSpot && spotForPanel?.status === 'PENDING';
+  const isOccupied = isActiveCatalogSpot && spotForPanel?.status === 'OCCUPIED';
+  const isAvailable = isActiveCatalogSpot && spotForPanel?.status === 'AVAILABLE';
+  const trimmedJustificationLength = justification.trim().length;
+  const justificationTooShort = justification.length > 0 && trimmedJustificationLength < CARPARK_JUSTIFICATION_MIN_LENGTH;
+  const justificationTooLong = justification.length > CARPARK_JUSTIFICATION_MAX_LENGTH;
 
   const formatISODate = (d) => {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    return formatISODateValue(d);
   };
 
   const timeToMinutes = (tStr) => {
-    if (!tStr) return NaN;
-    const [hh, mm] = tStr.split(':');
-    const h = Number.parseInt(hh, 10);
-    const m = Number.parseInt(mm, 10);
-    if (!Number.isFinite(h) || !Number.isFinite(m)) return NaN;
-    return h * 60 + m;
+    return parseTimeToMinutes(tStr);
   };
 
-  const refreshAvailability = () => {
-    if (!spotRectsByLabelRef.current || spotRectsByLabelRef.current.size === 0) return;
-    if (!selectedDate || !startTime || !endTime) return;
-    if (timeToMinutes(endTime) <= timeToMinutes(startTime)) {
-      toast.warning(t('timerangeIsNotValid'));
+  const resetSelectedTimeRange = useCallback(() => {
+    setStartTime('');
+    setEndTime('');
+    setHasExplicitTimeSelection(false);
+    setHideTimelineSelectionOverlay(false);
+    setSelectedMapFilters([]);
+  }, []);
+
+  const toggleFavourite = useCallback(() => {
+    if (!currentUserId || !selectedSpot?.label) return;
+
+    const onSuccess = () => {
+      setIsFavourite((prev) => !prev);
+      toast.success(!isFavourite ? t('addFavourite') : t('removeFavourite'));
+    };
+    const onFail = () => {
+      refreshFavouriteStatus();
+      toast.error(t('favouriteToggleError'));
+    };
+
+    if (isFavourite) {
+      deleteRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/favourites/${currentUserId}/parking/${encodeURIComponent(selectedSpot.label)}`,
+        headersRef.current,
+        onSuccess,
+        onFail
+      );
       return;
     }
 
-    const spotLabels = Array.from(spotRectsByLabelRef.current.keys());
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/favourites/${currentUserId}/parking/${encodeURIComponent(selectedSpot.label)}`,
+      headersRef.current,
+      onSuccess,
+      onFail
+    );
+  }, [currentUserId, isFavourite, refreshFavouriteStatus, selectedSpot?.label, t]);
+
+  useEffect(() => {
+    if (!hasExplicitTimeSelection) return;
+    if (isValidTimeRangeForDate(selectedDate, startTime, endTime)) return;
+    setStartTime('');
+    setEndTime('');
+    setHasExplicitTimeSelection(false);
+    setHideTimelineSelectionOverlay(false);
+  }, [endTime, hasExplicitTimeSelection, selectedDate, startTime]);
+
+  const handleTimelineSelect = useCallback((slotInfo) => {
+    if (!timelineSelectable || !slotInfo?.start || !slotInfo?.end) {
+      return;
+    }
+
+    const nextStart = formatTimeHHMM(new Date(slotInfo.start));
+    const nextEnd = formatTimeHHMM(new Date(slotInfo.end));
+    const nextStartMinutes = timeToMinutes(nextStart);
+    const nextEndMinutes = timeToMinutes(nextEnd);
+    if (nextEndMinutes <= nextStartMinutes) {
+      return;
+    }
+    const earliestAllowedStartMinutes = getEarliestAllowedStartMinutesForDate(selectedDate);
+    if (nextStartMinutes < earliestAllowedStartMinutes) {
+      toast.warning(
+        t('leadTimeExceeded', {
+          value: CARPARK_MIN_LEAD_MINUTES,
+          next: minutesToTimeString(earliestAllowedStartMinutes),
+        })
+      );
+      return;
+    }
+    const hasBufferedOverlap = hasTimeRangeOverlap(timelineReservationEvents, nextStartMinutes, nextEndMinutes);
+    if (hasBufferedOverlap) {
+      toast.warning(t('overlap'));
+      return;
+    }
+
+    setStartTime(nextStart);
+    setEndTime(nextEnd);
+    setHasExplicitTimeSelection(true);
+    setHideTimelineSelectionOverlay(false);
+  }, [selectedDate, t, timelineReservationEvents, timelineSelectable]);
+
+  const handleTimelineEventSelect = useCallback((calendarEvent) => {
+    if (adminEditMode || !calendarEvent || calendarEvent?.resource?.selection) {
+      return;
+    }
+
+    const nextStart = formatTimeHHMM(new Date(calendarEvent.start));
+    const nextEnd = formatTimeHHMM(new Date(calendarEvent.end));
+    if (!nextStart || !nextEnd) return;
+
+    setStartTime(nextStart);
+    setEndTime(nextEnd);
+    setHasExplicitTimeSelection(true);
+    setHideTimelineSelectionOverlay(true);
+    setSelectedSpot((prev) => (prev ? {
+      ...prev,
+      status: calendarEvent?.resource?.status || prev.status,
+      reservedByMe: calendarEvent?.resource?.reservedByMe === true,
+      reservationId: calendarEvent?.resource?.reservationId ?? prev.reservationId,
+      reservedBegin: nextStart,
+      reservedEnd: nextEnd,
+    } : prev));
+  }, [adminEditMode]);
+
+  const timelineEventPropGetter = useCallback((calendarEvent) => {
+    if (calendarEvent?.resource?.selection) {
+      return {
+        style: {
+          backgroundColor: semanticColors.carpark.selected,
+          border: `1px solid ${colorVars.brand.primary}`,
+          color: colorVars.text.inverse,
+        },
+      };
+    }
+
+    const status = calendarEvent?.resource?.status || 'OCCUPIED';
+    const backgroundColor = semanticColors.carpark.status[status] || semanticColors.carpark.status.OCCUPIED;
+    const color = status === 'PENDING' ? colorVars.text.primary : colorVars.text.inverse;
+    return {
+      style: {
+        backgroundColor,
+        color,
+      },
+    };
+  }, []);
+
+  const refreshAvailability = () => {
+    if (!spotRectsByLabelRef.current || spotRectsByLabelRef.current.size === 0) return;
+    const hasValidExplicitRange = hasExplicitTimeSelection && isValidTimeRangeForDate(selectedDate, startTime, endTime);
+    if (!hasValidExplicitRange) {
+      for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+        const catalogSpot = spotCatalogByLabelRef.current.get(label);
+        const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+        if (!isActiveSpot) {
+          applyInactiveSpotPresentation(label, rect);
+          continue;
+        }
+
+        const spotCategory = String(
+          catalogSpot?.spotType ?? rect.dataset.spotCategory ?? defaultSpotCategory(label, label === '23', label === '30')
+        ).toUpperCase();
+        if (!doesSpotMatchMapFilters(spotCategory, catalogSpot?.covered === true, selectedMapFilters)) {
+          applyFilteredOutSpotPresentation(label, rect);
+          continue;
+        }
+
+        rect.classList.remove(
+          'carpark-status-available',
+          'carpark-status-pending',
+          'carpark-status-occupied',
+          'carpark-status-blocked',
+          'carpark-status-inactive'
+        );
+
+        const isManuallyBlocked = catalogSpot?.manuallyBlocked === true;
+        const defaultStatus = (spotCategory === 'SPECIAL_CASE' || isManuallyBlocked) ? 'BLOCKED' : 'AVAILABLE';
+        rect.dataset.spotStatus = defaultStatus;
+        rect.dataset.spotCategory = spotCategory;
+        rect.dataset.spotSpecial = spotCategory === 'SPECIAL_CASE' ? 'true' : 'false';
+        rect.dataset.spotAccessible = spotCategory === 'ACCESSIBLE' ? 'true' : 'false';
+        rect.dataset.spotCovered = catalogSpot?.covered === true ? 'true' : 'false';
+        rect.dataset.spotManuallyBlocked = isManuallyBlocked ? 'true' : 'false';
+        rect.dataset.spotReservedByMe = 'false';
+        rect.dataset.spotReservationId = '';
+        rect.dataset.spotReservedBegin = '';
+        rect.dataset.spotReservedEnd = '';
+        rect.dataset.spotReservedByUser = '';
+
+        if (defaultStatus === 'AVAILABLE') rect.classList.add('carpark-status-available');
+        if (defaultStatus === 'BLOCKED') rect.classList.add('carpark-status-blocked');
+      }
+
+      if (selectedRectRef.current) setSelectedSpot(getSpotMetaFromDataset(selectedRectRef.current));
+      return;
+    }
+
+    const catalogActiveLabels = Array.from(spotCatalogByLabelRef.current.entries())
+      .filter(([, spot]) => spot?.active !== false)
+      .filter(([, spot]) => doesSpotMatchMapFilters(spot?.spotType, spot?.covered === true, selectedMapFilters))
+      .map(([label]) => label);
+    const spotLabels = spotCatalogByLabelRef.current.size > 0
+      ? catalogActiveLabels
+      : Array.from(spotRectsByLabelRef.current.keys());
     const day = formatISODate(selectedDate);
+
+    if (spotLabels.length === 0) {
+      for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
+        const catalogSpot = spotCatalogByLabelRef.current.get(label);
+        const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+        if (!isActiveSpot) {
+          applyInactiveSpotPresentation(label, rect);
+          continue;
+        }
+        applyFilteredOutSpotPresentation(label, rect);
+      }
+      setIsRefreshing(false);
+      return;
+    }
+
     setIsRefreshing(true);
 
     postRequest(
@@ -634,13 +1409,33 @@ const CarparkView = ({
         }
 
         for (const [label, rect] of spotRectsByLabelRef.current.entries()) {
-          rect.classList.remove('carpark-status-available', 'carpark-status-pending', 'carpark-status-occupied', 'carpark-status-blocked');
+          const catalogSpot = spotCatalogByLabelRef.current.get(label);
+          const isActiveSpot = catalogSpot ? catalogSpot.active !== false : false;
+          if (!isActiveSpot) {
+            applyInactiveSpotPresentation(label, rect);
+            continue;
+          }
+
+          rect.classList.remove(
+            'carpark-status-available',
+            'carpark-status-pending',
+            'carpark-status-occupied',
+            'carpark-status-blocked',
+            'carpark-status-inactive'
+          );
 
           const row = statusByLabel.get(label);
           const status = row?.status ?? (label === '23' ? 'BLOCKED' : 'AVAILABLE');
           const spotCategory = String(
             row?.spotType ?? rect.dataset.spotCategory ?? defaultSpotCategory(label, label === '23', label === '30')
           ).toUpperCase();
+          if (!doesSpotMatchMapFilters(spotCategory, row?.covered === true, selectedMapFilters)) {
+            rect.dataset.spotCategory = spotCategory;
+            rect.dataset.spotSpecial = spotCategory === 'SPECIAL_CASE' ? 'true' : 'false';
+            rect.dataset.spotAccessible = spotCategory === 'ACCESSIBLE' ? 'true' : 'false';
+            applyFilteredOutSpotPresentation(label, rect);
+            continue;
+          }
           rect.dataset.spotStatus = status;
           rect.dataset.spotCategory = spotCategory;
           rect.dataset.spotSpecial = spotCategory === 'SPECIAL_CASE' ? 'true' : 'false';
@@ -653,6 +1448,7 @@ const CarparkView = ({
           rect.dataset.spotReservedBegin = row?.reservedBegin || '';
           rect.dataset.spotReservedEnd = row?.reservedEnd || '';
           rect.dataset.spotReservedByUser = row?.reservedByUser || '';
+          rect.dataset.spotReservedJustification = row?.reservedJustification || '';
 
           if (status === 'AVAILABLE') rect.classList.add('carpark-status-available');
           if (status === 'PENDING') rect.classList.add('carpark-status-pending');
@@ -679,15 +1475,91 @@ const CarparkView = ({
   };
 
   useEffect(() => {
+    if (!svgReady) return;
+    refreshSpotCatalog(() => refreshAvailability());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMapFilters, svgReady]);
+
+  useEffect(() => {
     refreshAvailability();
     const interval = setInterval(() => refreshAvailability(), 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, startTime, endTime]);
+  }, [selectedDate, startTime, endTime, hasExplicitTimeSelection, selectedMapFilters]);
+
+  useEffect(() => {
+    const container = timelineContainerRef.current;
+    if (!container || adminEditMode) return undefined;
+
+    const scrollEl = container.querySelector('.rbc-time-content');
+    if (!(scrollEl instanceof HTMLElement)) return undefined;
+
+    const onMouseDown = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest('.rbc-event')) return;
+      if (target.closest('.rbc-day-slot') || target.closest('.rbc-time-content')) {
+        timelineSelectionDragRef.current = true;
+      }
+    };
+
+    const stopDragging = () => {
+      timelineSelectionDragRef.current = false;
+    };
+
+    const onMouseMove = (event) => {
+      if (!timelineSelectionDragRef.current) return;
+
+      const rect = scrollEl.getBoundingClientRect();
+      const edgeThresholdPx = 48;
+      const scrollStepPx = 24;
+
+      if (event.clientY >= rect.bottom - edgeThresholdPx) {
+        scrollEl.scrollTop += scrollStepPx;
+      } else if (event.clientY <= rect.top + edgeThresholdPx) {
+        scrollEl.scrollTop -= scrollStepPx;
+      }
+    };
+
+    scrollEl.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', stopDragging);
+    document.addEventListener('mouseleave', stopDragging);
+
+    return () => {
+      scrollEl.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', stopDragging);
+      document.removeEventListener('mouseleave', stopDragging);
+      timelineSelectionDragRef.current = false;
+    };
+  }, [adminEditMode, selectedDate]);
 
   const reserveSelected = () => {
     if (adminEditMode) return;
-    if (!selectedSpot || selectedSpot.status !== 'AVAILABLE') return;
+    if (!selectedSpot || selectedSpot.active === false || selectedSpot.status !== 'AVAILABLE') return;
+    if (!(hasExplicitTimeSelection && isValidTimeRangeForDate(selectedDate, startTime, endTime))) {
+      toast.warning(t('selectDateTimeFirst'));
+      return;
+    }
+    const selectedRangeMinutes = parseTimeRangeMinutes(startTime, endTime);
+    if (!selectedRangeMinutes) {
+      toast.warning(t('selectDateTimeFirst'));
+      return;
+    }
+    if (hasTimeRangeOverlap(timelineReservationEvents, selectedRangeMinutes.startMinutes, selectedRangeMinutes.endMinutes)) {
+      toast.warning(t('overlap'));
+      return;
+    }
+    const trimmedJustification = justification.trim();
+    if (trimmedJustification.length < CARPARK_JUSTIFICATION_MIN_LENGTH) {
+      toast.warning(t('carparkJustificationMinError', { min: CARPARK_JUSTIFICATION_MIN_LENGTH }));
+      return;
+    }
+    if (trimmedJustification.length > CARPARK_JUSTIFICATION_MAX_LENGTH) {
+      toast.warning(t('carparkJustificationMaxError', { max: CARPARK_JUSTIFICATION_MAX_LENGTH }));
+      return;
+    }
     const day = formatISODate(selectedDate);
 
     postRequest(
@@ -696,7 +1568,9 @@ const CarparkView = ({
       (data) => {
         if (String(data?.status || '') === 'PENDING') toast.success(t('carparkReviewSubmitted'));
         else toast.success(t('booked'));
+        setJustification('');
         refreshAvailability();
+        refreshDayParkingEvents();
         if (onReservationsChanged) {
           onReservationsChanged();
         }
@@ -711,6 +1585,7 @@ const CarparkView = ({
         begin: startTime,
         end: endTime,
         locale: i18n.language,
+        justification: trimmedJustification,
       }
     );
   };
@@ -725,6 +1600,7 @@ const CarparkView = ({
       () => {
         toast.success(t('bookingDeleted'));
         refreshAvailability();
+        refreshDayParkingEvents();
         if (onReservationsChanged) {
           onReservationsChanged();
         }
@@ -746,7 +1622,25 @@ const CarparkView = ({
       headersRef.current,
       () => {
         toast.success(t(blocked ? 'carparkSpotBlockedSuccess' : 'carparkSpotUnblockedSuccess'));
-        refreshAvailability();
+        refreshSpotCatalog(() => refreshAvailability());
+      },
+      (errorCode) => {
+        if (errorCode === 403) toast.error(t('http403'));
+        else toast.error(t('httpOther'));
+      },
+      {}
+    );
+  };
+
+  const setSpotActiveState = (active) => {
+    if (!isAdminUser || !adminEditMode || !selectedSpot?.label) return;
+    const action = active ? 'activate' : 'deactivate';
+    postRequest(
+      `${process.env.REACT_APP_BACKEND_URL}/parking/spots/${encodeURIComponent(selectedSpot.label)}/${action}`,
+      headersRef.current,
+      () => {
+        toast.success(t(active ? 'carparkSpotActivatedSuccess' : 'carparkSpotDeactivatedSuccess'));
+        refreshSpotCatalog(() => refreshAvailability());
       },
       (errorCode) => {
         if (errorCode === 403) toast.error(t('http403'));
@@ -758,18 +1652,20 @@ const CarparkView = ({
 
   const detailsBody = (
     <>
-      {detailsVariant === 'panel' && !spotForPanel && (
+      {!spotForPanel && (
         <Typography variant="body2" color="text.secondary">
           {t('carparkNoSelection')}
         </Typography>
       )}
       {spotForPanel && (
         <>
-          <Typography variant="body1" sx={{ fontWeight: 700 }}>
-            {t('carparkSpot')} {spotForPanel.label}
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+            <Box sx={{ flex: '1 1 240px', minWidth: 220 }}>
+          <Typography variant="body1" sx={{ fontWeight: 700, pr: 1 }}>
+            {t('carparkSpot')} {spotForPanel.displayLabel || spotForPanel.label}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t(`carparkStatus_${spotForPanel.status}`)}
+            {spotForPanel.active === false ? t('carparkNotInLitSystem') : t(`carparkStatus_${spotForPanel.status}`)}
             {spotForPanel.reservedByMe ? ` (${t('carparkReservedByMe')})` : ''}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -796,6 +1692,46 @@ const CarparkView = ({
               {t('carparkReservedByUser')}: {spotForPanel.reservedByUser}
             </Typography>
           )}
+            </Box>
+            {((spotForPanel.reservedByMe && spotForPanel.reservedJustification) || (selectedSpot && isAvailable && !adminEditMode)) && (
+              <Box sx={{ flex: '1 1 420px', minWidth: 340, maxWidth: 520 }}>
+          {spotForPanel.reservedByMe && spotForPanel.reservedJustification && (
+            <TextField
+              label={t('carparkJustification')}
+              value={spotForPanel.reservedJustification}
+              fullWidth
+              multiline
+              minRows={3}
+              InputProps={{ readOnly: true }}
+            />
+          )}
+          {selectedSpot && isAvailable && !adminEditMode && (
+            <TextField
+              label={t('carparkJustification')}
+              placeholder={t('carparkJustificationPlaceholder')}
+              value={justification}
+              onChange={(event) => setJustification(event.target.value.slice(0, CARPARK_JUSTIFICATION_MAX_LENGTH))}
+              fullWidth
+              multiline
+              minRows={3}
+              required
+              error={justificationTooShort || justificationTooLong}
+              helperText={
+                justificationTooLong
+                  ? t('carparkJustificationMaxError', { max: CARPARK_JUSTIFICATION_MAX_LENGTH })
+                  : justificationTooShort
+                    ? t('carparkJustificationMinError', { min: CARPARK_JUSTIFICATION_MIN_LENGTH })
+                    : t('carparkJustificationHelper', {
+                      count: justification.length,
+                      max: CARPARK_JUSTIFICATION_MAX_LENGTH,
+                      min: CARPARK_JUSTIFICATION_MIN_LENGTH,
+                    })
+              }
+            />
+          )}
+              </Box>
+            )}
+          </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             {selectedSpot ? t('carparkSelected') : t('carparkHover')}
           </Typography>
@@ -807,6 +1743,16 @@ const CarparkView = ({
               onClick={() => setSpotBlocked(!isManuallyBlockedSpot)}
             >
               {isManuallyBlockedSpot ? t('carparkUnblockSpot') : t('carparkBlockSpot')}
+            </Button>
+          )}
+          {canAdminToggleActive && (
+            <Button
+              sx={{ mt: 2, ml: canAdminToggleBlock ? 1 : 0 }}
+              variant="outlined"
+              color={spotForPanel.active === false ? 'success' : 'warning'}
+              onClick={() => setSpotActiveState(spotForPanel.active === false)}
+            >
+              {spotForPanel.active === false ? t('carparkAddToLitSystem') : t('carparkRemoveFromLitSystem')}
             </Button>
           )}
           {selectedSpot && isAvailable && !adminEditMode && (
@@ -821,12 +1767,14 @@ const CarparkView = ({
           )}
         </>
       )}
-      {(detailsVariant === 'panel' || spotForPanel) && (
+      {(detailsVariant === 'panel' || detailsVariant === 'modal' || spotForPanel) && (
         <>
           <Divider sx={{ my: 2 }} />
           <Typography variant="body2" color="text.secondary">
             {adminEditMode && isAdminUser
               ? t('carparkEditModeHint')
+              : !isActiveCatalogSpot
+              ? t('carparkNotInLitSystem')
               : isSpecialSpot
               ? t('carparkContactStaff')
               : isBlocked
@@ -851,14 +1799,55 @@ const CarparkView = ({
           <Box sx={{ minWidth: 220, flex: '0 1 220px' }}>
             <CreateDatePicker date={selectedDate} setter={setSelectedDate} label={t('date')} />
           </Box>
-          <Box sx={{ minWidth: 160, flex: '0 1 160px' }}>
-            <CreateTimePicker time={startTime} setter={setStartTime} label={t('startTime')} />
-          </Box>
-          <Box sx={{ minWidth: 160, flex: '0 1 160px' }}>
-            <CreateTimePicker time={endTime} setter={setEndTime} label={t('endTime')} />
+          <Box sx={{ minWidth: 360, flex: '1 1 420px', maxWidth: 520 }}>
+            <FormControl fullWidth size="small">
+              <InputLabel id="carpark-map-filter-label">{t('filters')}</InputLabel>
+              <Select
+                labelId="carpark-map-filter-label"
+                multiple
+                value={selectedMapFilters}
+                label={t('filters')}
+                onChange={(event) => setSelectedMapFilters(normalizeMapFilters(event.target.value))}
+                renderValue={(selected) => (
+                  <span style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {(Array.isArray(selected) ? selected : [])
+                      .map((value) => {
+                        if (String(value).startsWith('type:')) {
+                          const option = parkingTypeFilterOptions.find((entry) => entry.value === value);
+                          return option ? option.label : toSentenceCase(String(value).replace('type:', ''));
+                        }
+                        if (String(value).startsWith('covered:')) {
+                          const option = coveredFilterOptions.find((entry) => entry.value === value);
+                          return option ? option.label : value;
+                        }
+                        return value;
+                      })
+                      .join(', ')}
+                  </span>
+                )}
+              >
+                <ListSubheader>{t('parkingTypes')}</ListSubheader>
+                {parkingTypeFilterOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    <Checkbox checked={selectedMapFilters.includes(option.value)} />
+                    <ListItemText primary={option.label} />
+                  </MenuItem>
+                ))}
+                <ListSubheader>{t('carparkCovered')}</ListSubheader>
+                {coveredFilterOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    <Checkbox checked={selectedMapFilters.includes(option.value)} />
+                    <ListItemText primary={option.label} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Button variant="contained" onClick={refreshAvailability} disabled={isRefreshing}>
             {t('carparkRefresh')}
+          </Button>
+          <Button variant="text" onClick={resetSelectedTimeRange}>
+            {t('carparkReset')}
           </Button>
           {isAdminUser && (
             <Button
@@ -870,10 +1859,10 @@ const CarparkView = ({
             </Button>
           )}
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Chip size="small" label={t('carparkLegendAvailable')} sx={{ bgcolor: '#2e7d32', color: '#fff' }} />
-            <Chip size="small" label={t('carparkLegendPending')} sx={{ bgcolor: '#f9a825', color: '#000' }} />
-            <Chip size="small" label={t('carparkLegendOccupied')} sx={{ bgcolor: '#c62828', color: '#fff' }} />
-            <Chip size="small" label={t('carparkLegendBlocked')} sx={{ bgcolor: '#9e9e9e', color: '#fff' }} />
+            <Chip size="small" label={t('carparkLegendAvailable')} sx={{ bgcolor: semanticColors.carpark.status.AVAILABLE, color: colorVars.text.inverse }} />
+            <Chip size="small" label={t('carparkLegendPending')} sx={{ bgcolor: semanticColors.carpark.status.PENDING, color: colorVars.text.primary }} />
+            <Chip size="small" label={t('carparkLegendOccupied')} sx={{ bgcolor: semanticColors.carpark.status.OCCUPIED, color: colorVars.text.inverse }} />
+            <Chip size="small" label={t('carparkLegendBlocked')} sx={{ bgcolor: semanticColors.carpark.status.BLOCKED, color: colorVars.text.inverse }} />
           </Box>
           {headerAction && (
             <Box sx={{ ml: 'auto', display: 'flex' }}>
@@ -881,6 +1870,11 @@ const CarparkView = ({
             </Box>
           )}
         </Box>
+        {hasExplicitTimeSelection && (
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            {t('carparkSelectedRange')}: {startTime} - {endTime}
+          </Typography>
+        )}
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           {t('carparkBufferHint', { minutes: CARPARK_OVERLAP_BUFFER_MINUTES })}
         </Typography>
@@ -905,9 +1899,9 @@ const CarparkView = ({
         </Paper>
       )}
 
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        <Box sx={{ flex: '1 1 720px', minWidth: 320 }}>
-          <Paper variant="outlined" sx={{ p: 1 }}>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <Box sx={{ flex: '1 1 820px', minWidth: 320, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Paper variant="outlined" sx={{ p: 1, width: '100%' }}>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', px: 1, py: 0.5 }}>
               <Typography variant="body2" sx={{ flex: 1 }}>
                 {t('carparkHintClick')}
@@ -928,7 +1922,7 @@ const CarparkView = ({
               sx={{
                 overflow: 'auto',
                 maxHeight: 600,
-                backgroundColor: '#fff',
+                backgroundColor: colorVars.surface.paper,
               }}
             />
             {loadError && (
@@ -937,40 +1931,85 @@ const CarparkView = ({
               </Typography>
             )}
           </Paper>
-        </Box>
 
-        {detailsVariant === 'panel' && (
-          <Box sx={{ flex: '0 1 320px', minWidth: 280 }}>
+          {(detailsVariant === 'panel' || detailsVariant === 'modal') && (
             <Paper variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                {t('carparkDetails')}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1, mb: 1 }}>
+                <Typography variant="h6">
+                  {t('carparkDetails')}
+                </Typography>
+                {selectedSpot && (
+                  <Tooltip title={isFavourite ? t('removeFavourite') : t('addFavourite')}>
+                    <IconButton
+                      onClick={toggleFavourite}
+                      aria-label="toggle-favourite"
+                      sx={{
+                        color: isFavourite ? semanticColors.booking.favourite.active : semanticColors.booking.favourite.inactive,
+                        fontSize: '22px',
+                        mt: '-6px',
+                        mr: '-6px',
+                      }}
+                    >
+                      {isFavourite ? <FaStar /> : <FaRegStar />}
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
               {detailsBody}
             </Paper>
-          </Box>
-        )}
+          )}
+        </Box>
+        <Box sx={{ flex: '0 1 340px', minWidth: 280, display: 'flex' }}>
+          <Paper variant="outlined" sx={{ p: 2, width: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, mb: 1, flexWrap: 'wrap' }}>
+              <Box>
+                <Typography variant="h6">{t('carparkTimelineTitle')}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedSpot
+                    ? t('carparkTimelineHint', { spot: selectedSpot.displayLabel || selectedSpot.label })
+                    : t('carparkTimelineHintNoSpot')}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Chip size="small" label={t('carparkSelectedRange')} sx={{ bgcolor: semanticColors.carpark.selected, color: colorVars.text.inverse }} />
+                <Chip size="small" label={t('carparkLegendPending')} sx={{ bgcolor: semanticColors.carpark.status.PENDING, color: colorVars.text.primary }} />
+                <Chip size="small" label={t('carparkLegendOccupied')} sx={{ bgcolor: semanticColors.carpark.status.OCCUPIED, color: colorVars.text.inverse }} />
+              </Box>
+            </Box>
+            <Box ref={timelineContainerRef} sx={{ height: detailsVariant === 'modal' ? 420 : 560 }}>
+              <Calendar
+                localizer={localizer}
+                events={timelineEvents}
+                startAccessor="start"
+                endAccessor="end"
+                views={['day']}
+                view="day"
+                toolbar={false}
+                date={selectedDate}
+                step={30}
+                timeslots={1}
+                selectable={timelineSelectable}
+                onSelectSlot={handleTimelineSelect}
+                onSelectEvent={handleTimelineEventSelect}
+                min={new Date(0, 0, 0, CARPARK_TIMELINE_START_HOUR, 0, 0)}
+                max={new Date(0, 0, 0, CARPARK_TIMELINE_END_HOUR, 0, 0)}
+                formats={timelineFormats}
+                eventPropGetter={timelineEventPropGetter}
+                messages={{
+                  next: t('next'),
+                  previous: t('back'),
+                  today: t('today'),
+                  month: t('month'),
+                  week: t('week'),
+                  day: t('day'),
+                  agenda: t('agenda'),
+                  noEventsInRange: t('noEventsInRange'),
+                }}
+              />
+            </Box>
+          </Paper>
+        </Box>
       </Box>
-
-      {detailsVariant === 'modal' && (
-        <Dialog
-          open={Boolean(selectedSpot)}
-          onClose={clearSelection}
-          maxWidth="xs"
-          fullWidth
-        >
-          <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="h6" sx={{ flex: 1 }}>
-              {t('carparkDetails')}
-            </Typography>
-            <IconButton onClick={clearSelection} aria-label={t('close')}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            {detailsBody}
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 };

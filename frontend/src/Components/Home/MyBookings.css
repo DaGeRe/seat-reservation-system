@@ -14,18 +14,28 @@
   margin-top: 3px;
 }
 
-.mybookings-event::after {
-  content: "×";
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 30px;
-  line-height: 1;
-  color: #ffffff;
-  opacity: 1;
-  pointer-events: none;
+.mybookings-details {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 14px;
+  align-items: start;
 }
 
-.mybookings-event .rbc-event-content {
-  padding-right: 24px;
+.mybookings-details-label {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.mybookings-details-value {
+  color: var(--color-text-body);
+  overflow-wrap: anywhere;
+}
+
+.mybookings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
 }

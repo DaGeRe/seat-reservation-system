@@ -6,18 +6,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desk_sharing.entities.Desk;
+import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
 import com.desk_sharing.model.DatesAndTimesDTO;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
+import com.desk_sharing.model.SeriesOverlapCheckRequestDTO;
+import com.desk_sharing.model.SeriesOverlapCheckResponseDTO;
+import com.desk_sharing.model.WorkstationSearchRequestDTO;
 import com.desk_sharing.services.SeriesService;
 
 import lombok.AllArgsConstructor;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +52,23 @@ public class SeriesController {
         return new ResponseEntity<List<Desk>>(desks, HttpStatus.OK);
     };
 
+    @PostMapping("/search/desks")
+    public ResponseEntity<List<Desk>> searchDesks(@RequestBody WorkstationSearchRequestDTO requestDTO) {
+        logger.info("searchDesks( {} )", requestDTO);
+        final List<Desk> desks = seriesService.getDesksForDatesTimesAndFilters(requestDTO);
+        return new ResponseEntity<>(desks, HttpStatus.OK);
+    }
+
+    @PostMapping("/search/desks/{building_id}")
+    public ResponseEntity<List<Desk>> searchDesksForBuilding(
+        @PathVariable("building_id") Long buildingId,
+        @RequestBody WorkstationSearchRequestDTO requestDTO
+    ) {
+        logger.info("searchDesksForBuilding( {}, {} )", buildingId, requestDTO);
+        final List<Desk> desks = seriesService.getDesksForBuildingDatesTimesAndFilters(buildingId, requestDTO);
+        return new ResponseEntity<>(desks, HttpStatus.OK);
+    }
+
     /**
      * Calculates dates between an start- and enddate.
      * The start- and enddate as other modifiers are provided in rangeDTO.
@@ -57,10 +81,32 @@ public class SeriesController {
         return new ResponseEntity<List<Date>>(dates, HttpStatus.OK);
     };
 
+    @PostMapping("/overlap-check")
+    public ResponseEntity<?> checkSeriesOverlap(@RequestBody SeriesOverlapCheckRequestDTO request) {
+        logger.info("checkSeriesOverlap( {} )", request);
+        try {
+            SeriesOverlapCheckResponseDTO response = seriesService.checkConfirmedOverlapWithOtherDeskForSeries(request);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResponseStatusException ex) {
+            final Map<String, String> body = new HashMap<>();
+            body.put("error", ex.getReason() == null ? "Series overlap check failed" : ex.getReason());
+            return new ResponseEntity<>(body, ex.getStatusCode());
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<Boolean> createSeries(@RequestBody SeriesDTO seriesDto) {
+    public ResponseEntity<?> createSeries(@RequestBody SeriesDTO seriesDto) {
         logger.info("createSeries( {} )", seriesDto);
-        return new ResponseEntity<Boolean>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(seriesService.createSeries(seriesDto), HttpStatus.OK);
+        } catch (ResponseStatusException ex) {
+            final Map<String, String> body = new HashMap<>();
+            body.put("error", ex.getReason() == null ? "Series creation failed" : ex.getReason());
+            if (ex.getStatusCode() == HttpStatus.CONFLICT) {
+                body.put("code", "SCHEDULED_BLOCKING_CONFLICT");
+            }
+            return new ResponseEntity<>(body, ex.getStatusCode());
+        }
     }
     
     @GetMapping("/{email}")

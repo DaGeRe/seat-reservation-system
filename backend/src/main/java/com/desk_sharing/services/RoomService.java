@@ -10,8 +10,10 @@ import com.desk_sharing.repositories.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,14 @@ public class RoomService {
     private final DeskService deskService;
     private final RoomTypeService roomTypeService;
     private final RoomStatusService roomStatusService;
+    private final SeriesService seriesService;
+
+    private String normalizeRequiredRemark(String remark) {
+        if (remark == null || remark.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room remark is required");
+        }
+        return remark.trim();
+    }
 
     /**
      * Create and save a new room.
@@ -42,7 +52,7 @@ public class RoomService {
         newRoom.setX(roomDTO.getX());
         newRoom.setY(roomDTO.getY());
         newRoom.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
-        newRoom.setRemark(roomDTO.getRemark());
+        newRoom.setRemark(normalizeRequiredRemark(roomDTO.getRemark()));
         return roomRepository.save(newRoom);
     }
 
@@ -65,7 +75,7 @@ public class RoomService {
         }
         final Room room = roomRepository.findById(roomId)
             .orElseThrow(()-> new EntityNotFoundException("Room not found in RoomService.updateRoom : " + roomDTO.getRoom_id()));
-        room.setRemark(roomDTO.getRemark());
+        room.setRemark(normalizeRequiredRemark(roomDTO.getRemark()));
         room.setRoomStatus(roomStatusService.getRoomStatusByRoomStatusName(roomDTO.getStatus()));
         room.setRoomType(roomTypeService.getRoomTypeByRoomTypeName(roomDTO.getType()));
         return roomRepository.save(room);
@@ -131,13 +141,18 @@ public class RoomService {
     public List<Room> getByMinimalAmountOfWorkstationsAndFreeOnDate(
         final int minimalAmountOfWorkstations, 
         final DatesAndTimesDTO datesAndTimesDTO) {
+        final List<Desk> availableDesks = seriesService.getDesksForDatesAndTimes(datesAndTimesDTO);
+        final List<Long> availableDeskIds = availableDesks.stream()
+            .filter(desk -> desk != null && desk.getId() != null)
+            .map(Desk::getId)
+            .distinct()
+            .toList();
 
-        return roomRepository.getByMinimalAmountOfWorkstationsAndFreeOnDate(
-            minimalAmountOfWorkstations,
-            datesAndTimesDTO.getDates(),
-            SeriesService.timestringToTime(datesAndTimesDTO.getStartTime()),
-            SeriesService.timestringToTime(datesAndTimesDTO.getEndTime())
-        );
+        if (availableDeskIds.isEmpty()) {
+            return List.of();
+        }
+
+        return roomRepository.getByMinimalAmountOfAvailableDeskIds(minimalAmountOfWorkstations, availableDeskIds);
     };
 
     /**

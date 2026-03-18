@@ -17,6 +17,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(int user_id);
     List<Booking> findByRoomId(Long room_id);
     List<Booking> findByDeskId(Long desk_id);
+    List<Booking> findBySeriesId(Long seriesId);
     List<Booking> findByDeskIdAndDay(Long deskId, Date day);
 	List<Booking> findByRoomIdAndDay(Long roomId, Date day); 
 
@@ -24,7 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	+ "from bookings " 
 	+ "join desks on bookings.desk_id = desks.desk_id "
 	+ "join users on bookings.user_id=users.id "
-	+ "where bookings.desk_id=:desk_id "
+	+ "where bookings.desk_id=:desk_id and bookings.booking_in_progress = 0 "
 	,nativeQuery = true)
 	public List<Object[]> getBookingsForDesk(@Param("desk_id") Long desk_id);
 
@@ -32,26 +33,56 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 		+ " FROM bookings b join users u on u.id = b.user_id join rooms r on b.room_id = r.room_id join desks d on b.desk_id = d.desk_id WHERE email IN (:colleaguesEmails) ", nativeQuery = true)
 	public List<Object[]> getColleaguesBookings(final List<String> colleaguesEmails);*/
 
-	@Query(value = "SELECT * FROM bookings WHERE booking_id != :id AND room_id = :roomId AND desk_id=:deskId AND day=:day AND "
-			+ "((:startTime BETWEEN begin AND end) OR (:endTime BETWEEN begin AND end) OR "
-			+ "(begin >= :startTime AND begin < :endTime) OR (end > :startTime AND end <= :endTime))"
+	@Query(value = "SELECT * FROM bookings WHERE booking_id != :id AND room_id = :roomId AND desk_id=:deskId AND day=:day "
+			+ "AND booking_in_progress = 0 AND (:startTime < end AND :endTime > begin)"
 			, nativeQuery = true)
 	List<Booking> getAllBookings(@Param("id") Long id, @Param("roomId") Long roomId,@Param("deskId") Long deskId, 
 			@Param("day") Date day, @Param("startTime") Time startTime,
 			@Param("endTime") Time endTime);
 	
-	@Query(value = "SELECT * FROM bookings WHERE room_id = :roomId AND desk_id=:deskId AND day=:day AND "
-			+ "((:startTime BETWEEN begin AND end) OR (:endTime BETWEEN begin AND end) OR "
-			+ "(begin >= :startTime AND begin < :endTime) OR (end > :startTime AND end <= :endTime))"
+	@Query(value = "SELECT * FROM bookings WHERE room_id = :roomId AND desk_id=:deskId AND day=:day "
+			+ "AND booking_in_progress = 0 AND (:startTime < end AND :endTime > begin)"
 			, nativeQuery = true)
 	List<Booking> getAllBookingsForPreventDuplicates(@Param("roomId") Long roomId,@Param("deskId") Long deskId, 
 			@Param("day") Date day, @Param("startTime") Time startTime,
 			@Param("endTime") Time endTime);
+
+	@Query(value = "SELECT * FROM bookings WHERE user_id = :userId "
+			+ "AND day = :day "
+			+ "AND booking_in_progress = 0 "
+			+ "AND booking_id <> :bookingId "
+			+ "AND (:ignoreBookingId IS NULL OR booking_id <> :ignoreBookingId) "
+			+ "AND desk_id <> :deskId "
+			+ "AND (:startTime < end AND :endTime > begin)",
+			nativeQuery = true)
+	List<Booking> findConfirmedOverlapsForUserOtherDesk(
+		@Param("userId") int userId,
+		@Param("deskId") Long deskId,
+		@Param("bookingId") Long bookingId,
+		@Param("ignoreBookingId") Long ignoreBookingId,
+		@Param("day") Date day,
+		@Param("startTime") Time startTime,
+		@Param("endTime") Time endTime
+	);
+
+	@Query(value = "SELECT * FROM bookings WHERE user_id = :userId "
+			+ "AND booking_in_progress = 0 "
+			+ "AND desk_id <> :deskId "
+			+ "AND day IN (:days) "
+			+ "AND (:startTime < end AND :endTime > begin)",
+			nativeQuery = true)
+	List<Booking> findConfirmedOverlapsForUserOtherDeskOnDates(
+		@Param("userId") int userId,
+		@Param("deskId") Long deskId,
+		@Param("days") List<Date> days,
+		@Param("startTime") Time startTime,
+		@Param("endTime") Time endTime
+	);
 	
 
 	List<Booking> findAllByBookingInProgress(boolean inProg);
 
-	@Query(value="select * from bookings where day=:myDate", nativeQuery = true)
+	@Query(value="select * from bookings where day=:myDate and booking_in_progress = 0", nativeQuery = true)
 	List<Booking> getBookingForDate(@Param("myDate") Date myDate);
 
     /**
@@ -59,7 +90,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * This method is used in /admin to find all bookings.
      * @return  Every booking.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, bookings.bulk_group_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -75,7 +108,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param email   The email address of the user.
      * @return  All bookings that are done by the user identified by email.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, bookings.bulk_group_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -92,7 +127,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param date   The date as string.
      * @return  All bookings for an date..
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, bookings.bulk_group_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -109,7 +146,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param deskRemark    The remark of the desk in question.
      * @return  All bookings of the desk identified by deskRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, bookings.bulk_group_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ "from bookings " 
 		+ "left join series on bookings.series_id=series.series_id "
 		+ "join desks on bookings.desk_id=desks.desk_id "
@@ -126,7 +165,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @param roomRemark    The remark for the room in question.
      * @return  All bookings in the room identified by roomRemark.
      */
-	@Query(value="select booking_id, day, begin, end, email, desks.remark, rooms.remark, buildings.name, bookings.series_id " 
+	@Query(value="select booking_id, day, begin, end, email, users.name, users.surname, "
+		+ "(select r.name from user_roles ur join roles r on ur.role_id = r.id where ur.user_id = users.id order by r.name asc limit 1), "
+		+ "users.department, desks.remark, rooms.remark, buildings.name, bookings.series_id, bookings.bulk_group_id, desks.desk_id, rooms.room_id, buildings.building_id " 
 		+ " from bookings " 
 		+ " left join series on bookings.series_id=series.series_id "
 		+ " join desks on bookings.desk_id=desks.desk_id "
@@ -147,6 +188,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	@Modifying
 	@Query(value="delete from bookings where series_id=:seriesId" , nativeQuery = true)
 	void deleteBookingsBySeriesId(@Param("seriesId") long seriesId);
+
+	@Modifying
+	@Query(value = "delete from bookings where day < :cutoffDate", nativeQuery = true)
+	int deleteBookingsOlderThan(@Param("cutoffDate") Date cutoffDate);
 
 	@Query(value="select * from bookings where desk_id=:deskId", nativeQuery = true)
 	List<Booking> getBookingsByDeskId(@Param("deskId") Long roomId);

@@ -3,27 +3,47 @@ package com.desk_sharing.services;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
+import com.desk_sharing.entities.ScheduledBlocking;
 import com.desk_sharing.entities.Series;
+import com.desk_sharing.entities.ScheduledBlockingStatus;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.model.DatesAndTimesDTO;
+import com.desk_sharing.model.BookingOverlapCheckResponseDTO;
 import com.desk_sharing.model.RangeDTO;
 import com.desk_sharing.model.SeriesDTO;
+import com.desk_sharing.model.SeriesOverlapCheckRequestDTO;
+import com.desk_sharing.model.SeriesOverlapCheckResponseDTO;
+import com.desk_sharing.model.WorkstationSearchFiltersDTO;
+import com.desk_sharing.model.WorkstationSearchRequestDTO;
 import com.desk_sharing.repositories.BookingRepository;
 import com.desk_sharing.repositories.DeskRepository;
 //import com.desk_sharing.repositories.RoomRepository;
+import com.desk_sharing.repositories.ScheduledBlockingRepository;
 import com.desk_sharing.repositories.SeriesRepository;
 import com.desk_sharing.repositories.UserRepository;
+import com.desk_sharing.services.CalendarNotificationService;
+import com.desk_sharing.services.UserService;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,10 +51,19 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class SeriesService {
+    private static final List<ScheduledBlockingStatus> SERIES_BLOCKING_STATUSES = List.of(
+        ScheduledBlockingStatus.SCHEDULED,
+        ScheduledBlockingStatus.ACTIVE
+    );
+
     private final SeriesRepository seriesRepository;
     private final DeskRepository deskRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final ScheduledBlockingRepository scheduledBlockingRepository;
+    private final CalendarNotificationService calendarNotificationService;
+    private final UserService userService;
+    private final BookingSettingsService bookingSettingsService;
 
 
     /**
@@ -119,12 +148,14 @@ public class SeriesService {
      * @return  A list of desks that are available at each date for the specified timerange.
      */
     public List<Desk> getDesksForDatesAndTimes(DatesAndTimesDTO datesAndTimesDTO) {
+        final Time startTime = timestringToTime(datesAndTimesDTO.getStartTime());
+        final Time endTime = timestringToTime(datesAndTimesDTO.getEndTime());
         final List<Desk> desks = deskRepository.getDesksThatHaveNoBookingOnDatesBetweenDays(
             datesAndTimesDTO.getDates(), 
-            timestringToTime(datesAndTimesDTO.getStartTime()),
-            timestringToTime(datesAndTimesDTO.getEndTime())
+            startTime,
+            endTime
         );
-        return desks;
+        return filterOutDesksWithScheduledBlockingConflicts(desks, datesAndTimesDTO.getDates(), startTime, endTime);
     }
 
     /**
@@ -134,47 +165,170 @@ public class SeriesService {
      * @return  A list of desks that are available at each date for the specified timerange for the specified building.
      */
     public List<Desk> desksForBuildingAndDatesAndTimes(Long building_id, DatesAndTimesDTO datesAndTimesDTO) {
+        final Time startTime = timestringToTime(datesAndTimesDTO.getStartTime());
+        final Time endTime = timestringToTime(datesAndTimesDTO.getEndTime());
         final List<Desk> desks = deskRepository.desksForBuildingAndDatesAndTimes(
             building_id,
             datesAndTimesDTO.getDates(), 
-            timestringToTime(datesAndTimesDTO.getStartTime()),
-            timestringToTime(datesAndTimesDTO.getEndTime())
+            startTime,
+            endTime
         );
-        return desks;
+        return filterOutDesksWithScheduledBlockingConflicts(desks, datesAndTimesDTO.getDates(), startTime, endTime);
     }
 
+    private String workstationTypeOrDefault(Desk desk) {
+        final String workstationType = desk.getWorkstationType();
+        if (workstationType == null || workstationType.isBlank()) {
+            return DeskService.DEFAULT_WORKSTATION_TYPE;
+        }
+        return workstationType;
+    }
+
+    private int monitorCountOrDefault(Desk desk) {
+        return desk.getMonitorsQuantity() == null
+            ? DeskService.DEFAULT_MONITORS_QUANTITY
+            : desk.getMonitorsQuantity();
+    }
+
+    private boolean deskHeightAdjustableOrDefault(Desk desk) {
+        return Boolean.TRUE.equals(desk.getDeskHeightAdjustable());
+    }
+
+    private List<Desk> applyWorkstationFilters(List<Desk> desks, WorkstationSearchFiltersDTO filters) {
+        if (filters == null) {
+            return desks;
+        }
+        final Set<String> types = filters.getTypes() == null
+            ? Set.of()
+            : filters.getTypes().stream().filter(v -> v != null && !v.isBlank()).collect(Collectors.toSet());
+        final Set<Integer> monitorCounts = filters.getMonitorCounts() == null
+            ? Set.of()
+            : filters.getMonitorCounts().stream().filter(v -> v != null).collect(Collectors.toSet());
+        final Set<Boolean> adjustableValues = filters.getDeskHeightAdjustable() == null
+            ? Set.of()
+            : filters.getDeskHeightAdjustable().stream().filter(v -> v != null).collect(Collectors.toSet());
+        final Set<String> technologySelections = filters.getTechnologySelections() == null
+            ? Set.of()
+            : filters.getTechnologySelections().stream()
+                .filter(v -> v != null && !v.isBlank())
+                .map(String::trim)
+                .collect(Collectors.toSet());
+        final Set<Boolean> specialFeatures = filters.getSpecialFeatures() == null
+            ? Set.of()
+            : filters.getSpecialFeatures().stream().filter(v -> v != null).collect(Collectors.toSet());
+
+        return desks.stream()
+            .filter(desk -> types.isEmpty() || types.contains(workstationTypeOrDefault(desk)))
+            .filter(desk -> monitorCounts.isEmpty() || monitorCounts.contains(monitorCountOrDefault(desk)))
+            .filter(desk -> adjustableValues.isEmpty() || adjustableValues.contains(deskHeightAdjustableOrDefault(desk)))
+            .filter(desk -> {
+                if (technologySelections.isEmpty()) {
+                    return true;
+                }
+                if (technologySelections.contains("dockingStation") && !Boolean.TRUE.equals(desk.getTechnologyDockingStation())) {
+                    return false;
+                }
+                if (technologySelections.contains("webcam") && !Boolean.TRUE.equals(desk.getTechnologyWebcam())) {
+                    return false;
+                }
+                if (technologySelections.contains("headset") && !Boolean.TRUE.equals(desk.getTechnologyHeadset())) {
+                    return false;
+                }
+                return true;
+            })
+            .filter(desk -> {
+                if (specialFeatures.isEmpty()) {
+                    return true;
+                }
+                final boolean hasSpecialFeatures = desk.getSpecialFeatures() != null && !desk.getSpecialFeatures().trim().isEmpty();
+                return specialFeatures.contains(hasSpecialFeatures);
+            })
+            .toList();
+    }
+
+    public List<Desk> getDesksForDatesTimesAndFilters(WorkstationSearchRequestDTO requestDTO) {
+        final List<Desk> desks = getDesksForDatesAndTimes(
+            new DatesAndTimesDTO(requestDTO.getDates(), requestDTO.getStartTime(), requestDTO.getEndTime())
+        );
+        return applyWorkstationFilters(desks, requestDTO.getFilters());
+    }
+
+    public List<Desk> getDesksForBuildingDatesTimesAndFilters(Long buildingId, WorkstationSearchRequestDTO requestDTO) {
+        final List<Desk> desks = desksForBuildingAndDatesAndTimes(
+            buildingId,
+            new DatesAndTimesDTO(requestDTO.getDates(), requestDTO.getStartTime(), requestDTO.getEndTime())
+        );
+        return applyWorkstationFilters(desks, requestDTO.getFilters());
+    }
+
+    @Transactional
     public boolean createSeries(@RequestBody SeriesDTO seriesDTO) {
+        if (seriesDTO == null || seriesDTO.getRangeDTO() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing series payload");
+        }
+
         UserEntity userEntity = userRepository.findByEmail(seriesDTO.getEmail());
         if (userEntity == null) {
-            System.err.println("user not found in createSeries");
-            return false;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found for series creation");
         }
+
+        final Time seriesStart = timestringToTime(seriesDTO.getRangeDTO().getStartTime());
+        final Time seriesEnd = timestringToTime(seriesDTO.getRangeDTO().getEndTime());
+        final List<Date> dates = seriesDTO.getDates() == null
+            ? List.of()
+            : seriesDTO.getDates().stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted()
+                .toList();
+        if (dates.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one series date is required");
+        }
+        final Long deskId = seriesDTO.getDesk() == null ? null : seriesDTO.getDesk().getId();
+        if (deskId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk is required for series creation");
+        }
+        final Desk desk = deskRepository.findByIdForUpdate(deskId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Desk not found"));
+        if (desk.isHidden()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This workstation is not available for booking.");
+        }
+        if (desk.isBlocked()) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "This workstation is currently blocked due to a defect and cannot be booked."
+            );
+        }
+        if (desk.getRoom() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk is missing room");
+        }
+
+        validateSeriesOccurrences(desk, dates, seriesStart, seriesEnd);
+        validateNoScheduledBlockingOverlapForSeries(deskId, dates, seriesStart, seriesEnd);
 
         Series newSeries = new Series(-1L, 
             userEntity, 
-            seriesDTO.getRoom(), 
-            seriesDTO.getDesk(), 
+            desk.getRoom(), 
+            desk, 
             datestringToDate(seriesDTO.getRangeDTO().getStartDate()), 
             datestringToDate(seriesDTO.getRangeDTO().getEndDate()), 
-            timestringToTime(seriesDTO.getRangeDTO().getStartTime()), 
-            timestringToTime(seriesDTO.getRangeDTO().getEndTime()), 
+            seriesStart,
+            seriesEnd,
             seriesDTO.getRangeDTO().getFrequency(),
             seriesDTO.getRangeDTO().getDayOfTheWeek()
         );
         
         // Save the series.
         final Series finalSeries = seriesRepository.save(newSeries);
-        // Dates of bookings.
-        final List<Date> dates = seriesDTO.getDates();
 
         final List<Booking> bookings = dates.stream().map(date -> {
             return new Booking(
                 userEntity,
-                seriesDTO.getRoom(),
-                seriesDTO.getDesk(),
+                desk.getRoom(),
+                desk,
                 date,
-                timestringToTime(seriesDTO.getRangeDTO().getStartTime()),
-                timestringToTime(seriesDTO.getRangeDTO().getEndTime()),
+                seriesStart,
+                seriesEnd,
                 finalSeries
             );
         }).toList();
@@ -182,9 +336,292 @@ public class SeriesService {
             System.out.println("bookings is null in SeriesService.createSeries().");
             return false;
         }
-        bookingRepository.saveAll(bookings);
+        final List<Booking> savedBookings = bookingRepository.saveAll(bookings);
+        calendarNotificationService.sendSeriesCreated(savedBookings);
         return true;
     }
+
+    private void validateSeriesOccurrences(
+            final Desk desk,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        final var settings = bookingSettingsService.getCurrentSettings();
+        for (final Date date : dates) {
+            validateBookingTimes(date, startTime, endTime, settings);
+            validateNoExistingBookingOverlapForSeries(desk, date, startTime, endTime);
+        }
+    }
+
+    private void validateBookingTimes(
+            final Date day,
+            final Time begin,
+            final Time end,
+            final com.desk_sharing.entities.BookingSettings settings) {
+        if (day == null || begin == null || end == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing booking time data");
+        }
+
+        final LocalDateTime startDateTime = LocalDateTime.of(day.toLocalDate(), begin.toLocalTime());
+        if (startDateTime.isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking start time has already passed");
+        }
+
+        final LocalTime beginTime = begin.toLocalTime();
+        final LocalTime endTime = end.toLocalTime();
+        if (!endTime.isAfter(beginTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End time must be after start time");
+        }
+
+        final int leadMinutes = settings.getLeadTimeMinutes() == null ? 0 : settings.getLeadTimeMinutes();
+        final LocalDateTime earliestStart = roundUpToNextHalfHour(LocalDateTime.now().plusMinutes(leadMinutes));
+        if (startDateTime.isBefore(earliestStart)) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Booking start time must respect lead time (" + leadMinutes + " minutes). Earliest allowed: " + earliestStart.toLocalTime()
+            );
+        }
+
+        if ((beginTime.getMinute() % 30) != 0 || beginTime.getSecond() != 0 || beginTime.getNano() != 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start time must be aligned to 30-minute slots");
+        }
+        if ((endTime.getMinute() % 30) != 0 || endTime.getSecond() != 0 || endTime.getNano() != 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End time must be aligned to 30-minute slots");
+        }
+
+        final long minutes = java.time.Duration.between(beginTime, endTime).toMinutes();
+        if (minutes < 120) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum booking duration is 120 minutes");
+        }
+
+        final Integer maxDurationMinutes = settings.getMaxDurationMinutes();
+        if (maxDurationMinutes != null && minutes > maxDurationMinutes) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Maximum booking duration is " + maxDurationMinutes + " minutes"
+            );
+        }
+
+        final Integer maxAdvanceDays = settings.getMaxAdvanceDays();
+        if (maxAdvanceDays != null
+            && day.toLocalDate().isAfter(LocalDateTime.now().toLocalDate().plusDays(maxAdvanceDays))) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Bookings allowed up to " + maxAdvanceDays + " days in advance"
+            );
+        }
+    }
+
+    private LocalDateTime roundUpToNextHalfHour(final LocalDateTime dateTime) {
+        final int minute = dateTime.getMinute();
+        final int addMinutes;
+        if (minute == 0 || minute == 30) {
+            addMinutes = 0;
+        } else if (minute < 30) {
+            addMinutes = 30 - minute;
+        } else {
+            addMinutes = 60 - minute;
+        }
+        return dateTime.plusMinutes(addMinutes).withSecond(0).withNano(0);
+    }
+
+    private void validateNoExistingBookingOverlapForSeries(
+            final Desk desk,
+            final Date day,
+            final Time begin,
+            final Time end) {
+        final Long roomId = desk.getRoom() == null ? null : desk.getRoom().getId();
+        if (roomId == null || desk.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk is missing room");
+        }
+        final List<Booking> overlaps = bookingRepository.getAllBookingsForPreventDuplicates(
+            roomId,
+            desk.getId(),
+            day,
+            begin,
+            end
+        );
+        if (overlaps != null && !overlaps.isEmpty()) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "This slot overlaps with another booking for this desk"
+            );
+        }
+    }
+
+    public SeriesOverlapCheckResponseDTO checkConfirmedOverlapWithOtherDeskForSeries(
+            final SeriesOverlapCheckRequestDTO request) {
+        if (request == null || request.getDeskId() == null || request.getDates() == null
+            || request.getDates().isEmpty() || request.getStartTime() == null || request.getEndTime() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Series overlap-check data is incomplete");
+        }
+
+        final UserEntity currentUser = userService.getCurrentUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
+        }
+
+        final List<Booking> overlaps = bookingRepository.findConfirmedOverlapsForUserOtherDeskOnDates(
+            currentUser.getId(),
+            request.getDeskId(),
+            request.getDates(),
+            timestringToTime(request.getStartTime()),
+            timestringToTime(request.getEndTime())
+        );
+        final List<Date> conflictingDates = overlaps == null ? List.of() : overlaps.stream()
+            .map(Booking::getDay)
+            .filter(Objects::nonNull)
+            .distinct()
+            .sorted()
+            .toList();
+        return new SeriesOverlapCheckResponseDTO(!conflictingDates.isEmpty(), conflictingDates);
+    }
+
+    private List<Desk> filterOutDesksWithScheduledBlockingConflicts(
+            final List<Desk> desks,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (desks == null || desks.isEmpty()) {
+            return List.of();
+        }
+
+        if (dates == null || dates.isEmpty() || startTime == null || endTime == null) {
+            return desks;
+        }
+
+        final List<TimeWindow> windows = buildTimeWindows(dates, startTime, endTime);
+        if (windows.isEmpty()) {
+            return desks;
+        }
+
+        final List<Long> deskIds = desks.stream()
+            .map(Desk::getId)
+            .filter(Objects::nonNull)
+            .distinct()
+            .toList();
+        if (deskIds.isEmpty()) {
+            return desks;
+        }
+
+        final LocalDateTime queryStart = windows.stream()
+            .map(TimeWindow::start)
+            .min(Comparator.naturalOrder())
+            .orElseThrow();
+        final LocalDateTime queryEnd = windows.stream()
+            .map(TimeWindow::end)
+            .max(Comparator.naturalOrder())
+            .orElseThrow();
+
+        final List<ScheduledBlocking> overlappingBlockings = scheduledBlockingRepository
+            .findByDeskIdInAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+                deskIds,
+                SERIES_BLOCKING_STATUSES,
+                queryEnd,
+                queryStart
+            );
+
+        final Map<Long, List<ScheduledBlocking>> blockingsByDeskId = new HashMap<>();
+        for (ScheduledBlocking blocking : overlappingBlockings) {
+            if (blocking.getDesk() == null || blocking.getDesk().getId() == null) {
+                continue;
+            }
+            blockingsByDeskId
+                .computeIfAbsent(blocking.getDesk().getId(), ignored -> new ArrayList<>())
+                .add(blocking);
+        }
+
+        return desks.stream()
+            .filter(desk -> !hasBlockingOverlap(
+                blockingsByDeskId.getOrDefault(desk.getId(), List.of()),
+                windows
+            ))
+            .toList();
+    }
+
+    private void validateNoScheduledBlockingOverlapForSeries(
+            final Long deskId,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (hasScheduledBlockingOverlap(deskId, dates, startTime, endTime)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "This workstation has a scheduled block during at least one selected series occurrence."
+            );
+        }
+    }
+
+    private boolean hasScheduledBlockingOverlap(
+            final Long deskId,
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        if (deskId == null || dates == null || dates.isEmpty() || startTime == null || endTime == null) {
+            return false;
+        }
+
+        final List<TimeWindow> windows = buildTimeWindows(dates, startTime, endTime);
+        if (windows.isEmpty()) {
+            return false;
+        }
+
+        final LocalDateTime queryStart = windows.stream()
+            .map(TimeWindow::start)
+            .min(Comparator.naturalOrder())
+            .orElseThrow();
+        final LocalDateTime queryEnd = windows.stream()
+            .map(TimeWindow::end)
+            .max(Comparator.naturalOrder())
+            .orElseThrow();
+
+        final List<ScheduledBlocking> overlappingBlockings = scheduledBlockingRepository
+            .findByDeskIdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+                deskId,
+                SERIES_BLOCKING_STATUSES,
+                queryEnd,
+                queryStart
+            );
+
+        return hasBlockingOverlap(overlappingBlockings, windows);
+    }
+
+    private List<TimeWindow> buildTimeWindows(
+            final List<Date> dates,
+            final Time startTime,
+            final Time endTime) {
+        final LocalTime startLocalTime = startTime.toLocalTime();
+        final LocalTime endLocalTime = endTime.toLocalTime();
+
+        return dates.stream()
+            .filter(Objects::nonNull)
+            .map(Date::toLocalDate)
+            .map(day -> new TimeWindow(
+                LocalDateTime.of(day, startLocalTime),
+                LocalDateTime.of(day, endLocalTime)
+            ))
+            .filter(window -> window.end().isAfter(window.start()))
+            .toList();
+    }
+
+    private boolean hasBlockingOverlap(
+            final List<ScheduledBlocking> blockings,
+            final List<TimeWindow> windows) {
+        for (final ScheduledBlocking blocking : blockings) {
+            if (blocking == null || blocking.getStartDateTime() == null || blocking.getEndDateTime() == null) {
+                continue;
+            }
+            for (final TimeWindow window : windows) {
+                if (blocking.getStartDateTime().isBefore(window.end())
+                    && blocking.getEndDateTime().isAfter(window.start())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private record TimeWindow(LocalDateTime start, LocalDateTime end) {}
 
     /**
      * Find all series associated to the user identified by email.
@@ -225,12 +662,35 @@ public class SeriesService {
     public int deleteById(final long id) {
         try {
             final Optional<Series> seriesOpt = seriesRepository.findById(id);
+            if (seriesOpt.isEmpty()) {
+                return 0;
+            }
             final Series series = seriesOpt.get();
             if (series == null) {
                 System.err.println("series is null in SeriesService.deleteById()");
                 return 0;
             }
-            bookingRepository.deleteBookingsBySeriesId(id);
+            final LocalDateTime now = LocalDateTime.now();
+            final List<Booking> currentSeriesBookings = bookingRepository.findBySeriesId(id).stream()
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(Booking::getDay).thenComparing(Booking::getBegin))
+                .toList();
+            final List<Booking> preservedPastBookings = currentSeriesBookings.stream()
+                .filter(booking -> bookingHasAlreadyPassed(booking, now))
+                .toList();
+            final List<Booking> remainingBookings = currentSeriesBookings.stream()
+                .filter(booking -> !bookingHasAlreadyPassed(booking, now))
+                .toList();
+            if (!remainingBookings.isEmpty()) {
+                calendarNotificationService.sendSeriesDeleted(remainingBookings);
+            }
+            if (!preservedPastBookings.isEmpty()) {
+                preservedPastBookings.forEach(booking -> booking.setSeries(null));
+                bookingRepository.saveAll(preservedPastBookings);
+            }
+            if (!remainingBookings.isEmpty()) {
+                bookingRepository.deleteAll(remainingBookings);
+            }
             seriesRepository.delete(series);
             return 1;
         }
@@ -238,5 +698,12 @@ public class SeriesService {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    private boolean bookingHasAlreadyPassed(final Booking booking, final LocalDateTime now) {
+        if (booking == null || booking.getDay() == null || booking.getBegin() == null) {
+            return false;
+        }
+        return LocalDateTime.of(booking.getDay().toLocalDate(), booking.getBegin().toLocalTime()).isBefore(now);
     }
 }

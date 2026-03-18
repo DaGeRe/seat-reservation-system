@@ -4,13 +4,15 @@ import com.desk_sharing.entities.ParkingReservation;
 import com.desk_sharing.entities.ParkingReservationStatus;
 import com.desk_sharing.entities.ParkingSpot;
 import com.desk_sharing.entities.ParkingSpotType;
+import com.desk_sharing.entities.Role;
 import com.desk_sharing.entities.UserEntity;
+import com.desk_sharing.entities.VisibilityMode;
 import com.desk_sharing.model.ParkingAvailabilityRequestDTO;
 import com.desk_sharing.model.ParkingAvailabilityResponseDTO;
 import com.desk_sharing.repositories.ParkingReservationRepository;
 import com.desk_sharing.repositories.ParkingSpotRepository;
 import com.desk_sharing.repositories.UserRepository;
-import com.desk_sharing.services.parking.ParkingNotificationService;
+import com.desk_sharing.services.ParkingNotificationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,7 +63,8 @@ class ParkingAvailabilityTest {
 
         when(parkingReservationRepository.findOccupiedSpotLabels(any(Date.class), any(List.class), any(Time.class), any(Time.class)))
                 .thenReturn(List.of("1", "2", "3"));
-        when(parkingSpotRepository.findBySpotLabelIn(any(List.class))).thenReturn(List.of());
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class)))
+            .thenReturn(List.of(activeSpot("23"), activeSpot("1"), activeSpot("2"), activeSpot("3")));
 
         ParkingReservation mine = new ParkingReservation();
         mine.setId(555L);
@@ -111,6 +114,10 @@ class ParkingAvailabilityTest {
     }
 
     private void authenticateAs(int userId, String email) {
+        authenticateAs(userId, email, false);
+    }
+
+    private void authenticateAs(int userId, String email, boolean admin) {
         Authentication auth = mock(Authentication.class);
         when(auth.getName()).thenReturn(email);
         var ctx = SecurityContextHolder.createEmptyContext();
@@ -120,6 +127,11 @@ class ParkingAvailabilityTest {
         UserEntity user = new UserEntity();
         user.setId(userId);
         user.setEmail(email);
+        if (admin) {
+            Role role = new Role();
+            role.setName("ROLE_ADMIN");
+            user.setRoles(List.of(role));
+        }
         when(userRepository.findByEmail(anyString())).thenReturn(user);
     }
 
@@ -139,11 +151,12 @@ class ParkingAvailabilityTest {
         ParkingSpot blocked = new ParkingSpot();
         blocked.setSpotLabel("5");
         blocked.setSpotType(ParkingSpotType.STANDARD);
+        blocked.setActive(true);
         blocked.setCovered(true);
         blocked.setManuallyBlocked(true);
         when(parkingReservationRepository.findOccupiedSpotLabels(any(Date.class), any(List.class), any(Time.class), any(Time.class)))
             .thenReturn(List.of());
-        when(parkingSpotRepository.findBySpotLabelIn(any(List.class))).thenReturn(List.of(blocked));
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class))).thenReturn(List.of(blocked));
 
         List<ParkingAvailabilityResponseDTO> resp = service.getAvailability(request);
 
@@ -186,7 +199,7 @@ class ParkingAvailabilityTest {
             .thenReturn(List.of("9"));
         when(parkingReservationRepository.findOverlapsForSpot(any(Date.class), eq("9"), any(Time.class), any(Time.class)))
             .thenReturn(List.of(pending, approved));
-        when(parkingSpotRepository.findBySpotLabelIn(any(List.class))).thenReturn(List.of());
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class))).thenReturn(List.of(activeSpot("9")));
 
         List<ParkingAvailabilityResponseDTO> resp = service.getAvailability(request);
 
@@ -217,7 +230,7 @@ class ParkingAvailabilityTest {
 
         when(parkingReservationRepository.findOccupiedSpotLabels(any(Date.class), any(List.class), any(Time.class), any(Time.class)))
             .thenReturn(List.of());
-        when(parkingSpotRepository.findBySpotLabelIn(any(List.class))).thenReturn(List.of());
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class))).thenReturn(List.of(activeSpot("12")));
         when(parkingReservationRepository.findRejectedOverlapsForUser(any(Date.class), any(List.class), any(Time.class), any(Time.class), eq(42)))
             .thenReturn(List.of(rejectedMine));
 
@@ -246,6 +259,7 @@ class ParkingAvailabilityTest {
         ParkingSpot chargingSpot = new ParkingSpot();
         chargingSpot.setSpotLabel("14");
         chargingSpot.setSpotType(ParkingSpotType.E_CHARGING_STATION);
+        chargingSpot.setActive(true);
         chargingSpot.setCovered(true);
         chargingSpot.setChargingKw(22);
         chargingSpot.setManuallyBlocked(false);
@@ -263,12 +277,13 @@ class ParkingAvailabilityTest {
         overlapUser.setName("Jane");
         overlapUser.setSurname("Doe");
         overlapUser.setEmail("jane@example.com");
+        overlapUser.setVisibilityMode(VisibilityMode.FULL_NAME);
 
         when(parkingReservationRepository.findOccupiedSpotLabels(any(Date.class), any(List.class), any(Time.class), any(Time.class)))
             .thenReturn(List.of("14"));
         when(parkingReservationRepository.findOverlapsForSpot(any(Date.class), eq("14"), any(Time.class), any(Time.class)))
             .thenReturn(List.of(overlap));
-        when(parkingSpotRepository.findBySpotLabelIn(any(List.class))).thenReturn(List.of(chargingSpot));
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class))).thenReturn(List.of(chargingSpot));
         when(userRepository.findAllById(any())).thenReturn(List.of(overlapUser));
 
         List<ParkingAvailabilityResponseDTO> resp = service.getAvailability(request);
@@ -281,6 +296,62 @@ class ParkingAvailabilityTest {
         assertThat(row.getChargingKw()).isEqualTo(22);
         assertThat(row.getReservedBegin()).isEqualTo("10:00");
         assertThat(row.getReservedEnd()).isEqualTo("10:30");
-        assertThat(row.getReservedByUser()).isEqualTo("Jane Doe (jane@example.com)");
+        assertThat(row.getReservedByUser()).isEqualTo("Jane Doe");
+    }
+
+    @Test
+    void getAvailability_keepsFullIdentityVisibleForAdmins() {
+        ParkingReservationService service = new ParkingReservationService(
+            parkingReservationRepository, parkingSpotRepository, userRepository, parkingNotificationService);
+        authenticateAs(9, "admin@example.com", true);
+
+        LocalDate day = LocalDate.now().plusDays(1);
+        ParkingAvailabilityRequestDTO request = new ParkingAvailabilityRequestDTO();
+        request.setSpotLabels(List.of("17"));
+        request.setDay(day.toString());
+        request.setBegin("10:00");
+        request.setEnd("10:30");
+
+        ParkingReservation overlap = new ParkingReservation();
+        overlap.setId(99L);
+        overlap.setUserId(77);
+        overlap.setSpotLabel("17");
+        overlap.setStatus(ParkingReservationStatus.APPROVED);
+        overlap.setBegin(Time.valueOf("10:00:00"));
+        overlap.setEnd(Time.valueOf("10:30:00"));
+
+        UserEntity overlapUser = new UserEntity();
+        overlapUser.setId(77);
+        overlapUser.setName("Jane");
+        overlapUser.setSurname("Doe");
+        overlapUser.setEmail("jane@example.com");
+        overlapUser.setVisibilityMode(VisibilityMode.ANONYMOUS);
+
+        when(parkingReservationRepository.findOccupiedSpotLabels(any(Date.class), any(List.class), any(Time.class), any(Time.class)))
+            .thenReturn(List.of("17"));
+        when(parkingReservationRepository.findOverlapsForSpot(any(Date.class), eq("17"), any(Time.class), any(Time.class)))
+            .thenReturn(List.of(overlap));
+        when(parkingSpotRepository.findBySpotLabelInAndActiveTrue(any(List.class))).thenReturn(List.of(activeSpot("17")));
+        when(userRepository.findAllById(any())).thenReturn(List.of(overlapUser));
+
+        List<ParkingAvailabilityResponseDTO> resp = service.getAvailability(request);
+
+        assertThat(resp).hasSize(1);
+        assertThat(resp.get(0).getReservedByUser()).isEqualTo("Jane Doe (jane@example.com)");
+    }
+
+    private ParkingSpot activeSpot(final String label) {
+        ParkingSpot spot = new ParkingSpot();
+        spot.setSpotLabel(label);
+        spot.setDisplayLabel(label);
+        if ("23".equals(label)) {
+            spot.setSpotType(ParkingSpotType.SPECIAL_CASE);
+        } else if ("30".equals(label)) {
+            spot.setSpotType(ParkingSpotType.ACCESSIBLE);
+        } else {
+            spot.setSpotType(ParkingSpotType.STANDARD);
+        }
+        spot.setActive(true);
+        return spot;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desk_sharing.entities.ParkingReservation;
@@ -20,6 +21,7 @@ import com.desk_sharing.model.ParkingAvailabilityResponseDTO;
 import com.desk_sharing.model.ParkingMyReservationDTO;
 import com.desk_sharing.model.ParkingReviewItemDTO;
 import com.desk_sharing.model.ParkingReservationRequestDTO;
+import com.desk_sharing.model.ParkingSpotUpdateDTO;
 import com.desk_sharing.services.ParkingReservationService;
 
 import java.sql.Date;
@@ -46,7 +48,13 @@ public class ParkingController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ParkingReservation> reserve(@RequestBody ParkingReservationRequestDTO request) {
-        logger.info("parkingReserve( {} )", request);
+        logger.info(
+            "parkingReserve( spotLabel={}, day={}, begin={}, end={} )",
+            request == null ? null : request.getSpotLabel(),
+            request == null ? null : request.getDay(),
+            request == null ? null : request.getBegin(),
+            request == null ? null : request.getEnd()
+        );
         return new ResponseEntity<>(parkingReservationService.createReservation(request), HttpStatus.CREATED);
     }
 
@@ -75,6 +83,32 @@ public class ParkingController {
         return new ResponseEntity<>(parkingReservationService.setSpotManualBlocked(spotLabel, false), HttpStatus.OK);
     }
 
+    @GetMapping("/spots")
+    public ResponseEntity<List<ParkingSpot>> getSpots(
+        @RequestParam(name = "includeInactive", defaultValue = "false") boolean includeInactive
+    ) {
+        logger.info("parkingGetSpots( {} )", includeInactive);
+        return new ResponseEntity<>(parkingReservationService.getParkingSpots(includeInactive), HttpStatus.OK);
+    }
+
+    @PostMapping("/spots")
+    public ResponseEntity<ParkingSpot> saveSpot(@RequestBody ParkingSpotUpdateDTO request) {
+        logger.info("parkingSaveSpot( {} )", request);
+        return new ResponseEntity<>(parkingReservationService.saveParkingSpot(request), HttpStatus.OK);
+    }
+
+    @PostMapping("/spots/{spotLabel}/activate")
+    public ResponseEntity<ParkingSpot> activateSpot(@PathVariable("spotLabel") String spotLabel) {
+        logger.info("parkingActivateSpot( {} )", spotLabel);
+        return new ResponseEntity<>(parkingReservationService.setSpotActive(spotLabel, true), HttpStatus.OK);
+    }
+
+    @PostMapping("/spots/{spotLabel}/deactivate")
+    public ResponseEntity<ParkingSpot> deactivateSpot(@PathVariable("spotLabel") String spotLabel) {
+        logger.info("parkingDeactivateSpot( {} )", spotLabel);
+        return new ResponseEntity<>(parkingReservationService.setSpotActive(spotLabel, false), HttpStatus.OK);
+    }
+
     @GetMapping("/review/pending")
     public ResponseEntity<List<ParkingReviewItemDTO>> pending() {
         logger.info("parkingReviewPending()");
@@ -85,6 +119,13 @@ public class ParkingController {
     public ResponseEntity<Long> pendingCount() {
         logger.info("parkingReviewPendingCount()");
         return new ResponseEntity<>(parkingReservationService.getPendingReservationsCount(), HttpStatus.OK);
+    }
+
+    @PostMapping("/review/bulk-approve")
+    public ResponseEntity<java.util.Map<String, Object>> bulkApprove(@RequestBody java.util.Map<String, java.util.List<Long>> body) {
+        logger.info("parkingReviewBulkApprove()");
+        java.util.List<Long> ids = body.getOrDefault("ids", java.util.List.of());
+        return new ResponseEntity<>(parkingReservationService.bulkApproveReservations(ids), HttpStatus.OK);
     }
 
     @PostMapping("/review/{id}/approve")

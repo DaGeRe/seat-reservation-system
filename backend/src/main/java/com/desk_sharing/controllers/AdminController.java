@@ -22,6 +22,7 @@ import com.desk_sharing.services.DeskService;
 import com.desk_sharing.services.RoomService;
 import com.desk_sharing.services.UserService;
 import com.desk_sharing.services.BookingSettingsService;
+import com.desk_sharing.services.ParkingReservationService;
 import com.desk_sharing.model.BookingSettingsDTO;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,15 @@ import com.desk_sharing.model.RegisterDto;
 import com.desk_sharing.model.RoomDTO;
 import com.desk_sharing.model.UserDto;
 import com.desk_sharing.model.BookingProjectionDTO;
+import com.desk_sharing.model.ParkingBookingProjectionDTO;
+import com.desk_sharing.model.AdminBookingEditRequestDTO;
+import com.desk_sharing.model.AdminParkingReservationEditRequestDTO;
+import com.desk_sharing.model.AdminEditCandidateRequestDTO;
+import com.desk_sharing.model.AdminDeskCandidateDTO;
+import com.desk_sharing.model.AdminParkingSpotCandidateDTO;
+import com.desk_sharing.model.AdminRoomBulkBookingPreviewDTO;
+import com.desk_sharing.model.AdminRoomBulkBookingRequestDTO;
+import com.desk_sharing.model.AdminRoomBulkBookingResponseDTO;
 import com.desk_sharing.model.DeskDTO;
 import com.desk_sharing.entities.Booking;
 import com.desk_sharing.entities.Desk;
@@ -60,6 +70,7 @@ public class AdminController {
     private final BookingRepository bookingRepository;
     private final UserService userService;    
     private final BookingSettingsService bookingSettingsService;
+    private final ParkingReservationService parkingReservationService;
     
     ////////////////
 
@@ -75,6 +86,101 @@ public class AdminController {
         logger.info("deleteBooking( {} )", id);
         bookingService.deleteBooking(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/cancelBooking/{id}")
+    public ResponseEntity<Void> cancelBookingWithJustification(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody Map<String, String> body) {
+        logger.info("cancelBookingWithJustification( {} )", id);
+        String justification = body.getOrDefault("justification", "");
+        if (justification.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Justification is required");
+        }
+        bookingService.deleteBookingByAdmin(id, justification);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/cancelParkingReservation/{id}")
+    public ResponseEntity<Void> cancelParkingReservationWithJustification(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody Map<String, String> body) {
+        logger.info("cancelParkingReservationWithJustification( {} )", id);
+        String justification = body.getOrDefault("justification", "");
+        if (justification.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Justification is required");
+        }
+        parkingReservationService.cancelReservationByAdmin(id, justification);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/bookings/{id}")
+    public ResponseEntity<Booking> editBookingByAdmin(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody AdminBookingEditRequestDTO request) {
+        logger.info("editBookingByAdmin( {} )", id);
+        return new ResponseEntity<>(bookingService.editBookingByAdmin(id, request), HttpStatus.OK);
+    }
+
+    @PutMapping("/parkingReservations/{id}")
+    public ResponseEntity<?> editParkingReservationByAdmin(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody AdminParkingReservationEditRequestDTO request) {
+        logger.info("editParkingReservationByAdmin( {} )", id);
+        return new ResponseEntity<>(parkingReservationService.editReservationByAdmin(id, request), HttpStatus.OK);
+    }
+
+    @PostMapping("/bookings/{id}/candidate-desks")
+    public ResponseEntity<List<AdminDeskCandidateDTO>> getCandidateDesksForAdminEdit(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody AdminEditCandidateRequestDTO request) {
+        logger.info("getCandidateDesksForAdminEdit( {} )", id);
+        return new ResponseEntity<>(bookingService.getCandidateDesksForAdminEdit(id, request), HttpStatus.OK);
+    }
+
+    @PostMapping("/rooms/{roomId}/bulk-booking-preview")
+    public ResponseEntity<?> previewRoomBulkBooking(
+            @NonNull @PathVariable("roomId") Long roomId,
+            @RequestBody AdminRoomBulkBookingRequestDTO request) {
+        logger.info("previewRoomBulkBooking( {} )", roomId);
+        try {
+            final AdminRoomBulkBookingPreviewDTO preview = bookingService.previewRoomBulkBooking(roomId, request);
+            return new ResponseEntity<>(preview, HttpStatus.OK);
+        } catch (ResponseStatusException ex) {
+            Map<String, String> body = new HashMap<>();
+            body.put("error", ex.getReason() == null ? "Room bulk booking preview failed" : ex.getReason());
+            return new ResponseEntity<>(body, ex.getStatusCode());
+        }
+    }
+
+    @PostMapping("/rooms/{roomId}/bulk-bookings")
+    public ResponseEntity<?> createRoomBulkBooking(
+            @NonNull @PathVariable("roomId") Long roomId,
+            @RequestBody AdminRoomBulkBookingRequestDTO request) {
+        logger.info("createRoomBulkBooking( {} )", roomId);
+        try {
+            final AdminRoomBulkBookingResponseDTO response = bookingService.createRoomBulkBooking(roomId, request);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (ResponseStatusException ex) {
+            Map<String, String> body = new HashMap<>();
+            body.put("error", ex.getReason() == null ? "Room bulk booking failed" : ex.getReason());
+            return new ResponseEntity<>(body, ex.getStatusCode());
+        }
+    }
+
+    @PostMapping("/parkingReservations/{id}/candidate-spots")
+    public ResponseEntity<List<AdminParkingSpotCandidateDTO>> getCandidateSpotsForAdminEdit(
+            @NonNull @PathVariable("id") Long id,
+            @RequestBody AdminEditCandidateRequestDTO request) {
+        logger.info("getCandidateSpotsForAdminEdit( {} )", id);
+        return new ResponseEntity<>(parkingReservationService.getCandidateSpotsForAdminEdit(id, request), HttpStatus.OK);
+    }
+
+    @GetMapping("/parkingBookings")
+    public ResponseEntity<List<ParkingBookingProjectionDTO>> getAllParkingBookings() {
+        logger.info("getAllParkingBookings()");
+        List<ParkingBookingProjectionDTO> bookings = parkingReservationService.getAllApprovedReservationsForAdmin();
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/room/date/{id}")
@@ -131,7 +237,14 @@ public class AdminController {
     @GetMapping("desks/room/{id}")
     public ResponseEntity<List<Desk>> getDeskByRoomId(@PathVariable("id") Long roomId) {
         logger.info("getDeskByRoomId( {} )", roomId);
-        List<Desk> desks = deskService.getDeskByRoomId(roomId);
+        List<Desk> desks = deskService.getDeskByRoomIdIncludingHidden(roomId);
+        return new ResponseEntity<>(desks, HttpStatus.OK);
+    }
+
+    @GetMapping("desks/roomAll/{id}")
+    public ResponseEntity<List<Desk>> getDeskByRoomIdIncludingHidden(@PathVariable("id") Long roomId) {
+        logger.info("getDeskByRoomIdIncludingHidden( {} )", roomId);
+        List<Desk> desks = deskService.getDeskByRoomIdIncludingHidden(roomId);
         return new ResponseEntity<>(desks, HttpStatus.OK);
     }
 
@@ -143,7 +256,7 @@ public class AdminController {
             System.err.println("deskId is null in AdminController.updateDesk()");
             return null;
         }
-        final Desk updatedDesk = deskService.updateDesk(deskId, desk.getEquipment(), desk.getRemark());
+        final Desk updatedDesk = deskService.updateDesk(deskId, desk);
         return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
 
@@ -167,6 +280,20 @@ public class AdminController {
         logger.info("createDesk( {} )", desk);
         Desk savedDesk = deskService.saveDesk(desk);
         return new ResponseEntity<>(savedDesk, HttpStatus.CREATED);
+    }
+
+    @PutMapping("desks/toggleFixed/{id}")
+    public ResponseEntity<Desk> toggleDeskFixed(@NonNull @PathVariable("id") final Long id) {
+        logger.info("toggleDeskFixed( {} )", id);
+        final Desk updatedDesk = deskService.toggleFixed(id);
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
+    }
+
+    @PutMapping("desks/toggleHidden/{id}")
+    public ResponseEntity<Desk> toggleDeskHidden(@NonNull @PathVariable("id") final Long id) {
+        logger.info("toggleDeskHidden( {} )", id);
+        final Desk updatedDesk = deskService.toggleHidden(id);
+        return new ResponseEntity<>(updatedDesk, HttpStatus.OK);
     }
     
     @PutMapping("rooms")

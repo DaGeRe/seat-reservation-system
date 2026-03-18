@@ -1,3 +1,5 @@
+import { colorVars } from '../../theme';
+
 export const styles = {
     box: {
         flexGrow: 1,
@@ -13,34 +15,38 @@ export const styles = {
     h1: {
         margin: '2px',
         textAlign: 'center',
+        color: colorVars.brand.accent,
     },
     button_sx: { 
         width: '100%',
         height: '45px',
-        background: '#fff',
+        background: colorVars.brand.accent,
         border: 'none',
         outline: 'none',
         borderRadius: '40px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+        boxShadow: colorVars.shadow.glowSoft,
         fontSize: '16px',
-        color: '#333',
+        color: colorVars.text.inverse,
         fontWeight: 700,
+        '&:hover': {
+            background: colorVars.brand.primaryPressed,
+        },
     },
     secondaryButton_sx: {
         width: '100%',
         height: '45px',
         background: 'transparent',
-        border: '1px solid rgba(255, 255, 255, 0.6)',
+        border: `1px solid ${colorVars.brand.accent}`,
         outline: 'none',
         borderRadius: '40px',
         fontSize: '15px',
-        color: '#FFDD00',
+        color: colorVars.brand.accent,
         fontWeight: 600,
         boxShadow: 'none',
         textTransform: 'none',
         '&:hover': {
-            background: 'rgba(255, 255, 255, 0.08)',
-            borderColor: 'rgba(255, 255, 255, 0.9)',
+            background: colorVars.surface.translucent,
+            borderColor: colorVars.brand.primaryPressed,
             boxShadow: 'none',
         },
     },
@@ -49,10 +55,10 @@ export const styles = {
         height: 'auto',
         minHeight: '370px',
         background: 'transparent',
-        border: '2px solid rgba(0, 0, 0, 0.2)',
+        border: `2px solid ${colorVars.border.strong}`,
         backdropFilter: 'blur(30px)',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-        color: '#FFDD00',
+        boxShadow: colorVars.shadow.glow,
+        color: colorVars.brand.accent,
         borderRadius: '10px',
         padding: '30px 40px',
         position: 'relative'
@@ -62,16 +68,16 @@ export const styles = {
         height: 'auto',
         minHeight: '320px',
         background: 'transparent',
-        border: '2px solid rgba(0, 0, 0, 0.2)',
+        border: `2px solid ${colorVars.border.strong}`,
         backdropFilter: 'blur(30px)',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-        color: '#FFDD00',
+        boxShadow: colorVars.shadow.glow,
+        color: colorVars.brand.accent,
         borderRadius: '10px',
         padding: '24px 36px',
         position: 'relative'
     },
     inputAdornment_sx : {
-        backgroundColor: '#eef4ff',
+        backgroundColor: colorVars.surface.input,
         borderTopRightRadius: '4px',
         borderBottomRightRadius: '4px',
         px: 1,
@@ -79,9 +85,9 @@ export const styles = {
         alignItems: 'center',
     },
     outlinedInput_sx: {
-        backgroundColor: '#eef4ff',
+        backgroundColor: colorVars.surface.input,
         '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: 'rgba(0,0,0,0.23)',
+        borderColor: colorVars.border.strong,
         },
     }
 };

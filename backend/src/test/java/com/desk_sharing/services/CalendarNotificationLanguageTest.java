@@ -24,8 +24,9 @@ import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
 import com.desk_sharing.entities.UserEntity;
 import com.desk_sharing.repositories.BookingRepository;
-import com.desk_sharing.services.calendar.CalendarNotificationService;
-import com.desk_sharing.services.calendar.NotificationAction;
+import com.desk_sharing.services.BookingCalendarFormatter;
+import com.desk_sharing.services.CalendarNotificationService;
+import com.desk_sharing.services.NotificationAction;
 
 import jakarta.mail.BodyPart;
 import jakarta.mail.Multipart;
@@ -40,10 +41,12 @@ class CalendarNotificationLanguageTest {
     @BeforeEach
     void setUp() {
         mailSender = new CapturingMailSender();
-        service = new CalendarNotificationService(mailSender, bookingRepositoryStub());
+        BookingCalendarFormatter formatter = new BookingCalendarFormatter();
+        ReflectionTestUtils.setField(formatter, "mailFrom", "no-reply@test.local");
+        ReflectionTestUtils.setField(formatter, "frontendBaseUrl", "http://frontend.local");
+        service = new CalendarNotificationService(mailSender, bookingRepositoryStub(), formatter);
         ReflectionTestUtils.setField(service, "notificationsEnabled", true);
         ReflectionTestUtils.setField(service, "mailFrom", "no-reply@test.local");
-        ReflectionTestUtils.setField(service, "frontendBaseUrl", "http://frontend.local");
     }
 
     @Test
@@ -55,7 +58,14 @@ class CalendarNotificationLanguageTest {
         assertThat(mailSender.sentMessages).hasSize(1);
         MimeMessage sent = mailSender.sentMessages.get(0);
         assertThat(sent.getSubject()).contains("Buchung bestätigt");
-        assertThat(extractBodyText(sent)).contains("Ihre Schreibtischbuchung wurde bestätigt.");
+        assertThat(extractBodyText(sent))
+            .contains("Ihre Schreibtischbuchung wurde bestätigt.")
+            .contains("Ausstattung:")
+            .contains("  Ergonomie: Ergonomisch")
+            .contains("  Monitore: 2")
+            .contains("  Tischtyp: Höhenverstellbar")
+            .contains("  Technik: Dockingstation, Webcam")
+            .contains("  Besondere Merkmale: Nein");
     }
 
     @Test
@@ -67,7 +77,57 @@ class CalendarNotificationLanguageTest {
         assertThat(mailSender.sentMessages).hasSize(1);
         MimeMessage sent = mailSender.sentMessages.get(0);
         assertThat(sent.getSubject()).contains("Desk booking confirmed");
-        assertThat(extractBodyText(sent)).contains("Your desk booking was confirmed.");
+        assertThat(extractBodyText(sent))
+            .contains("Your desk booking was confirmed.")
+            .contains("Equipment:")
+            .contains("  Ergonomics: Ergonomic")
+            .contains("  Monitors: 2")
+            .contains("  Desk type: Height Adjustable")
+            .contains("  Technology: Docking station, Webcam")
+            .contains("  Special features: No");
+    }
+
+    @Test
+    void cancelMail_usesLocalizedEquipmentBlock() throws Exception {
+        Booking booking = baseBooking("de");
+        booking.getUser().setNotifyBookingCancel(true);
+
+        service.sendBookingCancelled(booking);
+
+        assertThat(mailSender.sentMessages).hasSize(1);
+        MimeMessage sent = mailSender.sentMessages.get(0);
+        assertThat(sent.getSubject()).contains("Buchung storniert");
+        assertThat(extractBodyText(sent))
+            .contains("Ihre Schreibtischbuchung wurde storniert.")
+            .contains("Ausstattung:")
+            .contains("  Besondere Merkmale: Nein");
+    }
+
+    @Test
+    void seriesCreateMail_includesDateListAndAttachments() throws Exception {
+        Booking first = baseBooking("en");
+        first.setId(201L);
+        first.setDay(Date.valueOf(LocalDate.of(2026, 5, 4)));
+
+        Booking second = baseBooking("en");
+        second.setId(202L);
+        second.setUser(first.getUser());
+        second.setDesk(first.getDesk());
+        second.setRoom(first.getRoom());
+        second.setDay(Date.valueOf(LocalDate.of(2026, 5, 11)));
+
+        service.sendSeriesCreated(List.of(first, second));
+
+        assertThat(mailSender.sentMessages).hasSize(1);
+        MimeMessage sent = mailSender.sentMessages.get(0);
+        assertThat(sent.getSubject()).contains("Desk series booking confirmed");
+        assertThat(extractBodyText(sent))
+            .contains("Your desk series booking was confirmed.")
+            .contains("Dates:")
+            .contains("2026-05-04")
+            .contains("2026-05-11");
+        Multipart multipart = (Multipart) sent.getContent();
+        assertThat(multipart.getCount()).isGreaterThanOrEqualTo(3);
     }
 
     private Booking baseBooking(String language) {
@@ -79,6 +139,11 @@ class CalendarNotificationLanguageTest {
 
         Desk desk = new Desk();
         desk.setRemark("Desk A1");
+        desk.setWorkstationType("Ergonomic");
+        desk.setMonitorsQuantity(2);
+        desk.setDeskHeightAdjustable(true);
+        desk.setTechnologyDockingStation(true);
+        desk.setTechnologyWebcam(true);
         booking.setDesk(desk);
 
         Room room = new Room();

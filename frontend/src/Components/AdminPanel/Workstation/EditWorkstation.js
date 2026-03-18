@@ -2,6 +2,7 @@ import {useState, useRef, useEffect} from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {putRequest} from '../../RequestFunctions/RequestFunctions';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import FloorImage from '../../FloorImage/FloorImage.jsx';
 import InfoModal from '../../InfoModal.jsx';
 import DeskSelector from '../../DeskSelector.js';
@@ -14,26 +15,42 @@ export default function EditWorkstation({ isOpen, onClose }) {
   // const [allDesks, setAllDesks] = useState([]);
   const [room, setRoom]= useState('');
   const [selectedDesk, setSelectedDesk] = useState('');
-  const [equipment, setEquipment]= useState('');
   const [remark, setRemark]= useState('');
+  const [workstationType, setWorkstationType] = useState('Standard');
+  const [monitorsQuantity, setMonitorsQuantity] = useState(1);
+  const [deskHeightAdjustable, setDeskHeightAdjustable] = useState(false);
+  const [technologyDockingStation, setTechnologyDockingStation] = useState(false);
+  const [technologyWebcam, setTechnologyWebcam] = useState(false);
+  const [technologyHeadset, setTechnologyHeadset] = useState(false);
+  const [specialFeatures, setSpecialFeatures] = useState('');
+  const [fixed, setFixed] = useState(false);
   const helpText = t('helpEditWorkstation');
 
   async function updateWorkstation() {
-    if (selectedDesk?.id && equipment && remark) {
+    if (selectedDesk?.id) {
+      if (!String(remark || '').trim()) {
+        toast.error(t('fields_not_empty'));
+        return;
+      }
       putRequest(
         `${process.env.REACT_APP_BACKEND_URL}/admin/desks/updateDesk`,
         headers.current,
         (_) => {
           toast.success(t('deskUpdate'));
-          // setEquipment('');
-          // setRemark('');
           onClose();
         },
         () => {console.log('Failed to update workstation in EditWorkstation.js');},
         JSON.stringify({
           'deskId': selectedDesk.id,
-          'equipment': equipment.equipmentName,
-          'remark': remark
+          'remark': remark.trim(),
+          'fixed': Boolean(fixed),
+          'workstationType': workstationType,
+          'monitorsQuantity': monitorsQuantity,
+          'deskHeightAdjustable': deskHeightAdjustable,
+          'technologyDockingStation': technologyDockingStation,
+          'technologyWebcam': technologyWebcam,
+          'technologyHeadset': technologyHeadset,
+          'specialFeatures': specialFeatures
         })
       );
     }
@@ -43,8 +60,16 @@ export default function EditWorkstation({ isOpen, onClose }) {
   };
 
   useEffect(()=>{
-    setEquipment(selectedDesk.equipment);
-    setRemark(selectedDesk.remark);
+    if (!selectedDesk) return;
+    setRemark(selectedDesk.remark || '');
+    setWorkstationType(selectedDesk.workstationType || 'Standard');
+    setMonitorsQuantity(selectedDesk.monitorsQuantity ?? 1);
+    setDeskHeightAdjustable(Boolean(selectedDesk.deskHeightAdjustable));
+    setTechnologyDockingStation(Boolean(selectedDesk.technologyDockingStation));
+    setTechnologyWebcam(Boolean(selectedDesk.technologyWebcam));
+    setTechnologyHeadset(Boolean(selectedDesk.technologyHeadset));
+    setSpecialFeatures(selectedDesk.specialFeatures || '');
+    setFixed(Boolean(selectedDesk.fixed));
   },[selectedDesk])
 
   /**
@@ -56,14 +81,11 @@ export default function EditWorkstation({ isOpen, onClose }) {
       return;
     }
     setRoom(data.room);
-    setRemark(data.room.remark);
-    setEquipment(data.room.equipment);
   };
 
   return (
     <LayoutModalAdmin
-      onClose={()=>{/*setEquipment('');
-        setRemark('');*/onClose();}}
+      onClose={onClose}
       isOpen={isOpen}
       title={t('editWorkstation')}
       submit={updateWorkstation}
@@ -82,13 +104,39 @@ export default function EditWorkstation({ isOpen, onClose }) {
       <br></br><br></br>
       {
         selectedDesk && (
-          <WorkStationDefinition
-            t={t}
-            equipment={equipment}
-            setEquipment={setEquipment}
-            remark={remark}
-            setRemark={setRemark}
-          />
+          <>
+            <WorkStationDefinition
+              t={t}
+              remark={remark}
+              setRemark={setRemark}
+              workstationType={workstationType}
+              setWorkstationType={setWorkstationType}
+              monitorsQuantity={monitorsQuantity}
+              setMonitorsQuantity={setMonitorsQuantity}
+              deskHeightAdjustable={deskHeightAdjustable}
+              setDeskHeightAdjustable={setDeskHeightAdjustable}
+              technologyDockingStation={technologyDockingStation}
+              setTechnologyDockingStation={setTechnologyDockingStation}
+              technologyWebcam={technologyWebcam}
+              setTechnologyWebcam={setTechnologyWebcam}
+              technologyHeadset={technologyHeadset}
+              setTechnologyHeadset={setTechnologyHeadset}
+              specialFeatures={specialFeatures}
+              setSpecialFeatures={setSpecialFeatures}
+            />
+            <br/>
+            <FormControl required size='small' fullWidth sx={{ mt: 2 }}>
+              <InputLabel>{t('fixed')}</InputLabel>
+              <Select
+                value={fixed ? 'true' : 'false'}
+                label={t('fixed')}
+                onChange={(e) => setFixed(e.target.value === 'true')}
+              >
+                <MenuItem value='true'>{t('yes')}</MenuItem>
+                <MenuItem value='false'>{t('no')}</MenuItem>
+              </Select>
+            </FormControl>
+          </>
         )
       }
     </LayoutModalAdmin>

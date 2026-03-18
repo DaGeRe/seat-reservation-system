@@ -25,11 +25,21 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
         scripts/db/migration/calendar_notifications.sql \
         scripts/db/migration/parking_notifications.sql \
         scripts/db/migration/parking_request_locale.sql \
+        scripts/db/migration/parking_reservation_justification.sql \
         scripts/db/migration/booking_settings.sql \
+        scripts/db/migration/booking_locks.sql \
+        scripts/db/migration/booking_bulk_group.sql \
         scripts/db/migration/parking_reservation_status.sql \
         scripts/db/migration/parking_spot_features.sql \
+        scripts/db/migration/parking_spot_catalog.sql \
+        scripts/db/migration/parking_spot_candidates.sql \
         scripts/db/migration/workstation_equipment_fields.sql \
+        scripts/db/migration/workstation_search_filters.sql \
+        scripts/db/migration/workstation_search_presets.sql \
+        scripts/db/migration/fixed_desks.sql \
+        scripts/db/migration/hidden_desks.sql \
         scripts/db/migration/defect_management.sql \
+        scripts/db/migration/scheduled_blockings.sql \
         scripts/db/migration/user_language_preference.sql; do
         if [ -f "$migration" ]; then
             rel_path="${migration#scripts/db/}"
@@ -38,8 +48,6 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     done
     # Insert viewmodes
     scripts/db/exec_db.sh init/insertViewModes.sql
-    # Insert equipments
-    scripts/db/exec_db.sh init/insertEquipment.sql
     # Insert roomstatuses
     scripts/db/exec_db.sh init/insertRoomStatuses.sql
     # Insert roles
@@ -48,6 +56,12 @@ if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     scripts/db/exec_db.sh init/insertRoomTypes.sql
     # Insert buzildings, floors, rooms and desks.
     scripts/db/exec_db.sh init/insertBuilding.sql
+    # Mark configured desks as fixed (per building/floor/room mapping).
+    scripts/db/exec_db.sh init/insertFixedDesks.sql
+    # Backfill workstation metadata for seeded desks after the desks exist.
+    scripts/db/exec_db.sh migration/workstation_metadata_backfill.sql
+    # Override monitors for specific seeded rooms.
+    scripts/db/exec_db.sh init/insertWorkstationMonitors.sql
     # Insert test users: admins, employees, and service personnel.
     scripts/db/exec_db.sh init/insertTestUsers.sql
 else

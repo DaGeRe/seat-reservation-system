@@ -1,5 +1,6 @@
 {
     "tokenInvalid": "Token invalid. Please login again.",
+    "warning": "Warning",
     "http401": "You are not authorized or your session has expired. Please log in again.",
     "http403": "You do not have permission to perform this action.",
     "http405": "The requested resource was not found.",
@@ -26,6 +27,15 @@
     "bookings": "Bookings",
     "series": "Series Bookings",
     "seriesId": "Series Id",
+    "createSeriesTitle": "Creation of Series Bookings",
+    "createSeriesHelp": "Optionally select the start date, end date, start time, and end time. As soon as all four values are set, the recurring dates are calculated.<br/>Then choose a frequency, a building, and a weekday if needed.<br/>In the table below, you can then select a suitable workspace for the recurring booking.",
+    "createSeriesSuccess": "Creation of series bookings from {{startDate}} to {{endDate}} was successful.",
+    "createSeriesError": "Creation of series bookings from {{startDate}} to {{endDate}} was not successful.",
+    "manageSeriesTitle": "Management of Series Bookings",
+    "manageSeriesHelp": "An overview of all your recurring bookings, including the option to delete them.",
+    "manageSeriesDeleteConfirm": "With this series all associated bookings will be deleted.",
+    "manageSeriesEmpty": "For the current user no series booking was found.",
+    "seriesDeleted": "Series booking deleted successfully.",
     "settings": "Settings",
     "settingsUpdated": "Settings successful updated.",
     "settingsUpdatedFail": "Settings was not updated.",   
@@ -43,7 +53,7 @@
     "you": "You",
     "visibilityHelper": "Choose how your name is shown to other users.",
     "favourites": "Favourites",
-    "favouritesHelper": "Save rooms you book often. Click to open booking; unstar to remove.",
+    "favouritesHelper": "Save rooms and parking spots you use often. Optionally select a date and time range to see availability before opening the booking screen.",
     "addFavourite": "Added to favourites",
     "removeFavourite": "Removed from favourites",
     "favouritesEmpty": "You have no favourites yet. Star a room to save it.",
@@ -52,6 +62,10 @@
     "rooms": "Rooms",
     "parking": "Parking",
     "parkingComingSoon": "Parking favourites coming soon.",
+    "favouritesParkingEmpty": "You have no parking favourites yet. Star a parking spot to save it.",
+    "favouritesParkingSpotName": "Parking Spot {{spot}}",
+    "favouritesAvailable": "Available",
+    "favouritesUnavailable": "Occupied",
     "loading": "Loading",
     "roomSection": "Rooms",
     "parkingSection": "Parking (coming soon)",
@@ -65,6 +79,8 @@
     "logoutConfirmation": "Are you sure you want to logout?",
     "toLogout": "Logout",
     "cancel": "Cancel",
+    "confirm": "Confirm",
+    "confirm": "Confirm",
 
     "previousPassword": "Previous Password",
     "newPassword": "New Password",
@@ -99,6 +115,7 @@
     "silence": "Silence",
 
     "availableDesks": "Available Desks",
+    "availableDesksInRoom": "Available Desks in {{room}}",
     "noAvailableDesks": "No desks available for this room",
     "book": "Book",
 
@@ -110,8 +127,11 @@
     "bookDesk": "Book Desk",
 
     "myBookings": "My Bookings",
+    "booking": "Booking",
+    "bookingDetails": "Booking Details",
     "edit": "Edit",
     "delete": "Delete",
+    "cancelBooking": "Cancel Booking",
     "day": "Day",
     "start": "Start",
     "end": "End",
@@ -124,7 +144,53 @@
     "building": "Building",
     "defaultBuilding": "Default Building",
     "type": "Type",
+    "ergonomics": "Ergonomics",
     "equipment": "Equipment",
+    "workstationType": "Ergonomics",
+    "workstationTypeStandard": "Standard",
+    "workstationTypeSilent": "Silent",
+    "workstationTypeErgonomic": "Ergonomic",
+    "workstationTypePremium": "Premium",
+    "monitorSingular": "Monitor",
+    "monitors": "Monitors",
+    "deskType": "Desk type",
+    "adjustable": "Height Adjustable",
+    "notAdjustable": "Not Height Adjustable",
+    "adjustableHeight": "Adjustable height",
+    "notAdjustableHeight": "Not adjustable height",
+    "technology": "Technology",
+    "technologyDockingStation": "Docking station",
+    "technologyWebcam": "Webcam",
+    "technologyHeadset": "Headset",
+    "specialFeatures": "Special features",
+    "advancedFilters": "Advanced filters",
+    "savedPresets": "Saved presets",
+    "saveCurrent": "Save current",
+    "savePreset": "Save preset",
+    "saveCurrentPresetTitle": "Save current preset",
+    "presetName": "Preset name",
+    "noSavedPresets": "No saved presets yet",
+    "replace": "Replace",
+    "workstationPresetNameRequired": "Preset name is required.",
+    "workstationPresetNameTooLong": "Preset name must be {{max}} characters or fewer.",
+    "workstationPresetNameCounter": "{{count}} / {{max}} characters",
+    "workstationPresetLimitReached": "You can save up to {{max}} presets.",
+    "workstationPresetSaved": "Preset saved.",
+    "workstationPresetReplaced": "Preset replaced.",
+    "workstationPresetRenamedFromDuplicate": "Preset updated with the new name.",
+    "workstationPresetDeleted": "Preset deleted.",
+    "workstationPresetLoadFailed": "Saved presets could not be loaded.",
+    "workstationPresetSaveFailed": "Preset could not be saved.",
+    "workstationPresetDeleteFailed": "Preset could not be deleted.",
+    "workstationPresetReplaceTitle": "Replace preset?",
+    "workstationPresetReplaceMessage": "A preset named \"{{name}}\" already exists. Replace it?",
+    "workstationPresetReplaceDuplicateContentMessage": "A preset with the same filters already exists as \"{{name}}\". Replace it and rename it to \"{{newName}}\"?",
+    "workstationPresetDeleteTitle": "Delete preset?",
+    "workstationPresetDeleteMessage": "Delete preset \"{{name}}\"?",
+    "noFiltersApplied": "No filters applied",
+    "spacesFound": "{{count}} spaces found",
+    "roomsFound": "{{count}} rooms found",
+    "resetFilters": "Reset filters",
     "choose": "Choose a booking",
     "editBookingTime": "Edit Booking Time",
     "deleteBookingMessage": "Are you sure you want to remove this booking?",
@@ -138,9 +204,25 @@
     "minimum": "Minimum booking duration is 2 hours",
     "maximum": "Maximum booking duration is 9 hours",
     "overlap": "This slot overlaps with another booking for this desk",
+    "bookingOverlapOtherDeskWarning": "You already have another booking in this time window on a different workstation.",
+    "conflictingDates": "Conflicting dates",
+    "bookingOverlapCheckFailed": "Could not check for your other overlapping bookings.",
+    "continue": "Continue",
+    "bookingConfirmationTitle": "Booking Confirmation for {{desk}}",
+    "currentlyBeingBooked": "Currently being booked",
+    "bookingLockExpired": "Desk lock expired after 3 minutes. Please select a desk again.",
+    "otherFreeDesksForSelectedTimeSlots": "Closest desks for {{start}} to {{end}}",
+    "otherDesksWithSameEquipementForSelectedTimeSlots": "Closest desks with same equipement for {{start}} to {{end}}",
+    "closestPreferredDesksForSelectedTimeSlots": "Closest preferred desks for {{start}} to {{end}}",
+    "noFreeDesksForSelectedTimeSlotInBuilding": "No free desks are available for this time slot in this building.",
+    "noFreeDesksWithSameEquipmentForSelectedTimeSlotInBuilding": "No free desks with same equipment are available for this time slot in this building.",
+    "noFreeDesksInFavoriteRoomsForSelectedTimeSlot": "No free desks in favorite rooms are available for this time slot.",
+    "noFavoriteRooms": "No favorite rooms.",
     "booked": "Booking saved successfully",
+    "scheduledBlockingLabel": "Scheduled Blocking",
     "selectDeskMessage": "Please first select a desk",
     "blank": "Please choose a desk and time before booking.",
+    "selectDateTimeFirst": "Please select a date and time first.",
     "bookingTimeAlignmentError": "Please choose start and end times on 30-minute boundaries (for example 08:00 or 08:30).",
     "deskUpdate": "Desk updated successfully",
     "deskUpdateFailed": "Desk updated was not successfully",
@@ -148,6 +230,10 @@
     "deskCreated": "Desk created successfully",
     "roomStatus": "Room status changed successfully",
     "roomRemark": "Room Remark",
+    "roomSearchTitle": "Room Search",
+    "roomSearchHelp": "For a general overview, select the minimum number of desks and check the table below for a suitable room.<br/>If you also select a day, start time, and end time, the list is filtered to rooms that are available in that time range.",
+    "roomSearchMinDesksTooltip": "The minimum number of desks in the room",
+    "roomSearchMinDesksLabel": "Minimum number of desks in room",
     "deskRemark": "Desk Remark",
     "roomCreated": "Room was created successfully",
     "roomDeleted": "Room was deleted successfully",
@@ -192,20 +278,29 @@
     "addWorkstation": "Add Workstation",
     "deleteWorkstation": "Delete Workstation",
     "editWorkstation": "Edit Workstation",
+    "hideShowFixed": "Hide/Show Fixed",
+    "hideShowFixedDesk": "Hide/Show Fixed desk",
+    "hideShow": "Hide/Show",
+    "hide": "Hide",
+    "show": "Show",
+    "fixedToggleSuccess": "Fixed state updated.",
+    "fixedToggleFailed": "Failed to update fixed state.",
+    "deskVisibilityToggleSuccess": "Desk visibility updated.",
+    "deskVisibilityToggleFailed": "Failed to update desk visibility.",
+    "fixedDeskLoadFailed": "Failed to load desks for selected floor.",
+    "noDesksForSelectedFloor": "No desks found for selected floor.",
     "noWorkstationForThisRoom": "No workstation exists in this Room.",
     "status": "Status",
+    "fixed": "Fixed",
     "enable": "Enable",
     "disable": "Disable",
     "deskID": "Desk ID",
     "selectRoom": "Select Room",
     "selectDesk": "Select Desk",
     "deskNotFound": "Desk not found",
-    "withEquipment": "With equipment",
-    "withoutEquipment": "Without equipment",
-    "unknown": "unknown",
     
     "deleteBooking": "Delete Booking",
-    "editBooking": "Edit Booking",
+    "editBooking": "Edit",
     "exportIcs": "Export ICS",
     "overviewBooking": "Overview of Bookings",
     "search": "Search",
@@ -220,6 +315,7 @@
     "agenda": "Agenda",
     "noEventsInRange": "There are no events in this range",
     "date": "Date",
+    "dates": "Dates",
     "time": "Time",
     "event": "Booking",
     "toDate": "At an defined date",
@@ -250,10 +346,48 @@
     "helpAddRoom":"Please choose a location for an new room on the map and click on it.<br/>Additionally provide all necessary informations and push <strong>Submit</strong>."
     ,"helpChooseRoom":"Please choose an existing room and click on it."
     ,"helpCreateBooking":"Please choose first an desk and then a timespan. Finish with a push on <strong>Book</strong>."
-    ,"booking.tooltip.identifier":"Identifier"
-    ,"booking.tooltip.type":"Type"
+    ,"helpCreateRoomBooking":"Please choose a date and time range to book all eligible desks in this room."
+    ,"deskBookingMode":"Desk"
+    ,"roomBookingMode":"Room"
+    ,"bookRoom":"Book room"
+    ,"bulkGroupId":"Bulk Group"
+    ,"roomBulkBookingTitle":"Room booking"
+    ,"roomBulkBookingHelper":"Book all eligible desks in {{room}} at once."
+    ,"roomBulkIncludedDesks":"Included"
+    ,"roomBulkConflictedDesks":"Conflicted desks"
+    ,"roomBulkExcludedDesks":"Excluded desks"
+    ,"roomBulkSelectPeriodHint":"Select a valid date and time range to preview the room booking."
+    ,"roomBulkNoEligibleDesks":"No eligible desks are available for bulk booking in this room."
+    ,"roomBulkHasConflicts":"Some desks in this room are unavailable for the selected time. You can still book the included desks."
+    ,"roomBulkBookAll":"Book desks"
+    ,"roomBulkNoIncludedDesks":"No desks are currently included."
+    ,"roomBulkConflictSection":"Conflicts"
+    ,"roomBulkNoConflicts":"No conflicts for the selected period."
+    ,"roomBulkExcludedSection":"Excluded"
+    ,"roomBulkNoExcludedDesks":"No desks are excluded."
+    ,"roomBulkConfirmTitle":"Confirm room booking"
+    ,"roomBulkConfirmRoom":"Room: {{room}}"
+    ,"roomBulkConfirmDateTime":"Time: {{day}} {{begin}} - {{end}}"
+    ,"roomBulkConfirmSummary":"Included: {{included}}, conflicts: {{conflicted}}, excluded: {{excluded}}."
+    ,"roomBulkBookingOwnerNote":"This will create standard desk bookings under your admin account."
+    ,"roomBulkConfirmAction":"Confirm room booking"
+    ,"roomBulkBookingSuccess":"{{count}} desks were booked successfully."
+    ,"roomBulkStatusBookable":"Bookable"
+    ,"roomBulkStatusHidden":"Hidden"
+    ,"roomBulkStatusBlocked":"Blocked"
+    ,"roomBulkStatusLockedByOther":"Locked by other user"
+    ,"roomBulkStatusBookingConflict":"Booking conflict"
+    ,"roomBulkStatusScheduledBlocking":"Scheduled blocking"
+    ,"roomBulkStatusUnknown":"Unknown"
+    ,"roomBulkReasonBookable":"Ready to book."
+    ,"roomBulkReasonHidden":"Hidden desks are excluded from room bulk booking."
+    ,"roomBulkReasonBlocked":"Blocked desks are excluded from room bulk booking."
+    ,"roomBulkReasonLockedByOther":"Another user is currently booking this desk."
+    ,"roomBulkReasonBookingConflict":"This desk already has a booking in the selected time range."
+    ,"roomBulkReasonScheduledBlocking":"This desk has a scheduled block in the selected time range."
+    ,"roomBulkReasonUnknown":"Status unavailable."
+    ,"booking.tooltip.ergonomics":"Ergonomics"
     ,"booking.tooltip.monitors":"Monitors"
-    ,"booking.tooltip.deskTypeHeightAdjustable":"Desk type (height-adjustable)"
     ,"booking.tooltip.technology":"Technology"
     ,"booking.tooltip.specialFeatures":"Special features"
     ,"helpDeleteRoom":"Click on the room you want to be deleted."
@@ -263,10 +397,14 @@
     ,"bookingsSum":"Bookings sum"
     ,"noMatchingBookingsForSelectedFilter":"No matching bookings for selected filter."
     ,"filters":"Filters"
+    ,"maxNumberFiltersSelected":"Max number filters selected ({{max}})."
     ,"desksTitle":"Desks"
     ,"parkingsTitle":"Parkings"
     ,"filter":"Filter"
-    ,"deskTypes":"Desk types"
+    ,"deskTypes":"Ergonomics"
+    ,"deskFilterDeskHeightAdjustable":"Adjustable height"
+    ,"deskFilterTechnologyWebcam":"Webcam"
+    ,"deskFilterTechnologyHeadset":"Headset"
     ,"parkingTypes":"Parking types"
     ,"switchToParking":"Switch to parking"
     ,"switchToDesk":"Switch to desk"
@@ -299,7 +437,9 @@
     ,"startDateBiggerThanStartDate":"Start date must not be greater than the end date."
     ,"startTimeBiggerThanStartTime":"Start time must not be greater than the end time."
     ,"seriesDurationTooLong":"The duration of the series booking is too long."
+    ,"seriesBookingConfirmationTitle":"Series Booking Confirmation for {{desk}}"
     ,"noDesksForRange":"For the specified time range and building no desk is available."
+    ,"noDesksForCurrentSelection":"No desks match the current selection."
     ,"datePassed": "This date has passed."
     ,"timePassed": "This time has already passed."
 
@@ -325,10 +465,18 @@
     ,"carparkRefresh":"Refresh"
     ,"carparkDetails":"Details"
     ,"carparkNoSelection":"No spot selected."
+    ,"carparkSelectSpotFirst":"Select a parking spot to choose a time range."
     ,"carparkSpot":"Spot"
+    ,"carparkTimelineTitle":"Time selection"
+    ,"carparkTimelineHintNoSpot":"Drag on the timeline to choose a time range, then pick a parking spot."
+    ,"carparkTimelineHint":"Drag on the timeline to choose the reservation window for spot {{spot}}."
+    ,"carparkSelectedRange":"Selected time range"
     ,"carparkTypeStall":"Marked spot"
     ,"carparkTypeEmpty":"Unmarked spot"
     ,"carparkStandard":"Standard"
+    ,"carparkMotorcycle":"Motorcycle"
+    ,"carparkAccessible":"Accessible"
+    ,"carparkEChargingStation":"E-charging station"
     ,"carparkSpecialCase":"Special case"
     ,"carparkContactStaff":"Contact staff to reserve this spot."
     ,"carparkReserve":"Reserve"
@@ -359,12 +507,22 @@
     ,"carparkChargingKw":"kW"
     ,"carparkReservedTime":"Reserved time"
     ,"carparkReservedByUser":"Reserved by"
+    ,"carparkJustification":"Justification"
+    ,"carparkJustificationPlaceholder":"Explain why you need this parking reservation."
+    ,"carparkJustificationHelper":"{{count}}/{{max}} characters. Minimum {{min}} required."
+    ,"carparkJustificationMinError":"Justification must be at least {{min}} characters."
+    ,"carparkJustificationMaxError":"Justification must be at most {{max}} characters."
     ,"carparkBlockSpot":"Block spot"
     ,"carparkUnblockSpot":"Unblock spot"
-    ,"carparkEditModeHint":"Admin edit mode: select a spot to block or unblock it."
+    ,"carparkEditModeHint":"Admin edit mode: select a spot to block, unblock, add to LIT, or remove from LIT."
     ,"carparkEditModeSpecialCase":"This special-case spot cannot be manually changed."
     ,"carparkSpotBlockedSuccess":"Parking spot blocked."
     ,"carparkSpotUnblockedSuccess":"Parking spot unblocked."
+    ,"carparkAddToLitSystem":"Add to LIT"
+    ,"carparkRemoveFromLitSystem":"Remove from LIT"
+    ,"carparkSpotActivatedSuccess":"Parking spot added to the LIT system."
+    ,"carparkSpotDeactivatedSuccess":"Parking spot removed from the LIT system."
+    ,"carparkNotInLitSystem":"This spot is not in the LIT system."
     ,"carparkNotificationApproved":"Your parking request for spot {{spot}} on {{day}} ({{begin}} - {{end}}) was approved."
     ,"carparkNotificationRejected":"Your parking request for spot {{spot}} on {{day}} ({{begin}} - {{end}}) was rejected."
     ,"carparkNotificationReminder":"Reminder: your parking reservation for spot {{spot}} starts in 30 minutes ({{day}}, {{begin}} - {{end}})."
@@ -379,6 +537,9 @@
     ,"parkingReviewApproved":"Parking request approved."
     ,"parkingReviewRejected":"Parking request rejected."
     ,"parkingReviewPendingCount":"{{count}} parking request(s) pending review."
+    ,"justification":"Justification"
+    ,"viewJustification":"View Justification"
+    ,"noJustificationAvailable":"No justification available."
 
     ,"ERROR_USER_NOT_FOUND_IN_AD":"User was not found in ad."
     ,"ERROR_USER_NOT_FOUND_IN_DAO":"User was not found in local database."
@@ -520,5 +681,62 @@
     ,"defectAllCategories":"All Categories"
     ,"defectAllUrgencies":"All Urgencies"
     ,"defectAllRooms":"All Rooms"
+
+    ,"bookingViewDesks":"Desk bookings"
+    ,"bookingViewParkings":"Parking bookings"
+    ,"bookingViewRequests":"Parking Requests"
+    ,"filterName":"Name"
+    ,"filterRole":"Role"
+    ,"filterDepartment":"Department"
+    ,"spotNumber":"Spot Number"
+    ,"cancelBooking":"Cancel Booking"
+    ,"updatePeriod":"Update Period"
+    ,"cancelBookingJustification":"Justification for cancellation"
+    ,"cancelBookingConfirm":"Confirm Cancellation"
+    ,"cancelBookingSuccess":"Booking cancelled successfully"
+    ,"editBookingConfirm":"Save Changes"
+    ,"editBookingJustification":"Justification for changes"
+    ,"editBookingSuccess":"Changes saved successfully"
+    ,"periodSection":"Period"
+    ,"assignmentSection":"Assignment"
+    ,"reassignBooking":"Reassign"
+    ,"reassignConfirm":"Confirm Reassignment"
+    ,"reassignJustification":"Justification for reassignment"
+    ,"reassignSuccess":"Booking reassigned successfully"
+    ,"currentAssignment":"Current assignment"
+    ,"newAssignment":"New assignment"
+    ,"noAvailableParkingSpots":"No available parking spots found"
+    ,"noBookingsFound":"No bookings found"
+    ,"bulkApprove":"Bulk Approve"
+    ,"bulkApproveSuccess":"{{count}} request(s) approved successfully"
+    ,"bulkApproveFailed":"{{count}} request(s) could not be approved"
+    ,"clearFilters":"Clear filters"
+    ,"resultsShown":"Results: {{count}}"
+    ,"bookingManagementOverviewHelper":"Manage desk and parking bookings."
+    ,"bookingManagementDeskHelper":"View and manage confirmed desk bookings."
+    ,"bookingManagementParkingHelper":"View and manage approved parking bookings."
+    ,"bookingManagementRequestsHelper":"Review and process pending parking requests."
+    ,"timeRangeInvalid":"End time must be later than start time."
+
+    ,"maintenanceCalendar":"Maintenance Calendar"
+    ,"scheduleBlocking":"Schedule Blocking"
+    ,"blockingSum":"Blocking sum"
+    ,"scheduledBlockingCreated":"Blocking scheduled successfully"
+    ,"scheduledBlockingCancelled":"Scheduled blocking cancelled"
+    ,"scheduledBlockingFailed":"Failed to schedule blocking"
+    ,"defectBlockedUntilTime":"Blocked until {{datetime}}"
+    ,"maintenanceCalendarBtn":"Maintenance Calendar"
+    ,"backToMonthView":"Back to month view"
+    ,"scheduledBlockingOverlap":"A blocking is already scheduled for this time period"
+    ,"scheduledBlockingBookingConflict":"This workstation currently has a scheduled block during the selected time."
+    ,"scheduledBlockingSelectPeriod":"Click and drag to select a blocking period"
+    ,"scheduledBlockingMinDuration":"Blocking period must be at least 1 hour"
+    ,"scheduledBlockingPastDate":"Cannot schedule a blocking in the past"
+    ,"cancelScheduledBlocking":"Cancel scheduled blocking"
+    ,"scheduledBlockingDetailsTitle":"Scheduled blocking details"
+    ,"scheduledBlockingCancelConfirmTitle":"Cancel scheduled blocking?"
+    ,"scheduledBlockingCancelConfirmText":"Are you sure you want to cancel this scheduled blocking?"
+    ,"scheduledBlockingCancelOnlyScheduled":"Only scheduled blockings can be cancelled."
+    ,"scheduledBlockingCancelFailed":"Failed to cancel scheduled blocking"
 }
 

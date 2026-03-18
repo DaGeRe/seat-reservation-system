@@ -2,9 +2,12 @@ package com.desk_sharing.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.desk_sharing.entities.Desk;
 import com.desk_sharing.entities.Room;
@@ -23,13 +26,70 @@ import com.desk_sharing.repositories.BookingRepository;
 @Service
 @AllArgsConstructor
 public class DeskService {
+    public static final int SPECIAL_FEATURES_MAX_LENGTH = 120;
+    public static final String DEFAULT_WORKSTATION_TYPE = "Standard";
+    public static final int DEFAULT_MONITORS_QUANTITY = 1;
+
     private final DeskRepository deskRepository;
     private final BookingRepository bookingRepository;
     private final SeriesRepository seriesRepository;
     private final SeriesService seriesService;
-    private final EquipmentService equipmentService;
-    //private final RoomService roomService;
     private final RoomRepository roomRepository;
+
+    private String normalizeWorkstationType(String workstationType) {
+        if (workstationType == null || workstationType.isBlank()) {
+            return DEFAULT_WORKSTATION_TYPE;
+        }
+        return Stream.of(DEFAULT_WORKSTATION_TYPE, "Silent", "Ergonomic", "Premium")
+            .filter(allowed -> allowed.equalsIgnoreCase(workstationType.trim()))
+            .findFirst()
+            .orElse(DEFAULT_WORKSTATION_TYPE);
+    }
+
+    private Integer normalizeMonitorsQuantity(Integer monitorsQuantity) {
+        if (monitorsQuantity == null) {
+            return DEFAULT_MONITORS_QUANTITY;
+        }
+        if (monitorsQuantity < 0) {
+            return 0;
+        }
+        if (monitorsQuantity > 3) {
+            return 3;
+        }
+        return monitorsQuantity;
+    }
+
+    private String normalizeSpecialFeatures(String specialFeatures) {
+        if (specialFeatures == null) {
+            return "";
+        }
+        final String trimmed = specialFeatures.trim();
+        if (trimmed.length() <= SPECIAL_FEATURES_MAX_LENGTH) {
+            return trimmed;
+        }
+        return trimmed.substring(0, SPECIAL_FEATURES_MAX_LENGTH);
+    }
+
+    private String normalizeRequiredRemark(String remark) {
+        if (remark == null || remark.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk remark is required");
+        }
+        return remark.trim();
+    }
+
+    private void applyDeskMetadata(Desk desk, DeskDTO deskDto) {
+        desk.setRemark(normalizeRequiredRemark(deskDto.getRemark()));
+        desk.setWorkstationType(normalizeWorkstationType(deskDto.getWorkstationType()));
+        desk.setMonitorsQuantity(normalizeMonitorsQuantity(deskDto.getMonitorsQuantity()));
+        desk.setDeskHeightAdjustable(Boolean.TRUE.equals(deskDto.getDeskHeightAdjustable()));
+        desk.setTechnologyDockingStation(Boolean.TRUE.equals(deskDto.getTechnologyDockingStation()));
+        desk.setTechnologyWebcam(Boolean.TRUE.equals(deskDto.getTechnologyWebcam()));
+        desk.setTechnologyHeadset(Boolean.TRUE.equals(deskDto.getTechnologyHeadset()));
+        desk.setSpecialFeatures(normalizeSpecialFeatures(deskDto.getSpecialFeatures()));
+        if (deskDto.getFixed() != null) {
+            desk.setFixed(deskDto.getFixed());
+        }
+    }
 
     public Desk saveDesk(final DeskDTO deskDto) {
         if (deskDto == null) {
@@ -45,8 +105,11 @@ public class DeskService {
         final Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new EntityNotFoundException("Room not found in DeskService.saveDesk : " + roomId));
         desk.setRoom(room);
-        desk.setEquipment(equipmentService.getEquipmentByEquipmentName(deskDto.getEquipment()));
-        desk.setRemark(deskDto.getRemark());
+        applyDeskMetadata(desk, deskDto);
+        if (desk.isFixed()) {
+            // New fixed desks start hidden by default.
+            desk.setHidden(true);
+        }
         final List<Desk> allDesksInCurrentRoomn = deskRepository.findByRoomId(desk.getRoom().getId());
         final Long newDeskNumberInRoom = 1 + allDesksInCurrentRoomn.stream()
             .filter(d -> d.getDeskNumberInRoom() != null)
@@ -58,7 +121,7 @@ public class DeskService {
     }
 
     public List<Desk> getAllDesks() {
-        return deskRepository.findAll();
+        return deskRepository.findByHiddenFalse();
     }
 
     public Optional<Desk> getDeskById(@NonNull final Long id) {
@@ -66,14 +129,48 @@ public class DeskService {
     }
 
     public List<Desk> getDeskByRoomId(Long roomId) {
+        return deskRepository.findByRoomIdAndHiddenFalse(roomId);
+    }
+
+    public List<Desk> getDeskByRoomIdIncludingHidden(Long roomId) {
         return deskRepository.findByRoomId(roomId);
     }
 
-    public Desk updateDesk(@NonNull final Long deskId, String equipment, String remark) {
+    public Desk updateDesk(@NonNull final Long deskId, DeskDTO deskDto) {
         final Desk desk = getDeskById(deskId)
             .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.updateDesk : " + deskId));
-        desk.setEquipment(equipmentService.getEquipmentByEquipmentName(equipment));
-        desk.setRemark(remark);
+        final boolean wasFixed = desk.isFixed();
+        applyDeskMetadata(desk, deskDto);
+        if (!wasFixed && desk.isFixed()) {
+            // Transition false -> true: fixed defaults to hidden.
+            desk.setHidden(true);
+        } else if (wasFixed && !desk.isFixed()) {
+            // Transition true -> false: unhide to avoid leaving non-fixed desks inaccessible.
+            desk.setHidden(false);
+        }
+        return deskRepository.save(desk);
+    }
+
+    public Desk toggleFixed(@NonNull final Long deskId) {
+        final Desk desk = getDeskById(deskId)
+            .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.toggleFixed : " + deskId));
+        final boolean nowFixed = !desk.isFixed();
+        desk.setFixed(nowFixed);
+        if (nowFixed) {
+            desk.setHidden(true);
+        } else {
+            desk.setHidden(false);
+        }
+        return deskRepository.save(desk);
+    }
+
+    public Desk toggleHidden(@NonNull final Long deskId) {
+        final Desk desk = getDeskById(deskId)
+            .orElseThrow(() -> new EntityNotFoundException("Desk not found in DeskService.toggleHidden : " + deskId));
+        if (!desk.isFixed()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only fixed workstations can be hidden or shown.");
+        }
+        desk.setHidden(!desk.isHidden());
         return deskRepository.save(desk);
     }
 

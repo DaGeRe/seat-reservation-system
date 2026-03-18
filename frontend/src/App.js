@@ -19,10 +19,10 @@ import FreeDesks from './Components/Home/FreeDesks';
 import RoomSearch from './Components/Home/RoomSearch';
 import Colleagues from './Components/Home/Colleagues';
 import Favourites from './Components/Home/Favourites';
-import SupportContacts from './Components/Home/SupportContacts';
 import JwtHeartbeat from './Components/misc/JwtHearbeat';
 import CarparkOverview from './Components/Carpark/CarparkOverview';
 import DefectDashboard from './Components/Defects/DefectDashboard';
+import MaintenanceCalendar from './Components/Defects/MaintenanceCalendar';
 import './i18n';
 
 function AppRoutes() {
@@ -56,7 +56,23 @@ function AppRoutes() {
         <Route path="/desks" element={isAuthenticated ? <Booking /> : <Navigate to="/" replace />} />
         <Route
           path="/admin"
+          element={
+            isAuthenticated && canAccessAdmin
+              ? <Navigate to="/admin/user-management" replace />
+              : <Navigate to={isAuthenticated ? "/home" : "/"} replace />
+          }
+        />
+        <Route
+          path="/admin/:section"
           element={isAuthenticated && canAccessAdmin ? <AdminPage /> : <Navigate to={isAuthenticated ? "/home" : "/"} replace />}
+        />
+        <Route
+          path="/admin/*"
+          element={
+            isAuthenticated && canAccessAdmin
+              ? <Navigate to="/admin/user-management" replace />
+              : <Navigate to={isAuthenticated ? "/home" : "/"} replace />
+          }
         />
         <Route path="/mybookings" element={isAuthenticated ? <MyBookings /> : <Navigate to="/" replace />} />
         <Route path="/manageseries" element={isAuthenticated ? <ManageSeries /> : <Navigate to="/" replace />} />
@@ -64,12 +80,15 @@ function AppRoutes() {
         <Route path='/freedesks' element={isAuthenticated ? <FreeDesks /> : <Navigate to="/" replace />} />
         <Route path='/roomSearch' element={isAuthenticated ? <RoomSearch /> : <Navigate to="/" replace />} />
         <Route path='/colleagues' element={isAuthenticated ? <Colleagues /> : <Navigate to="/" replace />} />
-        <Route path='/supportContacts' element={isAuthenticated ? <SupportContacts /> : <Navigate to="/" replace />} />
         <Route path="/carpark" element={isAuthenticated ? <CarparkOverview /> : <Navigate to="/" replace />} />
         <Route path="/favourites" element={isAuthenticated ? <Favourites /> : <Navigate to="/" replace />} />
         <Route
           path="/defects"
           element={isAuthenticated && canAccessDefects ? <DefectDashboard /> : <Navigate to={isAuthenticated ? "/home" : "/"} replace />}
+        />
+        <Route
+          path="/maintenance-calendar"
+          element={isAuthenticated && canAccessDefects ? <MaintenanceCalendar /> : <Navigate to={isAuthenticated ? "/home" : "/"} replace />}
         />
         <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/"} replace />} />
       </Routes>

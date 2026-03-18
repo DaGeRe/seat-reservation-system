@@ -108,7 +108,6 @@ describe('Defect management and service personnel features', () => {
     desk: {
       id: 301,
       remark: 'Desk 301',
-      workstationIdentifier: 'WS-301',
       room: {
         id: 21,
         remark: 'Room A',
@@ -145,8 +144,7 @@ describe('Defect management and service personnel features', () => {
 
   it('keeps exactly one role selected in Add User modal', () => {
     cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW'));
-    cy.visit('/admin');
-    cy.get('button#userManagement').click();
+    cy.visit('/admin/user-management');
     cy.clickFirst(['button#addUser', 'button#addEmployee']);
 
     assertOnlyRoleChecked('#addUser-roles', 2);
@@ -165,8 +163,7 @@ describe('Defect management and service personnel features', () => {
 
   it('keeps exactly one role selected in Edit User modal', () => {
     cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW'));
-    cy.visit('/admin');
-    cy.get('button#userManagement').click();
+    cy.visit('/admin/user-management');
     cy.clickFirst(['button#editUser', 'button#editEmployee']);
     cy.filterUsersByEmail(serviceUser.email);
 
@@ -194,7 +191,7 @@ describe('Defect management and service personnel features', () => {
     cy.get('#sidebar_bookings').should('exist');
     cy.get('#sidebar_search0').should('exist');
     cy.get('#sidebar_defects').should('exist');
-    cy.get('#sidebar_admin').should('not.exist');
+    cy.get('#sidebar_admin0').should('not.exist');
 
     cy.intercept('GET', /\/defects(\?.*)?$/, []).as('serviceDefects');
     cy.intercept('GET', '**/desks', []).as('serviceDesks');
@@ -213,7 +210,7 @@ describe('Defect management and service personnel features', () => {
 
     cy.get('#sidebar_calendar').should('exist');
     cy.get('#sidebar_defects').should('not.exist');
-    cy.get('#sidebar_admin').should('not.exist');
+    cy.get('#sidebar_admin0').should('not.exist');
 
     cy.visit('/home');
     navigateClientSide('/defects');
@@ -223,7 +220,7 @@ describe('Defect management and service personnel features', () => {
   it('allows admins to access both admin panel and defect dashboard', () => {
     cy.login(Cypress.env('TEST_ADMIN_MAIL'), Cypress.env('TEST_ADMIN_PW'));
 
-    cy.get('#sidebar_admin').should('exist');
+    cy.get('#sidebar_admin0').should('exist');
     cy.get('#sidebar_defects').should('exist');
 
     cy.intercept('GET', /\/defects(\?.*)?$/, []).as('adminDefects');
@@ -234,8 +231,9 @@ describe('Defect management and service personnel features', () => {
     cy.wait('@adminDefects');
     cy.url().should('include', '/defects');
 
-    cy.get('#sidebar_admin').click({ force: true });
-    cy.url().should('include', '/admin');
+    cy.get('#sidebar_admin0').click({ force: true });
+    cy.get('#sidebar_admin_userManagement').click({ force: true });
+    cy.url().should('include', '/admin/user-management');
   });
 
   it('reports defects from free desks and handles duplicate active defect guard', () => {
@@ -244,7 +242,7 @@ describe('Defect management and service personnel features', () => {
     const freeDesk = {
       id: 8801,
       remark: 'DeskFD1',
-      equipment: { equipmentName: 'withEquipment' },
+      workstationType: 'Standard',
       room: {
         id: 91,
         remark: 'Room FD',
@@ -331,7 +329,6 @@ describe('Defect management and service personnel features', () => {
       desk: {
         id: 301,
         remark: 'Desk 301',
-        workstationIdentifier: 'WS-301',
         room: { id: 21, remark: 'Room A' },
         blocked: false,
         blockedByDefectId: null,
@@ -362,7 +359,6 @@ describe('Defect management and service personnel features', () => {
     cy.intercept('GET', '**/desks', [
       {
         id: 301,
-        workstationIdentifier: 'WS-301',
         remark: 'Desk 301',
         room: { id: 21, remark: 'Room A' },
       },
@@ -390,7 +386,7 @@ describe('Defect management and service personnel features', () => {
     ]).should('be.visible');
 
     cy.get('div[role="combobox"]').first().click({ force: true });
-    cy.contains('li', 'Room A — WS-301').click({ force: true });
+    cy.contains('li', 'Room A — Desk 301').click({ force: true });
 
     cy.wait('@getDefectsHistory');
     cy.contains('DF-HISTORY-001').should('be.visible');
@@ -500,7 +496,6 @@ describe('Defect management and service personnel features', () => {
       desk: {
         id: 401,
         remark: 'Desk 401',
-        workstationIdentifier: 'WS-401',
         room: { id: 31, remark: 'Room B' },
         blocked: false,
         blockedByDefectId: null,
@@ -572,7 +567,6 @@ describe('Defect management and service personnel features', () => {
       desk: {
         id: 1820,
         remark: 'Desk 1820',
-        workstationIdentifier: 'WS-1820',
         room: { id: 82, remark: 'Room 82' },
         blocked,
         blockedByDefectId: blocked ? 820 : null,
